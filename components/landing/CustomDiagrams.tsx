@@ -443,25 +443,36 @@ export function ExecutionFlowDiagram() {
         subtitle="How a Noir Smart Contract is executed and verified on Aztec"
       />
       
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-2 md:gap-4 overflow-x-auto pb-4">
-        <Node label="Private Function" sub="Noir Smart Contract" color="bg-indigo-50 border-indigo-200" textColor="text-indigo-800" />
-        <Arrow label="Executes" dir="right" color="text-indigo-300 hidden lg:flex" />
-        <Arrow label="Executes" dir="down" color="text-indigo-300 flex lg:hidden my-2" />
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-0 lg:gap-2">
+        <div className="flex-1 min-w-0 w-full lg:w-auto">
+          <Node label="Private Function" sub="Noir Smart Contract" color="bg-indigo-50 border-indigo-200" textColor="text-indigo-800" />
+        </div>
+        <Arrow label="Executes" dir="down" color="text-indigo-300 flex lg:hidden my-1" />
+        <Arrow label="Executes" dir="right" color="text-indigo-300 hidden lg:flex shrink-0" />
         
-        <Node label="Private Kernel Circuit" sub="Client-Side ZK Prover" color="bg-amber-50 border-amber-200" textColor="text-amber-800" />
-        <Arrow label="Submits TX" dir="right" color="text-slate-300 hidden lg:flex" />
-        <Arrow label="Submits TX" dir="down" color="text-slate-300 flex lg:hidden my-2" />
+        <div className="flex-1 min-w-0 w-full lg:w-auto">
+          <Node label="Private Kernel Circuit" sub="Client-Side ZK Prover" color="bg-amber-50 border-amber-200" textColor="text-amber-800" />
+        </div>
+        <Arrow label="Submits TX" dir="down" color="text-slate-300 flex lg:hidden my-1" />
+        <Arrow label="Submits TX" dir="right" color="text-slate-300 hidden lg:flex shrink-0" />
         
-        <Node label="Sequencer Mempool" sub="Validates Proofs" color="bg-slate-50 border-slate-200" textColor="text-slate-700" />
-        <Arrow label="Orders" dir="right" color="text-slate-300 hidden lg:flex" />
-        <Arrow label="Orders" dir="down" color="text-slate-300 flex lg:hidden my-2" />
+        <div className="flex-1 min-w-0 w-full lg:w-auto">
+          <Node label="Sequencer Mempool" sub="Validates Proofs" color="bg-slate-50 border-slate-200" textColor="text-slate-700" />
+        </div>
+        <Arrow label="Orders" dir="down" color="text-slate-300 flex lg:hidden my-1" />
+        <Arrow label="Orders" dir="right" color="text-slate-300 hidden lg:flex shrink-0" />
         
-        <Node label="Rollup Circuit" sub="Aggregates Proofs" color="bg-purple-50 border-purple-200" textColor="text-purple-800" />
-        <Arrow label="Posts Root" dir="right" color="text-slate-300 hidden lg:flex" />
-        <Arrow label="Posts Root" dir="down" color="text-slate-300 flex lg:hidden my-2" />
+        <div className="flex-1 min-w-0 w-full lg:w-auto">
+          <Node label="Rollup Circuit" sub="Aggregates Proofs" color="bg-purple-50 border-purple-200" textColor="text-purple-800" />
+        </div>
+        <Arrow label="Posts Root" dir="down" color="text-slate-300 flex lg:hidden my-1" />
+        <Arrow label="Posts Root" dir="right" color="text-slate-300 hidden lg:flex shrink-0" />
         
-        <Node label="Ethereum L1" sub="Final Verification" color="bg-blue-50 border-blue-200" textColor="text-blue-800" />
+        <div className="flex-1 min-w-0 w-full lg:w-auto">
+          <Node label="Ethereum L1" sub="Final Verification" color="bg-blue-50 border-blue-200" textColor="text-blue-800" />
+        </div>
       </div>
+
     </DiagramCard>
   );
 }

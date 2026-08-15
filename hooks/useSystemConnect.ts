@@ -66,11 +66,13 @@ export function useSystemConnect() {
    * Called from GenerateWalletWizard's onComplete callback.
    */
   const activateSystemVault = useCallback(
-    async (privateKey: string, address: string) => {
+    async (privateKey: string, address: string, options?: { silent?: boolean }) => {
       const pk = (privateKey.startsWith("0x") ? privateKey : `0x${privateKey}`) as `0x${string}`;
 
       try {
-        toast.loading("Injecting System Identity into Terminal...", { id: "vault-connect" });
+        if (!options?.silent) {
+          toast.loading("Injecting System Identity into Terminal...", { id: "vault-connect" });
+        }
 
         // 1. Inject the key in the live provider singleton
         getOrCreateSystemProvider(pk);
@@ -78,19 +80,12 @@ export function useSystemConnect() {
         // 2. Persist in SecureSessionStorage for auto-reconnect on refresh
         await storeVaultKey(pk);
 
-        // 3. Drive Wagmi state machine into "connected"
-        // Non-fatal: mobile Chrome (iOS/Android) has no injected provider.
-        // The session is stored above; the UI reads privateKey from the store.
-        // try {
-        //   connect({ connector: systemConnector() });
-        // } catch (connectErr: any) {
-        //   console.warn('[SystemVault] Wagmi connect non-fatal (mobile):', connectErr?.message);
-        // }
-
-        toast.success(`Vault Activated  ${address.slice(0, 6)}...${address.slice(-4)}`, {
-          id: "vault-connect",
-          description: "Your System Identity is now live on-chain.",
-        });
+        if (!options?.silent) {
+          toast.success(`Vault Activated  ${address.slice(0, 6)}...${address.slice(-4)}`, {
+            id: "vault-connect",
+            description: "Your System Identity is now live on-chain.",
+          });
+        }
       } catch (err: any) {
         toast.error("Vault injection failed", {
           id: "vault-connect",

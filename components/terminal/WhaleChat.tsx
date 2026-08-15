@@ -3236,8 +3236,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       ...bgStyle,
       fontFamily,
     }}>
-      {/*  Sidebar: Conversation List — fixed width, full height  */}
-      <div className={`${showList ? 'flex' : 'hidden md:flex'} w-full md:w-72 flex-col border-r border-black/10 bg-white/60 backdrop-blur-xl shrink-0 h-full overflow-hidden`}>
+      {/*  Sidebar: Conversation List — fixed width on desktop, full screen on mobile when no chat is active  */}
+      <div className={`${showList ? 'flex' : 'hidden md:flex'} w-full md:w-80 lg:w-96 flex-col border-r border-black/10 bg-white/60 backdrop-blur-xl shrink-0 h-full overflow-hidden`}>
+
         <div className="p-4 border-b border-white/30">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">

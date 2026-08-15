@@ -853,6 +853,131 @@ function RegistrySection({ hideMap }: { hideMap?: boolean }) {
         >
           <RealWorldMap />
         </motion.div>
+        <RoadmapSection />
+        <FAQSection />
+      </div>
+    </section>
+  );
+}
+
+// ─── Roadmap ──────────────────────────────────────────────────────────────────
+const ROADMAP_STEPS = [
+  {
+    phase: "Phase 1",
+    title: "Testnet Genesis",
+    status: "Completed",
+    date: "Q3 2024",
+    desc: "Deployment of the core Aztec L2 rollup, Noir circuits, and basic privacy infrastructure.",
+  },
+  {
+    phase: "Phase 2",
+    title: "Active Beta",
+    status: "Current",
+    date: "Now",
+    desc: "Sybil-resistant onboarding. 200 Genesis identities minted. Network stress testing and UX refinement.",
+  },
+  {
+    phase: "Phase 3",
+    title: "Official Launch",
+    status: "Upcoming",
+    date: "January",
+    desc: "Public mainnet release, fully decentralized sequencer, and permissionless asset bridging.",
+  }
+];
+
+function RoadmapSection() {
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <section ref={ref} className="relative w-full bg-white py-32 md:py-48 overflow-hidden border-t border-black/[0.05]">
+      {/* Background ambient gradient for the Beta phase */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="w-full max-w-5xl mx-auto px-6 relative z-10">
+        <div className="max-w-2xl mx-auto text-center mb-24">
+          <motion.span
+            initial="hidden"
+            animate={inView ? "visible" : "hidden"}
+            variants={fadeIn}
+            className="inline-block text-[10.5px] font-mono uppercase tracking-[0.25em] text-indigo-600 mb-5"
+          >
+            Protocol Roadmap
+          </motion.span>
+          <motion.h2
+            initial="hidden"
+            animate={inView ? "visible" : "hidden"}
+            variants={fadeUp}
+            style={{
+              fontFamily: "var(--font-aztec-serif), Georgia, serif",
+              fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
+              fontWeight: 700,
+            }}
+            className="leading-[1.05] tracking-tight text-black mb-6"
+          >
+            The path to full <br/><span style={{ color: "rgba(0,0,0,0.2)" }}>decentralization</span>
+          </motion.h2>
+          <motion.p
+            initial="hidden"
+            animate={inView ? "visible" : "hidden"}
+            variants={fadeUp}
+            custom={0.1}
+            className="text-[15px] md:text-[17px] text-black/50 leading-relaxed mx-auto max-w-xl"
+          >
+            Humanity Ledger is currently in its highly restricted <strong className="text-black font-semibold">Active Beta</strong> phase. Access is limited to verified Golden Ticket holders. The official public launch will commence in <strong className="text-black font-semibold">January</strong>.
+          </motion.p>
+        </div>
+
+        <div className="relative">
+          {/* Vertical Line for Desktop */}
+          <div className="hidden md:block absolute left-[50%] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-black/10 to-transparent -translate-x-1/2" />
+          
+          <div className="flex flex-col gap-8 md:gap-0">
+            {ROADMAP_STEPS.map((step, i) => {
+              const isEven = i % 2 === 0;
+              const isCurrent = step.status === "Current";
+              
+              return (
+                <motion.div
+                  key={i}
+                  initial="hidden"
+                  animate={inView ? "visible" : "hidden"}
+                  variants={fadeUp}
+                  custom={0.2 + i * 0.1}
+                  className={`relative flex flex-col md:flex-row items-center ${isEven ? 'md:justify-start' : 'md:justify-end'} md:h-48`}
+                >
+                  {/* Node dot on the line */}
+                  <div className="hidden md:flex absolute left-[50%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-white border-[3px] border-black/[0.15] shadow-sm z-10 transition-colors duration-500" 
+                       style={isCurrent ? { borderColor: '#4f46e5', backgroundColor: '#e0e7ff', boxShadow: '0 0 0 6px rgba(79,70,229,0.1)' } : {}}
+                  />
+
+                  {/* Content Card */}
+                  <div className={`w-full md:w-[calc(50%-4rem)] ${isEven ? 'md:text-right' : 'md:text-left'}`}>
+                    <div className={`p-8 rounded-3xl border transition-all duration-500 relative group overflow-hidden ${isCurrent ? 'bg-indigo-50/40 border-indigo-200/60 shadow-[0_8px_30px_rgba(79,70,229,0.06)] backdrop-blur-sm' : 'bg-zinc-50/50 border-black/[0.04] hover:bg-zinc-50'}`}>
+                      {isCurrent && (
+                        <div className="absolute inset-0 bg-gradient-to-tr from-indigo-100/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      )}
+                      
+                      <div className={`flex items-center gap-3 mb-4 ${isEven ? 'md:justify-end' : 'md:justify-start'}`}>
+                        {isEven && <span className="hidden md:inline-block text-[11px] font-mono font-medium text-black/40">{step.date}</span>}
+                        <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full ${isCurrent ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-black/5 text-black/50'}`}>
+                          {step.phase}
+                        </span>
+                        {(!isEven || true) && <span className={`${isEven ? 'md:hidden' : ''} inline-block text-[11px] font-mono font-medium text-black/40`}>{step.date}</span>}
+                      </div>
+                      <h3 className={`text-[18px] font-bold tracking-tight mb-2 ${isCurrent ? 'text-indigo-950' : 'text-black'}`}>
+                        {step.title}
+                      </h3>
+                      <p className="text-[13px] leading-relaxed text-black/50 relative z-10">
+                        {step.desc}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </section>
   );

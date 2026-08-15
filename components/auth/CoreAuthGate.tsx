@@ -279,6 +279,9 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
   // Timer refs for cleanup on unmount (prevents setState-on-unmounted warning)
   const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // [TOAST GUARD] Prevents duplicate unlock toast on silent background reconnects.
+  // Resets to false when the user deliberately goes through the login flow.
+  const toastFiredRef = useRef<boolean>(false);
   const { isConnected } = useAccount();
   const importWallet = useWalletStore(s => s.importWallet);
   const storeSetupPassword = useWalletStore(s => s.setupPassword);
@@ -638,11 +641,13 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
           localStorage.removeItem('__disconnected__');
         } catch {}
 
+
         try {
-          await activateSystemVault(pk, addr);
+          await activateSystemVault(pk, addr, { silent: true });
         } catch (vaultErr: any) {
           console.warn('[CoreAuthGate] Login vault activation non-fatal:', vaultErr?.message);
         }
+
 
         try {
           const verifyResp = await fetch('/api/auth/system-verify', {
@@ -657,7 +662,11 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
 
         const elapsed = Date.now() - startTime;
         setTimeout(() => {
-          toast.success('Wallet desbloqueado', { description: `${addr!.slice(0, 6)}...${addr!.slice(-4)}` });
+          // [TOAST GUARD] Only fire success toast once per explicit user login.
+          if (!toastFiredRef.current) {
+            toastFiredRef.current = true;
+            toast.success('Wallet desbloqueado', { description: `${addr!.slice(0, 6)}...${addr!.slice(-4)}` });
+          }
           onComplete();
         }, Math.max(500 - elapsed, 0));
       } else {

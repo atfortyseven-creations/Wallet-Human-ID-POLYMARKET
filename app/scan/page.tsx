@@ -294,7 +294,7 @@ export default function ScanPage() {
 
   return (
     <div
-      className="fixed inset-0 bg-white flex flex-col overflow-hidden"
+      className="fixed inset-0 bg-white flex flex-col overflow-hidden w-full h-[100dvh]"
       style={{
         paddingTop: 'env(safe-area-inset-top)',
         paddingBottom: 'env(safe-area-inset-bottom)',

@@ -3,6 +3,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useSystemAccount } from '@/hooks/useSystemAccount';
+import { toast } from 'sonner';
 
 const APPS = [
   {
@@ -16,12 +18,12 @@ const APPS = [
       </svg>
     ),
     color: 'bg-blue-50 border-blue-100',
-    tag: 'Financial'
+    tag: 'Financial',
   },
   {
     id: 'chat',
     title: 'Whale Chat',
-    description: 'E2E encrypted P2P messaging utilizing Aztec ZK Identity.',
+    description: 'E2E encrypted P2P messaging with onion routing and Aztec ZK Identity.',
     href: '/chat',
     icon: (
       <svg className="w-6 h-6 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -29,7 +31,7 @@ const APPS = [
       </svg>
     ),
     color: 'bg-violet-50 border-violet-100',
-    tag: 'Social'
+    tag: 'Social',
   },
   {
     id: 'studio',
@@ -42,33 +44,85 @@ const APPS = [
       </svg>
     ),
     color: 'bg-emerald-50 border-emerald-100',
-    tag: 'Registry'
+    tag: 'Registry',
+  },
+  {
+    id: 'roadmap',
+    title: 'Roadmap',
+    description: 'Track protocol milestones, technical upgrades, and the governance timeline.',
+    href: '/terminal?tab=humanity-ledger',
+    icon: (
+      <svg className="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+      </svg>
+    ),
+    color: 'bg-amber-50 border-amber-100',
+    tag: 'Protocol',
+  },
+  {
+    id: 'identity',
+    title: 'Identity',
+    description: 'Sovereign ZK identity layer. Claim your unique human credential on-chain.',
+    href: '/terminal?tab=gold',
+    icon: (
+      <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      </svg>
+    ),
+    color: 'bg-indigo-50 border-indigo-100',
+    tag: 'Identity',
   },
   {
     id: 'markets',
-    title: 'Predictive Markets',
-    description: 'Tap into global prediction markets with zero-knowledge position sizing.',
-    href: '/predictions',
+    title: 'Markets',
+    description: 'Private DeFi position tracking and on-chain market data aggregation.',
+    href: '/terminal?tab=markets',
     icon: (
       <svg className="w-6 h-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
       </svg>
     ),
     color: 'bg-orange-50 border-orange-100',
-    tag: 'Markets'
+    tag: 'Markets',
   },
   {
-    id: 'identity',
-    title: 'Identity Vault',
-    description: 'Manage your ZK proofs and World ID credentials locally.',
-    href: '/settings',
+    id: 'privacy',
+    title: 'Privacy',
+    description: 'Read the Humanity Ledger privacy architecture and data governance policy.',
+    href: '/privacy',
     icon: (
-      <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+      <svg className="w-6 h-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
       </svg>
     ),
-    color: 'bg-indigo-50 border-indigo-100',
-    tag: 'Security'
+    color: 'bg-slate-50 border-slate-200',
+    tag: 'Legal',
+  },
+  {
+    id: 'token',
+    title: 'QDS Token',
+    description: 'Quantum Defence Shield governance and utility token. Stake, vote, earn.',
+    href: '/qds',
+    icon: (
+      <svg className="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+      </svg>
+    ),
+    color: 'bg-yellow-50 border-yellow-100',
+    tag: 'Token',
+  },
+  {
+    id: 'registry',
+    title: 'Registry',
+    description: 'Explore global node coverage, registered asset passports, and country data.',
+    href: '/registry',
+    icon: (
+      <svg className="w-6 h-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+    color: 'bg-teal-50 border-teal-100',
+    tag: 'Network',
   },
   {
     id: 'academy',
@@ -77,66 +131,101 @@ const APPS = [
     href: '/academy',
     icon: (
       <svg className="w-6 h-6 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path d="M12 14l9-5-9-5-9 5 9 5z" />
-        <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
       </svg>
     ),
     color: 'bg-rose-50 border-rose-100',
-    tag: 'Education'
-  }
+    tag: 'Education',
+  },
 ];
 
 const container = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
+    transition: { staggerChildren: 0.055 },
+  },
 };
 
 const item: any = {
-  hidden: { opacity: 0, y: 15 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 320, damping: 28 } },
 };
 
 export function AppLauncherHub() {
+  const { isZkVerified } = useSystemAccount();
+
+  const handleAppClick = (e: React.MouseEvent, app: any) => {
+    if (app.id !== 'identity' && !isZkVerified) {
+      e.preventDefault();
+      toast.error('Beta Access Restricted', {
+        description: 'You must claim your Sovereign Identity (Golden Ticket) to unlock the Hub applications.'
+      });
+    }
+  };
+
   return (
-    <motion.div 
+    <motion.div
       variants={container}
       initial="hidden"
       animate="show"
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5"
     >
-      {APPS.map((app) => (
-        <motion.div key={app.id} variants={item}>
-          <Link href={app.href} className="block h-full group">
-            <div className="bg-white border border-slate-200 rounded-[24px] p-6 h-full transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:border-slate-300 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-slate-50 to-transparent rounded-bl-[100px] -z-0 opacity-50 group-hover:opacity-100 transition-opacity" />
-              
-              <div className="flex items-start justify-between mb-5 relative z-10">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${app.color}`}>
-                  {app.icon}
+      {APPS.map((app) => {
+        const isLocked = app.id !== 'identity' && !isZkVerified;
+
+        return (
+          <motion.div key={app.id} variants={item}>
+            <Link 
+              href={app.href} 
+              className={`block h-full group ${isLocked ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+              onClick={(e) => handleAppClick(e, app)}
+            >
+              <div className={`bg-white border border-slate-200/80 rounded-[20px] p-5 md:p-6 h-full transition-all duration-300 relative overflow-hidden ${
+                isLocked 
+                  ? 'opacity-60 grayscale hover:opacity-80' 
+                  : 'hover:shadow-lg hover:shadow-slate-200/60 hover:border-slate-300'
+              }`}>
+                
+                {/* Subtle corner gradient (Only if unlocked) */}
+                {!isLocked && (
+                  <div className="absolute top-0 right-0 w-28 h-28 bg-gradient-to-bl from-slate-50/80 to-transparent rounded-bl-[80px] -z-0 opacity-50 group-hover:opacity-100 transition-opacity" />
+                )}
+
+                {/* Locked overlay Icon */}
+                {isLocked && (
+                  <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none bg-white/30 backdrop-blur-[1px]">
+                    <div className="w-12 h-12 bg-black/80 rounded-2xl flex items-center justify-center text-white shadow-xl rotate-12 group-hover:rotate-0 transition-transform">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                      </svg>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex items-start justify-between mb-4 relative z-10">
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center border ${app.color} flex-shrink-0`}>
+                    {app.icon}
+                  </div>
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100 flex-shrink-0">
+                    {app.tag}
+                  </span>
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100">
-                  {app.tag}
-                </span>
+
+                <div className="relative z-10">
+                  <h3 className={`text-[16px] md:text-[17px] font-bold text-slate-900 mb-1.5 leading-snug ${isLocked ? '' : 'group-hover:text-indigo-600 transition-colors'}`}>
+                    {app.title}
+                  </h3>
+                  <p className="text-[13px] text-slate-500 leading-relaxed">
+                    {app.description}
+                  </p>
+                </div>
               </div>
-              
-              <div className="relative z-10">
-                <h3 className="text-[18px] font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">
-                  {app.title}
-                </h3>
-                <p className="text-[14px] text-slate-500 leading-relaxed">
-                  {app.description}
-                </p>
-              </div>
-            </div>
-          </Link>
-        </motion.div>
-      ))}
+            </Link>
+          </motion.div>
+        );
+      })}
     </motion.div>
   );
 }
