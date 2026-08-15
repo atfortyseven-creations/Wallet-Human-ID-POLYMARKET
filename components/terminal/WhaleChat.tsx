@@ -10,7 +10,7 @@ import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { useSignMessage, useReconnect } from 'wagmi';
 import { sendViaOnion, registerAsRelay } from '@/lib/onion/OnionRouter';
 import { useAppKit } from '@reown/appkit/react';
-import { getXMTPClient, canReceiveMessages, sendMessage, getMessages, destroyXMTPClient, nsToDate, discoverNewPeers, streamMessages, resolveSenderAddress, extractPeerAddress } from '@/lib/xmtp/client';
+import { getXMTPClient, canReceiveMessages, sendMessage, getMessages, destroyXMTPClient, nsToDate, discoverNewPeers, streamMessages, resolveSenderAddress, extractPeerAddress, revokeXMTPInstallations } from '@/lib/xmtp/client';
 import { QrScanner } from '@/components/terminal/QrScanner';
 import { TuringShieldGate } from '@/components/auth/TuringShieldGate';
 import type { Client } from '@xmtp/browser-sdk';
@@ -2003,44 +2003,45 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     setInitError('');
 
     let attempts = 0;
-    const maxAttempts = 3;
+    const maxAttempts = 4; // Extra attempt for post-revocation retry
+
+    // [XMTP-FIX] Define wagmiSigner OUTSIDE the try-block so the catch handler
+    // can access it when triggering automatic installation revocation.
+    const wagmiSigner = {
+      getAddress: async () => address as string,
+      signMessage: async (msg: string | Uint8Array) => {
+        if (isLocalSystemWallet) {
+            const wallet = await useWalletStore.getState().getConnectedWallet();
+            if (wallet) {
+                return await wallet.signMessage(msg);
+            }
+        }
+        try {
+          let finalMsg = msg;
+          if (typeof msg !== 'string') {
+              const hex = Array.from(msg as Uint8Array).map((b: number) => b.toString(16).padStart(2, '0')).join('');
+              finalMsg = ('0x' + hex) as any;
+          }
+          return await signMessageAsync({ message: finalMsg as any });
+        } catch (sigErr: any) {
+          const msg = sigErr?.message || '';
+          if (msg.includes('connector') || msg.includes('not connected') || msg.includes('No connector') || msg.includes('signMessage')) {
+              const hasVault = typeof window !== 'undefined' && !!localStorage.getItem('system_vault');
+              if (isSystemHandshake && !hasVault) {
+                console.warn('[WhaleChat:Mobile] Signature requested on linked session without Vault.');
+              }
+              throw new Error('No active wallet connection detected. Please ensure your wallet app is open and connected to this terminal.');
+          }
+          throw sigErr;
+        }
+      }
+    };
 
     while (attempts < maxAttempts) {
       try {
         if (attempts > 0) await new Promise(resolve => setTimeout(resolve, 2000 * Math.pow(1.5, attempts)));
 
-        //  Step 1: Use standard wagmi signer 
-        // XMTP SDK automatically caches keys in IndexedDB, so returning users are not prompted.
-        
-        const wagmiSigner = {
-          getAddress: async () => address as string,
-          signMessage: async (msg: string | Uint8Array) => {
-            if (isLocalSystemWallet) {
-                const wallet = await useWalletStore.getState().getConnectedWallet();
-                if (wallet) {
-                    return await wallet.signMessage(msg);
-                }
-            }
-            try {
-              let finalMsg = msg;
-              if (typeof msg !== 'string') {
-                  const hex = Array.from(msg as Uint8Array).map((b: number) => b.toString(16).padStart(2, '0')).join('');
-                  finalMsg = ('0x' + hex) as any;
-              }
-              return await signMessageAsync({ message: finalMsg as any });
-            } catch (sigErr: any) {
-              const msg = sigErr?.message || '';
-              if (msg.includes('connector') || msg.includes('not connected') || msg.includes('No connector') || msg.includes('signMessage')) {
-                  const hasVault = typeof window !== 'undefined' && !!localStorage.getItem('system_vault');
-                  if (isSystemHandshake && !hasVault) {
-                    console.warn('[WhaleChat:Mobile] Signature requested on linked session without Vault.');
-                  }
-                  throw new Error('No active wallet connection detected. Please ensure your wallet app is open and connected to this terminal.');
-              }
-              throw sigErr;
-            }
-          }
-        };
+        //  Step 1: Use standard wagmi signer (defined above, outside try)
 
         //  Step 2: Initialize client (Direct Execution) 
         const realClient = await getXMTPClient(wagmiSigner);
@@ -2126,9 +2127,25 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           return;
         }
 
-        if (attempts >= maxAttempts) {
+        if (attempts >= maxAttempts || errorMsg.includes('XMTP_LIMIT_REACHED')) {
           console.error('[WhaleChat] Init Error:', err);
-          if (err?.name === 'ChunkLoadError' || errorMsg.includes('Loading chunk')) {
+          
+          if (errorMsg.includes('XMTP_LIMIT_REACHED')) {
+            const parts = errorMsg.split(':');
+            const inboxId = parts.length > 1 ? parts[1] : null;
+            if (inboxId && attempts < maxAttempts) {
+               try {
+                  console.log('Attempting automatic revocation of previous XMTP installations for', inboxId);
+                  await revokeXMTPInstallations(wagmiSigner, inboxId);
+                  continue; // Retry initialization
+               } catch (revokeErr) {
+                  console.error('Revocation failed', revokeErr);
+                  setInitError('Maximum device limit reached (10/10). Automatic revocation failed.');
+               }
+            } else {
+               setInitError('Maximum device limit reached (10/10). Please clear cache or disconnect old devices.');
+            }
+          } else if (err?.name === 'ChunkLoadError' || errorMsg.includes('Loading chunk')) {
             setInitError('Humanity Ledger module failed to load. Please check your network connection and reload the terminal.');
           } else if (errorMsg.includes('No active wallet') || errorMsg.includes('connector') || errorMsg.includes('signMessage') || errorMsg.toLowerCase().includes('unknown signer')) {
             if (isSystemHandshake) {
@@ -3178,7 +3195,32 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 {initError}
               </div>
               
-              {(initError.includes('wallet connection lost') || initError.includes('Connect your wallet') || initError.toLowerCase().includes('unknown signer')) ? (
+              {(initError.toLowerCase().includes('limit') || initError.toLowerCase().includes('10/10')) ? (
+                <div className="flex flex-col gap-3 w-full">
+                  <button 
+                    onClick={() => {
+                      // Clear all XMTP-related IndexedDB and localStorage keys so a fresh installation can be created
+                      try {
+                        const keys = Object.keys(localStorage).filter(k => k.startsWith('xmtp') || k.startsWith('whale_xmtp') || k.includes('xmtp'));
+                        keys.forEach(k => localStorage.removeItem(k));
+                        // Delete XMTP IndexedDB databases
+                        if (typeof indexedDB !== 'undefined') {
+                          const dbNames = ['xmtp', 'xmtp-v2', 'xmtp-prod', 'xmtp-dev'];
+                          dbNames.forEach(name => { try { indexedDB.deleteDatabase(name); } catch(e) {} });
+                        }
+                      } catch(e) { console.warn('Cache clear partial', e); }
+                      setInitError('');
+                      setTimeout(() => initClient(), 500);
+                    }} 
+                    className="w-full h-[56px] bg-black text-white rounded-2xl font-bold tracking-wide active:scale-[0.98] transition-all"
+                  >
+                    Clear Cache &amp; Retry
+                  </button>
+                  <button onClick={() => { setInitError(''); initClient(); }} className="w-full h-[56px] bg-white border border-[#EBEBEB] text-black rounded-2xl font-bold tracking-wide active:scale-[0.98] transition-all">
+                    Retry Without Clearing
+                  </button>
+                </div>
+              ) : (initError.includes('wallet connection lost') || initError.includes('Connect your wallet') || initError.toLowerCase().includes('unknown signer')) ? (
                 <div className="flex flex-col gap-3 w-full">
                   <button onClick={() => openAppKit()} className="w-full h-[56px] bg-black text-white rounded-2xl font-bold tracking-wide active:scale-[0.98] transition-all">
                     Reconnect Wallet
@@ -3193,6 +3235,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 </button>
               )}
             </div>
+
           ) : !isInitializing ? (
             <div className="flex flex-col gap-4 w-full">
               <button
@@ -4870,17 +4913,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       </div>
 
       {/* Fase 13: WebRTC Pre-Prompt — shown before getUserMedia is called */}
-      <MediaPermissionsPrePrompt
-        pendingCallType={pendingCallType}
-        setPendingCallType={setPendingCallType}
-        onGrant={(type) => {
-          vault.setItem('whale_media_perm', 'true');
-          setHasMediaPermission(true);
-          setPendingCallType(null);
-          if (type === 'audio' || type === 'video') startCall(type);
-          else if (type === 'answer') answerCall();
-        }}
-      />
+      {pendingCallType && isMounted && typeof document !== 'undefined'
+        ? createPortal(
+            <MediaPermissionsPrePrompt
+              pendingCallType={pendingCallType}
+              setPendingCallType={setPendingCallType}
+              onGrant={(type) => {
+                vault.setItem('whale_media_perm', 'true');
+                setHasMediaPermission(true);
+                setPendingCallType(null);
+                if (type === 'audio' || type === 'video') startCall(type);
+                else if (type === 'answer') answerCall();
+              }}
+            />,
+            document.body
+          )
+        : null}
     </TuringShieldGate>
   );
 }

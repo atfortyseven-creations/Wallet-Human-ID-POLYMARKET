@@ -11,33 +11,30 @@ interface MediaPermissionsPrePromptProps {
 export function MediaPermissionsPrePrompt({ pendingCallType, setPendingCallType, onGrant }: MediaPermissionsPrePromptProps) {
     if (!pendingCallType) return null;
     return (
-        <div className="fixed inset-0 z-[600] bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-black">
-            <div className="max-w-md w-full bg-white p-8 rounded-3xl shadow-xl">
-                <div className="flex gap-4 mb-6 text-indigo-600 justify-center">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-black" style={{ zIndex: 999999 }}>
+            <div className="max-w-md w-full bg-white p-8 border border-black shadow-2xl flex flex-col items-center">
+                <div className="flex gap-4 mb-6 text-black justify-center">
                     <Camera size={32} />
                     <Mic size={32} />
                 </div>
-                <h2 className="text-2xl font-black text-center mb-4">Camera &amp; Microphone Access</h2>
-                <p className="text-sm text-gray-600 text-center mb-8">
-                    WhaleChat needs access to your camera and microphone to enable peer-to-peer encrypted {pendingCallType === 'video' ? 'video' : 'audio'} calls. Your media stream is never stored or sent to our servers — it goes directly to your peer.
+                <h2 className="text-2xl font-black text-center mb-4 uppercase tracking-tighter">Hardware Access</h2>
+                <p className="text-[11px] font-mono uppercase tracking-widest text-black/60 text-center mb-8 leading-relaxed">
+                    WhaleChat requires camera and microphone permissions for peer-to-peer encrypted {pendingCallType === 'video' ? 'video' : 'audio'} tunneling. No media traverses our servers.
                 </p>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 w-full">
                     <button
                         onClick={() => onGrant(pendingCallType)}
-                        className="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors"
+                        className="w-full py-4 bg-black text-white font-mono font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-white hover:text-black border border-black transition-colors"
                     >
-                        Allow Access &amp; Continue
+                        Allow &amp; Initialize
                     </button>
                     <button
                         onClick={() => setPendingCallType(null)}
-                        className="w-full py-3 bg-transparent text-gray-500 font-bold rounded-xl hover:bg-gray-100 transition-colors"
+                        className="w-full py-4 bg-transparent text-black/50 font-mono font-bold text-[11px] uppercase tracking-[0.2em] hover:text-black transition-colors"
                     >
-                        Not Now
+                        Abort
                     </button>
                 </div>
-                <p className="text-xs text-gray-400 text-center mt-4">
-                    You can revoke this permission at any time in your browser settings.
-                </p>
             </div>
         </div>
     );
