@@ -250,11 +250,11 @@ export async function POST(req: NextRequest) {
             throw new Error('MAX_SUPPLY_REACHED');
         }
 
-        //  Ensure User row exists 
+        //  Ensure User row exists and mark as ZK verified 
         const user = await (prisma as any).user.upsert({
             where: { walletAddress: address },
-            update: {},
-            create: { walletAddress: address }
+            update: { isZkVerified: true },
+            create: { walletAddress: address, isZkVerified: true }
         });
 
         // ── Identity Claim — Free Mint (ECDSA or Session verified) ───────────

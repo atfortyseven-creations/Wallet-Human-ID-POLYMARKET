@@ -3,8 +3,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useSystemAccount } from '@/hooks/useSystemAccount';
-import { toast } from 'sonner';
 
 const APPS = [
   {
@@ -153,17 +151,6 @@ const item: any = {
 };
 
 export function AppLauncherHub() {
-  const { isZkVerified } = useSystemAccount();
-
-  const handleAppClick = (e: React.MouseEvent, app: any) => {
-    if (app.id !== 'identity' && !isZkVerified) {
-      e.preventDefault();
-      toast.error('Beta Access Restricted', {
-        description: 'You must claim your Sovereign Identity (Golden Ticket) to unlock the Hub applications.'
-      });
-    }
-  };
-
   return (
     <motion.div
       variants={container}
@@ -171,61 +158,34 @@ export function AppLauncherHub() {
       animate="show"
       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5"
     >
-      {APPS.map((app) => {
-        const isLocked = app.id !== 'identity' && !isZkVerified;
+      {APPS.map((app) => (
+        <motion.div key={app.id} variants={item}>
+          <Link href={app.href} className="block h-full group">
+            <div className="bg-white border border-slate-200/80 rounded-[20px] p-5 md:p-6 h-full transition-all duration-300 hover:shadow-lg hover:shadow-slate-200/60 hover:border-slate-300 relative overflow-hidden cursor-pointer">
+              {/* Subtle corner gradient */}
+              <div className="absolute top-0 right-0 w-28 h-28 bg-gradient-to-bl from-slate-50/80 to-transparent rounded-bl-[80px] -z-0 opacity-50 group-hover:opacity-100 transition-opacity" />
 
-        return (
-          <motion.div key={app.id} variants={item}>
-            <Link 
-              href={app.href} 
-              className={`block h-full group ${isLocked ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-              onClick={(e) => handleAppClick(e, app)}
-            >
-              <div className={`bg-white border border-slate-200/80 rounded-[20px] p-5 md:p-6 h-full transition-all duration-300 relative overflow-hidden ${
-                isLocked 
-                  ? 'opacity-60 grayscale hover:opacity-80' 
-                  : 'hover:shadow-lg hover:shadow-slate-200/60 hover:border-slate-300'
-              }`}>
-                
-                {/* Subtle corner gradient (Only if unlocked) */}
-                {!isLocked && (
-                  <div className="absolute top-0 right-0 w-28 h-28 bg-gradient-to-bl from-slate-50/80 to-transparent rounded-bl-[80px] -z-0 opacity-50 group-hover:opacity-100 transition-opacity" />
-                )}
-
-                {/* Locked overlay Icon */}
-                {isLocked && (
-                  <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none bg-white/30 backdrop-blur-[1px]">
-                    <div className="w-12 h-12 bg-black/80 rounded-2xl flex items-center justify-center text-white shadow-xl rotate-12 group-hover:rotate-0 transition-transform">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                      </svg>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex items-start justify-between mb-4 relative z-10">
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center border ${app.color} flex-shrink-0`}>
-                    {app.icon}
-                  </div>
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100 flex-shrink-0">
-                    {app.tag}
-                  </span>
+              <div className="flex items-start justify-between mb-4 relative z-10">
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center border ${app.color} flex-shrink-0`}>
+                  {app.icon}
                 </div>
-
-                <div className="relative z-10">
-                  <h3 className={`text-[16px] md:text-[17px] font-bold text-slate-900 mb-1.5 leading-snug ${isLocked ? '' : 'group-hover:text-indigo-600 transition-colors'}`}>
-                    {app.title}
-                  </h3>
-                  <p className="text-[13px] text-slate-500 leading-relaxed">
-                    {app.description}
-                  </p>
-                </div>
+                <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100 flex-shrink-0">
+                  {app.tag}
+                </span>
               </div>
-            </Link>
-          </motion.div>
-        );
-      })}
+
+              <div className="relative z-10">
+                <h3 className="text-[16px] md:text-[17px] font-bold text-slate-900 mb-1.5 group-hover:text-indigo-600 transition-colors leading-snug">
+                  {app.title}
+                </h3>
+                <p className="text-[13px] text-slate-500 leading-relaxed">
+                  {app.description}
+                </p>
+              </div>
+            </div>
+          </Link>
+        </motion.div>
+      ))}
     </motion.div>
   );
 }
