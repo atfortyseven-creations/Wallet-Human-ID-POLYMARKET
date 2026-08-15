@@ -12,7 +12,7 @@ import { ClientLayout } from "@/components/layout/ClientLayout";
 import { Toaster } from 'sonner'
 import { CookieProvider } from "@/components/privacy/CookieContext";
 // [PHASE 5] CookieConsent is now the Zero-Data Privacy Notice (not an analytics banner)
-import { CookieConsent } from "@/components/privacy/CookieConsent";
+// CookieConsent import removed per user request
 import { ErrorSuppressor } from "@/components/ui/ErrorSuppressor";
 import { ReactNode } from "react";
 import { MobileEnforcer } from '@/components/layout/MobileEnforcer';
@@ -348,8 +348,7 @@ export default async function RootLayout({
                       <AntiTamperCore />
                       {children}
                       <Toaster richColors position="top-right" />
-                      {/* [PHASE 5] Zero-Data Privacy Notice — NOT an analytics consent banner */}
-                      <CookieConsent />
+                      {/* Cookie banner completely eradicated per user request */}
                       <ClientOverlays />
                       <WalletConnectProvider />
                     </CookieProvider>

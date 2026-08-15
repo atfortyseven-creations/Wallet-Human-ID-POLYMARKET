@@ -26,9 +26,6 @@ import {
   ScanLine,
   Lock,
   Shield,
-  CheckCircle,
-  MessageSquare,
-  Briefcase,
   QrCode,
 } from "lucide-react";
 
@@ -66,32 +63,34 @@ function WalletButton({ logo, name, badge, onClick, loading = false, delay = 0, 
 }) {
   return (
     <motion.button
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ delay, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       onClick={loading ? undefined : onClick}
       disabled={loading}
-      className="group relative w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 bg-white border border-[#E8E8E8] shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:border-[#D0D0D0] disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+      className="group relative w-full flex items-center justify-between py-4 transition-all duration-500 hover:px-2 border-b border-black/10 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
     >
-      <div className="absolute inset-0 bg-[#FFFFFF] translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-[0.16,1,0.3,1] z-0" />
-      <div className="relative z-10 w-10 h-10 rounded-lg bg-white border border-[#E8E8E8] flex items-center justify-center p-2 shrink-0">
-        <img src={logo} alt={name} className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+      <div className="absolute inset-0 bg-black translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-[0.16,1,0.3,1] z-0" />
+      <div className="relative z-10 flex items-center gap-4 w-full">
+        <div className="w-8 h-8 flex items-center justify-center grayscale group-hover:grayscale-0 group-hover:brightness-200 transition-all duration-500 shrink-0">
+          <img src={logo} alt={name} className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+        </div>
+        <div className="flex-1 text-left min-w-0 flex flex-col">
+          <span className="text-[14px] sm:text-[18px] font-serif font-medium tracking-tight text-black group-hover:text-white transition-colors duration-500 truncate">
+            {loading ? "CONNECTING..." : name}
+          </span>
+          <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/40 group-hover:text-white/60 transition-colors duration-500 truncate mt-0.5">
+            {badge}
+          </span>
+        </div>
       </div>
-      <div className="relative z-10 flex-1 text-left min-w-0">
-        <p className="text-[12px] font-black uppercase tracking-widest text-[#0A0A0A] truncate">
-          {loading ? "Connecting..." : name}
-        </p>
-        <p className="text-[10px] font-mono text-black/40 uppercase tracking-[0.2em] mt-0.5 truncate">
-          {badge}
-        </p>
-      </div>
-      <div className="relative z-10 shrink-0">
+      <div className="relative z-10 shrink-0 ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
         {loading ? (
-          <Loader2 size={16} className="animate-spin text-[#999]" />
+          <Loader2 size={16} className="animate-spin text-white" />
         ) : extraIcon ? (
-          <span className="text-[#CCC] group-hover:text-[#0A0A0A] transition-colors">{extraIcon}</span>
+          <span className="text-white">{extraIcon}</span>
         ) : (
-          <ArrowRight size={16} className="text-[#CCC] group-hover:text-[#0A0A0A] group-hover:translate-x-0.5 transition-all duration-300" />
+          <ArrowRight size={18} className="text-white transform -translate-x-4 group-hover:translate-x-0 transition-all duration-500" />
         )}
       </div>
     </motion.button>
@@ -119,7 +118,18 @@ export default function ConnectPage() {
   const [pinCode, setPinCode] = useState<string | null>(null);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const redirectingRef = useRef(false);
+
+  useEffect(() => {
+    const updateMousePosition = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('mousemove', updateMousePosition);
+      return () => window.removeEventListener('mousemove', updateMousePosition);
+    }
+  }, []);
 
   let isGuarded = false;
   try {
@@ -578,17 +588,17 @@ export default function ConnectPage() {
 
   // ── RIGHT PANEL (Auth) ──
   const renderLoginCard = () => (
-    <div className="w-full lg:w-[420px] flex-shrink-0 flex flex-col bg-white/95 backdrop-blur-2xl rounded-3xl border border-white shadow-[0_20px_60px_rgba(0,0,0,0.15)] overflow-hidden relative">
+    <div className="w-full flex-shrink-0 flex flex-col relative bg-transparent">
       
-      <div className="px-8 pt-8 pb-5 border-b border-slate-100 flex items-center gap-3 relative z-10">
-        <Lock size={16} strokeWidth={2} className="text-blue-500" />
-        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-slate-400 font-bold flex-1">Secure Entry</span>
-        <Link href="/terminal" className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 border border-slate-200 text-slate-600 font-black rounded-lg text-[9px] uppercase tracking-widest hover:bg-slate-200 hover:text-slate-800 transition-all active:scale-95 shadow-sm">
-          <QrCode size={12} />Studio
+      <div className="pb-6 border-b border-black/10 flex items-center gap-3 relative z-10">
+        <div className="w-1.5 h-1.5 bg-black" />
+        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-black font-bold flex-1">Secure Entry</span>
+        <Link href="/terminal" className="flex items-center gap-1.5 px-3 py-1.5 border border-black text-black font-mono font-bold text-[9px] uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-colors duration-300">
+          <QrCode size={12} /> Studio
         </Link>
       </div>
 
-      <div className="w-full flex flex-col flex-1 p-8 relative z-10">
+      <div className="w-full flex flex-col flex-1 pt-8 relative z-10">
         {mounted && !isVerified && (
           <div className="flex items-center justify-center gap-2 mb-6">
             {isMobile ? <Smartphone size={12} className="text-slate-400" /> : <Monitor size={12} className="text-slate-400" />}
@@ -604,42 +614,42 @@ export default function ConnectPage() {
                 <RemoteLottie path="/system-shots/Transaction Complete.json" loop={false} className="w-full h-full object-contain scale-[1.2]" />
               </div>
             </div>
-            <div className="absolute bottom-4 flex flex-col items-center w-full px-6 gap-3">
+            <div className="absolute bottom-0 flex flex-col items-center w-full gap-3 pt-6 border-t border-black/10">
               {isMobile && (
-                <button onClick={() => setShowMobileScanner(true)} className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl border border-blue-200 bg-blue-50 text-blue-600 font-black uppercase tracking-[0.2em] text-[10px] active:scale-[0.98] transition-all hover:bg-blue-100 hover:border-blue-300 shadow-sm">
+                <button onClick={() => setShowMobileScanner(true)} className="w-full flex items-center justify-center gap-3 py-4 border border-black bg-black text-white font-mono font-bold uppercase tracking-[0.2em] text-[10px] active:scale-[0.98] transition-all hover:bg-white hover:text-black">
                   <ScanLine size={13} /> Link to PC
                 </button>
               )}
-              <button onClick={handleTotalDisconnect} className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-rose-500/30 text-[9px] font-black uppercase tracking-[0.2em] bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all active:scale-[0.98] ${isMobile ? 'w-full py-3.5' : ''}`}>
+              <button onClick={handleTotalDisconnect} className={`flex items-center justify-center gap-2 px-5 py-3 border border-black/20 text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-black hover:bg-black hover:text-white transition-all active:scale-[0.98] ${isMobile ? 'w-full' : ''}`}>
                 Total Disconnect
               </button>
             </div>
           </motion.div>
         ) : effectiveIsConnected && !isLinked ? (
           /* STATE: Connected but awaiting signature */
-          <div className="flex flex-col items-center justify-center gap-5 flex-1 py-4 text-center">
-            <div className="w-16 h-16 bg-blue-50 border border-blue-100 rounded-full flex items-center justify-center text-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.1)]">
-              <Lock size={20} strokeWidth={2} />
+          <div className="flex flex-col items-center justify-center gap-6 flex-1 py-4 text-center">
+            <div className="w-16 h-16 border border-black flex items-center justify-center text-black">
+              <Lock size={20} strokeWidth={1.5} />
             </div>
             <div>
-              <h2 className="text-[18px] font-black tracking-tight text-slate-900 mb-2">Signature Required</h2>
-              <p className="text-[11px] text-slate-500 font-medium leading-relaxed max-w-[230px] mx-auto">Please check your browser extension or mobile app to sign the request.</p>
+              <h2 className="text-[24px] font-serif font-black tracking-tight text-black mb-2 uppercase">Signature Required</h2>
+              <p className="text-[10px] text-black/60 font-mono uppercase tracking-[0.1em] leading-relaxed max-w-[260px] mx-auto">Please check your wallet to sign the deterministic request.</p>
             </div>
             {authStatus === 'failed' ? (
-              <div className="flex flex-col gap-3 w-full mt-4">
-                <button onClick={() => { triggerManualVerify(); }} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-blue-600 text-white font-mono text-[10px] font-black uppercase tracking-[0.2em] hover:bg-blue-500 transition-all shadow-md active:scale-[0.98]">
+              <div className="flex flex-col gap-3 w-full mt-4 pt-6 border-t border-black/10">
+                <button onClick={() => { triggerManualVerify(); }} className="w-full flex items-center justify-center gap-2 py-4 border border-black bg-black text-white font-mono text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-colors">
                   <ExternalLink size={13} /> Retry Signature
                 </button>
-                <button onClick={handleTotalDisconnect} className="w-full py-2.5 rounded-xl bg-slate-100 border border-slate-200 text-rose-500 hover:bg-slate-200 font-mono text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-[0.98]">Disconnect</button>
+                <button onClick={handleTotalDisconnect} className="w-full py-4 border border-black/20 text-black hover:bg-black hover:text-white font-mono text-[10px] font-bold uppercase tracking-[0.2em] transition-colors">Disconnect</button>
               </div>
             ) : (
-              <div className="flex flex-col gap-3 w-full mt-4">
-                <div className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-400 font-mono text-[10px] font-black uppercase tracking-[0.2em] cursor-not-allowed">
+              <div className="flex flex-col gap-3 w-full mt-4 pt-6 border-t border-black/10">
+                <div className="w-full flex items-center justify-center gap-2 py-4 border border-black/10 bg-black/5 text-black/40 font-mono text-[10px] font-bold uppercase tracking-[0.2em] cursor-not-allowed">
                   <ExternalLink size={13} /> Check Wallet App
                 </div>
-                <div className="flex items-center justify-center gap-2">
-                  <Loader2 size={11} className="animate-spin text-blue-500" />
-                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-blue-500 font-bold animate-pulse">Awaiting signature...</span>
+                <div className="flex items-center justify-center gap-2 mt-2">
+                  <div className="w-1.5 h-1.5 bg-black animate-pulse" />
+                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black font-bold animate-pulse">Awaiting signature...</span>
                 </div>
               </div>
             )}
@@ -647,21 +657,21 @@ export default function ConnectPage() {
         ) : !mounted ? (
           /* STATE: Loading skeleton */
           <div className="flex flex-col gap-4 flex-1">
-            {[0, 1].map((i) => <div key={i} className="w-full h-[65px] rounded-xl bg-slate-100 border border-slate-200 animate-pulse" />)}
+            {[0, 1].map((i) => <div key={i} className="w-full h-[60px] border border-black/10 bg-black/[0.02] animate-pulse" />)}
           </div>
         ) : isMobile ? (
           /* STATE: Mobile — wallet list */
           <div className="flex flex-col gap-3 flex-1">
             {renderWeb2Logins()}
-            <div className="h-px w-full bg-slate-100 my-2 relative"><div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-200 to-transparent" /></div>
+            <div className="h-px w-full bg-black/10 my-4" />
             <WalletButton
               logo="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Logo/Blue%20(Default)/Logo.svg"
-              name="Connect Web3 Wallet"
+              name="Web3 Wallet"
               badge="Select from 300+ wallets"
               onClick={() => openAppKitSafe()}
               delay={0.35}
             />
-            <button onClick={() => setShowMobileScanner(true)} className="w-full flex items-center justify-center gap-3 py-4 mt-2 rounded-xl border border-slate-200 bg-slate-50 font-black uppercase tracking-[0.2em] text-[10px] text-slate-700 active:scale-[0.98] transition-all hover:bg-slate-100 hover:border-slate-300">
+            <button onClick={() => setShowMobileScanner(true)} className="w-full flex items-center justify-center gap-3 py-4 mt-4 border border-black text-black font-mono font-bold uppercase tracking-[0.2em] text-[10px] active:bg-black active:text-white transition-colors">
               <ScanLine size={13} /> Scan QR Code
             </button>
           </div>
@@ -669,23 +679,22 @@ export default function ConnectPage() {
           /* STATE: Desktop — QR + wallet list */
           <div className="flex flex-col gap-3 flex-1 w-full">
             {syncStatus === "AWAITING" && qrData ? (
-              <motion.div key="qr-ready" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} className="flex justify-center mb-4">
-                <div className="p-6 bg-white border border-slate-200 rounded-2xl flex flex-col items-center gap-4 shadow-xl w-full">
-                  <span className="text-[20px] font-black tracking-tight text-slate-900">Connect</span>
-                  <div className="p-3 bg-white rounded-xl shadow-sm border border-slate-100">
-                    <QRCodeSVG value={qrData} size={180} fgColor="#0F172A" bgColor="#FFFFFF" level="M" includeMargin={false} />
+              <motion.div key="qr-ready" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} className="flex justify-center mb-8">
+                <div className="pb-6 border-b border-black/10 flex flex-col items-center gap-6 w-full">
+                  <div className="p-4 bg-white border border-black">
+                    <QRCodeSVG value={qrData} size={220} fgColor="#000000" bgColor="#FFFFFF" level="L" includeMargin={false} />
                   </div>
-                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-slate-500 font-bold">Scan with Mobile App</span>
+                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-black font-bold">Scan via Humanity Protocol</span>
                   {pinCode && (
-                    <div className="w-full rounded-xl overflow-hidden border border-slate-200 shadow-sm">
-                      <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 border-b border-slate-100">
-                        <Shield size={11} className="text-blue-500" />
-                        <span className="text-[8px] font-black uppercase tracking-[0.25em] text-blue-500">Visual Security PIN</span>
+                    <div className="w-full border-t border-black/10 pt-6 mt-2">
+                      <div className="flex items-center justify-center mb-4 gap-2">
+                        <Shield size={12} className="text-black" />
+                        <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black">Visual PIN</span>
                       </div>
-                      <div className="flex items-center justify-center gap-2 py-3 px-3 bg-white">
+                      <div className="flex items-center justify-center gap-4">
                         {pinCode.split('').map((digit, idx) => (
-                          <motion.div key={idx} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.07, duration: 0.3 }} className="w-10 h-11 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center shadow-inner">
-                            <span className="text-lg font-black text-slate-800 select-none">{digit}</span>
+                          <motion.div key={idx} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.07, duration: 0.3 }} className="w-12 h-14 border border-black flex items-center justify-center bg-transparent">
+                            <span className="text-xl font-serif font-black text-black select-none">{digit}</span>
                           </motion.div>
                         ))}
                       </div>
@@ -694,20 +703,20 @@ export default function ConnectPage() {
                 </div>
               </motion.div>
             ) : syncStatus === "IDLE" || (syncStatus === "AWAITING" && !qrData) ? (
-              <div className="flex justify-center mb-4">
-                <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col items-center gap-3 shadow-inner w-full">
-                  <div className="w-full aspect-square max-w-[180px] rounded-xl bg-white border border-slate-200 animate-pulse flex items-center justify-center shadow-sm">
-                    <Loader2 size={24} className="animate-spin text-blue-500" />
+              <div className="flex justify-center mb-8">
+                <div className="py-8 border-b border-black/10 flex flex-col items-center gap-6 w-full">
+                  <div className="w-full aspect-square max-w-[220px] border border-black/20 flex items-center justify-center bg-transparent">
+                    <Loader2 size={24} className="animate-spin text-black/40" />
                   </div>
-                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-slate-400 font-bold">Securing tunnel...</span>
+                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold animate-pulse">Securing Tunnel...</span>
                 </div>
               </div>
             ) : syncStatus === "ERROR" ? (
-              <div className="flex justify-center mb-4">
-                <div className="p-6 bg-rose-50 rounded-2xl border border-rose-100 flex flex-col items-center gap-3 w-full">
-                  <Shield size={22} className="text-rose-500" />
-                  <p className="text-[10px] font-mono text-rose-600 text-center font-bold uppercase tracking-widest">Connection Failed</p>
-                  <button onClick={() => { setSyncStatus("IDLE"); setQrSession(null); setQrData(''); }} className="px-5 py-2.5 rounded-lg bg-rose-500 text-white text-[9px] font-black uppercase tracking-widest hover:bg-rose-600 transition-colors active:scale-[0.97] mt-1 shadow-md">Retry Link</button>
+              <div className="flex justify-center mb-8">
+                <div className="py-8 border-b border-black/10 flex flex-col items-center gap-4 w-full text-center">
+                  <Shield size={22} className="text-black" />
+                  <p className="text-[10px] font-mono text-black font-bold uppercase tracking-[0.2em]">Connection Failed</p>
+                  <button onClick={() => { setSyncStatus("IDLE"); setQrSession(null); setQrData(''); }} className="px-6 py-3 border border-black bg-black text-white text-[9px] font-mono font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-colors mt-2">Retry Link</button>
                 </div>
               </div>
             ) : null}
@@ -716,7 +725,7 @@ export default function ConnectPage() {
               <WalletButton key={w.id} logo={w.logo} name={w.name} badge={w.badge} onClick={() => handleDesktopWallet(w.id, w.rdns, w.installUrl)} loading={isPending && pendingId === w.id} delay={w.delay} />
             ))}
             
-            <div className="h-px w-full bg-slate-100 my-1 relative"><div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-200 to-transparent" /></div>
+            <div className="h-px w-full bg-black/10 my-4" />
             {renderWeb2Logins()}
           </div>
         )}
@@ -727,75 +736,67 @@ export default function ConnectPage() {
   // ── LEFT PANEL (Branding & Info) ──
   const renderInfoPanel = () => (
     <motion.div
-      initial={{ opacity: 0, x: -14 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-      className="flex flex-col justify-center gap-8 px-4 lg:px-12 text-center lg:text-left z-10 max-w-2xl"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+      className="flex flex-col justify-center h-full w-full z-10 mix-blend-difference text-white"
     >
-      <div className="flex flex-col gap-4 items-center lg:items-start">
-        <div className="flex items-center gap-2 mb-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mx-auto lg:mx-0">
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
-          <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-emerald-600 font-bold">Aztec V5 Testnet Active</span>
-        </div>
-        
-        <div className="bg-white px-8 py-6 rounded-[2rem] shadow-xl w-fit mx-auto lg:mx-0">
-          <h1 className="font-black tracking-tighter uppercase leading-[0.9] text-slate-900" style={{ fontSize: 'clamp(48px, 8vw, 84px)' }}>
-            WHALE
-            <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-600">NETWORK</span>
-          </h1>
-        </div>
-        
-        <div className="flex items-center gap-3 mt-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mx-auto lg:mx-0">
-          <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-slate-500 font-bold">
-            Powered by Aztec Network
-          </span>
-        </div>
+      <div className="flex flex-col gap-0 w-full mb-12">
+        <h1 className="font-serif font-black uppercase leading-[0.85] tracking-tighter" style={{ fontSize: 'clamp(50px, 10vw, 150px)' }}>
+          HUMANITY
+        </h1>
+        <h1 className="font-serif font-black uppercase leading-[0.85] tracking-tighter ml-[5vw] lg:ml-[10vw]" style={{ fontSize: 'clamp(50px, 10vw, 150px)' }}>
+          LEDGER
+        </h1>
       </div>
       
-      <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl shadow-lg max-w-xl mx-auto lg:mx-0">
-        <p className="text-[14px] md:text-[16px] font-medium text-slate-700 leading-relaxed">
-          A private-by-default enclave for verifiable financial intelligence. Every transaction, signal, and identity proof is sealed using Zero Knowledge cryptography before reaching the network.
+      <div className="mt-8 lg:mt-24 max-w-lg">
+        <div className="h-px w-full bg-white/30 mb-8" />
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+          <span className="text-[9px] font-mono uppercase tracking-[0.4em] font-bold">
+            Settled on Aztec Network
+          </span>
+        </div>
+        <p className="text-[11px] lg:text-[13px] font-mono uppercase tracking-[0.1em] leading-[1.8] text-white/70">
+          A purely deterministic enclave for humanity. 
+          Zero-knowledge cryptographic circuits ensure absolute sovereignty.
+          No marketing. No tracking. Pure mathematics.
         </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 max-w-xl mx-auto lg:mx-0">
-        <div className="bg-white border border-slate-100 shadow-lg rounded-2xl p-5 flex flex-col gap-2 backdrop-blur-md">
-          <Shield className="text-blue-500 mb-2" size={20} />
-          <h3 className="text-[12px] font-black uppercase tracking-widest text-slate-900">Absolute Privacy</h3>
-          <p className="text-[11px] text-slate-500 leading-relaxed font-mono">Noir ZK circuits ensure your identity and balances are cryptographically invisible.</p>
-        </div>
-        <div className="bg-white border border-slate-100 shadow-lg rounded-2xl p-5 flex flex-col gap-2 backdrop-blur-md">
-          <MessageSquare className="text-indigo-500 mb-2" size={20} />
-          <h3 className="text-[12px] font-black uppercase tracking-widest text-slate-900">Sovereign Intel</h3>
-          <p className="text-[11px] text-slate-500 leading-relaxed font-mono">End-to-end encrypted signals and peer-to-peer data markets settled on L2.</p>
-        </div>
       </div>
     </motion.div>
   );
 
   if (!mounted) {
     return (
-      <div className="w-full min-h-screen bg-white flex flex-col shrink-0 relative overflow-hidden text-slate-900" />
+      <div className="w-full min-h-screen bg-black" />
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-white flex flex-col shrink-0 relative overflow-hidden text-slate-900">
+    <div className="w-full min-h-screen bg-white flex shrink-0 relative overflow-hidden text-black selection:bg-black selection:text-white cursor-crosshair">
 
-      <div className="w-full relative z-10 flex-1 flex flex-col items-center justify-center max-w-[1280px] mx-auto px-6 py-12 gap-12 min-h-screen">
+      {/* Custom Optical Lens Cursor */}
+      <motion.div 
+         className="pointer-events-none fixed top-0 left-0 w-24 h-24 rounded-full bg-white z-[9999] mix-blend-difference hidden lg:block"
+         animate={{ x: mousePosition.x - 48, y: mousePosition.y - 48 }}
+         transition={{ type: "spring", mass: 0.05, stiffness: 1000, damping: 40 }}
+      />
+
+      <div className="w-full relative z-10 flex flex-col lg:flex-row min-h-screen">
         
-        {/* Branding (Centered) */}
-        <div className="flex justify-center w-full max-w-xl text-center">
+        {/* Left Side: Manifesto Canvas */}
+        <div className="w-full lg:w-[60%] lg:border-r border-black/10 flex flex-col justify-center px-6 py-16 lg:p-20 relative bg-black selection:bg-white selection:text-black">
           {renderInfoPanel()}
         </div>
 
-        {/* Auth (Centered) */}
-        <div className="flex justify-center w-full">
+        {/* Right Side: Naked Auth */}
+        <div className="w-full lg:w-[40%] flex flex-col items-center justify-center px-6 py-12 lg:p-20 relative bg-white">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+            className="w-full max-w-[420px]"
           >
             {renderLoginCard()}
           </motion.div>
@@ -815,6 +816,7 @@ export default function ConnectPage() {
         {/* Global Email Login Modal */}
         <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
       </div>
+
       
       {/* Hidden AppKit button for native mobile dispatch */}
       <div aria-hidden="true" style={{ position: 'absolute', opacity: 0, width: '1px', height: '1px', pointerEvents: 'none', overflow: 'hidden' }}>
