@@ -2525,9 +2525,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         let raw = await getMessages(client, activePeer);
         if (cancelled) return;
         
-        const clearTs = parseInt(localStorage.getItem(`whale_cleared_${address}_${activePeer.toLowerCase()}`) || '0', 10);
-        if (clearTs > 0) {
-          raw = raw.filter((m: any) => m.sentAtNs > clearTs);
+        const clearTsMs = parseInt(localStorage.getItem(`whale_cleared_${address}_${activePeer.toLowerCase()}`) || '0', 10);
+        if (clearTsMs > 0) {
+          const clearTsNs = clearTsMs * 1000000;
+          raw = raw.filter((m: any) => m.sentAtNs > clearTsNs);
         }
         
         // FETCH PENDING MESSAGES (OFFLINE ROUTING)
@@ -4124,7 +4125,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       {/* ── Incoming Call Banner (state: ringing) ───────────────────────────── */}
       {callState === 'ringing' && isMounted && typeof document !== 'undefined'
         ? (createPortal(
-        <div className="fixed inset-0 w-full h-full z-[200000] flex flex-col items-center justify-between bg-white" style={{ touchAction: 'none' }}>
+        <div className="fixed inset-0 w-full h-full flex flex-col items-center justify-between bg-white" style={{ zIndex: 200000, touchAction: 'none' }}>
           {/* Top section */}
           <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
             <p className="text-black/40 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
@@ -4176,7 +4177,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       {/* ── Outgoing Call (state: calling — waiting for answer) ─────────────── */}
       {(callState === 'calling' && isMounted && typeof document !== 'undefined')
         ? (createPortal(
-        <div className="fixed inset-0 w-full h-full z-[200000] flex flex-col items-center justify-between bg-white" style={{ touchAction: 'none' }}>
+        <div className="fixed inset-0 w-full h-full flex flex-col items-center justify-between bg-white" style={{ zIndex: 200000, touchAction: 'none' }}>
           <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
             <p className="text-black/40 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
               {callTypeRef.current === 'video' ? '📹 Video Call' : '🎙️ Voice Call'}
@@ -4242,7 +4243,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           document.body
         ) : (
           /* ── FULL SCREEN VIEW ── */
-          <div className="fixed inset-0 w-full h-full z-[200000] bg-black flex flex-col" style={{ touchAction: 'none' }}>
+          <div className="fixed inset-0 w-full h-full bg-black flex flex-col" style={{ zIndex: 200000, touchAction: 'none' }}>
             
             {/* ── BACKGROUND ── */}
             <div className="absolute inset-0">
@@ -4717,7 +4718,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
        {/* Phase 4: Clear Chat Confirmation Modal */}
        {showClearConfirm && typeof document !== 'undefined' ? createPortal(
-         <div className="fixed inset-0 z-[1000] bg-black/40 backdrop-blur-sm flex items-center justify-center p-6 animate-in fade-in zoom-in duration-200">
+         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-6 animate-in fade-in zoom-in duration-200" style={{ zIndex: 200000 }}>
            <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl flex flex-col items-center text-center">
              <div className="w-16 h-16 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#050505] mb-4">
                <Trash2 size={28} />
