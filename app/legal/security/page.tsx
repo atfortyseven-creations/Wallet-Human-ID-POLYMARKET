@@ -16,7 +16,7 @@ export default function LegalPage() {
     <LegalDocLayout
       title="Security Architecture"
       subtitle="This policy sets forth the legal and attestation rules governing the Humanity Ledger ecosystem."
-      lastUpdated="July 2026"
+      lastUpdated="16 August 2026"
       category="Legal & Security"
       toc={TOC}
       backHref="/"
@@ -31,8 +31,16 @@ export default function LegalPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              <strong className="text-black font-semibold">Version:</strong> 1.0 | <strong className="text-black font-semibold">Date:</strong> 14 August 2026 | <strong className="text-black font-semibold">Classification:</strong> Confidential / Internal Use Only
+              <strong className="text-black font-semibold">Version:</strong> 1.1 | <strong className="text-black font-semibold">Date:</strong> 16 August 2026 | <strong className="text-black font-semibold">Classification:</strong> Confidential / Internal Use Only
             </p>
+            
+            {/* 2027 COMPLIANCE CLAUSE */}
+            <div className="p-6 bg-[#f5f5f7] text-[#050505] font-sans text-sm border border-black/10 rounded-xl mt-4">
+              <p className="font-bold uppercase tracking-widest mb-2">V2 Regulatory Readiness</p>
+              <p>
+                This document includes forward-looking compliance measures and is fully effective and binding through January 1, 2027 and onwards, preparing the Humanity Ledger ecosystem for V2 regulatory requirements.
+              </p>
+            </div>
           </div>
         </section>
 

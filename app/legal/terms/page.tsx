@@ -26,7 +26,7 @@ export default function LegalPage() {
     <LegalDocLayout
       title="Terms of Service"
       subtitle="This policy sets forth the legal and attestation rules governing the Humanity Ledger ecosystem."
-      lastUpdated="14 August 2026"
+      lastUpdated="16 August 2026"
       category="Legal"
       toc={TOC}
       backHref="/"
@@ -42,10 +42,18 @@ export default function LegalPage() {
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">Humanity Ledger S.L.</h3>
             <p>
-              <strong className="text-black font-semibold">Version:</strong> 2.1 (English) | <strong className="text-black font-semibold">Date:</strong> 14 August 2026 | <strong className="text-black font-semibold">Entry into Force:</strong> Upon publication on the website
+              <strong className="text-black font-semibold">Version:</strong> 2.2 (English) | <strong className="text-black font-semibold">Date:</strong> 16 August 2026 | <strong className="text-black font-semibold">Entry into Force:</strong> Upon publication on the website
             </p>
             <div className="bg-black/5 p-4 rounded-lg font-medium border-l-4 border-black">
               <strong>MANDATORY LEGAL WARNING (MiCA Art. 6):</strong> The acquisition of the $QDs token entails significant financial risks. It is possible to lose the entirety of the capital invested. The $QDs token is not covered by deposit guarantee schemes established pursuant to Directive 2014/49/EU. The $QDs token is not covered by investor compensation schemes established pursuant to Directive 97/9/EC. This crypto asset has not been verified or approved by the Comisión Nacional del Mercado de Valores (CNMV) or any other competent authority of a Member State of the European Union. Please read this document and the Whitepaper in full before making any acquisition decision.
+            </div>
+            
+            {/* 2027 COMPLIANCE CLAUSE */}
+            <div className="p-6 bg-[#f5f5f7] text-[#050505] font-sans text-sm border border-black/10 rounded-xl mt-4">
+              <p className="font-bold uppercase tracking-widest mb-2">V2 Regulatory Readiness</p>
+              <p>
+                This document includes forward-looking compliance measures and is fully effective and binding through January 1, 2027 and onwards, preparing the Humanity Ledger ecosystem for V2 regulatory requirements.
+              </p>
             </div>
           </div>
         </section>

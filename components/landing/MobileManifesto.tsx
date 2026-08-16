@@ -33,19 +33,19 @@ export function MobileManifesto() {
   }, []);
 
   return (
-    <div className="relative bg-[#F9F8F6] text-[#0A0A0A] font-sans antialiased overflow-x-hidden min-h-[100vh] selection:bg-black/10 flex flex-col w-full">
+    <div className="relative bg-[#F9F8F6] text-[#0A0A0A] font-sans antialiased overflow-x-hidden min-h-[100dvh] selection:bg-black/10 flex flex-col w-full">
 
       {/* 
-          1. HERO ÔÇö iOS/Android safe-area aware
+          1. HERO — iOS/Android safe-area aware
           Uses env(safe-area-inset-top) for notch/dynamic island devices.
-          min-h uses 100vh (dynamic viewport height) so Chrome mobile
-          toolbar collapse doesn't cause clipping.
+          min-h uses 100dvh (dynamic viewport height) so Chrome mobile
+          navbars do not cut off content at the bottom.
        */}
       <section
         className="px-6 pb-16 border-b border-[#EBEBEB] bg-[#F9F8F6] relative overflow-hidden flex flex-col justify-center"
         style={{
           paddingTop: "max(5rem, calc(env(safe-area-inset-top, 0px) + 5rem))",
-          minHeight: "100vh",
+          minHeight: "100dvh",
           paddingBottom: "max(4rem, calc(env(safe-area-inset-bottom, 0px) + 4rem))"
         }}
       >
@@ -239,4 +239,3 @@ export function MobileManifesto() {
     </div>
   );
 }
-

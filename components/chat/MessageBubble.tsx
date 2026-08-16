@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { motion, useAnimation, PanInfo } from 'framer-motion';
-import { Smile, Clock, MapPin } from 'lucide-react';
-// import { CustomAudioPlayer } from './CustomAudioPlayer'; // Assuming it's in the same folder or we adjust
+import { Smile, Clock, MapPin, FastForward } from 'lucide-react';
+import { CustomAudioPlayer } from './CustomAudioPlayer';
 
 export interface MessageProps {
   msg: any;
@@ -38,6 +38,7 @@ export const MessageBubble = React.memo(({
 }: MessageProps) => {
   const controls = useAnimation();
   const [showReactions, setShowReactions] = useState(false);
+  const [isHighlighted, setIsHighlighted] = useState(false);
 
   const sentTime = typeof msg.sentAtNs === 'number' ? new Date(msg.sentAtNs) : (msg.sent || msg.sentAt || new Date());
   
@@ -46,6 +47,17 @@ export const MessageBubble = React.memo(({
 
   let content = typeof msg.content === 'string' ? msg.content : (msg.fallback || 'Encrypted Data');
   
+  // Phase 4: Forwarding Parse
+  let forwardFrom = null;
+  if (typeof content === 'string' && content.startsWith('__FORWARD__')) {
+    const parts = content.split('__::');
+    if (parts.length >= 2) {
+      forwardFrom = parts[0].replace('__FORWARD__', '');
+      content = parts.slice(1).join('__::');
+    }
+  }
+
+  // Phase 4: Reply Parse
   let replyMsg = null;
   if (typeof content === 'string' && content.startsWith('__REPLY__')) {
     const parts = content.split('__::');
@@ -59,6 +71,9 @@ export const MessageBubble = React.memo(({
   const isLocation = content.startsWith('[LOCATION]');
   const locationCoords = isLocation ? content.slice('[LOCATION]'.length) : null;
   
+  const isAudio = content.startsWith('__AUDIO__');
+  const audioSrc = isAudio ? content.slice('__AUDIO__'.length) : null;
+
   const attachmentMatch = typeof content === 'string' ? content.match(/^\[ATTACHMENT:([^\]]*)\](.*?)\|(.*)$/is) : null;
   const attachment = attachmentMatch ? { mime: attachmentMatch[1] || 'application/octet-stream', url: attachmentMatch[2], name: attachmentMatch[3] } : null;
 
@@ -68,6 +83,19 @@ export const MessageBubble = React.memo(({
       if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50);
     }
     controls.start({ x: 0, transition: { type: "spring", stiffness: 400, damping: 30 } });
+  };
+
+  const jumpToReply = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (replyMsg?.id) {
+      const el = document.getElementById(`msg-${replyMsg.id}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Add highlight class briefly
+        el.classList.add('bg-black/10', 'transition-all', 'duration-300');
+        setTimeout(() => el.classList.remove('bg-black/10', 'transition-all', 'duration-300'), 1500);
+      }
+    }
   };
 
   return (
@@ -80,17 +108,31 @@ export const MessageBubble = React.memo(({
         </div>
       )}
       
-      <div className={`flex flex-col relative w-full ${isMe ? 'items-end' : 'items-start'}`}>
+      <div 
+        id={`msg-${msg.id}`}
+        className={`flex flex-col relative w-full rounded-2xl ${isMe ? 'items-end' : 'items-start'} ${isHighlighted ? 'ring-2 ring-black/20 scale-[1.02]' : ''} transition-all duration-300`}
+      >
         <motion.div 
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={{ left: 0.2, right: 0 }}
           onDragEnd={handleDragEnd}
           animate={controls}
-          className={`flex flex-col max-w-[80%] group relative ${isMe ? 'items-end' : 'items-start'}`}
+          className={`flex flex-col max-w-[85vw] md:max-w-[70%] min-w-0 group relative ${isMe ? 'items-end' : 'items-start'}`}
+          style={{ touchAction: 'pan-y', WebkitUserSelect: 'none', WebkitTouchCallout: 'none' } as React.CSSProperties}
           onContextMenu={(e) => { e.preventDefault(); onContextMenu(e, msg.id, content); }}
         >
-          {isLocation && locationCoords ? (
+          {forwardFrom && (
+            <div className={`flex items-center gap-1.5 text-[10px] font-bold font-mono mb-1 ${isMe ? 'text-black/40' : 'text-black/40'} px-2`}>
+              <FastForward size={10} /> Forwarded from {forwardFrom.substring(0, 8)}...
+            </div>
+          )}
+
+          {isAudio && audioSrc ? (
+            <div className={`px-2.5 py-2 rounded-2xl shadow-sm border ${isMe ? 'bg-[#050505] text-white border-transparent rounded-br-sm' : 'bg-white border-black/5 rounded-bl-sm'}`}>
+               <CustomAudioPlayer src={audioSrc} isMe={isMe} />
+            </div>
+          ) : isLocation && locationCoords ? (
             <div className={`px-4 py-3 rounded-2xl flex flex-col gap-2 relative z-20 shadow-sm ${isMe ? 'bg-[#050505] text-white rounded-br-sm' : 'bg-gray-100 text-gray-900 rounded-bl-sm'}`}>
               <div className="flex items-center gap-2">
                  <MapPin size={14} className={isMe ? 'text-white/70' : 'text-black'} />
@@ -116,19 +158,22 @@ export const MessageBubble = React.memo(({
             </div>
           ) : (
             <div className="relative">
-              <div className={`relative z-20 px-4 py-2.5 rounded-2xl shadow-sm border flex flex-col min-w-0 break-words ${
-                isMe ? 'bg-[#050505] text-[#f5f5f7] border-transparent rounded-br-sm' : 'bg-white text-[#050505] border-black/5 rounded-bl-sm'
+              <div className={`relative z-20 px-4 py-2.5 rounded-[20px] shadow-lg border flex flex-col min-w-0 break-words backdrop-blur-xl transition-all ${
+                isMe ? 'bg-[#050505]/95 text-[#f5f5f7] border-white/10 rounded-br-[4px] shadow-[0_8px_30px_rgb(0,0,0,0.12)]' : 'bg-white/95 text-[#050505] border-black/5 rounded-bl-[4px] shadow-[0_8px_30px_rgb(0,0,0,0.06)]'
               }`}>
                 {replyMsg && (
-                   <div className={`text-[11px] mb-1.5 pl-2 border-l-2 py-0.5 max-w-[200px] ${isMe ? 'border-white/20 text-white/60' : 'border-black/20 text-black/60'}`}>
+                   <button 
+                     onClick={jumpToReply}
+                     className={`text-[11px] mb-1.5 pl-2 border-l-2 py-0.5 max-w-[200px] text-left hover:opacity-70 transition-opacity ${isMe ? 'border-white/20 text-white/60' : 'border-black/20 text-black/60'}`}
+                   >
                       <p className="font-bold mb-0.5">Replying to</p>
                       <p className="truncate opacity-80">{formatMessagePreview(replyMsg.content)}</p>
-                   </div>
+                   </button>
                 )}
                 {content.startsWith('[GIF]') ? (
                   <img src={content.slice(5)} alt="gif" className="rounded-xl max-w-[200px] mt-1" />
                 ) : (
-                  <p className="whitespace-pre-wrap leading-relaxed">
+                  <p className="whitespace-pre-wrap leading-relaxed" style={{ fontSize: `${fontSizePx}px`, fontFamily }}>
                     {content}
                     {msg.edited && <span className="text-[10px] opacity-70 ml-1.5 italic">(edited)</span>}
                   </p>

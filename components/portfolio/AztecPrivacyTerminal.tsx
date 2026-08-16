@@ -95,7 +95,7 @@ export function AztecPrivacyTerminal({ onBack }: { onBack: () => void }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -12 }}
-      className="w-full flex flex-col min-h-[100vh] bg-white font-mono"
+      className="w-full flex flex-col min-h-[100dvh] bg-white font-mono"
     >
       {/* ─── Top Bar ─────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between px-6 md:px-10 py-5 border-b border-black/10">

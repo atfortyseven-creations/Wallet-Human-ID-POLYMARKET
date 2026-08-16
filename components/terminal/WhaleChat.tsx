@@ -108,100 +108,8 @@ export const parseMessageText = (text: string, isMe: boolean) => {
   });
 };
 
-const CustomAudioPlayer = ({ src, isMe }: { src: string, isMe: boolean }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [playbackRate, setPlaybackRate] = useState(1);
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const handleTimeUpdate = () => setProgress(audio.currentTime);
-    const handleLoadedMetadata = () => {
-      if (audio.duration === Infinity) {
-        audio.currentTime = 1e101;
-        audio.ontimeupdate = () => {
-          audio.ontimeupdate = () => setProgress(audio.currentTime);
-          audio.currentTime = 0;
-          setDuration(audio.duration);
-        };
-      } else {
-        setDuration(audio.duration);
-      }
-    };
-    const handleEnded = () => { setIsPlaying(false); setProgress(0); };
-    
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-    audio.addEventListener('ended', handleEnded);
-    return () => {
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      audio.removeEventListener('ended', handleEnded);
-    };
-  }, []);
-
-  const togglePlay = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!audioRef.current) return;
-    if (isPlaying) audioRef.current.pause();
-    else audioRef.current.play();
-    setIsPlaying(!isPlaying);
-  };
-
-  const cycleSpeed = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const nextRate = playbackRate === 1 ? 1.5 : playbackRate === 1.5 ? 2 : 1;
-    setPlaybackRate(nextRate);
-    if (audioRef.current) audioRef.current.playbackRate = nextRate;
-  };
-
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation();
-    const time = parseFloat(e.target.value);
-    setProgress(time);
-    if (audioRef.current) audioRef.current.currentTime = time;
-  };
-
-  const formatTime = (t: number) => {
-    if (isNaN(t) || !isFinite(t)) return '0:00';
-    const m = Math.floor(t / 60);
-    const s = Math.floor(t % 60);
-    return `${m}:${s.toString().padStart(2, '0')}`;
-  };
-
-  return (
-    <div className={`flex items-center gap-2 p-1 ${isMe ? 'text-white' : 'text-gray-800'}`} onClick={e => e.stopPropagation()}>
-      <audio ref={audioRef} src={src} preload="metadata" />
-      <button onClick={togglePlay} className="w-8 h-8 flex items-center justify-center shrink-0">
-        {isPlaying ? (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-        ) : (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        )}
-      </button>
-      <div className="flex flex-col flex-1 gap-1 min-w-[120px]">
-        <input 
-          type="range" 
-          min={0} max={duration || 100} 
-          value={progress} 
-          onChange={handleSeek} 
-          onClick={e => e.stopPropagation()}
-          className="w-full h-1 bg-black/10 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:bg-current [&::-webkit-slider-thumb]:rounded-full"
-        />
-        <div className="flex justify-between items-center text-[10px] font-mono opacity-70">
-          <span>{formatTime(progress)}</span>
-          <span>{formatTime(duration)}</span>
-        </div>
-      </div>
-      <button onClick={cycleSpeed} className="w-8 h-8 flex items-center justify-center shrink-0 text-[10px] font-bold font-mono opacity-80 hover:opacity-100 bg-black/5 rounded-full">
-        {playbackRate}x
-      </button>
-    </div>
-  );
-};
+import { playSendSound, playReceiveSound } from '../../lib/utils/sounds';
+import { MessageBubble } from '../chat/MessageBubble';
 
 export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const { address, isConnected, isSystemHandshake, isChecking, connector, isZkVerified, isLocalSystemWallet } = useSystemAccount();
@@ -2508,6 +2416,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               if (fromPeer && !content.startsWith('__')) {
                 // We are focused on this chat, so send a read receipt!
                 if (!document.hidden) {
+                  playReceiveSound();
                   sendMessage(client, msgConvPeer, `__READ__${realId}`, address).catch(e => console.warn('Failed to send read receipt', e));
                 } else {
                   // Phase 5: Push Notifications when app is hidden
@@ -2976,8 +2885,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         }
       }
 
-      // [AUDIO REMOVED] send ping disabled.
-      
+      if (!isSystemSignal && !isReaction) playSendSound();
+
       // Always attempt to send directly via XMTP.
       // sendMessage() handles canReceive checks, retries with backoff,
       // and graceful offline queue internally — no need to pre-check here.
@@ -3714,7 +3623,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
             {/* Phase 3: Pinned Message Banner */}
             {pinnedMessageId && (
-              <div className="bg-white/80 backdrop-blur-md border-b border-black/5 px-4 py-2 flex items-center gap-3 cursor-pointer hover:bg-black/5 transition-colors z-20" onClick={() => {
+              <div className="bg-white/80 backdrop-blur-md border-b border-black/5 px-4 py-2 flex items-center gap-3 cursor-pointer hover:bg-black/5 transition-colors z-20 shrink-0" onClick={() => {
                 const el = document.getElementById(`msg-${pinnedMessageId}`);
                 el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }}>
@@ -3781,259 +3690,32 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                     ? msg.senderInboxId?.toLowerCase() === (client?.inboxId as string)?.toLowerCase()
                     : false;
                   
-                  // Phase 3: Self-Destruct Visualization
-                  const isBurning = !!msg.burnAtNs;
-                  const secondsLeft = isBurning ? Math.max(0, Math.ceil((msg.burnAtNs - Date.now()) / 1000)) : null;
-
-                  // Phase 2: Parse Quoting and Reactions
-                  let content = typeof msg.content === 'string' ? msg.content : (msg.fallback || 'Encrypted Data');
-                  
-                  let replyMsg = null;
-                  if (typeof content === 'string' && content.startsWith('__REPLY__')) {
-                    const parts = content.split('__::');
-                    if (parts.length >= 2) {
-                      const replyToId = parts[0].replace('__REPLY__', '');
-                      content = parts.slice(1).join('__::');
-                      replyMsg = messages.find(m => m.id === replyToId);
-                    }
-                  }
-
-                  const isAudio = content.startsWith('__AUDIO__');
-                  const isLocation = content.startsWith('[LOCATION]');
-                  const audioSrc = isAudio ? content.slice('__AUDIO__'.length) : null;
-                  const locationCoords = isLocation ? content.slice('[LOCATION]'.length) : null;
-                  
-                  const attachmentMatch = typeof content === 'string' ? content.match(/^\[ATTACHMENT:([^\]]*)\](.*?)\|(.*)$/is) : null;
-                  const attachment = attachmentMatch ? { mime: attachmentMatch[1] || 'application/octet-stream', url: attachmentMatch[2], name: attachmentMatch[3] } : null;
-                  
-                  // sentTime already declared above  reuse it here.
                   return (
-                    <React.Fragment key={msg.id}>
-                      {showDate && (
-                        <div className="flex justify-center my-3">
-                          <span className="px-3 py-1 bg-black/5  rounded-full text-[9px] font-mono font-bold text-black/40  uppercase tracking-widest shadow-sm">
-                            {dateStr}
-                          </span>
-                        </div>
-                      )}
-                      <div 
-                        className={`flex flex-col max-w-[80%] relative ${isMe ? 'self-end items-end' : 'self-start items-start'}`}
-                        onContextMenu={(e) => { e.preventDefault(); setContextMenu({ id: msg.id, content, x: e.clientX, y: e.clientY }); }}
-                      >
-                      {isAudio && audioSrc ? (
-                        <div className={`px-3 py-2.5 rounded-2xl ${
-                          isMe
-                            ? 'bg-[#050505] text-white rounded-br-sm'
-                            : 'bg-white  rounded-bl-sm border border-black/8  shadow-sm'
-                        }`}>
-                          <div className={`flex items-center gap-2 mb-1.5 ${isMe ? 'text-white/60 ' : 'text-black/40 '}`}>
-                            <span className="text-[9px] font-black uppercase tracking-widest">AUDIO</span>
-                          </div>
-                          <CustomAudioPlayer src={audioSrc} isMe={isMe} />
-                        </div>
-                      ) : isLocation && locationCoords ? (
-                        <div className={`px-4 py-3 rounded-2xl flex flex-col gap-2 relative z-20 shadow-sm ${
-                          isMe
-                            ? 'bg-[#050505] text-white rounded-br-sm'
-                            : 'bg-gray-100 text-gray-900 rounded-bl-sm'
-                        }`}>
-                          <div className="flex items-center gap-2">
-                             <MapPin size={14} className={isMe ? 'text-white/70 ' : 'text-black'} />
-                             <span className="text-[10px] font-mono uppercase font-bold">Real-time Location</span>
-                          </div>
-                          <a href={`https://www.google.com/maps?q=${locationCoords}`} target="_blank" rel="noopener noreferrer" className={`text-[11px] underline mt-1 font-mono ${isMe ? 'text-white/80 ' : 'text-black'}`}>
-                            Open in Maps ({locationCoords})
-                          </a>
-                        </div>
-                      ) : attachment ? (
-                        <div className={`mt-1 overflow-hidden rounded-xl border shadow-sm ${isMe ? 'border-transparent bg-black' : 'border-transparent bg-white'}`}>
-                          {attachment.mime.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(attachment.name.split('.').pop()?.toLowerCase() || '') ? (
-                            <button type="button" onClick={() => setLightboxImg(attachment.url)} className="block p-1">
-                              <img src={attachment.url} alt={attachment.name} className="max-w-[240px] max-h-[300px] object-cover rounded-xl" />
-                            </button>
-                          ) : attachment.mime.startsWith('video/') || ['mp4', 'webm', 'mov'].includes(attachment.name.split('.').pop()?.toLowerCase() || '') ? (
-                            <video src={attachment.url} controls className="max-w-[260px] max-h-[300px] object-contain bg-black" />
-                          ) : (
-                            <a href={attachment.url} download={attachment.name} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-2 px-4 py-3 ${isMe ? 'text-white' : 'text-gray-900'}`}>
-                               <span className="font-mono text-[11px] underline break-all line-clamp-2">{attachment.name}</span>
-                            </a>
-                          )}
-                        </div>
-                      ) : content.startsWith('__POLL__') ? (() => {
-                          // Phase 5: Interactive Poll Bubble
-                          // Format: __POLL__{pollId}__::{question}__::{opt1|opt2|...}
-                          const [, pollBody] = content.split('__POLL__');
-                          const parts = pollBody.split('__::');
-                          // parts[0] = pollId, parts[1] = question, parts[2] = options
-                          const pollId = parts[0] || '';
-                          const questionPart = parts[1] || 'Poll';
-                          const options = parts[2]?.split('|') ?? [];
-                          const votes: Record<string, number> = msg.pollVotes || {};
-                          const totalVotes = Object.keys(votes).length;
-                          const myInboxId = client?.inboxId || '';
-                          const myVote = votes[myInboxId] ?? -1;
-                          return (
-                            <div id={`msg-${msg.id}`} className={`px-4 py-3 rounded-2xl shadow-md min-w-[220px] max-w-[280px] ${isMe ? 'bg-[#050505] text-white' : 'bg-[#f5f5f7] border-transparent text-[#050505]'}`}>
-                              <div className={`text-[10px] font-black uppercase tracking-widest mb-2 flex items-center gap-1.5 ${isMe ? 'text-white/60' : 'text-black/50'}`}>
-                                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v2H3zM3 7h12v2H3zM3 11h15v2H3zM3 15h9v2H3z"/></svg>
-                                Poll
-                              </div>
-                              <p className={`text-[13px] font-bold leading-snug mb-3 ${isMe ? 'text-white' : 'text-[#050505]'}`}>{questionPart}</p>
-                              <div className="flex flex-col gap-2">
-                                {options.map((opt: string, i: number) => {
-                                  const count = Object.values(votes).filter(v => v === i).length;
-                                  const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
-                                  const isSelected = myVote === i;
-                                  return (
-                                    <button
-                                      key={i}
-                                      onClick={() => { const myId = client?.inboxId || address || 'me'; setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, pollVotes: { ...(m.pollVotes || {}), [myId]: i } } : m)); executeSend(`__VOTE__${msg.id}__::${i}`); }}
-                                      className={`relative w-full text-left rounded-xl px-3 py-2 text-[12px] font-semibold overflow-hidden transition-all border ${isSelected ? (isMe ? 'border-white bg-white/20' : 'border-black bg-[#e5e5ea] text-black') : (isMe ? 'border-transparent bg-white/10 hover:bg-white/20' : 'border-transparent bg-white hover:bg-[#e5e5ea] text-[#050505]')}`}
-                                    >
-                                      <div className="absolute left-0 top-0 h-full bg-white/20 rounded-xl transition-all duration-500" style={{ width: `${pct}%` }} />
-                                      <span className="relative z-10 flex justify-between items-center gap-2">
-                                        <span>{opt}</span>
-                                        {totalVotes > 0 && <span className={`font-mono text-[10px] ${isSelected ? '' : 'opacity-60'}`}>{pct}%</span>}
-                                      </span>
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                              <p className={`text-[10px] mt-2 text-right ${isMe ? 'text-white/50' : 'text-black/40'}`}>{totalVotes} vote{totalVotes !== 1 ? 's' : ''}</p>
-                            </div>
-                          );
-                        })() : content.startsWith('__PAYMENT__') ? (() => {
-                          // Phase 5: QD Payment Receipt Bubble
-                          const amount = content.replace('__PAYMENT__::', '');
-                          return (
-                            <div id={`msg-${msg.id}`} className={`px-4 py-3 rounded-2xl shadow-md min-w-[200px] border ${isMe ? 'bg-[#050505] border-[#050505] text-white' : 'bg-[#f5f5f7] border-transparent text-[#050505]'}`}>
-                              <div className="flex items-center gap-2 mb-1">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                                <span className={`text-[10px] font-black uppercase tracking-widest ${isMe ? 'text-white/70' : 'text-[#050505]/70'}`}>QD Transfer</span>
-                              </div>
-                              <p className="text-[22px] font-black font-mono">{amount} <span className="text-[14px] font-semibold opacity-80">QD</span></p>
-                              <p className={`text-[10px] mt-1 ${isMe ? 'text-white/60' : 'text-[#050505]/60'}`}>
-                                {isMe ? `Sent to ${shortAddr(activePeer!)}` : `Received from ${shortAddr(activePeer!)}`}
-                              </p>
-                            </div>
-                          );
-                        })() : (
-                        <div className="relative group" id={`msg-${msg.id}`}>
-                          <div className={`px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed break-words break-all shadow-md animate-in fade-in slide-in-from-bottom-2 duration-300 relative overflow-hidden ${
-                            isMe
-                              ? 'bg-[#050505] text-white rounded-br-sm border border-transparent'
-                              : 'bg-[#f5f5f7] text-[#050505] rounded-bl-sm border border-transparent'
-                          }`}>
-                            {isBurning && (
-                              <div className="absolute top-0 left-0 w-full h-0.5 bg-black/10">
-                                <div 
-                                  className="h-full bg-[#050505]" 
-                                  style={{ width: `${(secondsLeft! / 60) * 100}%`, transition: 'width 1s linear' }} 
-                                />
-                              </div>
-                            )}
-                            {replyMsg && (
-                              <div 
-                                className={`mb-2 pl-2 border-l-2 text-[11px] opacity-75 line-clamp-1 cursor-pointer ${isMe ? 'border-white/40 hover:opacity-100' : 'border-black/20 hover:opacity-100'}`}
-                              >
-                                <strong className="uppercase tracking-wider">{replyMsg.senderInboxId?.toLowerCase() === client?.inboxId?.toLowerCase() ? 'You' : 'Peer'}: </strong>
-                                {replyMsg.content ? formatMessagePreview(replyMsg.content) : '📎 Attachment'}
-                              </div>
-                            )}
-                            {content.startsWith('[GIF]') ? (
-                              <button type="button" onClick={() => setLightboxImg(content.replace('[GIF]', ''))} className="rounded-xl overflow-hidden mt-1 max-w-[200px] hover:opacity-90 transition-opacity">
-                                <img src={content.replace('[GIF]', '')} alt="GIF" className="w-full h-auto object-cover" />
-                              </button>
-                            ) : (
-                              <p className="whitespace-pre-wrap break-words break-all" style={{ fontSize: `${fontSizePx}px`, lineHeight: '1.4' }}>
-                                {(() => {
-                                  let text = content;
-                                  if (content.startsWith('__CALL_OFFER__')) text = "📞 Initiated a Call";
-                                  else if (content.startsWith('__CALL_ANSWER__')) text = "✅ Call Answered";
-                                  else if (content === '__CALL_DECLINE__') text = "❌ Call Declined";
-                                  else if (content === '__CALL_HANGUP__') text = "🔚 Call Ended";
-                                  
-                                  if (searchQuery && text.toLowerCase().includes(searchQuery.toLowerCase())) {
-                                    const parts = text.split(new RegExp(`(${searchQuery})`, 'gi'));
-                                    return parts.map((part: string, i: number) => part.toLowerCase() === searchQuery.toLowerCase() ? <span key={i} className="bg-[#e5e5ea] text-black px-0.5 rounded-sm">{part}</span> : part);
-                                  }
-                                  return parseMessageText(text, isMe);
-                                })()}
-                                {msg.edited && <span className="text-[10px] opacity-70 ml-1.5 italic">(edited)</span>}
-                              </p>
-                            )}
-                            {msg.reactions && Object.keys(msg.reactions).length > 0 && (
-                              <div className="flex flex-wrap gap-1 mt-1.5 -ml-1 relative z-10">
-                                {Object.entries(msg.reactions).map(([emoji, users]: [string, any]) => (
-                                  <button 
-                                    key={emoji} 
-                                    onClick={() => executeSend(`__REACT__${msg.id}__::${emoji}`)}
-                                    className={`text-[12px] px-1.5 py-0.5 rounded-full flex items-center gap-1 transition-all ${users.includes(client?.inboxId || 'me') ? 'bg-[#050505]/20 border-black/20' : 'bg-black/5 hover:bg-black/10'} border shadow-sm`}
-                                  >
-                                    <span>{emoji}</span>
-                                    {users.length > 1 && <span className="font-bold font-mono text-[10px] opacity-70">{users.length}</span>}
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                          
-                          {/* Context Menu / Reply Trigger */}
-                          <div className="absolute top-1/2 -translate-y-1/2 -right-16 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 z-10">
-                            {isBurning && (
-                               <span className="mr-1 text-[10px] font-mono font-bold text-[#050505] bg-[#f5f5f7] px-1.5 py-0.5 rounded shadow-sm border border-black/10">{secondsLeft}s</span>
-                            )}
-                            <button
-                              onClick={() => setReactionMenu(reactionMenu === msg.id ? null : msg.id)}
-                              className="p-1.5 hover:bg-black/5 rounded-full text-black/40 hover:text-black transition-colors bg-white/50 backdrop-blur-sm shadow-sm border border-black/5"
-                              title="React"
-                            >
-                              <Smile size={14} />
-                            </button>
-                            <button
-                              onClick={() => setReplyingTo(msg)}
-                              className="p-1.5 hover:bg-black/5 rounded-full text-black/40 hover:text-black transition-colors bg-white/50 backdrop-blur-sm shadow-sm border border-black/5"
-                              title="Reply"
-                            >
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 17 4 12 9 7"></polyline><path d="M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>
-                            </button>
-                          </div>
-                          
-                          {/* Emoji Picker Popover */}
-                          {reactionMenu === msg.id && (
-                            <div className="absolute bottom-full right-0 mb-1 z-50 shadow-2xl rounded-3xl overflow-hidden border border-black/5">
-                              <EmojiPicker 
-                                onEmojiClick={(e) => {
-                                  executeSend(`__REACT__${msg.id}__::${e.emoji}`);
-                                  setReactionMenu(null);
-                                }} 
-                                width={280} 
-                                height={350} 
-                                searchDisabled 
-                              />
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      <div className={`text-[9px] text-black/25 mt-1 px-1 font-mono flex items-center gap-1 ${isMe ? 'justify-end' : 'justify-start'}`}>
-                        {new Date(sentTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        {isMe && !content.startsWith('__CALL_') && (
-                          <span className={`text-[12px] -mt-0.5 ${msg.status === 'read' ? 'text-black' : 'text-black/40'}`}>
-                            {msg.status === 'scheduled' ? <Clock size={10} className="inline ml-0.5 mb-0.5 text-orange-400" /> : msg.status === 'read' ? '✓✓' : '✓'}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    </React.Fragment>
+                    <MessageBubble
+                      key={msg.id}
+                      msg={msg}
+                      isMe={isMe}
+                      showDate={showDate}
+                      dateStr={dateStr}
+                      isSecretChat={isSecretChat}
+                      fontFamily={fontFamily}
+                      fontSizePx={fontSizePx}
+                      clientInboxId={client?.inboxId}
+                      onReply={(msgToReply) => setReplyingTo(msgToReply)}
+                      onReact={(msgId, emoji) => executeSend(`__REACT__${msgId}__::${emoji}`)}
+                      onContextMenu={(e, id, content) => setContextMenu({ id, content, x: e.clientX, y: e.clientY })}
+                      onOpenLightbox={(url) => setLightboxImg(url)}
+                      formatMessagePreview={formatMessagePreview}
+                    />
                   );
                 });
               })()}
               {peerStatus.isTyping && (
                   <div className="flex self-start items-start mt-2 ml-4">
                       <div className="px-4 py-3 bg-white/70 backdrop-blur-md rounded-2xl rounded-bl-sm border border-white shadow-sm flex items-center gap-1.5 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                        <div className="w-2 h-2 bg-gray-400 rounded-full" style={{ animation: 'typingBounce 1.2s ease-in-out infinite', animationDelay: '0ms', willChange: 'transform' }} />
+                        <div className="w-2 h-2 bg-gray-400 rounded-full" style={{ animation: 'typingBounce 1.2s ease-in-out infinite', animationDelay: '200ms', willChange: 'transform' }} />
+                        <div className="w-2 h-2 bg-gray-400 rounded-full" style={{ animation: 'typingBounce 1.2s ease-in-out infinite', animationDelay: '400ms', willChange: 'transform' }} />
                       </div>
                   </div>
               )}
@@ -4048,7 +3730,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             </div>
 
             <div
-              className="shrink-0 bg-white/80 backdrop-blur-xl border-t border-black/10 z-10 shadow-[0_-4px_24px_rgba(0,0,0,0.02)]"
+              className="relative shrink-0 bg-white/80 backdrop-blur-xl border-t border-black/10 z-10 shadow-[0_-4px_24px_rgba(0,0,0,0.02)]"
               style={{ paddingBottom: `max(8px, env(safe-area-inset-bottom, 0px))` }}
             >
               {/*  Offline Banner  */}
@@ -4106,6 +3788,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                     <span className="text-[11px] font-black uppercase tracking-widest text-black mb-0.5">Edit Message</span>
                     <input
                       type="text"
+                      inputMode="text"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      autoComplete="off"
+                      spellCheck={false}
                       className="text-[13px] bg-transparent outline-none text-[#050505] w-full font-mono placeholder:text-black/30"
                       value={editingMsg.content}
                       onChange={e => setEditingMsg({ ...editingMsg, content: e.target.value })}
@@ -4175,17 +3862,56 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   <p className="text-[9px] text-black/40 text-right mt-1 font-mono">Powered by Tenor</p>
                 </div>
               )}
-              {replyingTo && (
-                <div className="flex items-center justify-between px-4 pt-2 pb-1 bg-[#f5f5f7]/50 border-t border-gray-100 animate-in slide-in-from-bottom-2">
-                  <div className="flex-1 pl-3 border-l-2 border-black/20 overflow-hidden">
-                    <p className="text-[11px] font-bold text-gray-700">Replying to</p>
-                    <p className="text-[12px] text-black/50 truncate">{
-                      replyingTo.content ? formatMessagePreview(replyingTo.content) : 'Message'
-                    }</p>
+              {inputText === '/' && (
+                <div className="absolute bottom-[70px] left-4 mb-2 bg-white/90 backdrop-blur-xl border border-black/10 shadow-2xl rounded-2xl w-[260px] overflow-hidden z-50 animate-in slide-in-from-bottom-2 fade-in duration-200">
+                  <div className="px-3 py-2 border-b border-black/5 bg-black/5">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-black/50">Commands</span>
                   </div>
-                  <button onClick={() => setReplyingTo(null)} className="p-2 text-black/40 hover:text-gray-700">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                  </button>
+                  <div className="flex flex-col py-1">
+                    <button type="button" onClick={() => { setInputText(''); setShowWalletTransfer(true); }} className="px-3 py-2.5 text-left hover:bg-black/5 transition-colors flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[#050505] text-white flex items-center justify-center shrink-0">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[13px] font-bold text-[#050505]">/pay</span>
+                        <span className="text-[10px] font-mono text-black/50">Send QD Tokens</span>
+                      </div>
+                    </button>
+                    <button type="button" onClick={() => { setInputText(''); setShowPollCreator(true); }} className="px-3 py-2.5 text-left hover:bg-black/5 transition-colors flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center shrink-0">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[13px] font-bold text-[#050505]">/poll</span>
+                        <span className="text-[10px] font-mono text-black/50">Create a Poll</span>
+                      </div>
+                    </button>
+                    <button type="button" onClick={() => { setInputText(''); setShowGifPicker(true); }} className="px-3 py-2.5 text-left hover:bg-black/5 transition-colors flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-purple-500 text-white flex items-center justify-center shrink-0">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[13px] font-bold text-[#050505]">/gif</span>
+                        <span className="text-[10px] font-mono text-black/50">Search GIFs</span>
+                      </div>
+                    </button>
+                    <button type="button" onClick={() => { 
+                      setInputText(''); 
+                      if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(pos => {
+                          executeSend(`[LOCATION]${pos.coords.latitude},${pos.coords.longitude}`);
+                        });
+                      }
+                    }} className="px-3 py-2.5 text-left hover:bg-black/5 transition-colors flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center shrink-0">
+                        <MapPin size={14} />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[13px] font-bold text-[#050505]">/location</span>
+                        <span className="text-[10px] font-mono text-black/50">Share Real-time Location</span>
+                      </div>
+                    </button>
+                  </div>
                 </div>
               )}
                 <input type="file" ref={fileRef} className="hidden" onChange={handleFileUpload} />
@@ -4303,7 +4029,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               {/* Whale Logo */}
               <div className="w-40 h-40 mb-8 rounded-full bg-white/50 backdrop-blur-xl shadow-2xl border border-white flex items-center justify-center relative">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/40 to-transparent pointer-events-none" />
-                <img src="/official-whale-monochrome.png" alt="Humanity Ledger" className="w-24 h-24 object-contain opacity-90 drop-shadow-md" style={{ filter: 'invert(var(--dark-invert, 0))' }} />
+                <img 
+                  src="/official-whale-monochrome.png" 
+                  alt="Humanity Ledger" 
+                  className="w-24 h-24 object-contain opacity-90 drop-shadow-md" 
+                  style={{ filter: 'invert(var(--dark-invert, 0))' }}
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                />
               </div>
 
               {/* Main Typography */}

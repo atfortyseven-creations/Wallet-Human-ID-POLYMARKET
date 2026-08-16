@@ -180,7 +180,7 @@ function SigningOverlay({
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       className="fixed inset-0 z-[9999] flex items-center justify-center p-6"
-      style={{ background: "rgba(255,255,255,0.98)", backdropFilter: "blur(24px)" }}
+      style={{ background: "rgba(255,255,255,0.98)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }}
     >
       <div className="w-full max-w-sm flex flex-col items-center gap-5 text-center">
         <div className="w-20 h-20 rounded-[2rem] bg-white border border-black/10 shadow-lg flex items-center justify-center">
@@ -364,7 +364,7 @@ function ConnectedScreen({
   const fmtDate   = (d: Date) => d.toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 
   return (
-    <div className="relative w-full overflow-x-hidden font-sans flex flex-col bg-white selection:bg-black/10 selection:text-black" style={{ color: '#000000', minHeight: 'var(--dvh-100, 100vh)' }}>
+    <div className="relative w-full overflow-x-hidden font-sans flex flex-col bg-white selection:bg-black/10 selection:text-black" style={{ color: '#000000', minHeight: '100dvh' }}>
       {/* Background soft ambient noise/gradient */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-black/[0.01] via-white to-white" />
       
@@ -1306,7 +1306,7 @@ export function MobileLanding() {
   // Fix: show ConnectedScreen whenever the session is established — no intermediate showHub state needed.
   if (isLinked && effectiveAddress) {
     return (
-      <div className="w-full min-h-[100vh] bg-transparent" suppressHydrationWarning>
+      <div className="w-full min-h-[100dvh] bg-transparent" suppressHydrationWarning>
         <SafeErrorBoundary>
           <ConnectedScreen 
              address={effectiveAddress} 
@@ -1375,7 +1375,7 @@ export function MobileLanding() {
   return (
     <div
       className="fixed inset-0 w-full bg-white flex flex-col overflow-hidden"
-      style={{ height: '100vh' }}
+      style={{ height: '100dvh' }}
     >
       {/* Background dot grid */}
       <div

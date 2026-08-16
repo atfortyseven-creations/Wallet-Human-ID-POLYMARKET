@@ -28,7 +28,7 @@ export default function LegalPage() {
     <LegalDocLayout
       title="Privacy Policy"
       subtitle="This policy sets forth the legal and attestation rules governing the Humanity Ledger ecosystem."
-      lastUpdated="14 August 2026"
+      lastUpdated="16 August 2026"
       category="Legal"
       toc={TOC}
       backHref="/"
@@ -41,6 +41,14 @@ export default function LegalPage() {
           <p className="font-bold text-emerald-400 uppercase tracking-widest mb-2">Privacy by design. No data leaves your device.</p>
           <p>
             Humanity Ledger is structurally incapable of collecting user state. Data is sealed via SNARKs before reaching any network layer. Privacy is not a feature; it is an unalienable cryptographic right.
+          </p>
+        </div>
+
+        {/* 2027 COMPLIANCE CLAUSE */}
+        <div className="p-6 bg-[#f5f5f7] text-[#050505] font-sans text-sm border border-black/10 rounded-xl">
+          <p className="font-bold uppercase tracking-widest mb-2">V2 Regulatory Readiness</p>
+          <p>
+            This document includes forward-looking compliance measures and is fully effective and binding through January 1, 2027 and onwards, preparing the Humanity Ledger ecosystem for V2 regulatory requirements.
           </p>
         </div>
 

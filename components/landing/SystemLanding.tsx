@@ -139,8 +139,8 @@ export function SystemLanding() {
       <div className="w-full bg-[#0a0a0a] text-white flex flex-col font-sans selection:bg-[#00f5ff]/30 selection:text-white"
            style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
         
-        {/* HERO DASHBOARD (Exactly 100vh) */}
-        <div className="relative w-full h-screen flex flex-col shrink-0 overflow-hidden">
+        {/* HERO DASHBOARD (Exactly 100dvh) */}
+        <div className="relative w-full h-[100dvh] flex flex-col shrink-0 overflow-hidden">
           <ParticleBackground />
 
       {/* HEADER (10% roughly bounded to ~64px) */}
