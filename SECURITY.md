@@ -1,36 +1,31 @@
-﻿# Security Policy and Vulnerability Disclosure
+# Security Policy
 
-## 1. Zero-Trust Architecture
+## Supported Versions
 
-Humanity Ledger is engineered upon a foundational **Zero-Trust Architecture**, leveraging the Aztec Network to guarantee privacy at the protocol layer.
+Currently, the Humanity Ledger is in active development heading towards its official release. 
+We only provide security updates for the current `main` branch.
 
-- **Client-Side Proving:** All zero-knowledge proofs (via Noir circuits) are generated strictly on the local client hardware. Raw, unencrypted state parameters are never transmitted across the network.
-- **Encrypted State:** Sovereign assets and reputational scores are maintained as encrypted UTXOs. Network sequencers operate on opaque payloads, preventing censorship or front-running vectors.
-- **Cryptographic Enclaves:** Local session secrets and Private Execution Environment (PXE) states are mathematically siloed per contract address, preventing cross-module memory leaks.
+| Version | Supported          |
+| ------- | ------------------ |
+| v1.0.x  | :white_check_mark: |
+| < 1.0   | :x:                |
 
-## 2. Protocol Upgrades and Timelock
+## Reporting a Vulnerability
 
-To safeguard sovereign capital against malicious governance or compromised administrative keys, all smart contract infrastructure adheres to a rigid **Timelock Policy**.
+Security is paramount in the Humanity Ledger ecosystem. Given our use of Zero-Knowledge proofs (Noir) and decentralized communication (XMTP), cryptographic flaws can have severe implications.
 
-### 2.1 Specifications
-- **Enforcement Delay:** 168 hours (7 Days).
-- **Scope of Delay:** All logical upgrades to the Token Contract, Ledger Contract, and Circuit Verifier implementations.
+If you discover a vulnerability, **do not open a public issue.**
 
-### 2.2 Emergency Intervention
-A federated multisig of trusted security council members retains the capability to execute an immediate protocol pause (e.g., halting the cross-chain bridge) during an active zero-day exploit. However, the multisig is cryptographically restricted from upgrading logic or migrating funds bypassing the 168-hour timelock.
+Please report any suspected or confirmed security issues by emailing our security team at `security@humanityledger.com`. 
 
-## 3. Web Application Firewall & Network Security
+### What to include in your report:
+- A detailed description of the vulnerability (e.g., cryptographic bypass, XSS, XMTP spoofing).
+- Step-by-step instructions to reproduce the issue.
+- Proof of Concept (PoC) code or scripts, if applicable.
+- Potential impact and severity assessment.
 
-The application edge is fortified by a distributed rate limiter and an OWASP-compliant Web Application Firewall (WAF):
-- **DDoS Mitigation:** Enforced per-IP and per-session rate limits using a sliding window algorithm.
-- **Content Security Policy (CSP):** A dynamic, nonce-based CSP strictly limits script-src and rame-src. Inline script execution and eval() functions are permanently disabled.
-- **Replay Protection:** State-mutating requests mandate a cryptographic nonce and a precise timestamp window, verified server-side to reject replay attacks.
+### Response Timeline
+We will acknowledge receipt of your vulnerability report within 24 hours. We aim to provide a preliminary assessment and an estimated timeline for a patch within 48 hours.
 
-## 4. Reporting a Vulnerability
-
-We treat all security disclosures with the highest priority. If you discover a vulnerability within the cryptographic implementations, the communication protocols, or the application interface, please adhere to the following coordinated disclosure process:
-
-1. **Do not open a public issue.**
-2. Email your findings directly to the Lead Architect: tfortyseven2@gmail.com.
-3. Include a detailed proof-of-concept, steps to reproduce, and the potential impact of the vulnerability.
-4. You will receive an acknowledgment within 24 hours, followed by a remediation timeline.
+### Bug Bounty
+We are finalizing our formal Bug Bounty program ahead of our official release in January. Vulnerabilities reported before the official program launch may still be eligible for retroactive rewards at the discretion of the core team.

@@ -168,24 +168,27 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   const { address: evmAddress } = useSystemAccount();
 
   // [iOS FIX] Tracks which tx IDs have already fired a toast.
-  // Persisted in sessionStorage so iOS tab suspension/resume does NOT trigger
-  // duplicate notifications for all historical transactions.
+  // Persisted in localStorage so iOS tab suspension/resume and completely new 
+  // sessions do NOT trigger duplicate notifications for all historical transactions.
   const NOTIFIED_KEY = `aztec_notified_${evmAddress || 'anon'}`;
-  const notifiedRef = useRef<Set<string>>(() => {
+  const notifiedRef = useRef<Set<string>>();
+  if (!notifiedRef.current) {
     try {
-      const stored = sessionStorage.getItem(NOTIFIED_KEY);
-      return stored ? new Set(JSON.parse(stored)) : new Set<string>();
+      const stored = localStorage.getItem(NOTIFIED_KEY);
+      notifiedRef.current = stored ? new Set(JSON.parse(stored)) : new Set<string>();
     } catch {
-      return new Set<string>();
+      notifiedRef.current = new Set<string>();
     }
-  });
+  }
+
   // Helper: add an ID and persist the set.
   const markNotified = useCallback((id: string) => {
+    if (!notifiedRef.current) return;
     notifiedRef.current.add(id);
     try {
       // Keep at most 200 IDs to avoid unbounded storage growth.
       const arr = Array.from(notifiedRef.current).slice(-200);
-      sessionStorage.setItem(NOTIFIED_KEY, JSON.stringify(arr));
+      localStorage.setItem(NOTIFIED_KEY, JSON.stringify(arr));
     } catch { /* private mode / storage full */ }
   }, [NOTIFIED_KEY]);
   // Polling interval ref for cleanup.

@@ -70,7 +70,7 @@ function WalletButton({ logo, name, badge, onClick, loading = false, delay = 0, 
       disabled={loading}
       className="group relative w-full flex items-center justify-between py-4 transition-all duration-500 hover:px-2 border-b border-black/10 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
     >
-      <div className="absolute inset-0 bg-black translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-[0.16,1,0.3,1] z-0" />
+      <div className="absolute inset-0 bg-black translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[0.16,1,0.3,1] z-0" />
       <div className="relative z-10 flex items-center gap-4 w-full">
         <div className="w-8 h-8 flex items-center justify-center grayscale group-hover:grayscale-0 group-hover:brightness-200 transition-all duration-500 shrink-0">
           <img src={logo} alt={name} className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
@@ -779,8 +779,7 @@ export default function ConnectPage() {
       {/* Custom Optical Lens Cursor */}
       <motion.div 
          className="pointer-events-none fixed top-0 left-0 w-24 h-24 rounded-full bg-white z-[9999] mix-blend-difference hidden lg:block"
-         animate={{ x: mousePosition.x - 48, y: mousePosition.y - 48 }}
-         transition={{ type: "spring", mass: 0.05, stiffness: 1000, damping: 40 }}
+         style={{ x: mousePosition.x - 48, y: mousePosition.y - 48 }}
       />
 
       <div className="w-full relative z-10 flex flex-col lg:flex-row min-h-screen">
