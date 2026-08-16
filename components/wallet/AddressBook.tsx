@@ -4,16 +4,19 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Search, Star, Edit2, Trash2, X, Check } from 'lucide-react';
 import { resolveENSName, isValidENSName } from '@/lib/wallet/ens';
+import { getLocalContacts, saveLocalContact, deleteLocalContact, LocalContact } from '@/lib/wallet/localAddressBook';
 
 interface AddressBookEntry {
   id: string;
-  authUserId: string;
+  authUserId?: string;
   name: string;
   address: string;
   ensName?: string | null;
   label?: string | null;
   note?: string | null;
-  isFavorite: boolean;
+  isFavorite?: boolean;
+  avatar?: string;
+  createdAt: number;
 }
 
 interface AddressBookProps {
@@ -31,17 +34,21 @@ export default function AddressBook({ authUserId }: AddressBookProps) {
     loadAddressBook();
   }, [authUserId]);
 
-  const loadAddressBook = async () => {
+  const loadAddressBook = () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (searchQuery) params.append('search', searchQuery);
+      let data = getLocalContacts(authUserId).map(c => ({
+        id: c.id,
+        name: c.name,
+        address: c.peerAddress,
+        createdAt: c.createdAt,
+        avatar: c.avatar
+      })) as AddressBookEntry[];
       
-      const response = await fetch(`/api/wallet/address-book?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch address book');
-      
-      const data = await response.json();
-      setEntries(data.entries || []);
+      if (searchQuery) {
+        data = data.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()) || c.address.toLowerCase().includes(searchQuery.toLowerCase()));
+      }
+      setEntries(data);
     } catch (error) {
       console.error('Error loading address book:', error);
       setEntries([]);
@@ -52,22 +59,11 @@ export default function AddressBook({ authUserId }: AddressBookProps) {
 
   const handleAddEntry = async (entry: Partial<AddressBookEntry>) => {
     try {
-      const response = await fetch('/api/wallet/address-book', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: entry.name,
-          address: entry.address,
-          ensName: entry.ensName,
-          label: entry.label,
-          note: entry.note,
-          isFavorite: entry.isFavorite,
-        }),
+      saveLocalContact(authUserId, {
+        peerAddress: entry.address || '',
+        name: entry.name || '',
       });
-
-      if (!response.ok) throw new Error('Failed to add entry');
-      
-      await loadAddressBook();
+      loadAddressBook();
       setShowAddDialog(false);
     } catch (error) {
       console.error('Error adding entry:', error);
@@ -76,31 +72,18 @@ export default function AddressBook({ authUserId }: AddressBookProps) {
   };
 
   const handleToggleFavorite = async (id: string) => {
-    try {
-      const response = await fetch('/api/wallet/address-book', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, toggleFavoriteFlag: true }),
-      });
-
-      if (!response.ok) throw new Error('Failed to toggle favorite');
-      
-      await loadAddressBook();
-    } catch (error) {
-      console.error('Error toggling favorite:', error);
-    }
+    // Favorites not strictly supported in Sovereign address book yet, stubbing for now.
+    console.log('Toggle favorite', id);
   };
 
   const handleDelete = async (id: string) => {
     if (confirm('Delete this contact?')) {
       try {
-        const response = await fetch(`/api/wallet/address-book?id=${id}`, {
-          method: 'DELETE',
-        });
-
-        if (!response.ok) throw new Error('Failed to delete entry');
-        
-        await loadAddressBook();
+        const contact = entries.find(c => c.id === id);
+        if (contact) {
+           deleteLocalContact(authUserId, contact.address);
+           loadAddressBook();
+        }
       } catch (error) {
         console.error('Error deleting entry:', error);
       }

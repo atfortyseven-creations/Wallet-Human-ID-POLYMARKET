@@ -171,7 +171,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   // Persisted in localStorage so iOS tab suspension/resume and completely new 
   // sessions do NOT trigger duplicate notifications for all historical transactions.
   const NOTIFIED_KEY = `aztec_notified_${evmAddress || 'anon'}`;
-  const notifiedRef = useRef<Set<string>>();
+  const notifiedRef = useRef<Set<string>>(new Set<string>());
   if (!notifiedRef.current) {
     try {
       const stored = localStorage.getItem(NOTIFIED_KEY);

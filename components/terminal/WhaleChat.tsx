@@ -22,6 +22,8 @@ import { toast } from 'sonner';
 import { vault } from '@/lib/core/SecureVault';
 import { ChatCommunityGate } from '@/components/chat/ChatCommunityGate';
 import { MediaPermissionsPrePrompt } from '@/components/chat/MediaPermissionsPrePrompt';
+import { getLocalContacts, saveLocalContact, resolveContactName, LocalContact } from '@/lib/wallet/localAddressBook';
+import { getCallHistory, saveCallRecord, CallRecord } from '@/lib/wallet/callHistory';
 
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
@@ -244,6 +246,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     }
   }, [chatBackground, chatBackgroundCustomUrl]);
 
+
   const FONT_MAP: Record<string, string> = {
     'inter': '"Inter", sans-serif',
     'mono': '"JetBrains Mono", monospace',
@@ -291,7 +294,48 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   const [conversations, setConversations] = useState<ConversationMeta[]>([]);
   const [activePeer, setActivePeer] = useState<string | null>(null);
+  const [localContacts, setLocalContacts] = useState<LocalContact[]>([]);
   const [replyingTo, setReplyingTo] = useState<any | null>(null); // Phase 2: Message Quoting
+
+  // ── v2: Telegram-Parity state ──────────────────────────────────────────
+  const [callHistoryList, setCallHistoryList] = useState<CallRecord[]>([]);
+  const [sidebarTab, setSidebarTab] = useState<'chats' | 'calls' | 'contacts'>('chats');
+  const [showSaveContactModal, setShowSaveContactModal] = useState(false);
+  const [saveContactName, setSaveContactName] = useState('');
+
+  // ── v2: Sovereign contacts + call history sync ──────────────────────────────
+  useEffect(() => {
+    if (address) {
+      setLocalContacts(getLocalContacts(address));
+      const handler = (e: any) => {
+        if (e.detail.walletAddress.toLowerCase() === address.toLowerCase()) {
+          setLocalContacts(e.detail.contacts);
+        }
+      };
+      window.addEventListener('whale_contacts_updated', handler);
+      return () => window.removeEventListener('whale_contacts_updated', handler);
+    }
+  }, [address]);
+
+  useEffect(() => {
+    if (address) {
+      setCallHistoryList(getCallHistory(address));
+      const handler = (e: any) => {
+        if (e.detail.walletAddress.toLowerCase() === address.toLowerCase()) {
+          setCallHistoryList(e.detail.history);
+        }
+      };
+      window.addEventListener('whale_calls_updated', handler);
+      return () => window.removeEventListener('whale_calls_updated', handler);
+    }
+  }, [address]);
+
+  const getDisplayName = useCallback((peerAddr: string) => {
+    if (!peerAddr) return 'Unknown Peer';
+    const c = localContacts.find(c => c.peerAddress.toLowerCase() === peerAddr.toLowerCase());
+    return c ? c.name : shortAddr(peerAddr);
+  }, [localContacts]);
+
   const [reactionMenu, setReactionMenu] = useState<string | null>(null); // Phase 2: Emoji Reactions
   const [pinnedMessageId, setPinnedMessageId] = useState<string | null>(null); // Phase 3: Pinned
   const [burnTimer, setBurnTimer] = useState<number | null>(null); // Phase 3: Self-Destruct TTL
@@ -352,7 +396,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const [editingMsg, setEditingMsg] = useState<{ id: string; content: string } | null>(null); // inline edit state
   const [showClearConfirm, setShowClearConfirm] = useState(false); // clear chat confirmation
 
-  // ─── Phase 5: Secret Chat & Integrations ──────────────────────────────────────
+  // ─── v2 + Phase 5: Chat Features ──────────────────────────────────────────────
   const [isSecretChat, setIsSecretChat] = useState(false);
   const [showPollCreator, setShowPollCreator] = useState(false);
   const [showWalletTransfer, setShowWalletTransfer] = useState(false);
@@ -1606,18 +1650,38 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     try {
       if (executeSendRef.current) await executeSendRef.current('__CALL_DECLINE__');
     } catch {}
+    // Log declined call to sovereign history
+    if (address && activePeer) {
+      saveCallRecord(address, {
+        peerAddress: activePeer,
+        type: callTypeRef.current as 'audio' | 'video' || 'audio',
+        direction: 'incoming',
+        status: 'declined',
+        durationSeconds: 0,
+      });
+    }
     performEndCall();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [performEndCall]);
+  }, [performEndCall, address, activePeer]);
 
   // ─── endCall: Either party hangs up ─────────────────────────────────────────
   const endCall = useCallback(async () => {
     try {
       if (executeSendRef.current) await executeSendRef.current('__CALL_HANGUP__');
     } catch {}
+    // Log completed call to sovereign history
+    if (address && activePeer) {
+      saveCallRecord(address, {
+        peerAddress: activePeer,
+        type: callType || 'audio',
+        direction: 'outgoing',
+        status: 'answered',
+        durationSeconds: callDurationSeconds,
+      });
+    }
     performEndCall();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [performEndCall]);
+  }, [performEndCall, address, activePeer, callType, callDurationSeconds]);
 
   // ─── toggleMic ───────────────────────────────────────────────────────────────
   const toggleMic = useCallback(() => {
@@ -3343,24 +3407,44 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
-          {conversations.length > 0 && archivedPeers.size > 0 && (
-            <button
-              onClick={() => setShowArchived(!showArchived)}
-              className="w-full text-left p-3.5 border-b border-white/20 bg-[#f5f5f7]/50 hover:bg-[#e5e5ea]/50 transition-all flex items-center justify-between"
-            >
-              <div className="flex items-center gap-2 text-black/50">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-                <span className="text-[11px] font-bold uppercase tracking-wider">Archived Chats ({archivedPeers.size})</span>
-              </div>
-              <span className="text-[10px] font-bold text-black/40">{showArchived ? 'Hide' : 'Show'}</span>
-            </button>
-          )}
-          {conversations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full gap-3 p-6 text-center">
-              <p className="text-[10px] text-black/30 font-medium uppercase tracking-widest">Vault is Empty</p>
-            </div>
-          ) : (
+        <div className="flex-1 overflow-y-auto flex flex-col">
+          {/* Tab row — Chats | Calls | Contacts */}
+          <div className="flex border-b border-black/5 shrink-0">
+            {(['chats', 'calls', 'contacts'] as const).map(tab => (
+              <button
+                key={tab}
+                onClick={() => setSidebarTab(tab)}
+                className={`flex-1 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all ${
+                  sidebarTab === tab
+                    ? 'text-[#050505] border-b-2 border-[#050505]'
+                    : 'text-black/30 hover:text-black/60'
+                }`}
+              >
+                {tab === 'chats' ? '💬' : tab === 'calls' ? '📞' : '👤'} {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* ── CHATS TAB ── */}
+          {sidebarTab === 'chats' && (
+            <>
+              {conversations.length > 0 && archivedPeers.size > 0 && (
+                <button
+                  onClick={() => setShowArchived(!showArchived)}
+                  className="w-full text-left p-3.5 border-b border-white/20 bg-[#f5f5f7]/50 hover:bg-[#e5e5ea]/50 transition-all flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-2 text-black/50">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+                    <span className="text-[11px] font-bold uppercase tracking-wider">Archived Chats ({archivedPeers.size})</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-black/40">{showArchived ? 'Hide' : 'Show'}</span>
+                </button>
+              )}
+              {conversations.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full gap-3 p-6 text-center">
+                  <p className="text-[10px] text-black/30 font-medium uppercase tracking-widest">Vault is Empty</p>
+                </div>
+              ) : (
             conversations.filter(conv => showArchived ? archivedPeers.has(conv.peerAddress.toLowerCase()) : !archivedPeers.has(conv.peerAddress.toLowerCase())).map((conv, i) => {
               const isActive = activePeer?.toLowerCase() === conv.peerAddress.toLowerCase();
               return (
@@ -3416,6 +3500,76 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               );
             })
           )}
+            </>
+          )}
+
+          {/* ── CALLS TAB ── */}
+          {sidebarTab === 'calls' && (
+            <div className="flex-1 overflow-y-auto">
+              {callHistoryList.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full p-6 text-center gap-3">
+                  <span className="text-3xl opacity-30">📞</span>
+                  <p className="text-[10px] text-black/30 font-medium uppercase tracking-widest">No Call History</p>
+                </div>
+              ) : callHistoryList.map((call) => {
+                const isToday = new Date(call.timestamp).toDateString() === new Date().toDateString();
+                const isYesterday = new Date(call.timestamp).toDateString() === new Date(Date.now() - 86400000).toDateString();
+                const timeLabel = isToday
+                  ? new Date(call.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                  : isYesterday ? 'Yesterday'
+                  : new Date(call.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' });
+                const mins = Math.floor(call.durationSeconds / 60).toString().padStart(2, '0');
+                const secs = (call.durationSeconds % 60).toString().padStart(2, '0');
+                return (
+                  <button
+                    key={call.id}
+                    className="w-full p-3 border-b border-black/5 flex items-center gap-3 hover:bg-black/[0.02] transition-colors text-left"
+                    onClick={() => { setActivePeer(call.peerAddress); setSidebarTab('chats'); setShowList(false); }}
+                  >
+                    <Avatar address={call.peerAddress} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] font-bold text-[#050505] font-mono truncate">{getDisplayName(call.peerAddress)}</p>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className={`text-[10px] font-bold ${call.status === 'missed' || call.status === 'declined' ? 'text-red-400' : 'text-black/40'}`}>
+                          {call.direction === 'incoming' ? '↙' : '↗'} {call.status}
+                        </span>
+                        {call.durationSeconds > 0 && <span className="text-[10px] text-black/30 font-mono">{mins}:{secs}</span>}
+                        <span className="text-[9px] text-black/25 ml-auto font-mono">{call.type === 'video' ? '📹' : '🎙️'}</span>
+                      </div>
+                    </div>
+                    <span className="text-[9px] text-black/30 font-mono shrink-0">{timeLabel}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* ── CONTACTS TAB ── */}
+          {sidebarTab === 'contacts' && (
+            <div className="flex-1 overflow-y-auto">
+              {localContacts.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full p-6 text-center gap-3">
+                  <span className="text-3xl opacity-30">👤</span>
+                  <p className="text-[10px] text-black/30 font-medium uppercase tracking-widest">No Saved Contacts</p>
+                  <p className="text-[10px] text-black/20">Open a chat and tap the contact icon in the header</p>
+                </div>
+              ) : localContacts.map((contact) => (
+                <button
+                  key={contact.id}
+                  className="w-full p-3 border-b border-black/5 flex items-center gap-3 hover:bg-black/[0.02] transition-colors text-left"
+                  onClick={() => { setActivePeer(contact.peerAddress); setSidebarTab('chats'); setShowList(false); }}
+                >
+                  <Avatar address={contact.peerAddress} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] font-bold text-[#050505] font-mono truncate">{contact.name}</p>
+                    <p className="text-[10px] text-black/30 font-mono truncate">{shortAddr(contact.peerAddress)}</p>
+                  </div>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-black/20 shrink-0"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+              ))}
+            </div>
+          )}
+
         </div>
       </div>
 
@@ -3441,7 +3595,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[13px] font-black text-[#050505] font-mono flex items-center gap-1.5">
-                      {shortAddr(activePeer!)}
+                      {getDisplayName(activePeer!)}
                     </span>
                     <span className={`text-[10px] font-semibold flex items-center gap-1 ${peerStatus.online ? 'text-black' : 'text-black/50'}`}>
                       {peerStatus.isTyping ? (
@@ -3476,6 +3630,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   title={isSecretChat ? "Secret Chat Active (Auto-Burn 15s)" : "Start Secret Chat"}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </button>
+                {/* v2: Save Contact Button */}
+                <button
+                  onClick={() => { setSaveContactName(getDisplayName(activePeer!)); setShowSaveContactModal(true); }}
+                  className="w-9 h-9 bg-[#f5f5f7] hover:bg-[#e5e5ea] rounded-xl flex items-center justify-center text-black/40 hover:text-black transition-colors"
+                  title="Save Contact"
+                >
+                  <UserPlus size={15} />
                 </button>
                 <button
                   onClick={() => handleStartCall('audio')}
@@ -4200,7 +4362,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               </div>
             </div>
 
-            <p className="text-black text-[28px] font-black tracking-tight mb-1">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
+            <p className="text-black text-[28px] font-black tracking-tight mb-1">{activePeer ? getDisplayName(activePeer) : 'Unknown Peer'}</p>
             <p className="text-black/50 text-[13px] font-mono animate-pulse">Ringing...</p>
           </div>
 
@@ -4250,7 +4412,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               </div>
             </div>
 
-            <p className="text-black text-[28px] font-black tracking-tight mb-1">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
+            <p className="text-black text-[28px] font-black tracking-tight mb-1">{activePeer ? getDisplayName(activePeer) : 'Unknown Peer'}</p>
             <p className="text-black/40 text-[13px] font-mono animate-pulse">Calling...</p>
           </div>
 
@@ -4336,7 +4498,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       </div>
                     </div>
                     <div className="text-center">
-                      <p className="text-black text-[30px] font-black tracking-tight mb-2">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
+                      <p className="text-black text-[30px] font-black tracking-tight mb-2">{activePeer ? getDisplayName(activePeer) : 'Unknown Peer'}</p>
                       {remoteStream ? (
                         <span className={`text-[13px] font-mono uppercase tracking-[0.25em] flex items-center gap-2 justify-center ${networkQuality === 'poor' ? 'text-black/50' : 'text-black/80'}`}>
                           <span className={`w-2 h-2 rounded-full animate-pulse ${networkQuality === 'poor' ? 'bg-black/50' : 'bg-black/80'}`} />
@@ -4378,7 +4540,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   <span className="text-black text-xs font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '??'}</span>
                 </div>
                 <div>
-                  <p className="text-black text-[13px] font-bold leading-none">{activePeer ? shortAddr(activePeer) : 'Peer'}</p>
+                  <p className="text-black text-[13px] font-bold leading-none">{activePeer ? getDisplayName(activePeer) : 'Peer'}</p>
                   <p className="text-black/50 text-[10px] font-mono mt-0.5">{callType === 'video' ? '📹 Video' : '🎙️ Audio'}</p>
                 </div>
               </div>
@@ -4944,7 +5106,53 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             document.body
           )
         : null}
+
+      {/* ── Save Contact Modal ── */}
+      {showSaveContactModal && activePeer && isMounted && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[300000] flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowSaveContactModal(false)}>
+          <div
+            className="bg-white rounded-3xl shadow-2xl border border-black/5 p-6 w-80 mx-4"
+            onClick={e => e.stopPropagation()}
+          >
+            <h3 className="text-[13px] font-black uppercase tracking-widest text-[#050505] mb-1">Save Contact</h3>
+            <p className="text-[11px] text-black/40 font-mono mb-4 break-all">{activePeer}</p>
+            <input
+              autoFocus
+              type="text"
+              value={saveContactName}
+              onChange={e => setSaveContactName(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && saveContactName.trim() && address) {
+                  saveLocalContact(address, { peerAddress: activePeer, name: saveContactName.trim() });
+                  toast.success(`Contact saved as "${saveContactName.trim()}"`);
+                  setShowSaveContactModal(false);
+                }
+              }}
+              placeholder="Enter a name..."
+              className="w-full bg-[#f5f5f7] rounded-xl px-4 py-2.5 text-[13px] text-[#050505] outline-none focus:ring-1 focus:ring-black/20 placeholder:text-black/30 font-mono mb-4"
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowSaveContactModal(false)}
+                className="flex-1 py-2.5 rounded-xl bg-[#f5f5f7] text-[12px] font-bold text-black/50 hover:bg-black/5 transition-colors"
+              >Cancel</button>
+              <button
+                onClick={() => {
+                  if (saveContactName.trim() && address) {
+                    saveLocalContact(address, { peerAddress: activePeer, name: saveContactName.trim() });
+                    toast.success(`Contact saved as "${saveContactName.trim()}"`);
+                    setShowSaveContactModal(false);
+                  }
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-[#050505] text-[12px] font-bold text-white hover:opacity-80 transition-opacity disabled:opacity-30"
+                disabled={!saveContactName.trim()}
+              >Save</button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
     </TuringShieldGate>
   );
 }
-
