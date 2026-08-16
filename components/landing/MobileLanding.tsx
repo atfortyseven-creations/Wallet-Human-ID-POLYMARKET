@@ -1302,7 +1302,9 @@ export function MobileLanding() {
   // We fall through to the normal landing page render below (no ConnectedScreen).
   // The header shows Whale Hub + account controls. The user chooses where to go.
 
-  if (isLinked && effectiveAddress && showHub) {
+  // [iOS FIX] App Hub was completely inaccessible because showHub was never set to true.
+  // Fix: show ConnectedScreen whenever the session is established — no intermediate showHub state needed.
+  if (isLinked && effectiveAddress) {
     return (
       <div className="w-full min-h-[100vh] bg-transparent" suppressHydrationWarning>
         <SafeErrorBoundary>
@@ -1313,7 +1315,7 @@ export function MobileLanding() {
              showScanner={showScanner} 
              onCloseScanner={() => setShowScanner(false)} 
              scanMode={scanMode}
-             onBack={() => setShowHub(false)}
+             onBack={undefined}
              connectorName={connector?.name}
              chainId={chainId}
              onDisconnect={handleDisconnect}

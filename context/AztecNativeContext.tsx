@@ -167,8 +167,27 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   // Priority ladder: wagmi direct → QR cookie → local system wallet.
   const { address: evmAddress } = useSystemAccount();
 
-  // Tracks which tx IDs have already fired a "received QDs" toast.
-  const notifiedRef = useRef<Set<string>>(new Set());
+  // [iOS FIX] Tracks which tx IDs have already fired a toast.
+  // Persisted in sessionStorage so iOS tab suspension/resume does NOT trigger
+  // duplicate notifications for all historical transactions.
+  const NOTIFIED_KEY = `aztec_notified_${evmAddress || 'anon'}`;
+  const notifiedRef = useRef<Set<string>>(() => {
+    try {
+      const stored = sessionStorage.getItem(NOTIFIED_KEY);
+      return stored ? new Set(JSON.parse(stored)) : new Set<string>();
+    } catch {
+      return new Set<string>();
+    }
+  });
+  // Helper: add an ID and persist the set.
+  const markNotified = useCallback((id: string) => {
+    notifiedRef.current.add(id);
+    try {
+      // Keep at most 200 IDs to avoid unbounded storage growth.
+      const arr = Array.from(notifiedRef.current).slice(-200);
+      sessionStorage.setItem(NOTIFIED_KEY, JSON.stringify(arr));
+    } catch { /* private mode / storage full */ }
+  }, [NOTIFIED_KEY]);
   // Polling interval ref for cleanup.
   const pollRef     = useRef<NodeJS.Timeout | null>(null);
 
@@ -194,7 +213,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
           // Toast exactly once per genuinely new incoming transaction.
           for (const tx of transactions) {
             if (notifiedRef.current.has(tx.id)) continue;
-            notifiedRef.current.add(tx.id);
+            markNotified(tx.id); // persist immediately — survives iOS remount
             if (
               tx.toAddress?.toLowerCase() === addr.toLowerCase() &&
               tx.type !== "AIRDROP"

@@ -2710,7 +2710,16 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           const existingIds = new Set(prev.map(m => m.id));
           
           // Only add messages we haven't seen before (truly new from poll)
-          const newConfirmed = processedMsgs.filter(m => !existingIds.has(m.id));
+          let newConfirmed = processedMsgs.filter((m: any) => !existingIds.has(m.id));
+          
+          // [BUG FIX] CLEAR CHAT GUARD FOR RT STREAM
+          // Filter out messages older than the user's local clear timestamp,
+          // otherwise every poll re-injects the deleted history.
+          const clearTsMs = parseInt(localStorage.getItem(`whale_cleared_${address}_${activePeer.toLowerCase()}`) || '0', 10);
+          if (clearTsMs > 0) {
+            const clearTsNs = clearTsMs * 1000000;
+            newConfirmed = newConfirmed.filter((m: any) => m.sentAtNs > clearTsNs);
+          }
           
           // ── KEY GUARD ──────────────────────────────────────────────────────
           // If the poll returned NOTHING new, return prev UNCHANGED.
@@ -2977,16 +2986,21 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     return () => clearTimeout(t);
   }, [inputText, detectLinkPreview]);
 
-  // ─── Hito 4: GIF Search (Tenor public API) ────────────────────────────────
+  // ─── Hito 4: GIF Search (Proxy via internal API) ────────────────────────────────
   const searchGifs = useCallback(async (q: string) => {
     if (!q.trim()) { setGifResults([]); return; }
     try {
-      const res = await fetch(`https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(q)}&key=AIzaSyAyimkuYQYF_FXVALexPubfQgShfu7Md68&limit=20&media_filter=gif`);
-      if (!res.ok) return;
+      const res = await fetch(`/api/gif/search?q=${encodeURIComponent(q)}`);
+      if (!res.ok) {
+        setGifResults([]);
+        return;
+      }
       const data = await res.json();
       const urls = (data.results || []).map((r: any) => r.media_formats?.gif?.url || r.media_formats?.tinygif?.url).filter(Boolean);
       setGifResults(urls);
-    } catch { /* silently ignore */ }
+    } catch { 
+      setGifResults([]);
+    }
   }, []);
 
   useEffect(() => {
@@ -4207,6 +4221,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             <div className="flex flex-col items-center gap-3">
               <button
                 onClick={answerCall}
+                onTouchStart={(e) => { e.preventDefault(); answerCall(); }}
                 className="w-[84px] h-[84px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-xl bg-[#050505]"
               >
                 <Phone size={36} className="text-white" />
