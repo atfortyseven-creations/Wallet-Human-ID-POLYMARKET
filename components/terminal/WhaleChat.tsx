@@ -323,6 +323,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const [scheduledAt, setScheduledAt] = useState<Date | null>(null); // scheduled send time
   const [showGifPicker, setShowGifPicker] = useState(false); // GIF picker
   const [showStickerPicker, setShowStickerPicker] = useState(false); // Sticker picker
+  const [showAppDrawer, setShowAppDrawer] = useState(false); // iMessage style + menu
   const [gifSearch, setGifSearch] = useState(''); // GIF search query — start empty so user types first
   const [gifResults, setGifResults] = useState<string[]>([]); // GIF URLs
   const [linkPreview, setLinkPreview] = useState<{ url: string, title: string, description: string, image?: string } | null>(null);
@@ -3946,124 +3947,99 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 </div>
               )}
                 <input type="file" ref={fileRef} className="hidden" onChange={handleFileUpload} />
-                <form onSubmit={handleSend} className="flex flex-col">
-                  {/* ── Top icon row ── */}
-                  <div className="flex items-center gap-1 px-3 pt-2 pb-1 overflow-x-auto scrollbar-none">
-                    {/* GIF Button */}
-                    <button
-                      type="button"
-                      onClick={() => { setShowGifPicker(g => !g); setShowStickerPicker(false); }}
-                      className={`h-8 px-3 rounded-full flex items-center justify-center transition-all shrink-0 font-black text-[12px] ${showGifPicker ? 'bg-black/10 text-black border border-black/15' : 'hover:bg-[#e5e5ea] text-black/50'}`}
-                      title="Send GIF"
-                    >GIF</button>
-                    {/* Sticker Button */}
-                    <button
-                      type="button"
-                      onClick={() => { setShowStickerPicker(s => !s); setShowGifPicker(false); }}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shrink-0 text-[17px] ${showStickerPicker ? 'bg-black/10 border border-black/15' : 'hover:bg-[#e5e5ea]'}`}
-                      title="Send Sticker"
-                    >🐋</button>
-                    {/* Emoji Button */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        // Insert a common emoji at cursor position
-                        const emojis = ['😂','❤️','🔥','👍','🙏','💯','😍','🥺','😭','🎉'];
-                        const r = emojis[Math.floor(Math.random() * emojis.length)];
-                        setInputText(prev => prev + r);
-                        setTimeout(() => inputRef.current?.focus(), 50);
-                      }}
-                      className="w-8 h-8 rounded-full flex items-center justify-center transition-all shrink-0 text-[17px] hover:bg-[#e5e5ea]"
-                      title="Insert Emoji"
-                    >😊</button>
-                    {/* Burn Timer */}
-                    <button
-                      type="button"
-                      onClick={() => setBurnTimer(burnTimer ? null : 60)}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shrink-0 ${burnTimer ? 'bg-[#f5f5f7] text-[#050505] shadow-sm border border-black/10' : 'hover:bg-[#e5e5ea] text-black/50'}`}
-                      title="Self-Destruct Timer (60s)"
-                    >
-                      {burnTimer ? <span className="font-bold font-mono text-[10px]">{burnTimer}s</span> : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"></path></svg>}
-                    </button>
-                    {/* Attach File */}
-                    <button
-                      type="button"
-                      onClick={() => fileRef.current?.click()}
-                      disabled={isUploading || sending}
-                      className="w-8 h-8 rounded-full flex items-center justify-center transition-all hover:bg-[#e5e5ea] text-black/50 shrink-0"
-                      title="Attach File"
-                    >
-                      {isUploading ? <span className="text-[11px] animate-spin">⌛</span> : <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>}
-                    </button>
-                    {/* Poll Button */}
-                    <button
-                      type="button"
-                      onClick={() => setShowPollCreator(p => !p)}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shrink-0 ${showPollCreator ? 'bg-black/10 text-black border border-black/15' : 'hover:bg-[#e5e5ea] text-black/50'}`}
-                      title="Create Poll"
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                    </button>
-                    {/* Wallet Send */}
-                    <button
-                      type="button"
-                      onClick={() => setShowWalletTransfer(w => !w)}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shrink-0 ${showWalletTransfer ? 'bg-[#e5e5ea] text-black border border-black/10' : 'hover:bg-[#e5e5ea] text-black/50'}`}
-                      title="Send QD Tokens"
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-                    </button>
-                  </div>
-                  {/* ── Bottom: input + send/mic ── */}
-                  <div className="flex gap-2 px-3 pb-2 pt-1 items-end">
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      inputMode="text"
-                      value={inputText}
-                      onChange={e => setInputText(e.target.value)}
-                      disabled={isUploading}
-                      placeholder={isUploading ? "Uploading..." : "iMessage"}
-                      className="flex-1 bg-[#f5f5f7] border border-black/8 rounded-2xl px-4 py-2.5 text-[#050505] focus:outline-none focus:ring-1 focus:ring-black/10 placeholder:text-black/40 disabled:opacity-50 text-[15px] min-w-0"
-                    />
-                    {inputText.trim() ? (
-                      <div className="flex items-center gap-1 shrink-0">
-                        <button
-                          type="button"
-                          title="Schedule message"
-                          onClick={() => { const d = new Date(Date.now() + 5 * 60 * 1000); setScheduledAt(d); }}
-                          className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${scheduledAt ? 'bg-[#050505] text-white' : 'hover:bg-[#e5e5ea] text-black/40'}`}
-                        >
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                <form onSubmit={handleSend} className="flex flex-col w-full relative">
+                  {/* ── App Drawer (iMessage Style Apps) ── */}
+                  {showAppDrawer && (
+                    <div className="flex items-center gap-4 px-4 pt-3 pb-4 overflow-x-auto scrollbar-none animate-in slide-in-from-bottom-2 fade-in duration-200 border-b border-black/5 mb-1">
+                      {[
+                        { id: 'gif', icon: <span className="font-black text-[12px]">GIF</span>, label: 'GIFs', color: 'bg-rose-500', onClick: () => { setShowGifPicker(true); setShowAppDrawer(false); } },
+                        { id: 'sticker', icon: <span className="text-[20px] leading-none">🐋</span>, label: 'Stickers', color: 'bg-blue-500', onClick: () => { setShowStickerPicker(true); setShowAppDrawer(false); } },
+                        { id: 'emoji', icon: <span className="text-[20px] leading-none">😊</span>, label: 'Emojis', color: 'bg-amber-500', onClick: () => { 
+                          const emojis = ['😂','❤️','🔥','👍','🙏','💯','😍','🥺','😭','🎉'];
+                          setInputText(prev => prev + emojis[Math.floor(Math.random() * emojis.length)]);
+                          setShowAppDrawer(false);
+                          setTimeout(() => inputRef.current?.focus(), 50);
+                        }},
+                        { id: 'attach', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>, label: 'Files', color: 'bg-gray-500', onClick: () => { fileRef.current?.click(); setShowAppDrawer(false); } },
+                        { id: 'poll', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>, label: 'Polls', color: 'bg-indigo-500', onClick: () => { setShowPollCreator(true); setShowAppDrawer(false); } },
+                        { id: 'qd', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>, label: 'Pay', color: 'bg-emerald-500', onClick: () => { setShowWalletTransfer(true); setShowAppDrawer(false); } },
+                        { id: 'burn', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"></path></svg>, label: 'Burn', color: 'bg-red-600', onClick: () => { setBurnTimer(burnTimer ? null : 60); setShowAppDrawer(false); } },
+                      ].map(app => (
+                        <button key={app.id} type="button" onClick={app.onClick} className="flex flex-col items-center gap-1.5 shrink-0 group">
+                          <div className={`w-[52px] h-[52px] rounded-full ${app.color} flex items-center justify-center text-white shadow-md transform transition-transform group-hover:scale-105 group-active:scale-95`}>
+                            {app.icon}
+                          </div>
+                          <span className="text-[10px] font-semibold text-black/60 tracking-wide">{app.label}</span>
                         </button>
-                        <button
-                          type="submit"
-                          disabled={sending || isUploading}
-                          className="w-10 h-10 rounded-full bg-[#1c7aff] flex items-center justify-center text-white disabled:opacity-30 hover:bg-[#0a65e8] transition-all shrink-0 shadow-sm"
-                        >
-                          {scheduledAt
-                            ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
-                            : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-0.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* ── Main Input Row ── */}
+                  <div className="flex items-end gap-2 px-3 pb-3 pt-1 w-full">
+                    <button
+                      type="button"
+                      onClick={() => setShowAppDrawer(d => !d)}
+                      className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition-all mt-auto mb-1 ${showAppDrawer ? 'bg-black/10 text-black rotate-45' : 'bg-gray-200 text-black/50 hover:bg-gray-300'}`}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+
+                    <div className="flex-1 bg-white border border-[#c8c8cc] rounded-3xl flex items-end relative shadow-sm overflow-hidden min-h-[38px] transition-all focus-within:border-blue-400">
+                      <textarea
+                        ref={inputRef as any}
+                        value={inputText}
+                        onChange={e => {
+                          setInputText(e.target.value);
+                          e.target.style.height = '38px';
+                          e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+                        }}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            if (inputText.trim() && !isUploading) {
+                              handleSend(e as any);
+                              (e.target as HTMLTextAreaElement).style.height = '38px';
+                            }
                           }
-                        </button>
+                        }}
+                        disabled={isUploading}
+                        placeholder={isUploading ? "Uploading..." : "iMessage"}
+                        rows={1}
+                        // [CRITICAL FIX] font-size: 16px is required on iOS Safari to prevent the UI from zooming in when focused!
+                        className="flex-1 bg-transparent px-4 py-2 text-[#050505] focus:outline-none placeholder:text-black/30 disabled:opacity-50 text-[16px] resize-none max-h-[120px] scrollbar-none leading-relaxed min-h-[38px]"
+                        style={{ paddingRight: inputText.trim() ? '45px' : '36px' }}
+                      />
+                      
+                      {/* Inside input right-side actions */}
+                      <div className="absolute right-1 bottom-[3px] flex items-center">
+                        {inputText.trim() ? (
+                          <button
+                            type="submit"
+                            disabled={sending || isUploading}
+                            className="w-8 h-8 rounded-full bg-[#1c7aff] flex items-center justify-center text-white disabled:opacity-30 active:scale-90 transition-all shadow-sm"
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="ml-0.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onTouchStart={startRecording}
+                            onMouseDown={startRecording}
+                            onTouchEnd={stopRecording}
+                            onMouseUp={stopRecording}
+                            onMouseLeave={stopRecording}
+                            onContextMenu={(e) => e.preventDefault()}
+                            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                              isRecording ? 'bg-[#ff3b30] text-white scale-110 shadow-md' : 'text-[#8e8e93] hover:text-black active:scale-95'
+                            }`}
+                            style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
+                          >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                          </button>
+                        )}
                       </div>
-                    ) : (
-                      <button
-                        type="button"
-                        onTouchStart={startRecording}
-                        onMouseDown={startRecording}
-                        onTouchEnd={stopRecording}
-                        onMouseUp={stopRecording}
-                        onMouseLeave={stopRecording}
-                        onContextMenu={(e) => e.preventDefault()}
-                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 ${
-                          isRecording ? 'bg-[#050505] text-white shadow-md scale-110' : 'hover:bg-[#e5e5ea] text-black/50'
-                        }`}
-                        style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
-                      >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-                      </button>
-                    )}
+                    </div>
                   </div>
                 </form>
 

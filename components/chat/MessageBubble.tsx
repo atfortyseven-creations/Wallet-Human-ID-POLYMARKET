@@ -151,8 +151,8 @@ const StickerBubble = React.memo(({ content }: { content: string }) => {
   const sticker = content.replace('__STICKER__', '');
   return (
     <div
-      className="text-[64px] leading-none select-none cursor-default animate-[stickerPop_0.4s_cubic-bezier(0.34,1.56,0.64,1)_forwards]"
-      style={{ filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.18))', opacity: 0 }}
+      className="text-[64px] leading-none select-none cursor-default opacity-0 animate-[stickerPop_0.4s_cubic-bezier(0.34,1.56,0.64,1)_forwards]"
+      style={{ filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.18))' }}
     >
       {sticker}
     </div>
