@@ -109,7 +109,7 @@ export const parseMessageText = (text: string, isMe: boolean) => {
 };
 
 import { playSendSound, playReceiveSound } from '../../lib/utils/sounds';
-import { MessageBubble } from '../chat/MessageBubble';
+import { MessageBubble, StickerPicker } from '../chat/MessageBubble';
 
 export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const { address, isConnected, isSystemHandshake, isChecking, connector, isZkVerified, isLocalSystemWallet } = useSystemAccount();
@@ -322,7 +322,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const [forwardMsg, setForwardMsg] = useState<any | null>(null); // message to forward
   const [scheduledAt, setScheduledAt] = useState<Date | null>(null); // scheduled send time
   const [showGifPicker, setShowGifPicker] = useState(false); // GIF picker
-  const [gifSearch, setGifSearch] = useState('trending'); // GIF search query
+  const [showStickerPicker, setShowStickerPicker] = useState(false); // Sticker picker
+  const [gifSearch, setGifSearch] = useState(''); // GIF search query — start empty so user types first
   const [gifResults, setGifResults] = useState<string[]>([]); // GIF URLs
   const [linkPreview, setLinkPreview] = useState<{ url: string, title: string, description: string, image?: string } | null>(null);
 
@@ -3703,9 +3704,17 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       clientInboxId={client?.inboxId}
                       onReply={(msgToReply) => setReplyingTo(msgToReply)}
                       onReact={(msgId, emoji) => executeSend(`__REACT__${msgId}__::${emoji}`)}
-                      onContextMenu={(e, id, content) => setContextMenu({ id, content, x: e.clientX, y: e.clientY })}
+                      onContextMenu={(e, id, content) => {
+                        if (e?.type === 'revoke') {
+                          executeSend(`__REVOKE__${id}`);
+                        } else {
+                          setContextMenu({ id, content, x: e?.clientX ?? 0, y: e?.clientY ?? 0 });
+                        }
+                      }}
                       onOpenLightbox={(url) => setLightboxImg(url)}
                       formatMessagePreview={formatMessagePreview}
+                      onVotePoll={(pollId, idx) => executeSend(`__VOTE__${pollId}__::${idx}`)}
+                      onEditMsg={(id, current) => setEditingMsg({ id, content: current })}
                     />
                   );
                 });
@@ -3829,6 +3838,18 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   <button onClick={() => setScheduledAt(null)} className="text-black/50 hover:text-black/70 text-[10px] font-bold">Cancel</button>
                 </div>
               )}
+              {/* Sticker Picker */}
+              {showStickerPicker && (
+                <div className="relative px-3 pb-0">
+                  <StickerPicker
+                    onSend={(s) => {
+                      executeSend(`__STICKER__${s}`);
+                      setShowStickerPicker(false);
+                    }}
+                    onClose={() => setShowStickerPicker(false)}
+                  />
+                </div>
+              )}
               {/* Hito 4: GIF Picker */}
               {showGifPicker && (
                 <div className="bg-white/95 backdrop-blur-md border-t border-black/5 p-3 animate-in slide-in-from-bottom-4 duration-200">
@@ -3919,10 +3940,17 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 {/* GIF Button */}
                 <button
                   type="button"
-                  onClick={() => setShowGifPicker(g => !g)}
+                  onClick={() => { setShowGifPicker(g => !g); setShowStickerPicker(false); }}
                   className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 font-black text-[13px] ${showGifPicker ? 'bg-black/5 text-black border border-black/10' : 'hover:bg-[#e5e5ea] text-black/50'}`}
                   title="Send GIF"
                 >GIF</button>
+                {/* Sticker Button */}
+                <button
+                  type="button"
+                  onClick={() => { setShowStickerPicker(s => !s); setShowGifPicker(false); }}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 text-[18px] ${showStickerPicker ? 'bg-black/5 border border-black/10' : 'hover:bg-[#e5e5ea]'}`}
+                  title="Send Sticker"
+                >🐋</button>
                 <button
                   type="button"
                   onClick={() => setBurnTimer(burnTimer ? null : 60)}
