@@ -1306,7 +1306,7 @@ export function MobileLanding() {
   // Fix: show ConnectedScreen whenever the session is established — no intermediate showHub state needed.
   if (isLinked && effectiveAddress) {
     return (
-      <div className="w-full min-h-[100dvh] bg-transparent" suppressHydrationWarning>
+      <div className="fixed inset-0 w-full h-[100dvh] bg-white overflow-hidden overscroll-none" suppressHydrationWarning>
         <SafeErrorBoundary>
           <ConnectedScreen 
              address={effectiveAddress} 

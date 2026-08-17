@@ -3995,7 +3995,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                           e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
                         }}
                         onKeyDown={e => {
-                          if (e.key === 'Enter' && !e.shiftKey) {
+                          const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+                          if (e.key === 'Enter' && !e.shiftKey && !isTouch) {
                             e.preventDefault();
                             if (inputText.trim() && !isUploading) {
                               handleSend(e as any);
