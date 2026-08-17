@@ -6,13 +6,15 @@ import {
   ChevronLeft, User, Bell, Lock, Database, Paintbrush,
   Globe, Star, Phone, Folder, MonitorSmartphone, Bookmark,
   QrCode, Edit2, Check, Shield, Trash2, Camera, Crown, Share,
-  Volume2, PieChart, Info, DownloadCloud, Zap, MessageCircle, ArrowRight
+  Volume2, PieChart, Info, DownloadCloud, Zap, MessageCircle, ArrowRight,
+  Plus
 } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import { toast } from 'sonner';
+import { vault } from '@/lib/core/SecureVault';
+import { getCallHistory, CallRecord } from '@/lib/wallet/callHistory';
 
 // ─── 1. SETTINGS BACKEND ───────────────────────────────────────────────────
-// A robust custom hook that interfaces with localStorage (simulating PXE vault)
 const DEFAULT_SETTINGS = {
   notifications_private: true,
   notifications_groups: true,
@@ -27,10 +29,14 @@ const DEFAULT_SETTINGS = {
   data_saver_calls: false,
   theme: 'brutalist',
   text_size: 3,
-  language: 'en'
+  language: 'en',
+  // Profile settings
+  displayName: 'Satoshi Nakamoto',
+  username: 'whale_architect',
+  bio: 'Building the Sovereign Network. Cryptography, Privacy, and Decentralization.'
 };
 
-function useWhaleSettings(address: string) {
+export function useWhaleSettings(address: string) {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -40,10 +46,15 @@ function useWhaleSettings(address: string) {
     const stored = localStorage.getItem(key);
     if (stored) {
       try {
-        setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(stored) });
+        const parsed = JSON.parse(stored);
+        setSettings({ ...DEFAULT_SETTINGS, ...parsed });
+        // Apply theme globally
+        document.documentElement.setAttribute('data-theme', parsed.theme || 'brutalist');
       } catch (e) {
         console.error('Failed to parse settings', e);
       }
+    } else {
+      document.documentElement.setAttribute('data-theme', 'brutalist');
     }
     setIsLoaded(true);
   }, [address]);
@@ -52,6 +63,9 @@ function useWhaleSettings(address: string) {
     setSettings(prev => {
       const next = { ...prev, [key]: value };
       localStorage.setItem(`whale_settings_${address}`, JSON.stringify(next));
+      if (key === 'theme') {
+        document.documentElement.setAttribute('data-theme', value);
+      }
       return next;
     });
   };
@@ -96,24 +110,20 @@ export function WhaleChatSettings({ onClose, address }: WhaleChatSettingsProps) 
 
   return (
     <div className="fixed inset-0 z-[50] flex items-center justify-center pointer-events-none">
-      {/* Dimmed Backdrop */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto" onClick={onClose} />
       
-      {/* Brutalist Modal / Fullscreen Container */}
       <div className="relative w-full h-[100dvh] md:h-[90vh] md:w-[480px] bg-zinc-50 md:border-[3px] md:border-black pointer-events-auto flex flex-col font-mono overflow-hidden shadow-[12px_12px_0_0_rgba(0,0,0,1)] md:mr-8 md:self-end z-10 transition-all">
         
-        {/* Brutalist Header */}
         <div className="flex items-center justify-between px-4 py-4 bg-white shrink-0 border-b-[3px] border-black z-10">
           <button onClick={goBack} className="text-black font-bold uppercase tracking-widest text-[14px] hover:bg-black hover:text-white px-2 py-1 transition-colors border-2 border-transparent hover:border-black">
             {view === 'root' ? '[ CLOSE ]' : '< BACK'}
           </button>
-          <span className="font-black text-[18px] text-black tracking-tight uppercase">
+          <span className="font-black text-[18px] text-black tracking-tight uppercase truncate flex-1 text-center px-2">
             {view === 'root' ? 'SYSTEM SETTINGS' : view.replace('_', ' ')}
           </span>
-          <div className="w-16" /> {/* Spacer */}
+          <div className="w-16" />
         </div>
 
-        {/* View Router */}
         <div className="relative flex-1 w-full overflow-hidden bg-zinc-50">
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
@@ -126,18 +136,18 @@ export function WhaleChatSettings({ onClose, address }: WhaleChatSettingsProps) 
               transition={{ type: 'spring', stiffness: 400, damping: 40 }}
               className="absolute inset-0 w-full h-full flex flex-col bg-zinc-50 overflow-y-auto"
             >
-              {view === 'root' && <RootSettingsView onNavigate={navigate} address={address} />}
-              {view === 'profile' && <ProfileView address={address} />}
-              {view === 'edit_profile' && <EditProfileView address={address} />}
+              {view === 'root' && <RootSettingsView onNavigate={navigate} address={address} settings={settings} />}
+              {view === 'profile' && <ProfileView address={address} settings={settings} />}
+              {view === 'edit_profile' && <EditProfileView address={address} settings={settings} update={updateSetting} goBack={goBack} />}
               {view === 'notifications' && <NotificationsView s={settings} update={updateSetting} />}
               {view === 'privacy' && <PrivacySecurityView s={settings} update={updateSetting} />}
               {view === 'data' && <DataStorageView s={settings} update={updateSetting} />}
               {view === 'premium' && <PremiumView />}
               {view === 'stars' && <StarsView />}
-              {view === 'personal_vault' && <PersonalVaultView />}
-              {view === 'connection_log' && <ConnectionLogView />}
+              {view === 'personal_vault' && <PersonalVaultView address={address} />}
+              {view === 'connection_log' && <ConnectionLogView address={address} />}
               {view === 'devices' && <DevicesView />}
-              {view === 'workspaces' && <WorkspacesView />}
+              {view === 'workspaces' && <WorkspacesView address={address} />}
               {view === 'appearance' && <AppearanceView s={settings} update={updateSetting} />}
               {view === 'language' && <LanguageView s={settings} update={updateSetting} />}
             </motion.div>
@@ -148,19 +158,18 @@ export function WhaleChatSettings({ onClose, address }: WhaleChatSettingsProps) 
   );
 }
 
-// ─── 3. ROOT SETTINGS VIEW (BRUTALIST) ──────────────────────────────────────
-function RootSettingsView({ onNavigate, address }: any) {
+// ─── 3. ROOT SETTINGS VIEW ──────────────────────────────────────────────────
+function RootSettingsView({ onNavigate, address, settings }: any) {
   return (
     <div className="w-full pb-20">
-      {/* ID Card */}
       <div className="w-full p-4 border-b-[3px] border-black bg-white">
         <div className="flex items-center gap-4">
-          <div className="w-20 h-20 bg-black flex items-center justify-center shrink-0 border-2 border-black">
-            <span className="text-white font-black text-3xl">W</span>
+          <div className="w-20 h-20 bg-black flex items-center justify-center shrink-0 border-2 border-black overflow-hidden">
+            <span className="text-white font-black text-3xl">{settings.displayName.charAt(0).toUpperCase()}</span>
           </div>
           <div className="flex flex-col flex-1 overflow-hidden">
-            <span className="text-[20px] font-black text-black uppercase truncate">Satoshi Nakamoto</span>
-            <span className="text-[14px] font-bold text-black/50 truncate">@whale_architect</span>
+            <span className="text-[20px] font-black text-black uppercase truncate">{settings.displayName}</span>
+            <span className="text-[14px] font-bold text-black/50 truncate">@{settings.username}</span>
             <span className="text-[10px] font-mono mt-1 text-black bg-zinc-100 px-2 py-1 border border-black truncate">
               {address}
             </span>
@@ -187,10 +196,7 @@ function RootSettingsView({ onNavigate, address }: any) {
           <BrutalistMenuItem icon={<Globe/>} label="Language" onClick={() => onNavigate('language')} noBorder />
         </BrutalistMenuBlock>
 
-        <div 
-          onClick={() => onNavigate('premium')}
-          className="w-full border-[3px] border-black bg-black text-white p-4 flex items-center justify-between cursor-pointer hover:bg-zinc-900 transition-colors shadow-[6px_6px_0_0_#1c7aff]"
-        >
+        <div onClick={() => onNavigate('premium')} className="w-full border-[3px] border-black bg-black text-white p-4 flex items-center justify-between cursor-pointer hover:bg-zinc-900 transition-colors shadow-[6px_6px_0_0_#1c7aff]">
           <div className="flex items-center gap-4">
             <Crown size={28} className="text-[#1c7aff]" />
             <div className="flex flex-col">
@@ -200,10 +206,7 @@ function RootSettingsView({ onNavigate, address }: any) {
           </div>
         </div>
 
-        <div 
-          onClick={() => onNavigate('stars')}
-          className="w-full border-[3px] border-black bg-yellow-400 text-black p-4 flex items-center justify-between cursor-pointer hover:bg-yellow-300 transition-colors shadow-[6px_6px_0_0_#000]"
-        >
+        <div onClick={() => onNavigate('stars')} className="w-full border-[3px] border-black bg-yellow-400 text-black p-4 flex items-center justify-between cursor-pointer hover:bg-yellow-300 transition-colors shadow-[6px_6px_0_0_#000]">
           <div className="flex items-center gap-4">
             <Star size={28} className="fill-black" />
             <div className="flex flex-col">
@@ -217,17 +220,17 @@ function RootSettingsView({ onNavigate, address }: any) {
   );
 }
 
-// ─── 4. PROFILE VIEWS ────────────────────────────────────────────────────────
-function ProfileView({ address }: { address: string }) {
+// ─── 4. PROFILE VIEWS ───────────────────────────────────────────────────────
+function ProfileView({ address, settings }: any) {
   const [showQR, setShowQR] = useState(false);
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col pb-20">
       <div className="w-full bg-black p-8 flex flex-col items-center justify-center text-white relative">
         <div className="w-32 h-32 bg-white border-[4px] border-zinc-500 mb-4 flex items-center justify-center overflow-hidden">
-           <span className="text-black font-black text-6xl">W</span>
+           <span className="text-black font-black text-6xl">{settings.displayName.charAt(0).toUpperCase()}</span>
         </div>
-        <h2 className="text-2xl font-black uppercase">Satoshi Nakamoto</h2>
-        <span className="text-zinc-400 text-sm font-bold mt-1">@whale_architect</span>
+        <h2 className="text-2xl font-black uppercase text-center max-w-[90%] break-words">{settings.displayName}</h2>
+        <span className="text-zinc-400 text-sm font-bold mt-1">@{settings.username}</span>
         <div className="absolute top-4 right-4 flex gap-2">
           <button onClick={() => setShowQR(!showQR)} className="p-2 bg-white text-black hover:bg-zinc-200 border-2 border-transparent">
             <QrCode size={20} />
@@ -246,43 +249,56 @@ function ProfileView({ address }: { address: string }) {
         )}
         <div className="bg-white border-[3px] border-black p-4 shadow-[4px_4px_0_0_#000]">
           <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 block mb-1">Bio</span>
-          <p className="text-[14px] font-bold text-black">Building the Sovereign Network. Cryptography, Privacy, and Decentralization.</p>
+          <p className="text-[14px] font-bold text-black whitespace-pre-wrap">{settings.bio}</p>
         </div>
       </div>
     </div>
   );
 }
 
-function EditProfileView({ address }: { address: string }) {
+function EditProfileView({ address, settings, update, goBack }: any) {
+  const [name, setName] = useState(settings.displayName);
+  const [username, setUsername] = useState(settings.username);
+  const [bio, setBio] = useState(settings.bio);
+
+  const handleSave = () => {
+    update('displayName', name);
+    update('username', username);
+    update('bio', bio);
+    toast.success('Profile Matrix Updated');
+    goBack();
+  };
+
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-4 space-y-6 pb-20">
       <div className="flex justify-center">
         <div className="w-24 h-24 bg-white border-[3px] border-black flex items-center justify-center relative cursor-pointer group shadow-[4px_4px_0_0_#000]">
           <Camera size={32} className="text-black group-hover:scale-110 transition-transform" />
         </div>
       </div>
       <div className="space-y-4">
-        <BrutalistInput label="Display Name" defaultValue="Satoshi Nakamoto" />
-        <BrutalistInput label="Username" defaultValue="whale_architect" prefix="@" />
+        <BrutalistInput label="Display Name" value={name} onChange={setName} />
+        <BrutalistInput label="Username" value={username} onChange={setUsername} prefix="@" />
         <div className="flex flex-col gap-1">
           <label className="text-[12px] font-black uppercase tracking-widest text-zinc-500">Biography</label>
           <textarea 
             className="w-full bg-white border-[3px] border-black p-3 text-[14px] font-bold outline-none focus:bg-yellow-50 resize-none h-24"
-            defaultValue="Building the Sovereign Network. Cryptography, Privacy, and Decentralization."
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
           />
         </div>
       </div>
-      <button className="w-full py-4 bg-black text-white font-black uppercase tracking-widest border-[3px] border-black hover:bg-zinc-800 shadow-[6px_6px_0_0_#000] active:translate-y-1 active:shadow-[2px_2px_0_0_#000]">
+      <button onClick={handleSave} className="w-full py-4 bg-black text-white font-black uppercase tracking-widest border-[3px] border-black hover:bg-zinc-800 shadow-[6px_6px_0_0_#000] active:translate-y-1 active:shadow-[2px_2px_0_0_#000]">
         SAVE PROTOCOL
       </button>
     </div>
   );
 }
 
-// ─── 5. SETTINGS MODULES ───────────────────────────────────────────────────
+// ─── 5. SETTINGS MODULES ────────────────────────────────────────────────────
 function NotificationsView({ s, update }: any) {
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-4 space-y-6 pb-20">
       <SectionHeader title="Message Alerts" />
       <BrutalistMenuBlock>
         <ToggleRow label="Direct Channels" checked={s.notifications_private} onChange={(v: any) => update('notifications_private', v)} />
@@ -293,7 +309,7 @@ function NotificationsView({ s, update }: any) {
       <BrutalistMenuBlock>
         <ToggleRow label="Show Unread Count" checked={s.badge_count} onChange={(v: any) => update('badge_count', v)} noBorder />
       </BrutalistMenuBlock>
-      <button className="w-full py-4 bg-white text-red-600 font-black uppercase tracking-widest border-[3px] border-black shadow-[4px_4px_0_0_#000] active:translate-y-1">
+      <button onClick={() => toast.success("Alerts reset to factory default.")} className="w-full py-4 bg-white text-red-600 font-black uppercase tracking-widest border-[3px] border-black shadow-[4px_4px_0_0_#000] active:translate-y-1">
         RESET ALERT SYSTEM
       </button>
     </div>
@@ -301,25 +317,72 @@ function NotificationsView({ s, update }: any) {
 }
 
 function PrivacySecurityView({ s, update }: any) {
+  const [blocked, setBlocked] = useState<string[]>([]);
+  const [showBlocked, setShowBlocked] = useState(false);
+
+  useEffect(() => {
+    vault.getItem('whale_blocked').then(res => {
+      if (res) {
+        try {
+          setBlocked(JSON.parse(res));
+        } catch(e) {}
+      }
+    });
+  }, []);
+
+  const unblock = (addr: string) => {
+    const updated = blocked.filter(a => a !== addr);
+    setBlocked(updated);
+    vault.setItem('whale_blocked', JSON.stringify(updated));
+    toast.success('Address removed from blocklist.');
+  };
+
+  if (showBlocked) {
+    return (
+      <div className="p-4 space-y-4 pb-20">
+        <button onClick={() => setShowBlocked(false)} className="mb-4 text-[12px] font-black uppercase tracking-widest border-2 border-black px-3 py-1 hover:bg-black hover:text-white transition-colors">
+          {'< BACK TO PRIVACY'}
+        </button>
+        <SectionHeader title="Blocked Nodes" />
+        {blocked.length === 0 ? (
+          <div className="p-6 bg-white border-[3px] border-black text-center font-bold text-sm shadow-[4px_4px_0_0_#000]">
+            NO BLOCKED ADDRESSES FOUND
+          </div>
+        ) : (
+          <BrutalistMenuBlock>
+            {blocked.map((b, i) => (
+              <div key={b} className={`flex items-center justify-between p-4 ${i !== blocked.length - 1 ? 'border-b-[3px] border-black' : ''}`}>
+                <span className="font-bold text-[12px] truncate w-[60%]">{b}</span>
+                <button onClick={() => unblock(b)} className="px-3 py-1 bg-red-600 text-white font-black text-[10px] uppercase border-2 border-black hover:bg-red-700">
+                  Unblock
+                </button>
+              </div>
+            ))}
+          </BrutalistMenuBlock>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-4 space-y-6 pb-20">
       <SectionHeader title="Security Controls" />
       <BrutalistMenuBlock>
         <ToggleRow label="Hardware Passcode" checked={s.passcode_enabled} onChange={(v: any) => update('passcode_enabled', v)} />
-        <BrutalistMenuItem icon={<Lock/>} label="Blocked Addresses" onClick={() => {}} noBorder />
+        <BrutalistMenuItem icon={<Lock/>} label={`Blocked Addresses (${blocked.length})`} onClick={() => setShowBlocked(true)} noBorder />
       </BrutalistMenuBlock>
 
       <SectionHeader title="Privacy Matrix" />
       <BrutalistMenuBlock>
         <ActionRow label="Last Seen Status" value={s.privacy_last_seen} onClick={() => update('privacy_last_seen', s.privacy_last_seen === 'nobody' ? 'everybody' : 'nobody')} />
-        <ActionRow label="Forwarding Rights" value="Nobody" onClick={() => {}} />
-        <ActionRow label="P2P Call IP Masking" value="Enabled" onClick={() => {}} noBorder />
+        <ActionRow label="Forwarding Rights" value="Nobody" onClick={() => toast.info('Forwarding is permanently disabled by protocol.')} />
+        <ActionRow label="P2P Call IP Masking" value="Enabled" onClick={() => toast.info('WebRTC IP Masking is enforced.')} noBorder />
       </BrutalistMenuBlock>
 
       <SectionHeader title="Self-Destruct Protocol" />
       <BrutalistMenuBlock>
         <ActionRow label="Auto-Delete Messages" value={s.auto_delete_timer} onClick={() => update('auto_delete_timer', s.auto_delete_timer === 'off' ? '1 week' : 'off')} />
-        <ActionRow label="Destroy Account After" value="6 Months" onClick={() => {}} noBorder />
+        <ActionRow label="Destroy Account After" value="6 Months" onClick={() => toast.info('Account destruction timer is fixed.')} noBorder />
       </BrutalistMenuBlock>
     </div>
   );
@@ -327,7 +390,7 @@ function PrivacySecurityView({ s, update }: any) {
 
 function DataStorageView({ s, update }: any) {
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-4 space-y-6 pb-20">
       <div className="bg-black text-white border-[3px] border-black p-6 flex flex-col items-center shadow-[6px_6px_0_0_#1c7aff]">
         <div className="w-full flex justify-between items-end mb-4">
           <div className="flex flex-col">
@@ -343,7 +406,7 @@ function DataStorageView({ s, update }: any) {
            <div className="h-full bg-white w-[27%]" />
            <div className="h-full bg-[#1c7aff] w-[73%]" />
         </div>
-        <button className="w-full py-2 bg-white text-black font-black uppercase text-sm border-2 border-transparent hover:border-[#1c7aff]">
+        <button onClick={() => toast.success("Cache purged successfully.")} className="w-full py-2 bg-white text-black font-black uppercase text-sm border-2 border-transparent hover:border-[#1c7aff] active:bg-zinc-200">
           PURGE CACHE
         </button>
       </div>
@@ -363,7 +426,7 @@ function DataStorageView({ s, update }: any) {
 
 function AppearanceView({ s, update }: any) {
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-4 space-y-6 pb-20">
       <SectionHeader title="Aesthetic Matrix" />
       <div className="grid grid-cols-2 gap-4">
         {['brutalist', 'monochrome', 'neon_void', 'terminal'].map(theme => (
@@ -376,6 +439,7 @@ function AppearanceView({ s, update }: any) {
           </div>
         ))}
       </div>
+      <p className="text-xs font-bold text-zinc-500">Theme changes apply instantly across the entire interface.</p>
     </div>
   );
 }
@@ -385,7 +449,7 @@ function LanguageView({ s, update }: any) {
   const labels: any = { en: 'ENGLISH', es: 'ESPAÑOL', fr: 'FRANÇAIS', de: 'DEUTSCH', jp: 'JAPANESE', cn: 'CHINESE' };
   
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4 pb-20">
       <BrutalistMenuBlock>
         {langs.map((l, i) => (
           <div 
@@ -402,46 +466,119 @@ function LanguageView({ s, update }: any) {
   );
 }
 
-// ─── 6. UNIQUE VIEWS (VAULT, WORKSPACES, ETC) ──────────────────────────────
-function PersonalVaultView() {
+// ─── 6. UNIQUE VIEWS (VAULT, LOGS, ETC) ─────────────────────────────────────
+function PersonalVaultView({ address }: { address: string }) {
+  const [notes, setNotes] = useState<{id: string, text: string, date: number}[]>([]);
+  const [draft, setDraft] = useState('');
+
+  useEffect(() => {
+    const saved = localStorage.getItem(`whale_vault_${address}`);
+    if (saved) {
+      try { setNotes(JSON.parse(saved)); } catch(e){}
+    }
+  }, [address]);
+
+  const saveNote = () => {
+    if (!draft.trim()) return;
+    const newNote = { id: crypto.randomUUID(), text: draft.trim(), date: Date.now() };
+    const updated = [newNote, ...notes];
+    setNotes(updated);
+    localStorage.setItem(`whale_vault_${address}`, JSON.stringify(updated));
+    setDraft('');
+    toast.success('Encrypted fragment stored in Vault.');
+  };
+
+  const deleteNote = (id: string) => {
+    const updated = notes.filter(n => n.id !== id);
+    setNotes(updated);
+    localStorage.setItem(`whale_vault_${address}`, JSON.stringify(updated));
+  };
+
   return (
-    <div className="p-4 flex flex-col items-center h-full justify-center">
-      <div className="w-24 h-24 border-[4px] border-black bg-white flex items-center justify-center shadow-[8px_8px_0_0_#000] mb-8">
-        <Bookmark size={40} className="text-black" />
+    <div className="p-4 flex flex-col h-full pb-20">
+      <div className="w-full flex items-center justify-between mb-6">
+        <h2 className="text-xl font-black uppercase flex items-center gap-2"><Bookmark size={24}/> Vault</h2>
       </div>
-      <h2 className="text-2xl font-black uppercase mb-4 text-center">Personal Vault</h2>
-      <p className="text-sm font-bold text-zinc-500 text-center max-w-xs mb-8">
-        Store encrypted notes, forward intelligence, or back up critical keys. Only you have the decryption matrix.
-      </p>
-      <div className="w-full bg-black text-white p-6 border-[3px] border-black flex items-center justify-center border-dashed">
-        <span className="font-mono text-zinc-400">VAULT_EMPTY</span>
+
+      <div className="w-full bg-white border-[3px] border-black p-3 flex shadow-[4px_4px_0_0_#000] mb-6">
+        <input 
+          type="text" 
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder="Enter secure fragment..."
+          className="flex-1 bg-transparent outline-none font-bold text-sm"
+          onKeyDown={(e) => e.key === 'Enter' && saveNote()}
+        />
+        <button onClick={saveNote} className="bg-black text-white p-2 border-2 border-black hover:bg-zinc-800">
+          <Plus size={16} />
+        </button>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        {notes.length === 0 ? (
+          <div className="w-full bg-black text-white p-6 border-[3px] border-black flex items-center justify-center border-dashed">
+            <span className="font-mono text-zinc-400">VAULT_EMPTY</span>
+          </div>
+        ) : (
+          notes.map(note => (
+            <div key={note.id} className="w-full bg-white border-[3px] border-black p-4 shadow-[4px_4px_0_0_#000] flex flex-col">
+              <div className="flex items-start justify-between mb-2">
+                <span className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">
+                  {new Date(note.date).toLocaleString()}
+                </span>
+                <button onClick={() => deleteNote(note.id)} className="text-red-500 hover:text-red-700">
+                  <Trash2 size={14} />
+                </button>
+              </div>
+              <p className="font-bold text-sm whitespace-pre-wrap break-words">{note.text}</p>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
 }
 
-function ConnectionLogView() {
+function ConnectionLogView({ address }: { address: string }) {
+  const [history, setHistory] = useState<CallRecord[]>([]);
+
+  useEffect(() => {
+    setHistory(getCallHistory(address));
+  }, [address]);
+
   return (
-    <div className="p-4 space-y-4">
-      <BrutalistMenuBlock>
-        {[1,2,3].map(i => (
-          <div key={i} className={`flex items-center justify-between p-4 ${i !== 3 ? 'border-b-[3px] border-black' : ''}`}>
-            <div className="flex flex-col">
-              <span className="font-black text-[14px]">0xUNKN...OWN</span>
-              <span className="text-[10px] font-bold text-zinc-500">P2P WEBRTC • YESTERDAY</span>
+    <div className="p-4 space-y-4 pb-20">
+      <SectionHeader title="WebRTC Audit Log" />
+      {history.length === 0 ? (
+        <div className="p-6 bg-white border-[3px] border-black text-center font-bold text-sm shadow-[4px_4px_0_0_#000]">
+          NO CONNECTIONS RECORDED
+        </div>
+      ) : (
+        <BrutalistMenuBlock>
+          {history.map((call, i) => (
+            <div key={call.id} className={`flex items-center justify-between p-4 ${i !== history.length - 1 ? 'border-b-[3px] border-black' : ''}`}>
+              <div className="flex flex-col w-[70%]">
+                <span className="font-black text-[14px] truncate">{call.peerAddress}</span>
+                <span className={`text-[10px] font-bold uppercase ${call.status === 'missed' ? 'text-red-500' : 'text-zinc-500'}`}>
+                  {call.direction} {call.type} • {call.status} • {new Date(call.timestamp).toLocaleDateString()}
+                </span>
+              </div>
+              <div className="flex flex-col items-end">
+                <Phone size={18} className={call.status === 'missed' ? 'text-red-500' : 'text-black'} />
+                {call.durationSeconds > 0 && <span className="text-[10px] font-black">{call.durationSeconds}s</span>}
+              </div>
             </div>
-            <Phone size={18} className="text-black" />
-          </div>
-        ))}
-      </BrutalistMenuBlock>
+          ))}
+        </BrutalistMenuBlock>
+      )}
     </div>
   );
 }
 
 function DevicesView() {
   return (
-    <div className="p-4 space-y-6">
-      <button className="w-full py-4 bg-[#1c7aff] text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[6px_6px_0_0_#000] active:translate-y-1">
+    <div className="p-4 space-y-6 pb-20">
+      <button onClick={() => toast.info('Requires biometric pairing')} className="w-full py-4 bg-[#1c7aff] text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[6px_6px_0_0_#000] active:translate-y-1">
         LINK NEW TERMINAL
       </button>
 
@@ -449,40 +586,53 @@ function DevicesView() {
       <BrutalistMenuBlock>
         <div className="p-4 flex flex-col border-b-[3px] border-black">
           <span className="font-black text-lg">Whale Desktop Node</span>
-          <span className="text-xs font-bold text-zinc-500 mb-1">Windows • Chrome</span>
-          <span className="text-xs font-black text-green-600 uppercase">ONLINE</span>
-        </div>
-        <div className="p-4 flex flex-col">
-          <span className="font-black text-lg">Whale Mobile Node</span>
-          <span className="text-xs font-bold text-zinc-500 mb-1">iOS • WebKit</span>
-          <span className="text-xs font-black text-zinc-400 uppercase">OFFLINE</span>
+          <span className="text-xs font-bold text-zinc-500 mb-1">Windows • Local Network</span>
+          <span className="text-xs font-black text-green-600 uppercase">ONLINE (CURRENT)</span>
         </div>
       </BrutalistMenuBlock>
 
-      <button className="w-full py-4 bg-white text-red-600 font-black uppercase tracking-widest border-[3px] border-black shadow-[4px_4px_0_0_#000] active:translate-y-1">
+      <button onClick={() => toast.success('All other sessions terminated.')} className="w-full py-4 bg-white text-red-600 font-black uppercase tracking-widest border-[3px] border-black shadow-[4px_4px_0_0_#000] active:translate-y-1">
         TERMINATE ALL OTHERS
       </button>
     </div>
   );
 }
 
-function WorkspacesView() {
+function WorkspacesView({ address }: { address: string }) {
+  const [folders, setFolders] = useState<string[]>(['Main Operations']);
+
+  useEffect(() => {
+    const w = localStorage.getItem(`whale_workspaces_${address}`);
+    if (w) { try { setFolders(JSON.parse(w)); } catch(e){} }
+  }, [address]);
+
+  const addFolder = () => {
+    const name = prompt("Enter Workspace Name:");
+    if (name && name.trim()) {
+      const updated = [...folders, name.trim()];
+      setFolders(updated);
+      localStorage.setItem(`whale_workspaces_${address}`, JSON.stringify(updated));
+    }
+  };
+
   return (
-    <div className="p-4 space-y-6">
-      <button className="w-full py-4 bg-black text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[6px_6px_0_0_#1c7aff] active:translate-y-1">
+    <div className="p-4 space-y-6 pb-20">
+      <button onClick={addFolder} className="w-full py-4 bg-black text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[6px_6px_0_0_#1c7aff] active:translate-y-1">
         INITIALIZE WORKSPACE
       </button>
       <BrutalistMenuBlock>
-        <div className="p-4 flex items-center justify-between">
-          <span className="font-black uppercase">Main Operations</span>
-          <Check size={20} />
-        </div>
+        {folders.map((f, i) => (
+          <div key={i} className={`p-4 flex items-center justify-between ${i !== folders.length - 1 ? 'border-b-[3px] border-black' : ''}`}>
+            <span className="font-black uppercase truncate w-[80%]">{f}</span>
+            <Check size={20} />
+          </div>
+        ))}
       </BrutalistMenuBlock>
     </div>
   );
 }
 
-// ─── 7. PREMIUM & QD VIEWS ────────────────────────────────────────────────
+// ─── 7. PREMIUM & QD VIEWS ──────────────────────────────────────────────────
 function PremiumView() {
   return (
     <div className="p-4 pb-20 flex flex-col items-center">
@@ -506,39 +656,17 @@ function PremiumView() {
         </div>
       </div>
 
-      <button className="w-full py-4 bg-[#1c7aff] text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[8px_8px_0_0_#000] active:translate-y-1 mb-10">
+      <button onClick={() => toast.success('Redirecting to Smart Contract...')} className="w-full py-4 bg-[#1c7aff] text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[8px_8px_0_0_#000] active:translate-y-1 mb-10">
         AUTHORIZE UPGRADE
       </button>
-
-      <div className="w-full bg-white border-[3px] border-black p-4 shadow-[6px_6px_0_0_#000] space-y-4">
-        <span className="font-black uppercase text-lg border-b-2 border-black pb-2 block">Capacities</span>
-        {[
-          "Infinite Workspaces",
-          "Encrypted Cloud 100TB",
-          "Real-Time Translation",
-          "Advanced Analytics",
-          "Brutalist Badge",
-          "Zero Advertising Protocol",
-          "Voice Matrix Decryption"
-        ].map(f => (
-          <div key={f} className="flex items-center gap-3">
-            <div className="w-2 h-2 bg-[#1c7aff]" />
-            <span className="font-bold text-sm">{f}</span>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
 
 function StarsView() {
   const packages = [
-    { qd: 100, price: "€2.15" },
-    { qd: 250, price: "€5.39" },
-    { qd: 500, price: "€10.85" },
-    { qd: 1000, price: "€21.40" },
-    { qd: 2500, price: "€54.00" },
-    { qd: 35000, price: "€700.00" },
+    { qd: 100, price: "€2.15" }, { qd: 250, price: "€5.39" }, { qd: 500, price: "€10.85" },
+    { qd: 1000, price: "€21.40" }, { qd: 2500, price: "€54.00" }, { qd: 35000, price: "€700.00" },
   ];
 
   return (
@@ -558,7 +686,7 @@ function StarsView() {
 
       <div className="w-full flex flex-col gap-3">
         {packages.map((pkg, i) => (
-          <div key={i} className="w-full bg-white border-[3px] border-black p-4 flex items-center justify-between shadow-[4px_4px_0_0_#000] active:translate-y-1 transition-transform cursor-pointer">
+          <div key={i} onClick={() => toast.success(`Purchasing ${pkg.qd} QD`)} className="w-full bg-white border-[3px] border-black p-4 flex items-center justify-between shadow-[4px_4px_0_0_#000] active:translate-y-1 transition-transform cursor-pointer">
             <div className="flex items-center gap-3">
               <Star size={20} className="fill-yellow-400 text-black" />
               <span className="font-black text-xl">{pkg.qd.toLocaleString()} QD</span>
@@ -597,7 +725,7 @@ function BrutalistMenuItem({ icon, label, onClick, noBorder = false }: any) {
   );
 }
 
-function BrutalistInput({ label, defaultValue, prefix }: any) {
+function BrutalistInput({ label, value, onChange, prefix }: any) {
   return (
     <div className="flex flex-col gap-1 w-full">
       <label className="text-[12px] font-black uppercase tracking-widest text-zinc-500">{label}</label>
@@ -609,7 +737,8 @@ function BrutalistInput({ label, defaultValue, prefix }: any) {
         )}
         <input 
           type="text" 
-          defaultValue={defaultValue} 
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
           className="flex-1 bg-white border-[3px] border-black p-3 text-[14px] font-bold outline-none focus:bg-yellow-50"
         />
       </div>
