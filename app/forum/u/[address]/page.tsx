@@ -27,13 +27,13 @@ export default function UserProfilePage() {
   }, [address]);
 
   if (!profile) return (
-    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-gray-500 min-h-[100vh] bg-white flex flex-col items-center justify-center gap-4">
+    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-gray-500 min-h-[100dvh] bg-white flex flex-col items-center justify-center gap-4">
       Locating Dossier...
     </div>
   );
 
   if (profile.error) return (
-    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-red-500 min-h-[100vh] bg-white flex flex-col items-center justify-center gap-4">
+    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-red-500 min-h-[100dvh] bg-white flex flex-col items-center justify-center gap-4">
       Dossier not found or classified.
     </div>
   );

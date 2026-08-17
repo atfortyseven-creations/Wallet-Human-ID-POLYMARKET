@@ -159,13 +159,13 @@ export default function TopicPage() {
   };
 
   if (!topic) return (
-    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-gray-400 min-h-[100vh] bg-white flex items-center justify-center flex-col gap-4">
+    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-gray-400 min-h-[100dvh] bg-white flex items-center justify-center flex-col gap-4">
       Loading Topic...
     </div>
   );
 
   if (topic.error) return (
-    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-red-500 min-h-[100vh] bg-white flex items-center justify-center flex-col gap-4">
+    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-red-500 min-h-[100dvh] bg-white flex items-center justify-center flex-col gap-4">
       Topic not found or deleted.
     </div>
   );

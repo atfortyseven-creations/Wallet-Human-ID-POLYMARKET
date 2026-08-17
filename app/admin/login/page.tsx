@@ -115,7 +115,7 @@ export default function AdminLoginPage() {
             <style jsx>{`
                 @keyframes float {
                     from {
-                        transform: translateY(100vh);
+                        transform: translateY(100dvh);
                     }
                     to {
                         transform: translateY(-10vh);

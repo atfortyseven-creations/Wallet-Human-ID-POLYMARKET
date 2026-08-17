@@ -17,13 +17,13 @@ export default function CategoryPage() {
   }, [slug]);
 
   if (!category) return (
-    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-gray-500 min-h-[100vh] bg-white flex items-center justify-center flex-col gap-4">
+    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-gray-500 min-h-[100dvh] bg-white flex items-center justify-center flex-col gap-4">
       Loading Sector...
     </div>
   );
 
   if (category.error) return (
-    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-red-500 min-h-[100vh] bg-white flex items-center justify-center flex-col gap-4">
+    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-red-500 min-h-[100dvh] bg-white flex items-center justify-center flex-col gap-4">
       Sector not found.
     </div>
   );

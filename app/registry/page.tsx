@@ -1409,7 +1409,7 @@ export default function RegistryPage() {
                   Real-time geographical visualization of incoming connections and active nodes across the network.
                 </p>
               </div>
-              <div className="w-full h-[calc(100vh-140px)] min-h-[400px] rounded-2xl overflow-hidden relative" style={{ border: isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(0,0,0,0.07)", backgroundColor: isDark ? "#0d0d17" : "#fff" }}>
+              <div className="w-full h-[calc(100dvh-140px)] min-h-[400px] rounded-2xl overflow-hidden relative" style={{ border: isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(0,0,0,0.07)", backgroundColor: isDark ? "#0d0d17" : "#fff" }}>
                 <RealWorldMap fullPage={true} isDark={isDark} />
               </div>
             </motion.div>

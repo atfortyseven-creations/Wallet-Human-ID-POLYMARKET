@@ -260,17 +260,17 @@ export default function QDsPage() {
       <section
         ref={heroRef}
         className="relative w-full overflow-hidden bg-white"
-        style={{ minHeight: '100vh' }}
+        style={{ minHeight: '100dvh' }}
       >
         <div className="absolute inset-x-0 bottom-0 h-56 z-10 pointer-events-none"
           style={{ background: 'linear-gradient(to bottom, transparent, white)' }}
         />
 
         <motion.div
-          style={{ y: heroTextY, opacity: heroOpa, minHeight: '100vh' } as any}
+          style={{ y: heroTextY, opacity: heroOpa, minHeight: '100dvh' } as any}
           className="relative z-20 flex flex-col items-center justify-center text-center px-6 select-none pointer-events-none"
         >
-          <div className="flex flex-col items-center justify-center" style={{ minHeight: '100vh' }}>
+          <div className="flex flex-col items-center justify-center" style={{ minHeight: '100dvh' }}>
             <motion.span
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
