@@ -24,6 +24,7 @@ import { ChatCommunityGate } from '@/components/chat/ChatCommunityGate';
 import { MediaPermissionsPrePrompt } from '@/components/chat/MediaPermissionsPrePrompt';
 import { getLocalContacts, saveLocalContact, resolveContactName, LocalContact } from '@/lib/wallet/localAddressBook';
 import { getCallHistory, saveCallRecord, CallRecord } from '@/lib/wallet/callHistory';
+import { WhaleChatSettings } from './WhaleChatSettings';
 
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
@@ -119,6 +120,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const { signMessageAsync } = useSignMessage();
   const { reconnect } = useReconnect();
   const { open: openAppKit } = useAppKit();
+  const effectiveAddress = (address || '0x0') as string;
 
   // [PHASE 2 - SILOING] Consume the sandboxed PXE context for Chat Operations
   // This strictly isolates Chat from the Portfolio state to prevent cross-contamination.
@@ -286,12 +288,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   //  Playing audio messages 
   const [playingId, setPlayingId] = useState<string | null>(null);
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
+  const ringAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const [isUploading, setIsUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Telegram-style features
   const [showProfile, setShowProfile] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [blockedPeers, setBlockedPeers] = useState<Set<string>>(new Set());
 
@@ -3273,6 +3277,17 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   return (
     <TuringShieldGate>
+      {/* FULL SCREEN SETTINGS OVERLAY */}
+      {showSettings && (
+        <WhaleChatSettings 
+          onClose={() => setShowSettings(false)} 
+          address={effectiveAddress} 
+        />
+      )}
+
+    {/* ─── WebRTC Ringtone Audio Element ────────────────────────────────────── */}
+    <audio ref={ringAudioRef} loop src="/sounds/call_ringtone.mp3" style={{ display: 'none' }} />
+
     {/* Solid white container — two-panel layout: sidebar (left) + chat (right) */}
       <div className={`relative flex flex-row flex-1 min-h-0 w-full overflow-hidden shadow-sm ${(showScanner || showMyQR || showProfile) ? 'overflow-visible' : ''}`} style={{ 
       borderRadius: isMobile ? 0 : '0',
@@ -3298,6 +3313,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 title="Show My QR"
               >
                 My QR
+              </button>
+              <button
+                onClick={() => setShowSettings(true)}
+                className="p-2.5 rounded-xl bg-[#f5f5f7] text-black/50 hover:bg-[#e5e5ea] transition-all"
+                title="Settings"
+              >
+                <Settings size={14} />
               </button>
             </div>
             
