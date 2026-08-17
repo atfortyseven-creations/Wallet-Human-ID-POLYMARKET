@@ -123,6 +123,14 @@ function isMessageExpired(msgTimestamp: number, timerSetting: string | undefined
   return false;
 }
 
+
+// Burn-on-Read PXE Engine: schedules message removal N seconds after reading
+function scheduleBurnOnRead(msgId: string, seconds: number, onBurn: (id: string) => void) {
+  setTimeout(() => {
+    onBurn(msgId);
+  }, seconds * 1000);
+}
+
 export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const { address, isConnected, isSystemHandshake, isChecking, connector, isZkVerified, isLocalSystemWallet } = useSystemAccount();
   // Email-authenticated users have address like 'email_user@gmail.com' — they have no wallet signer
@@ -2439,7 +2447,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               if (fromPeer && !content.startsWith('__')) {
                 // We are focused on this chat, so send a read receipt!
                 if (!document.hidden) {
-                  playReceiveSound();
+                  if (whaleSettings?.notification_sound !== false) { playReceiveSound(); };
                   sendMessage(client, msgConvPeer, `__READ__${realId}`, address).catch(e => console.warn('Failed to send read receipt', e));
                 } else {
                   // Phase 5: Push Notifications when app is hidden
@@ -2913,7 +2921,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         }
       }
 
-      if (!isSystemSignal && !isReaction) playSendSound();
+      if (!isSystemSignal && !isReaction) if (whaleSettings?.notification_sound !== false) { playSendSound(); };
 
       // Always attempt to send directly via XMTP.
       // sendMessage() handles canReceive checks, retries with backoff,
