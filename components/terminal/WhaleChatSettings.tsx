@@ -14,60 +14,28 @@ import { toast } from 'sonner';
 import { vault } from '@/lib/core/SecureVault';
 import { getCallHistory, CallRecord } from '@/lib/wallet/callHistory';
 
-// ─── 1. SETTINGS BACKEND ───────────────────────────────────────────────────
-const DEFAULT_SETTINGS = {
-  notifications_private: true,
-  notifications_groups: true,
-  notifications_workspaces: false,
-  badge_count: true,
-  passcode_enabled: false,
-  auto_delete_timer: 'off',
-  privacy_last_seen: 'nobody',
-  auto_download_wifi: true,
-  auto_download_cellular: false,
-  save_photos: true,
-  data_saver_calls: false,
-  theme: 'brutalist',
-  text_size: 3,
-  language: 'en',
-  // Profile settings
-  displayName: 'Satoshi Nakamoto',
-  username: 'whale_architect',
-  bio: 'Building the Sovereign Network. Cryptography, Privacy, and Decentralization.'
-};
+import { pxeEngine, WhaleProtocolSettings, DEFAULT_PXE_SETTINGS } from '@/lib/wallet/SettingsEnginePXE';
 
 export function useWhaleSettings(address: string) {
-  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+  const [settings, setSettings] = useState<WhaleProtocolSettings>(DEFAULT_PXE_SETTINGS);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     if (!address) return;
-    const key = `whale_settings_${address}`;
-    const stored = localStorage.getItem(key);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setSettings({ ...DEFAULT_SETTINGS, ...parsed });
-        // Apply theme globally
-        document.documentElement.setAttribute('data-theme', parsed.theme || 'brutalist');
-      } catch (e) {
-        console.error('Failed to parse settings', e);
-      }
-    } else {
-      document.documentElement.setAttribute('data-theme', 'brutalist');
-    }
-    setIsLoaded(true);
+    
+    // Subscribe to the PXE engine for real-time quantum updates
+    const unsubscribe = pxeEngine.subscribe(address, (newSettings) => {
+      setSettings(newSettings);
+      document.documentElement.setAttribute('data-theme', newSettings.theme || 'brutalist');
+      setIsLoaded(true);
+    });
+
+    return () => unsubscribe();
   }, [address]);
 
-  const updateSetting = (key: keyof typeof DEFAULT_SETTINGS, value: any) => {
-    setSettings(prev => {
-      const next = { ...prev, [key]: value };
-      localStorage.setItem(`whale_settings_${address}`, JSON.stringify(next));
-      if (key === 'theme') {
-        document.documentElement.setAttribute('data-theme', value);
-      }
-      return next;
-    });
+  const updateSetting = async (key: keyof WhaleProtocolSettings, value: any) => {
+    // Mutate the PXE Engine directly (handles encryption and storage)
+    await pxeEngine.mutate(address, key, value);
   };
 
   return { settings, updateSetting, isLoaded };

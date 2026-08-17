@@ -24,7 +24,7 @@ import { ChatCommunityGate } from '@/components/chat/ChatCommunityGate';
 import { MediaPermissionsPrePrompt } from '@/components/chat/MediaPermissionsPrePrompt';
 import { getLocalContacts, saveLocalContact, resolveContactName, LocalContact } from '@/lib/wallet/localAddressBook';
 import { getCallHistory, saveCallRecord, CallRecord } from '@/lib/wallet/callHistory';
-import { WhaleChatSettings } from './WhaleChatSettings';
+import { WhaleChatSettings, useWhaleSettings } from './WhaleChatSettings';
 
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
@@ -112,6 +112,17 @@ export const parseMessageText = (text: string, isMe: boolean) => {
 import { playSendSound, playReceiveSound } from '../../lib/utils/sounds';
 import { MessageBubble, StickerPicker } from '../chat/MessageBubble';
 
+
+function isMessageExpired(msgTimestamp: number, timerSetting: string | undefined) {
+  if (!timerSetting || timerSetting === 'off') return false;
+  const now = Date.now();
+  const diff = now - msgTimestamp;
+  if (timerSetting === '24 hours' && diff > 86400000) return true;
+  if (timerSetting === '1 week' && diff > 604800000) return true;
+  if (timerSetting === '1 month' && diff > 2592000000) return true;
+  return false;
+}
+
 export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const { address, isConnected, isSystemHandshake, isChecking, connector, isZkVerified, isLocalSystemWallet } = useSystemAccount();
   // Email-authenticated users have address like 'email_user@gmail.com' — they have no wallet signer
@@ -121,6 +132,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const { reconnect } = useReconnect();
   const { open: openAppKit } = useAppKit();
   const effectiveAddress = (address || '0x0') as string;
+  const { settings: whaleSettings } = useWhaleSettings(effectiveAddress);
 
   // [PHASE 2 - SILOING] Consume the sandboxed PXE context for Chat Operations
   // This strictly isolates Chat from the Portfolio state to prevent cross-contamination.
@@ -1014,7 +1026,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             setCallState('active');
             stopRingtone();
             if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
-            if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
+            if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; if (whaleSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(() => {}); } }
           });
           connection.on('close', () => performEndCallRef.current());
           connection.on('error', () => performEndCallRef.current());
@@ -1151,7 +1163,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     }
     if (remoteAudioRef.current && remoteStream && remoteAudioRef.current.srcObject !== remoteStream) {
       remoteAudioRef.current.srcObject = remoteStream;
-      remoteAudioRef.current.play().catch(e => console.warn('Audio play blocked:', e));
+      if (whaleSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(e => console.warn('Audio play blocked:', e)); }
     }
   }, [callState, remoteStream]);
 
@@ -1360,7 +1372,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
             if (remoteAudioRef.current) {
               remoteAudioRef.current.srcObject = rStream;
-              remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err));
+              if (whaleSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err)); }
             }
           });
           outConn.on('close', () => performEndCallRef.current());
@@ -1468,7 +1480,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
           if (remoteAudioRef.current) {
             remoteAudioRef.current.srcObject = rStream;
-            remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err));
+            if (whaleSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err)); }
           }
         });
         pendingConn.on('close', () => performEndCallRef.current());
@@ -1502,7 +1514,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
           if (remoteAudioRef.current) {
             remoteAudioRef.current.srcObject = rStream;
-            remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err));
+            if (whaleSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err)); }
           }
         });
         conn.on('close', () => performEndCallRef.current());
