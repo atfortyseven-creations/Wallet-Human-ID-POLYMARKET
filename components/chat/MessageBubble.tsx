@@ -31,7 +31,9 @@ const PollBubble = React.memo(({ content, msg, isMe, onVotePoll, clientInboxId }
   content: string; msg: any; isMe: boolean; onVotePoll?: (pollId: string, idx: number) => void; clientInboxId?: string;
 }) => {
   const parts = content.replace('__POLL__', '').split('__::');
-  const pollId = msg.id;
+  // [FIX] Use the deterministic pollId from the payload, not the XMTP message ID, 
+  // to avoid orphaned votes when optimistic messages are swapped.
+  const pollId = parts[0]; 
   const question = parts[1] || 'Poll';
   const options = (parts[2] || '').split('|').filter(Boolean);
   const votes: Record<string, number> = msg.pollVotes || {};
@@ -124,16 +126,16 @@ CallOfferBubble.displayName = 'CallOfferBubble';
 
 const StickerBubble = React.memo(({ content }: { content: string }) => {
   const sticker = content.replace('__STICKER__', '');
+  // [FIX] Removed nested framer-motion animations. 
+  // Nested transforms (scale inside scale) cause massive layout jank on iOS Safari.
+  // We let the parent MessageBubble handle the entrance animation cleanly.
   return (
-    <motion.div
-      initial={{ scale: 0, rotate: -15, opacity: 0 }}
-      animate={{ scale: 1, rotate: 0, opacity: 1 }}
-      transition={{ type: 'spring', stiffness: 600, damping: 20 }}
+    <div
       className="text-[64px] leading-none select-none cursor-default"
       style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.15))' }}
     >
       {sticker}
-    </motion.div>
+    </div>
   );
 });
 StickerBubble.displayName = 'StickerBubble';
@@ -356,8 +358,8 @@ export const MessageBubble = React.memo(({
 
       <motion.div
         id={`msg-${msg.id}`}
-        initial={{ opacity: 0, scale: 0.88, y: isMe ? 6 : -6, x: isMe ? 12 : -12 }}
-        animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+        initial={{ opacity: 0, y: isMe ? 6 : -6, x: isMe ? 12 : -12 }}
+        animate={{ opacity: 1, y: 0, x: 0 }}
         transition={{ ...SPRING }}
         className={`flex flex-col relative w-full ${isMe ? 'items-end' : 'items-start'} transition-transform duration-200`}
         style={{ marginBottom: 2 }}
