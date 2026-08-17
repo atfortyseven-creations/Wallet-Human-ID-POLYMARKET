@@ -336,12 +336,38 @@ function DataStorageView() {
         <p className="text-sm font-semibold text-black/60 mb-6 text-center">Whale Chat uses 1.2% of your free disk space.</p>
         
         <div className="w-full flex flex-col gap-3 mb-6">
-          <div className="flex items-center justify-between text-sm"><div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#1c7aff]"/> <span className="font-medium text-black">Videos</span></div> <span className="font-mono text-black/60">3.1 GB</span></div>
-          <div className="flex items-center justify-between text-sm"><div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#34c759]"/> <span className="font-medium text-black">Photos</span></div> <span className="font-mono text-black/60">800 MB</span></div>
-          <div className="flex items-center justify-between text-sm"><div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#ffcc00]"/> <span className="font-medium text-black">Stickers</span></div> <span className="font-mono text-black/60">300 MB</span></div>
+          <div className="flex items-center justify-between text-sm"><div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#1c7aff]"/> <span className="font-medium text-black">Videos</span> <span className="text-[12px] font-bold text-black/40">73%</span></div> <span className="font-mono text-black/60">3.1 GB</span></div>
+          <div className="flex items-center justify-between text-sm"><div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#34c759]"/> <span className="font-medium text-black">Photos</span> <span className="text-[12px] font-bold text-black/40">19%</span></div> <span className="font-mono text-black/60">800 MB</span></div>
+          <div className="flex items-center justify-between text-sm"><div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#ffcc00]"/> <span className="font-medium text-black">Stickers</span> <span className="text-[12px] font-bold text-black/40">7%</span></div> <span className="font-mono text-black/60">300 MB</span></div>
+          <div className="flex items-center justify-between text-sm"><div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-purple-500"/> <span className="font-medium text-black">Misc</span> <span className="text-[12px] font-bold text-black/40">0.5%</span></div> <span className="font-mono text-black/60">25 MB</span></div>
+          <div className="flex items-center justify-between text-sm"><div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-gray-400"/> <span className="font-medium text-black">Other</span> <span className="text-[12px] font-bold text-black/40">0.5%</span></div> <span className="font-mono text-black/60">15 MB</span></div>
         </div>
 
         <button className="w-full py-3 rounded-xl bg-red-50 text-red-500 font-bold text-[16px] active:scale-95 transition-all">Clear Entire Cache</button>
+      </div>
+
+      <p className="text-[13px] font-bold text-black/50 uppercase tracking-widest ml-4 mb-[-12px]">Network Data Usage</p>
+      <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-black/5 p-4 flex flex-col gap-4">
+        <div className="flex justify-between items-end">
+          <div className="flex flex-col">
+            <span className="text-[13px] text-black/50 font-bold uppercase tracking-widest">Total Sent</span>
+            <span className="text-2xl font-black text-black">450 MB</span>
+          </div>
+          <div className="flex flex-col items-end">
+            <span className="text-[13px] text-black/50 font-bold uppercase tracking-widest">Total Received</span>
+            <span className="text-2xl font-black text-[#1c7aff]">1.2 GB</span>
+          </div>
+        </div>
+        <div className="w-full h-2 rounded-full bg-black/5 flex overflow-hidden">
+          <div className="h-full bg-black w-[27%]" />
+          <div className="h-full bg-[#1c7aff] w-[73%]" />
+        </div>
+        <div className="flex flex-col gap-2 mt-2">
+          <div className="flex items-center justify-between text-[13px]"><span className="text-black/60">Messages</span><span className="font-mono text-black">15 MB</span></div>
+          <div className="flex items-center justify-between text-[13px]"><span className="text-black/60">Media</span><span className="font-mono text-black">1.1 GB</span></div>
+          <div className="flex items-center justify-between text-[13px]"><span className="text-black/60">Calls</span><span className="font-mono text-black">535 MB</span></div>
+        </div>
+        <button className="w-full py-2.5 rounded-xl bg-black/5 text-black font-bold text-[14px] mt-2 active:scale-95 transition-all">Reset Statistics</button>
       </div>
 
       <p className="text-[13px] font-bold text-black/50 uppercase tracking-widest ml-4 mb-[-12px]">Automatic Media Download</p>
