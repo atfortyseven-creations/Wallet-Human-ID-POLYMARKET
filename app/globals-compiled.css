@@ -18715,6 +18715,24 @@ html.forum-light-mode {
   will-change: transform;
 }
 
+/* WhaleChat sticker entrance — iOS-safe (no nested framer scale) */
+@keyframes stickerPop {
+  0%   { opacity: 0; transform: scale(0.3) rotate(-12deg); }
+  60%  { opacity: 1; transform: scale(1.12) rotate(4deg); }
+  80%  { transform: scale(0.95) rotate(-2deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* Typing indicator dots */
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%            { transform: translateY(-6px); }
+}
+
+/* Scrollbar none utility */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* ============================================================
    SECTION FUSION SYSTEM  240Hz GPU-composited blend zones
    Eliminates hard edges between light and dark landing sections.

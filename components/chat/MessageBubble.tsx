@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, useAnimation, PanInfo, AnimatePresence } from 'framer-motion';
-import { FastForward, MapPin, Clock, PhoneOff, Phone, Video, Check, CheckCheck, Pencil } from 'lucide-react';
+import { FastForward, MapPin, Clock, PhoneOff, Check, CheckCheck, Pencil } from 'lucide-react';
 import { CustomAudioPlayer } from './CustomAudioPlayer';
 
 export interface MessageProps {
@@ -23,28 +23,45 @@ export interface MessageProps {
   onEditMsg?: (id: string, currentContent: string) => void;
 }
 
-const SPRING = { type: 'spring', stiffness: 480, damping: 34, mass: 0.8 } as const;
-const STICKERS = ['🔥','💎','🐋','⚡','🌊','🦋','🌙','✨','🎯','🚀','💫','🎭','🏆','💡','🌍'];
-const TAPBACKS = ['❤️', '👍', '👎', '😂', '!!', '?'];
+// iOS-safe spring — no conflicting scale, pure translate
+const SPRING = { type: 'spring', stiffness: 420, damping: 36, mass: 0.9 } as const;
+// Sticker list
+export const STICKERS = ['🔥','💎','🐋','⚡','🌊','🦋','🌙','✨','🎯','🚀','💫','🎭','🏆','💡','🌍','😂','😭','🥺','😍','🙏','💯','👀','🫡','🤝','🎉'];
+const TAPBACKS = ['❤️', '👍', '👎', '😂', '‼️', '?'];
 
+// ─── Poll Bubble ────────────────────────────────────────────────────────────────
 const PollBubble = React.memo(({ content, msg, isMe, onVotePoll, clientInboxId }: {
-  content: string; msg: any; isMe: boolean; onVotePoll?: (pollId: string, idx: number) => void; clientInboxId?: string;
+  content: string; msg: any; isMe: boolean;
+  onVotePoll?: (pollId: string, idx: number) => void;
+  clientInboxId?: string;
 }) => {
-  const parts = content.replace('__POLL__', '').split('__::');
-  // [FIX] Use the deterministic pollId from the payload, not the XMTP message ID, 
-  // to avoid orphaned votes when optimistic messages are swapped.
-  const pollId = parts[0]; 
+  // Format: __POLL__<pollId>__::<question>__::<opt1|opt2|...>
+  const withoutPrefix = content.replace('__POLL__', '');
+  const parts = withoutPrefix.split('__::');
+  // [CRITICAL FIX] Poll ID is the deterministic ID in parts[0], NOT msg.id.
+  // msg.id changes from optimistic→real when XMTP confirms. parts[0] is stable.
+  const pollId = parts[0] || msg.id;
   const question = parts[1] || 'Poll';
   const options = (parts[2] || '').split('|').filter(Boolean);
   const votes: Record<string, number> = msg.pollVotes || {};
   const totalVotes = Object.keys(votes).length;
-  const myVote = votes[clientInboxId || ''] ?? -1;
+  const myVote = clientInboxId ? (votes[clientInboxId] ?? -1) : -1;
+
+  if (options.length === 0) return null;
 
   return (
-    <div className={`rounded-[18px] overflow-hidden shadow-lg min-w-[220px] max-w-[280px] border ${isMe ? 'bg-[#1c7aff] border-transparent' : 'bg-white border-black/8'}`}>
-      <div className="px-4 pt-3 pb-2">
-        <p className={`text-[13px] font-semibold leading-tight mb-3 ${isMe ? 'text-white' : 'text-[#1c1c1e]'}`}>{question}</p>
-        <div className="flex flex-col gap-1.5">
+    <div className={`rounded-[18px] overflow-hidden shadow-md min-w-[220px] max-w-[280px] border ${
+      isMe ? 'bg-[#1c7aff] border-transparent' : 'bg-white border-black/8'
+    }`}>
+      <div className="px-4 pt-3 pb-3">
+        <div className={`flex items-center gap-1.5 mb-2 ${isMe ? 'text-white/70' : 'text-black/40'}`}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          <span className="text-[10px] font-bold uppercase tracking-widest">Poll</span>
+        </div>
+        <p className={`text-[14px] font-semibold leading-tight mb-3 ${isMe ? 'text-white' : 'text-[#1c1c1e]'}`}>{question}</p>
+        <div className="flex flex-col gap-2">
           {options.map((opt, i) => {
             const count = Object.values(votes).filter(v => v === i).length;
             const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
@@ -53,36 +70,37 @@ const PollBubble = React.memo(({ content, msg, isMe, onVotePoll, clientInboxId }
               <button
                 key={i}
                 onClick={() => onVotePoll?.(pollId, i)}
-                className={`relative w-full text-left rounded-full px-3 py-1.5 overflow-hidden transition-all active:scale-[0.97] ${
+                className={`relative w-full text-left rounded-xl px-3 py-2 overflow-hidden transition-all duration-200 active:scale-[0.98] ${
                   isMe
                     ? isSelected ? 'bg-white/30' : 'bg-white/15 hover:bg-white/25'
-                    : isSelected ? 'bg-[#1c7aff]/15 border border-[#1c7aff]/30' : 'bg-[#f2f2f7] hover:bg-[#e8e8ed]'
+                    : isSelected ? 'bg-[#1c7aff]/12 border border-[#1c7aff]/25' : 'bg-[#f2f2f7] hover:bg-[#e8e8ed]'
                 }`}
               >
                 {totalVotes > 0 && (
                   <div
-                    className={`absolute inset-y-0 left-0 rounded-full transition-all duration-700 ${isMe ? 'bg-white/20' : 'bg-[#1c7aff]/10'}`}
+                    className={`absolute inset-y-0 left-0 rounded-xl transition-all duration-700 ${isMe ? 'bg-white/15' : 'bg-[#1c7aff]/8'}`}
                     style={{ width: `${pct}%` }}
                   />
                 )}
                 <div className="relative flex items-center justify-between gap-2">
-                  <span className={`text-[12px] font-medium ${isMe ? 'text-white' : 'text-[#1c1c1e]'}`}>{opt}</span>
+                  <span className={`text-[13px] font-medium ${isMe ? 'text-white' : 'text-[#1c1c1e]'}`}>{opt}</span>
                   <div className="flex items-center gap-1 shrink-0">
                     {isSelected && <Check size={10} className={isMe ? 'text-white' : 'text-[#1c7aff]'} />}
-                    {totalVotes > 0 && <span className={`text-[11px] font-mono ${isMe ? 'text-white/70' : 'text-black/40'}`}>{pct}%</span>}
+                    {totalVotes > 0 && <span className={`text-[11px] font-mono font-bold ${isMe ? 'text-white/70' : 'text-black/40'}`}>{pct}%</span>}
                   </div>
                 </div>
               </button>
             );
           })}
         </div>
-        <p className={`text-[10px] mt-2 ${isMe ? 'text-white/50' : 'text-black/30'}`}>{totalVotes} vote{totalVotes !== 1 ? 's' : ''}</p>
+        <p className={`text-[10px] mt-2.5 font-mono ${isMe ? 'text-white/40' : 'text-black/30'}`}>{totalVotes} vote{totalVotes !== 1 ? 's' : ''}</p>
       </div>
     </div>
   );
 });
 PollBubble.displayName = 'PollBubble';
 
+// ─── Payment Bubble ─────────────────────────────────────────────────────────────
 const PaymentBubble = React.memo(({ content, isMe }: { content: string; isMe: boolean }) => {
   const raw = content.replace('__PAYMENT__::', '');
   let amount = '?', recipient = '';
@@ -92,7 +110,7 @@ const PaymentBubble = React.memo(({ content, isMe }: { content: string; isMe: bo
     recipient = parsed.to ? `${String(parsed.to).slice(0, 6)}...${String(parsed.to).slice(-4)}` : '';
   } catch { amount = raw; }
   return (
-    <div className={`rounded-[18px] min-w-[180px] overflow-hidden shadow-lg border ${isMe ? 'bg-[#30d158] border-transparent' : 'bg-white border-black/8'}`}>
+    <div className={`rounded-[18px] min-w-[180px] overflow-hidden shadow-md border ${isMe ? 'bg-[#30d158] border-transparent' : 'bg-white border-black/8'}`}>
       <div className="px-4 py-3 flex flex-col gap-1">
         <div className="flex items-center gap-2">
           <div className={`w-7 h-7 rounded-full flex items-center justify-center ${isMe ? 'bg-white/25' : 'bg-[#30d158]/15'}`}>
@@ -108,6 +126,7 @@ const PaymentBubble = React.memo(({ content, isMe }: { content: string; isMe: bo
 });
 PaymentBubble.displayName = 'PaymentBubble';
 
+// ─── Call Offer Bubble ───────────────────────────────────────────────────────────
 const CallOfferBubble = React.memo(({ content, isMe }: { content: string; isMe: boolean }) => {
   const isVideo = content.includes(':video');
   return (
@@ -117,22 +136,23 @@ const CallOfferBubble = React.memo(({ content, isMe }: { content: string; isMe: 
       </div>
       <div className="flex flex-col">
         <span className={`text-[13px] font-semibold ${isMe ? 'text-white' : 'text-[#1c1c1e]'}`}>{isVideo ? 'Video Call' : 'Voice Call'}</span>
-        <span className={`text-[11px] ${isMe ? 'text-white/50' : 'text-black/30'}`}>Missed</span>
+        <span className={`text-[11px] ${isMe ? 'text-white/50' : 'text-black/30'}`}>Ended</span>
       </div>
     </div>
   );
 });
 CallOfferBubble.displayName = 'CallOfferBubble';
 
+// ─── Sticker Bubble ─────────────────────────────────────────────────────────────
+// [FIX] No nested Framer Motion scale inside the parent motion.div.
+// iOS Safari has a GPU compositing bug where nested scale transforms
+// produce blur/jank. We use a plain div with CSS animation here.
 const StickerBubble = React.memo(({ content }: { content: string }) => {
   const sticker = content.replace('__STICKER__', '');
-  // [FIX] Removed nested framer-motion animations. 
-  // Nested transforms (scale inside scale) cause massive layout jank on iOS Safari.
-  // We let the parent MessageBubble handle the entrance animation cleanly.
   return (
     <div
-      className="text-[64px] leading-none select-none cursor-default"
-      style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.15))' }}
+      className="text-[64px] leading-none select-none cursor-default animate-[stickerPop_0.4s_cubic-bezier(0.34,1.56,0.64,1)_forwards]"
+      style={{ filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.18))', opacity: 0 }}
     >
       {sticker}
     </div>
@@ -140,6 +160,7 @@ const StickerBubble = React.memo(({ content }: { content: string }) => {
 });
 StickerBubble.displayName = 'StickerBubble';
 
+// ─── Context Menu ────────────────────────────────────────────────────────────────
 const IMessageContextMenu = React.memo(({
   isMe, content, onClose, onReply, onEdit, onCopy, onRevoke, msgId
 }: {
@@ -149,17 +170,15 @@ const IMessageContextMenu = React.memo(({
 }) => {
   const actions = [
     { label: 'Reply', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>, fn: onReply },
-    { label: 'Add Sticker', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>, fn: onClose },
-    ...(isMe ? [{ label: 'Undo Send', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>, fn: onRevoke }] : []),
     ...(isMe ? [{ label: 'Edit', icon: <Pencil size={16} />, fn: onEdit }] : []),
     { label: 'Copy', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>, fn: onCopy },
-    { label: 'Translate', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>, fn: onClose },
+    ...(isMe ? [{ label: 'Unsend', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>, fn: onRevoke }] : []),
   ];
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.85, y: 10 }}
+      initial={{ opacity: 0, scale: 0.88, y: 6 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.85, y: 10 }}
+      exit={{ opacity: 0, scale: 0.88, y: 6 }}
       transition={SPRING}
       className="absolute z-50 w-52 bg-[#1c1c1e]/95 backdrop-blur-2xl rounded-[16px] shadow-2xl overflow-hidden border border-white/10"
       style={{ bottom: '100%', ...(isMe ? { right: 0 } : { left: 0 }), marginBottom: 8 }}
@@ -182,68 +201,68 @@ const IMessageContextMenu = React.memo(({
 });
 IMessageContextMenu.displayName = 'IMessageContextMenu';
 
+// ─── Tapback Picker ──────────────────────────────────────────────────────────────
 const TapbackPicker = React.memo(({ isMe, onReact, onClose }: {
   isMe: boolean; onReact: (e: string) => void; onClose: () => void;
 }) => (
   <motion.div
-    initial={{ opacity: 0, scale: 0.7, y: 6 }}
-    animate={{ opacity: 1, scale: 1, y: 0 }}
-    exit={{ opacity: 0, scale: 0.7, y: 6 }}
-    transition={SPRING}
+    initial={{ opacity: 0, y: 8 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: 8 }}
+    transition={{ duration: 0.18, ease: 'easeOut' }}
     className="absolute z-50 flex items-center gap-0.5 px-2 py-1.5 bg-[#1c1c1e]/90 backdrop-blur-2xl rounded-full shadow-2xl border border-white/10"
     style={{ bottom: 'calc(100% + 8px)', ...(isMe ? { right: 0 } : { left: 0 }) }}
     onClick={e => e.stopPropagation()}
   >
     {TAPBACKS.map((t, i) => (
-      <motion.button
+      <button
         key={t}
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ ...SPRING, delay: i * 0.03 }}
         onClick={() => { onReact(t); onClose(); }}
-        className="w-9 h-9 flex items-center justify-center text-[20px] hover:scale-125 transition-transform active:scale-110"
+        className="w-9 h-9 flex items-center justify-center text-[20px] hover:scale-125 transition-transform duration-100 active:scale-90"
       >
         {t}
-      </motion.button>
+      </button>
     ))}
   </motion.div>
 ));
 TapbackPicker.displayName = 'TapbackPicker';
 
+// ─── Sticker Picker (exported for use in WhaleChat) ──────────────────────────────
 export const StickerPicker = React.memo(({ onSend, onClose }: {
   onSend: (s: string) => void; onClose: () => void;
 }) => (
+  // [FIX] Use position: absolute so it floats above the input bar.
+  // The parent container in WhaleChat must have position: relative.
   <motion.div
-    initial={{ opacity: 0, y: 16 }}
+    initial={{ opacity: 0, y: 12 }}
     animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: 16 }}
-    transition={SPRING}
+    exit={{ opacity: 0, y: 12 }}
+    transition={{ duration: 0.2, ease: 'easeOut' }}
     className="absolute bottom-full mb-2 left-0 right-0 bg-white/95 backdrop-blur-2xl border border-black/8 rounded-[20px] shadow-2xl p-3 z-50"
     onClick={e => e.stopPropagation()}
   >
     <div className="flex items-center justify-between mb-2 px-1">
       <span className="text-[11px] font-black uppercase tracking-widest text-black/40">Stickers</span>
-      <button onClick={onClose} className="text-black/30 hover:text-black/60 transition-colors">
+      <button onClick={onClose} className="text-black/30 hover:text-black/60 transition-colors p-1">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
-    <div className="grid grid-cols-5 gap-1">
+    <div className="grid grid-cols-5 gap-1 max-h-[200px] overflow-y-auto">
       {STICKERS.map(s => (
-        <motion.button
+        <button
           key={s}
-          whileHover={{ scale: 1.3 }}
-          whileTap={{ scale: 0.9 }}
           onClick={() => { onSend(s); onClose(); }}
-          className="w-full aspect-square flex items-center justify-center text-[28px] rounded-xl hover:bg-black/5 transition-colors"
+          className="w-full aspect-square flex items-center justify-center text-[26px] rounded-xl hover:bg-black/5 active:scale-90 transition-all duration-100"
         >
           {s}
-        </motion.button>
+        </button>
       ))}
     </div>
   </motion.div>
 ));
 StickerPicker.displayName = 'StickerPicker';
 
+// ─── Main MessageBubble ──────────────────────────────────────────────────────────
 export const MessageBubble = React.memo(({
   msg, isMe, showDate, dateStr, isSecretChat, fontFamily, fontSizePx,
   clientInboxId, onReply, onReact, onContextMenu, onOpenLightbox,
@@ -258,6 +277,7 @@ export const MessageBubble = React.memo(({
   const isBurning = !!msg.burnAtNs;
   const secondsLeft = isBurning ? Math.max(0, Math.ceil((msg.burnAtNs - Date.now()) / 1000)) : null;
 
+  // ── Content parsing ──────────────────────────────────────────────────────────
   let content = typeof msg.content === 'string' ? msg.content : (msg.fallback || 'Encrypted Data');
 
   let forwardFrom: string | null = null;
@@ -283,7 +303,7 @@ export const MessageBubble = React.memo(({
   const isAudio      = content.startsWith('__AUDIO__');
   const isGif        = content.startsWith('[GIF]');
   const isLocation   = content.startsWith('[LOCATION]');
-  const isSystemMsg  = content.startsWith('__PIN__') || content.startsWith('__REVOKE__') || content.startsWith('__READ__');
+  const isSystemMsg  = content.startsWith('__PIN__') || content.startsWith('__REVOKE__') || content.startsWith('__READ__') || content.startsWith('__VOTE__') || content.startsWith('__EDIT__') || content.startsWith('__UNPIN__');
   const audioSrc     = isAudio ? content.slice('__AUDIO__'.length) : null;
   const gifUrl       = isGif ? content.slice('[GIF]'.length) : null;
   const locationCoords = isLocation ? content.slice('[LOCATION]'.length) : null;
@@ -292,6 +312,7 @@ export const MessageBubble = React.memo(({
 
   if (isSystemMsg) return null;
 
+  // ── Gesture handlers ─────────────────────────────────────────────────────────
   const handleDragEnd = (_: any, info: PanInfo) => {
     if (info.offset.x < -50) {
       onReply(msg);
@@ -302,12 +323,14 @@ export const MessageBubble = React.memo(({
 
   const handleLongPressStart = () => {
     pressTimer.current = setTimeout(() => {
-      if (navigator.vibrate) navigator.vibrate(10);
+      if (navigator.vibrate) navigator.vibrate(12);
       setShowTapback(true);
-    }, 500);
+    }, 480);
   };
 
-  const handleLongPressEnd = () => { if (pressTimer.current) clearTimeout(pressTimer.current); };
+  const handleLongPressEnd = () => {
+    if (pressTimer.current) clearTimeout(pressTimer.current);
+  };
 
   const handleDoubleTap = () => {
     onReact(msg.id, '❤️');
@@ -324,8 +347,8 @@ export const MessageBubble = React.memo(({
       const el = document.getElementById(`msg-${replyMsg.id}`);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        el.classList.add('ring-2', 'ring-[#1c7aff]/30', 'scale-[1.02]', 'transition-all', 'duration-300');
-        setTimeout(() => el.classList.remove('ring-2', 'ring-[#1c7aff]/30', 'scale-[1.02]', 'transition-all', 'duration-300'), 1500);
+        el.classList.add('ring-2', 'ring-[#1c7aff]/30', 'transition-all', 'duration-300');
+        setTimeout(() => el.classList.remove('ring-2', 'ring-[#1c7aff]/30', 'transition-all', 'duration-300'), 1500);
       }
     }
   };
@@ -356,12 +379,18 @@ export const MessageBubble = React.memo(({
         )}
       </AnimatePresence>
 
+      {/* 
+        [iOS FIX] Removed scale from initial/animate.
+        Nested scale transforms cause GPU compositing artifacts on iOS Safari:
+        blurry text, choppy animations, and layout recalculation storms.
+        Using translateY + opacity only is perfectly smooth on all platforms.
+      */}
       <motion.div
         id={`msg-${msg.id}`}
-        initial={{ opacity: 0, y: isMe ? 6 : -6, x: isMe ? 12 : -12 }}
-        animate={{ opacity: 1, y: 0, x: 0 }}
-        transition={{ ...SPRING }}
-        className={`flex flex-col relative w-full ${isMe ? 'items-end' : 'items-start'} transition-transform duration-200`}
+        initial={{ opacity: 0, y: isMe ? 8 : -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={SPRING}
+        className={`flex flex-col relative w-full ${isMe ? 'items-end' : 'items-start'}`}
         style={{ marginBottom: 2 }}
       >
         <motion.div
@@ -405,6 +434,7 @@ export const MessageBubble = React.memo(({
               )}
             </AnimatePresence>
 
+            {/* ─── Content Renderer ──────────────────────────────────────────────── */}
             {isSticker ? (
               <StickerBubble content={content} />
             ) : isPoll ? (
@@ -414,13 +444,12 @@ export const MessageBubble = React.memo(({
             ) : isCallOffer ? (
               <CallOfferBubble content={content} isMe={isMe} />
             ) : isGif && gifUrl ? (
-              <motion.button
-                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+              <button
                 onClick={() => onOpenLightbox(gifUrl)}
-                className={`rounded-[18px] overflow-hidden shadow-lg border ${isMe ? 'border-transparent rounded-br-[4px]' : 'border-black/8 rounded-bl-[4px]'}`}
+                className={`rounded-[18px] overflow-hidden shadow-lg border ${isMe ? 'border-transparent rounded-br-[4px]' : 'border-black/8 rounded-bl-[4px]'} active:scale-[0.97] transition-transform duration-100`}
               >
                 <img src={gifUrl} alt="GIF" className="max-w-[220px] max-h-[200px] object-cover" loading="lazy" />
-              </motion.button>
+              </button>
             ) : isAudio && audioSrc ? (
               <div className={`px-3 py-2 rounded-[18px] shadow border ${isMe ? 'bg-[#1c7aff] border-transparent rounded-br-[4px]' : 'bg-white border-black/8 rounded-bl-[4px]'}`}>
                 <CustomAudioPlayer src={audioSrc} isMe={isMe} />
@@ -433,7 +462,7 @@ export const MessageBubble = React.memo(({
               >
                 <MapPin size={16} className={isMe ? 'text-white/80' : 'text-[#ff3b30]'} />
                 <div className="flex flex-col">
-                  <span className="text-[13px] font-semibold">Real-time Location</span>
+                  <span className="text-[13px] font-semibold">Live Location</span>
                   <span className="text-[11px] font-mono opacity-60">{locationCoords}</span>
                 </div>
               </a>
@@ -444,7 +473,7 @@ export const MessageBubble = React.memo(({
                     <img src={attachment.url} alt={attachment.name} className="max-w-[220px] max-h-[280px] object-cover" />
                   </button>
                 ) : attachment.mime.startsWith('video/') ? (
-                  <video src={attachment.url} controls className="max-w-[240px] max-h-[200px] bg-black" />
+                  <video src={attachment.url} controls className="max-w-[240px] max-h-[200px] bg-black" playsInline />
                 ) : (
                   <a href={attachment.url} download={attachment.name} className={`flex items-center gap-2 px-4 py-3 ${isMe ? 'text-white' : 'text-[#1c1c1e]'}`}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -453,6 +482,7 @@ export const MessageBubble = React.memo(({
                 )}
               </div>
             ) : (
+              // ── Standard Text Bubble ────────────────────────────────────────────
               <div className="relative">
                 {replyMsg && (
                   <button
@@ -469,12 +499,12 @@ export const MessageBubble = React.memo(({
                   </button>
                 )}
                 <div
-                  className={`relative px-4 py-2.5 shadow-md ${
+                  className={`relative px-4 py-2.5 shadow-sm ${
                     isMe ? 'rounded-[20px] rounded-br-[5px]' : 'rounded-[20px] rounded-bl-[5px]'
                   }`}
                   style={{
                     background: isMe
-                      ? 'linear-gradient(135deg, #1c7aff 0%, #0a5fd8 100%)'
+                      ? 'linear-gradient(145deg, #1c7aff 0%, #0a65e8 100%)'
                       : '#e9e9eb',
                   }}
                 >
@@ -492,11 +522,10 @@ export const MessageBubble = React.memo(({
                   {msg.reactions && Object.keys(msg.reactions).length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-2">
                       {Object.entries(msg.reactions).map(([emoji, users]: [string, any]) => (
-                        <motion.button
+                        <button
                           key={emoji}
-                          whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.9 }}
                           onClick={() => onReact(msg.id, emoji)}
-                          className={`text-[13px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm border transition-all ${
+                          className={`text-[13px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm border transition-all active:scale-95 ${
                             users.includes(clientInboxId || '')
                               ? 'bg-[#1c7aff] border-[#1c7aff] text-white'
                               : 'bg-white border-black/10 text-[#1c1c1e]'
@@ -504,7 +533,7 @@ export const MessageBubble = React.memo(({
                         >
                           <span>{emoji}</span>
                           {users.length > 1 && <span className="text-[10px] font-bold">{users.length}</span>}
-                        </motion.button>
+                        </button>
                       ))}
                     </div>
                   )}
@@ -513,9 +542,10 @@ export const MessageBubble = React.memo(({
             )}
           </div>
 
+          {/* ─── Timestamp + Status ───────────────────────────────────────────────── */}
           <div className={`flex items-center gap-1 mt-0.5 px-1 ${isMe ? 'justify-end' : 'justify-start'}`}>
             {isBurning && <span className="text-[9px] font-mono font-bold text-[#ff3b30]">{secondsLeft}s</span>}
-            <span className={`text-[11px] ${isMe ? 'text-black/30' : 'text-black/30'}`}>
+            <span className="text-[11px] text-black/30">
               {new Date(sentTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
             {isMe && (
@@ -533,5 +563,4 @@ export const MessageBubble = React.memo(({
     </React.Fragment>
   );
 });
-
 MessageBubble.displayName = 'MessageBubble';
