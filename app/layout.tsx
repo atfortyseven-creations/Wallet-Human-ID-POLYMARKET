@@ -75,7 +75,7 @@ export const metadata = {
   appleWebApp: {
     capable: true,
     title: 'Humanity Ledger',
-    statusBarStyle: 'black-translucent',
+    statusBarStyle: 'default',
   },
   openGraph: {
     title: 'Humanity Ledger | Privacy Infrastructure on Aztec',
@@ -208,7 +208,7 @@ export default async function RootLayout({
       <head>
         {/* Proper viewport already handled by Next.js `viewport` export above */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         {/* Prevent iOS Safari from auto-detecting phone numbers as links */}
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
