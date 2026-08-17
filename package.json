@@ -250,6 +250,7 @@
     "react-hotkeys-hook": "^4.6.1",
     "react-is": "^18.3.1",
     "react-markdown": "^10.1.0",
+    "react-qr-code": "2.2.0",
     "react-simple-maps": "^3.0.0",
     "react-virtualized-auto-sizer": "^1.0.24",
     "react-window": "^2.2.6",
