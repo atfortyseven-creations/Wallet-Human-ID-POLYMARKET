@@ -58,7 +58,7 @@ export function WhaleChatSettings({ onClose, address }: WhaleChatSettingsProps) 
   };
 
   return (
-    <div className="fixed inset-0 w-full h-[100dvh] bg-[#f5f5f7] z-[500000] overflow-hidden flex flex-col font-sans">
+    <div className="fixed inset-0 w-full h-[100dvh] bg-[#f5f5f7] z-[50] overflow-hidden flex flex-col font-sans">
       <AnimatePresence initial={false} custom={direction}>
         <motion.div
           key={view}
