@@ -1,5 +1,5 @@
 import { vault } from '@/lib/core/SecureVault';
-import { encryptMessage, decryptMessage } from '@/lib/wallet/encryption';
+import { encrypt, decrypt } from '@/lib/wallet/encryption';
 
 /**
  * ══════════════════════════════════════════════════════════════════════════════════
@@ -305,16 +305,13 @@ class SettingsEnginePXE {
       }
 
       // Decrypt the stored blob
-      const encryptionKey = (typeof process !== 'undefined' && process.env?.WALLET_ENCRYPTION_KEY)
-        ? process.env.WALLET_ENCRYPTION_KEY
-        : 'quantum_pxe_key_v3_2026';
-
       let decryptedString: string;
       try {
-        decryptedString = await decryptMessage(rawData, encryptionKey);
+        decryptedString = decrypt(rawData);
       } catch {
         // Decryption failed (e.g. key rotation) — fall back to defaults
         console.warn('[PXE ENGINE] Decryption failed, resetting to defaults');
+        // Re-initialize from defaults on decryption failure
         const fresh = { ...DEFAULT_PXE_SETTINGS, last_synced_at: Date.now() };
         this.cache[address] = fresh;
         await this.syncToPXE(address, fresh);
@@ -447,11 +444,7 @@ class SettingsEnginePXE {
     try {
       const updated = { ...settings, last_synced_at: Date.now() };
       const payload = JSON.stringify(updated);
-      const encryptionKey = (typeof process !== 'undefined' && process.env?.WALLET_ENCRYPTION_KEY)
-        ? process.env.WALLET_ENCRYPTION_KEY
-        : 'quantum_pxe_key_v3_2026';
-
-      const encryptedBlob = await encryptMessage(payload, encryptionKey);
+      const encryptedBlob = encrypt(payload);
       await vault.setItem(`pxe_settings_${address}`, encryptedBlob);
     } catch (error) {
       console.error('[PXE ENGINE] Vault sync error:', error);

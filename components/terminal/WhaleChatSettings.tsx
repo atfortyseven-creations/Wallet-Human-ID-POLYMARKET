@@ -350,16 +350,16 @@ function NotificationsView({ s, update }: any) {
     <div className="p-4 space-y-6 pb-20">
       <SH title="Message Alerts" />
       <BBlock>
-        <TRow label="Direct Channels" checked={s.notifications_private} onChange={v => update('notifications_private', v)} />
-        <TRow label="Encrypted Groups" checked={s.notifications_groups} onChange={v => update('notifications_groups', v)} />
-        <TRow label="Workspaces" checked={s.notifications_workspaces} onChange={v => update('notifications_workspaces', v)} noBorder />
+        <TRow label="Direct Channels" checked={s.notifications_private} onChange={(v: boolean) => update('notifications_private', v)} />
+        <TRow label="Encrypted Groups" checked={s.notifications_groups} onChange={(v: boolean) => update('notifications_groups', v)} />
+        <TRow label="Workspaces" checked={s.notifications_workspaces} onChange={(v: boolean) => update('notifications_workspaces', v)} noBorder />
       </BBlock>
 
       <SH title="Sound System" />
       <BBlock>
-        <TRow label="Notification Sound" checked={s.notification_sound} onChange={v => update('notification_sound', v)} />
-        <TRow label="Mechanical Keyboard" checked={s.mechanical_keyboard} onChange={v => update('mechanical_keyboard', v)} />
-        <TRow label="Show Unread Badge" checked={s.badge_count} onChange={v => update('badge_count', v)} noBorder />
+        <TRow label="Notification Sound" checked={s.notification_sound} onChange={(v: boolean) => update('notification_sound', v)} />
+        <TRow label="Mechanical Keyboard" checked={s.mechanical_keyboard} onChange={(v: boolean) => update('mechanical_keyboard', v)} />
+        <TRow label="Show Unread Badge" checked={s.badge_count} onChange={(v: boolean) => update('badge_count', v)} noBorder />
       </BBlock>
 
       <SH title="Sound Pack" />
@@ -448,24 +448,24 @@ function PrivacyView({ s, update }: any) {
     <div className="p-4 space-y-6 pb-20">
       <SH title="Security Controls" />
       <BBlock>
-        <TRow label="Hardware Passcode" checked={s.passcode_enabled} onChange={v => update('passcode_enabled', v)} />
-        <TRow label="Biometric Lock" checked={s.biometric_lock} onChange={v => update('biometric_lock', v)} />
-        <TRow label="WebRTC IP Masking" checked={s.webrtc_ip_masking} onChange={v => update('webrtc_ip_masking', v)} />
+        <TRow label="Hardware Passcode" checked={s.passcode_enabled} onChange={(v: boolean) => update('passcode_enabled', v)} />
+        <TRow label="Biometric Lock" checked={s.biometric_lock} onChange={(v: boolean) => update('biometric_lock', v)} />
+        <TRow label="WebRTC IP Masking" checked={s.webrtc_ip_masking} onChange={(v: boolean) => update('webrtc_ip_masking', v)} />
         <BItem icon={<Lock size={16}/>} label={`Blocked Addresses (${blocked.length})`} onClick={() => setShowBlocked(true)} noBorder />
       </BBlock>
 
       <SH title="Visibility Matrix" />
       <BBlock>
-        <CycleRow label="Last Seen" value={s.privacy_last_seen} options={['nobody', 'contacts', 'everybody']} onChange={v => update('privacy_last_seen', v as any)} />
-        <CycleRow label="Profile Photo" value={s.privacy_profile_photo} options={['nobody', 'contacts', 'everybody']} onChange={v => update('privacy_profile_photo', v as any)} />
-        <CycleRow label="Biography" value={s.privacy_bio} options={['nobody', 'contacts', 'everybody']} onChange={v => update('privacy_bio', v as any)} />
-        <CycleRow label="Group Invites" value={s.privacy_group_invites} options={['nobody', 'contacts', 'everybody']} onChange={v => update('privacy_group_invites', v as any)} noBorder />
+        <CycleRow label="Last Seen" value={s.privacy_last_seen} options={['nobody', 'contacts', 'everybody']} onChange={(v: boolean) => update('privacy_last_seen', v as any)} />
+        <CycleRow label="Profile Photo" value={s.privacy_profile_photo} options={['nobody', 'contacts', 'everybody']} onChange={(v: boolean) => update('privacy_profile_photo', v as any)} />
+        <CycleRow label="Biography" value={s.privacy_bio} options={['nobody', 'contacts', 'everybody']} onChange={(v: boolean) => update('privacy_bio', v as any)} />
+        <CycleRow label="Group Invites" value={s.privacy_group_invites} options={['nobody', 'contacts', 'everybody']} onChange={(v: boolean) => update('privacy_group_invites', v as any)} noBorder />
       </BBlock>
 
       <SH title="Communication Privacy" />
       <BBlock>
-        <TRow label="Show Read Receipts" checked={s.show_read_receipts} onChange={v => update('show_read_receipts', v)} />
-        <TRow label="Watermark Overlay" checked={s.watermark_enabled} onChange={v => update('watermark_enabled', v)} noBorder />
+        <TRow label="Show Read Receipts" checked={s.show_read_receipts} onChange={(v: boolean) => update('show_read_receipts', v)} />
+        <TRow label="Watermark Overlay" checked={s.watermark_enabled} onChange={(v: boolean) => update('watermark_enabled', v)} noBorder />
       </BBlock>
 
       <SH title="Onion Routing (Tor Hops)" />
@@ -483,8 +483,8 @@ function PrivacyView({ s, update }: any) {
 
       <SH title="Self-Destruct Protocol" />
       <BBlock>
-        <CycleRow label="Auto-Delete Timer" value={s.auto_delete_timer} options={['off', '24 hours', '1 week', '1 month']} onChange={v => update('auto_delete_timer', v as any)} />
-        <TRow label="Burn-on-Read" checked={s.burn_on_read} onChange={v => update('burn_on_read', v)} />
+        <CycleRow label="Auto-Delete Timer" value={s.auto_delete_timer} options={['off', '24 hours', '1 week', '1 month']} onChange={(v: boolean) => update('auto_delete_timer', v as any)} />
+        <TRow label="Burn-on-Read" checked={s.burn_on_read} onChange={(v: boolean) => update('burn_on_read', v)} />
         {s.burn_on_read && (
           <BBlock>
             {([3, 10, 30, 60] as const).map((sec, i, arr) => (
@@ -554,19 +554,19 @@ function DataView({ s, update, address }: any) {
 
       <SH title="Auto-Download" />
       <BBlock>
-        <TRow label="Auto-Fetch (WiFi)" checked={s.auto_download_wifi} onChange={v => update('auto_download_wifi', v)} />
-        <TRow label="Auto-Fetch (Cellular)" checked={s.auto_download_cellular} onChange={v => update('auto_download_cellular', v)} />
-        <TRow label="Save Media to Gallery" checked={s.save_photos} onChange={v => update('save_photos', v)} noBorder />
+        <TRow label="Auto-Fetch (WiFi)" checked={s.auto_download_wifi} onChange={(v: boolean) => update('auto_download_wifi', v)} />
+        <TRow label="Auto-Fetch (Cellular)" checked={s.auto_download_cellular} onChange={(v: boolean) => update('auto_download_cellular', v)} />
+        <TRow label="Save Media to Gallery" checked={s.save_photos} onChange={(v: boolean) => update('save_photos', v)} noBorder />
       </BBlock>
 
       <SH title="Call Quality" />
       <BBlock>
-        <TRow label="Data-Saver WebRTC" checked={s.data_saver_calls} onChange={v => update('data_saver_calls', v)} noBorder />
+        <TRow label="Data-Saver WebRTC" checked={s.data_saver_calls} onChange={(v: boolean) => update('data_saver_calls', v)} noBorder />
       </BBlock>
 
       <SH title="Privacy" />
       <BBlock>
-        <TRow label="Anonymous Telemetry" checked={s.allow_analytics} onChange={v => update('allow_analytics', v)} noBorder />
+        <TRow label="Anonymous Telemetry" checked={s.allow_analytics} onChange={(v: boolean) => update('allow_analytics', v)} noBorder />
       </BBlock>
 
       <button onClick={() => {
@@ -629,8 +629,8 @@ function AppearanceView({ s, update }: any) {
 
       <SH title="Advanced" />
       <BBlock>
-        <TRow label="NFT Avatar Border" checked={s.nft_border_enabled} onChange={v => update('nft_border_enabled', v)} />
-        <TRow label="Watermark Overlay" checked={s.watermark_enabled} onChange={v => update('watermark_enabled', v)} noBorder />
+        <TRow label="NFT Avatar Border" checked={s.nft_border_enabled} onChange={(v: boolean) => update('nft_border_enabled', v)} />
+        <TRow label="Watermark Overlay" checked={s.watermark_enabled} onChange={(v: boolean) => update('watermark_enabled', v)} noBorder />
       </BBlock>
     </div>
   );
@@ -869,7 +869,7 @@ function GhostModeView({ s, update }: any) {
 
       <SH title="Auto-Reply" />
       <BBlock>
-        <TRow label="Ghost Auto-Reply" checked={s.ghost_auto_reply} onChange={v => update('ghost_auto_reply', v)} noBorder />
+        <TRow label="Ghost Auto-Reply" checked={s.ghost_auto_reply} onChange={(v: boolean) => update('ghost_auto_reply', v)} noBorder />
       </BBlock>
       {s.ghost_auto_reply && (
         <div className="flex flex-col gap-1">
@@ -885,7 +885,7 @@ function GhostModeView({ s, update }: any) {
 
       <SH title="Intelligence Tools" />
       <BBlock>
-        <TRow label="Tone Translator" checked={s.tone_translator} onChange={v => update('tone_translator', v)} noBorder />
+        <TRow label="Tone Translator" checked={s.tone_translator} onChange={(v: boolean) => update('tone_translator', v)} noBorder />
       </BBlock>
       <p className="text-[11px] font-bold text-zinc-500 ml-1">Converts hostile outgoing messages to diplomatic language before sending.</p>
     </div>
@@ -901,10 +901,10 @@ function DefiToolsView({ s, update }: any) {
     <div className="p-4 space-y-6 pb-20">
       <SH title="Chat Intelligence Overlays" />
       <BBlock>
-        <TRow label="$TICKER Price Widgets" checked={s.ticker_widgets} onChange={v => update('ticker_widgets', v)} />
-        <TRow label="Contract Risk Scanner" checked={s.contract_scanner} onChange={v => update('contract_scanner', v)} />
-        <TRow label="Smart Macros (/add, /send)" checked={s.smart_macros} onChange={v => update('smart_macros', v)} />
-        <TRow label="On-Chain Attestation Badge" checked={s.show_attestation_badge} onChange={v => update('show_attestation_badge', v)} noBorder />
+        <TRow label="$TICKER Price Widgets" checked={s.ticker_widgets} onChange={(v: boolean) => update('ticker_widgets', v)} />
+        <TRow label="Contract Risk Scanner" checked={s.contract_scanner} onChange={(v: boolean) => update('contract_scanner', v)} />
+        <TRow label="Smart Macros (/add, /send)" checked={s.smart_macros} onChange={(v: boolean) => update('smart_macros', v)} />
+        <TRow label="On-Chain Attestation Badge" checked={s.show_attestation_badge} onChange={(v: boolean) => update('show_attestation_badge', v)} noBorder />
       </BBlock>
       <p className="text-[11px] font-bold text-zinc-500 ml-1">These tools run natively inside the chat protocol without requiring external API calls.</p>
     </div>
@@ -930,7 +930,7 @@ function NetworkView({ s, update }: any) {
 
       <SH title="Security" />
       <BBlock>
-        <TRow label="MEV Protection" checked={s.mev_protection} onChange={v => update('mev_protection', v)} noBorder />
+        <TRow label="MEV Protection" checked={s.mev_protection} onChange={(v: boolean) => update('mev_protection', v)} noBorder />
       </BBlock>
 
       <SH title="Custom RPC Endpoint" />

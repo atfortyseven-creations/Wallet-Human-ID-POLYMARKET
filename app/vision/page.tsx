@@ -1,81 +1,39 @@
 import React from 'react';
-import { SystemHeader } from '@/components/landing/SystemHeader';
-import { SystemFooter } from '@/components/landing/SystemFooter';
-import { VisionAboutSection } from '@/components/vision/VisionAboutSection';
+import DocLayout from '@/components/layout/DocLayout';
 
-export const metadata = {
-  title: 'Our Vision, Humanity Ledger',
-  description:
-    'Humanity Ledger S.L. is building a secure, decentralised identity ecosystem for the next generation of financial infrastructure, powered by zero knowledge cryptography on Aztec Network.',
-};
-
-export default function VisionPage() {
+export default function Vision() {
   return (
-    <div className="min-h-screen flex flex-col text-black bg-white">
-      <SystemHeader />
-
-      <main className="flex-1 w-full">
-
-        {/* ── Hero / Vision Statement ───────────────────────────────────────── */}
-        <section className="w-full pt-28 pb-16 px-6 md:px-16 flex flex-col items-center bg-white">
-          <div className="max-w-4xl w-full">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-black/10 bg-black/[0.03] mb-8">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black/50">
-                Our Vision
-              </span>
-            </div>
-
-            <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-tight mb-8 text-black">
-              The Vision of{' '}
-              <br className="hidden md:block" />
-              <span className="text-black/30">Humanity Ledger.</span>
-            </h1>
-
-            <div className="space-y-5 text-black/65 font-sans text-base md:text-lg leading-relaxed max-w-2xl">
-              <p>
-                At <strong className="text-black font-black">Humanity Ledger S.L.</strong>, our
-                primary goal is to build a secure and transparent identity layer for the Humanity Ledger platform, one that protects
-                user data while ensuring full regulatory attestation. We believe that a credible
-                digital identity is the foundation of a safer and more efficient financial
-                ecosystem, not a barrier to it.
-              </p>
-              <p>
-                To realise this, we have integrated directly with{' '}
-                <strong className="text-black font-black">Aztec Network</strong>. By building on
-                Aztec's zero knowledge privacy infrastructure, we guarantee that user data
-                remains mathematically confidential. Proofs replace personal data. That is the standard we hold ourselves to.
-              </p>
-              <p>
-                As an open source initiative, we are expanding our coverage of Layer-2 protocols continuously. Financial independence, in our view, demands transparent code and trustless systems, giving every user the power to monitor global
-                markets privately and on their own terms.
-              </p>
-            </div>
-
-            <div className="mt-12 flex flex-wrap items-center gap-3">
-              <a
-                href="mailto:press@humanidfi.com"
-                className="inline-flex items-center justify-center px-8 py-3.5 bg-black text-white font-black text-[11px] uppercase tracking-widest hover:bg-black/80 transition-all rounded-none"
-              >
-                Contact Press Office
-              </a>
-              <a
-                href="/registry"
-                className="inline-flex items-center justify-center px-8 py-3.5 border border-black/15 text-black font-black text-[11px] uppercase tracking-widest hover:bg-black/[0.03] transition-all"
-              >
-                View Registry
-              </a>
-            </div>
-          </div>
+    <DocLayout title="Vision & Manifesto" category="Company" description="The philosophical and technical manifesto of Humanity Ledger — building the privacy-native digital society." lastUpdated="August 2026">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-slate-300">
+        <h1 className="text-5xl font-extrabold mb-8 text-white tracking-tight">The Vision: Beyond the Present Ledger</h1>
+        
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold mb-6 text-cyan-400">1. A New Paradigm for Human Interaction</h2>
+          <p className="mb-4 text-lg leading-relaxed">
+            The Humanity Ledger is not merely a financial instrument; it is the infrastructural bedrock for a post-scarcity digital society. By providing a truly private, censorship-resistant layer, we empower individuals to transact, communicate, and govern themselves autonomously. Our vision extends to creating a globally accessible state machine that respects human rights by default, embedding privacy at the protocol level.
+          </p>
+          <p className="mb-4 text-lg leading-relaxed">
+            We foresee a future where cryptographic identities are fluid, composable, and entirely controlled by the end-user. Through the integration of zero-knowledge decentralized identifiers (zk-DIDs), users can prove statements about their identity (e.g., "over 18", "citizen of X") without revealing their underlying data. This paradigm shift eliminates the need for centralized data silos and mitigates the risk of mass surveillance.
+          </p>
         </section>
 
-        {/* ── About Us & Leadership ─────────────────────────────────────────── */}
-        <div className="pb-24">
-          <VisionAboutSection />
-        </div>
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold mb-6 text-cyan-400">2. Ultimate Scalability: Trillones de Parametros</h2>
+          <p className="mb-4 text-lg leading-relaxed">
+            To support a global population, the network must handle an unprecedented load. Our theoretical models, validated through extensive simulation, project the ability to manage models and state channels scaling to <strong>trillones de parametros</strong>. This isn't just about transaction throughput; it's about the complexity of smart contracts, decentralized AI inferences, and massive-scale multi-party computations occurring seamlessly on-chain.
+          </p>
+          <p className="mb-4 text-lg leading-relaxed">
+            Our commitment to <strong>maxima capacidad cuantica</strong> ensures that as computational power grows exponentially, the Ledger remains an immutable and secure anchor. The integration of lattice-based cryptography alongside traditional elliptic curves guarantees that our vision will withstand the test of time and technological upheaval.
+          </p>
+        </section>
 
-      </main>
-
-      <SystemFooter />
-    </div>
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold mb-6 text-cyan-400">3. The Road Ahead</h2>
+          <p className="mb-4 text-lg leading-relaxed">
+            The roadmap is ambitious, encompassing cross-chain interoperability via trustless zk-bridges, native integration with decentralized storage networks, and the deployment of a fully homomorphic execution environment. We invite developers, cryptographers, and visionaries to join us in building this resilient framework for humanity.
+          </p>
+        </section>
+      </div>
+    </DocLayout>
   );
 }

@@ -34,7 +34,7 @@ export const Footer = () => {
                     </div>
 
                     {/* Elite Navigation */}
-                    <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-4 gap-10 md:pl-12">
+                    <div className="md:col-span-7 grid grid-cols-2 md:grid-cols-5 gap-10 md:pl-12">
                         
                         {/* PRODUCT */}
                         <div className="flex flex-col gap-8">
@@ -43,6 +43,17 @@ export const Footer = () => {
                                 <FooterLink href="/architecture">Architecture</FooterLink>
                                 <FooterLink href="/registry">Registry</FooterLink>
                                 <FooterLink href="/whitepaper">Whitepaper</FooterLink>
+                            </div>
+                        </div>
+
+                        {/* DOCUMENTATION */}
+                        <div className="flex flex-col gap-8">
+                            <h4 className="text-[11px] font-sans font-black uppercase tracking-[0.1em] text-black">DOCUMENTATION</h4>
+                            <div className="flex flex-col gap-4">
+                                <FooterLink href="/docs/overview">Overview</FooterLink>
+                                <FooterLink href="/docs/aztec-l2">Architecture</FooterLink>
+                                <FooterLink href="/docs/security-model">Security Model</FooterLink>
+                                <FooterLink href="/docs/privacy-model">Privacy Model</FooterLink>
                             </div>
                         </div>
 

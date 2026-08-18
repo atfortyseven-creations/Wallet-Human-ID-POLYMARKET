@@ -144,7 +144,7 @@ export function DocsShell({
   currentSlug: string;
 }) {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Top nav */}
       <header className="sticky top-0 z-50 h-16 bg-white/95 backdrop-blur-xl border-b border-slate-100 flex items-center px-6">
         <div className="w-full max-w-[1200px] mx-auto flex items-center justify-between gap-8">
