@@ -3294,18 +3294,19 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   return (
     <TuringShieldGate>
-      {/* FULL SCREEN SETTINGS OVERLAY */}
-      {showSettings && (
-        <WhaleChatSettings 
-          onClose={() => setShowSettings(false)} 
-          address={effectiveAddress} 
-        />
-      )}
-      
-      {/* FULL SCREEN VAULT OVERLAY */}
-      {showVault && (
-        <WhaleChatVaultManager onClose={() => setShowVault(false)} />
-      )}
+      {/* FULL SCREEN MODALS */}
+      <AnimatePresence>
+        {showSettings && (
+          <WhaleChatSettings 
+            onClose={() => setShowSettings(false)} 
+            address={effectiveAddress} 
+          />
+        )}
+        
+        {showVault && (
+          <WhaleChatVaultManager onClose={() => setShowVault(false)} />
+        )}
+      </AnimatePresence>
 
     {/* ─── WebRTC Ringtone Audio Element ────────────────────────────────────── */}
     <audio ref={ringAudioRef} loop src="/sounds/call_ringtone.mp3" style={{ display: 'none' }} />

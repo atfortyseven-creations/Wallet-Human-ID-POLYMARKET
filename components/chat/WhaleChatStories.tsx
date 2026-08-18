@@ -125,7 +125,7 @@ export function WhaleChatStories({ stories, initialPeerIndex = 0, onClose, myAdd
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [peerIndex, storyIndex]);
+  }, [peerIndex, storyIndex, stories, totalStoriesForPeer, onClose]);
 
   if (!activePeer || !activeStory) return null;
 

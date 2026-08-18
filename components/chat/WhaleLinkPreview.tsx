@@ -121,6 +121,7 @@ export function extractFirstUrl(text: string): string | null {
 
 // ─── Local Preview Cache (avoid refetching same URL) ─────────────────────────
 const previewCache = new Map<string, LinkPreviewData | null>();
+const MAX_CACHE_SIZE = 50;
 
 export function useLinkPreview(url: string | null): {
   preview: LinkPreviewData | null;
@@ -156,10 +157,21 @@ export function useLinkPreview(url: string | null): {
         });
         if (!res.ok) throw new Error('bad response');
         const data: LinkPreviewData = await res.json();
+        
+        // LRU Eviction Policy
+        if (previewCache.size >= MAX_CACHE_SIZE) {
+          const firstKey = previewCache.keys().next().value;
+          if (firstKey) previewCache.delete(firstKey);
+        }
+        
         previewCache.set(url, data);
         setPreview(data);
       } catch (e: any) {
         if (e?.name !== 'AbortError') {
+          if (previewCache.size >= MAX_CACHE_SIZE) {
+            const firstKey = previewCache.keys().next().value;
+            if (firstKey) previewCache.delete(firstKey);
+          }
           previewCache.set(url, null); // cache negative to avoid re-fetching
           setPreview(null);
         }
