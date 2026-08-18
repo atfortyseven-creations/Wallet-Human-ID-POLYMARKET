@@ -1,9 +1,9 @@
 "use client";
-import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings, Clock } from 'lucide-react';
+import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings, Clock, Lock } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Video, VideoOff, Phone, PhoneOff, Mic, MicOff, Volume2, Smile } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import type Peer from 'peerjs';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
@@ -24,6 +24,18 @@ import { ChatCommunityGate } from '@/components/chat/ChatCommunityGate';
 import { MediaPermissionsPrePrompt } from '@/components/chat/MediaPermissionsPrePrompt';
 import { getLocalContacts, saveLocalContact, resolveContactName, LocalContact } from '@/lib/wallet/localAddressBook';
 import { getCallHistory, saveCallRecord, CallRecord } from '@/lib/wallet/callHistory';
+import { WhaleChatProfile } from '@/components/chat/WhaleChatProfile';
+import { WhaleChatVaultManager } from '@/components/chat/WhaleChatVaultManager';
+import { WhaleChatStatusBar } from '@/components/chat/WhaleChatStatusBar';
+import { useWhaleChatPresence } from '@/hooks/useWhaleChatPresence';
+import { WhaleChatSearchModal } from '@/components/chat/WhaleChatSearchModal';
+import { WhaleChatCallHistory } from '@/components/chat/WhaleChatCallHistory';
+import { WhaleChatVoiceNote } from '@/components/chat/WhaleChatVoiceNote';
+import { moderateContent, sanitizeFilename, isAllowedMimeType, checkRateLimit } from '@/lib/utils/contentFilter';
+import { whaleAnalytics, trackMessageSent, trackCallStarted, trackCallAnswered, trackAttachmentSent, trackFeatureUsed } from '@/lib/utils/whaleAnalytics';
+import { notificationEngine } from '@/lib/wallet/NotificationEngine';
+import { Search, Phone as PhoneIcon, Clock as ClockIcon } from 'lucide-react';
+
 import { WhaleChatSettings, useWhaleSettings } from './WhaleChatSettings';
 
 
@@ -220,12 +232,18 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
+    notificationEngine.init();
   }, []);
 
   const [conversations, setConversations] = useState<ConversationMeta[]>([]);
   const [activePeer, setActivePeer] = useState<string | null>(null);
   const [localContacts, setLocalContacts] = useState<LocalContact[]>([]);
   const [replyingTo, setReplyingTo] = useState<any | null>(null); // Phase 2: Message Quoting
+  
+  // High-End Feature States
+  const [showCallHistory, setShowCallHistory] = useState(false);
+  const [showVoiceNote, setShowVoiceNote] = useState(false);
+  const { peerStatus, broadcastTyping } = useWhaleChatPresence(address || '', activePeer);
 
   // ── v2: Telegram-Parity state ──────────────────────────────────────────
   const [callHistoryList, setCallHistoryList] = useState<CallRecord[]>([]);
@@ -295,7 +313,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const [showScanner, setShowScanner] = useState(false);
   const [showMyQR, setShowMyQR] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [peerStatus, setPeerStatus] = useState<{ online: boolean, lastSeen: number | null, isTyping: boolean }>({ online: false, lastSeen: null, isTyping: false });
+
 
   //  Audio recording state 
   const [isRecording, setIsRecording] = useState(false);
@@ -316,6 +334,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // Telegram-style features
   const [showProfile, setShowProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showVault, setShowVault] = useState(false);
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [blockedPeers, setBlockedPeers] = useState<Set<string>>(new Set());
 
@@ -762,69 +781,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // We always attempt auto-init on both desktop and mobile. If WASM fails on mobile,
   // the error boundary surfaces a manual "Retry" button. This is better than
   // silently blocking mobile users from ever seeing the Activate button.
-
-  // Telemetry: Heartbeat Loop
-  useEffect(() => {
-      if (!address || !client) return;
-      
-      const sendHeartbeat = async () => {
-          if (document.visibilityState !== 'visible') return; // Extreme privacy: pause heartbeat when hidden
-          try {
-              await fetch('/api/chat/telemetry', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ address, type: 'heartbeat' })
-              });
-          } catch {}
-      };
-
-      sendHeartbeat();
-      const interval = setInterval(sendHeartbeat, 15000);
-      return () => clearInterval(interval);
-  }, [address, client]);
-
-  // Telemetry: Peer Polling Loop (adaptive interval based on network quality)
-  useEffect(() => {
-      if (!activePeer || !address) {
-          setPeerStatus({ online: false, lastSeen: null, isTyping: false });
-          return;
-      }
-      let isMounted = true;
-
-      // Determine polling interval: poor connection = less aggressive polling
-      const getPollingInterval = () => {
-          if (typeof navigator !== 'undefined') {
-              const conn = (navigator as any).connection;
-              if (!navigator.onLine) return 15000; // offline: back way off
-              if (conn && (conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g')) return 8000;
-          }
-          return 3000; // default: 3s on good connection
-      };
-
-      const pollPeer = async () => {
-          if (!isMounted) return;
-          try {
-              const res = await fetch(`/api/chat/telemetry?peer=${activePeer}&self=${address}`, { cache: 'no-store' });
-              if (!res.ok) return;
-              const data = await res.json();
-              if (isMounted) setPeerStatus(data);
-          } catch {}
-      };
-
-      pollPeer();
-      // Adaptive interval: re-evaluate every poll cycle
-      let timeoutId: ReturnType<typeof setTimeout>;
-      const scheduleNext = () => {
-          if (!isMounted) return;
-          timeoutId = setTimeout(async () => {
-              await pollPeer();
-              scheduleNext();
-          }, getPollingInterval());
-      };
-      scheduleNext();
-
-      return () => { isMounted = false; clearTimeout(timeoutId); };
-  }, [activePeer, address]);
 
 
   // Detect Offline Status & Process Queue
@@ -2450,13 +2406,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   if (whaleSettings?.notification_sound !== false) { playReceiveSound(); };
                   sendMessage(client, msgConvPeer, `__READ__${realId}`, address).catch(e => console.warn('Failed to send read receipt', e));
                 } else {
-                  // Phase 5: Push Notifications when app is hidden
-                  if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
-                    new Notification(`WhaleChat: ${shortAddr(msgConvPeer)}`, {
-                      body: formatMessagePreview(content),
-                      icon: '/favicon.ico'
-                    });
-                  }
+                  // Phase 5: Advanced Push Notifications when app is hidden
+                  notificationEngine.notifyLocal(
+                    `WhaleChat: ${shortAddr(msgConvPeer)}`,
+                    formatMessagePreview(content),
+                    msgConvPeer,
+                    !!(whaleSettings as any)?.hide_notification_content
+                  );
                 }
               }
               return [...prev, mappedMsg].sort((a, b) => a.sentAtNs - b.sentAtNs);
@@ -2839,6 +2795,18 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const handleStartConversation = async () => handleStartConversationWithPeer(peerInput);
 
   const executeSend = async (content: string) => {
+    // 1. App Store Compliance: Content Moderation & Rate Limiting
+    if (!checkRateLimit(address || 'anon', 60, 60000)) {
+      toast.error('You are sending messages too fast. Please wait.');
+      return;
+    }
+    const moderationFlag = moderateContent(content);
+    if (moderationFlag) {
+      toast.error(moderationFlag);
+      return;
+    }
+    trackMessageSent(activePeer || undefined);
+
     if (!client || !activePeer || !content.trim() || !address) return;
     
     const isReaction = content.startsWith('__REACT__');
@@ -3147,7 +3115,36 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           Connect Identity
         </button>
       </div>
-      </TuringShieldGate>
+      
+      <AnimatePresence>
+        {showSearch && activePeer && (
+          <WhaleChatSearchModal
+            messages={messages}
+            onClose={() => setShowSearch(false)}
+            onJumpTo={(id) => {
+               const el = document.getElementById(`msg-${id}`);
+               if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
+            getDisplayName={(addr: string) => resolveContactName(address || '', addr) || addr}
+            clientInboxId={address || ''}
+          />
+        )}
+        {showCallHistory && address && (
+          <WhaleChatCallHistory
+            callHistory={getCallHistory(address)}
+            address={address}
+            onCallBack={(peer, type) => {
+               setActivePeer(peer.toLowerCase());
+               if (type === 'audio') startCall('audio');
+               else startCall('video');
+            }}
+            onClose={() => setShowCallHistory(false)}
+            getDisplayName={(addr: string) => resolveContactName(address || '', addr) || addr}
+          />
+        )}
+      </AnimatePresence>
+  
+    </TuringShieldGate>
     );
   }
 
@@ -3304,6 +3301,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           address={effectiveAddress} 
         />
       )}
+      
+      {/* FULL SCREEN VAULT OVERLAY */}
+      {showVault && (
+        <WhaleChatVaultManager onClose={() => setShowVault(false)} />
+      )}
 
     {/* ─── WebRTC Ringtone Audio Element ────────────────────────────────────── */}
     <audio ref={ringAudioRef} loop src="/sounds/call_ringtone.mp3" style={{ display: 'none' }} />
@@ -3340,6 +3342,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 title="Settings"
               >
                 <Settings size={14} />
+              </button>
+              <button
+                onClick={() => setShowVault(true)}
+                className="p-2.5 rounded-xl bg-[#f5f5f7] text-black/50 hover:bg-[#e5e5ea] transition-all"
+                title="Secure Vault"
+              >
+                <Lock size={14} />
               </button>
             </div>
             
@@ -3554,19 +3563,19 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       {activePeer.slice(2, 4).toUpperCase()}
                     </div>
                     {/* Online indicator */}
-                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white shadow-sm ${peerStatus.online ? 'bg-black' : 'bg-gray-400'}`} />
+                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white shadow-sm ${peerStatus.status === 'online' ? 'bg-black' : 'bg-gray-400'}`} />
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[13px] font-black text-[#050505] font-mono flex items-center gap-1.5">
                       {getDisplayName(activePeer!)}
                     </span>
-                    <span className={`text-[10px] font-semibold flex items-center gap-1 ${peerStatus.online ? 'text-black' : 'text-black/50'}`}>
+                    <span className={`text-[10px] font-semibold flex items-center gap-1 ${peerStatus.status === 'online' ? 'text-black' : 'text-black/50'}`}>
                       {peerStatus.isTyping ? (
                         <>
                           <span className="w-1 h-1 rounded-full bg-black animate-pulse inline-block" />
                           typing...
                         </>
-                      ) : peerStatus.online ? (
+                      ) : peerStatus.status === 'online' ? (
                         <>
                           <span className="w-1 h-1 rounded-full bg-black inline-block" />
                           Online
@@ -4654,55 +4663,17 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         )}
 
         {/* Profile Popover Overlay — fixed + portal so it escapes overflow:hidden containers */}
-       {(showProfile && activePeer && isMounted)
-         ? createPortal(
-         <div className="fixed inset-0 z-[99999] bg-black/30 backdrop-blur-sm flex flex-col items-center justify-center p-6 animate-in fade-in duration-200" onClick={() => setShowProfile(false)}>
-           <div className="w-full max-w-sm bg-white p-6 rounded-3xl border border-black/10 shadow-2xl animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
-               <div className="flex justify-between items-center mb-6">
-                   <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[#050505]">Profile</h3>
-                   <button onClick={() => setShowProfile(false)} className="w-8 h-8 flex items-center justify-center hover:bg-black/5 rounded-full transition-colors text-[11px] font-black uppercase text-[#050505]">
-                     ✕
-                   </button>
-               </div>
-               <div className="flex flex-col items-center gap-4 mb-8">
-                   <div
-                     className="w-20 h-20 rounded-full flex items-center justify-center text-[24px] font-black text-white shadow-lg"
-                     style={{ background: `hsl(${parseInt(activePeer.slice(2, 8), 16) % 360},70%,45%)` }}
-                   >
-                     {activePeer.slice(2, 4).toUpperCase()}
-                   </div>
-                   <div className="text-center">
-                     <p className="text-[13px] font-mono font-bold text-[#050505] break-all">{activePeer}</p>
-                     <p className="text-[12px] text-black font-medium mt-1">End to End Encrypted</p>
-                  </div>
-               </div>
-               <div className="flex flex-col gap-2">
-                   <button onClick={() => { syncToAddressBook(activePeer); setShowProfile(false); }} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/10 rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505]">
-                       <UserPlus size={16} className="text-black/50" /> Add to Contacts
-                   </button>
-                   <button onClick={exportChat} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/10 rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505]">
-                       <Download size={16} className="text-black/50" /> Export Chat
-                   </button>
-                   <button onClick={() => toggleBlock(activePeer)} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/10 rounded-xl transition-colors text-[11px] font-mono font-bold text-orange-500">
-                       <Slash size={16} /> {blockedPeers.has(activePeer.toLowerCase()) ? 'Unblock Wallet' : 'Block Wallet'}
-                   </button>
-                   <button onClick={clearChat} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/5 rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505]">
-                       <Trash2 size={16} /> Clear Chat
-                   </button>
-                   {/* ── [FASE 9: App Store Guideline 1.2 — Support Contact] ── */}
-                   <a href="mailto:support@humanidfi.com" className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/10 rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505]">
-                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                       Contact Support
-                   </a>
-                   <a href="/legal/terms" target="_blank" className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/10 rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505]">
-                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                       Community Guidelines
-                   </a>
-               </div>
-           </div>
-         </div>,
-         document.body
-       ) : null}
+       <AnimatePresence>
+        {showProfile && activePeer && (
+          <WhaleChatProfile
+            peerAddress={activePeer}
+            onClose={() => setShowProfile(false)}
+            onClearChat={clearChat}
+            onBlockUser={() => toggleBlock(activePeer)}
+            getDisplayName={(addr: string) => resolveContactName(address || '', addr) || addr}
+          />
+        )}
+       </AnimatePresence>
 
        {/* Phase 2: Immersive Lightbox Modal */}
        {(lightboxImg && typeof document !== 'undefined')
