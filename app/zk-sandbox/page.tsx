@@ -65,7 +65,7 @@ export default function ZkSandboxPage() {
           <div className="flex-1 p-4 overflow-auto font-mono text-sm leading-relaxed">
 <pre>
 <span className="text-slate-500">// Zero-Knowledge Identity Proof Circuit</span>
-<span className="text-slate-500">// Prove ownership of a private key and age > 18 without revealing DoB</span>
+<span className="text-slate-500">// Prove ownership of a private key and age &gt; 18 without revealing DoB</span>
 
 <span className="text-pink-400">use</span> dep::std;
 
