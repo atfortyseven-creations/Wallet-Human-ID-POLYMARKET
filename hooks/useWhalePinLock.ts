@@ -10,11 +10,28 @@ const PIN_VAULT_KEY_PREFIX = 'whale_pin_hash_';
 const LOCK_TIMEOUT_KEY = 'whale_lock_timeout';
 const DEFAULT_LOCK_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes
 
-// Simple deterministic PIN hash (for demo — in prod, use PBKDF2)
+// Production-grade PBKDF2 PIN hashing
 async function hashPIN(pin: string): Promise<string> {
   const encoder = new TextEncoder();
-  const data = encoder.encode(`whale-pin-salt-v1-${pin}`);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(pin),
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits']
+  );
+  
+  const hashBuffer = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: encoder.encode('whale-pin-secure-salt-v2'),
+      iterations: 250_000,
+      hash: 'SHA-256',
+    },
+    keyMaterial,
+    256
+  );
+  
   return Array.from(new Uint8Array(hashBuffer))
     .map(b => b.toString(16).padStart(2, '0'))
     .join('');
