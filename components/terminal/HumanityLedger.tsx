@@ -119,7 +119,7 @@ const NODES: RoadmapNode[] = [
     id: 'enclave',
     title: 'Enclave PIN Security',
     status: 'live',
-    quarter: 'Jul 2026',
+    quarter: 'Completed',
     description: 'Critical security hardening of the Turing Shield Enclave. Patched a full PIN bypass vulnerability. New system uses server-side HMAC-SHA256 verification, constant-time comparison (timing-attack proof), and 5-attempt brute-force lockout.',
     x: C3, y: 340,
   },
@@ -132,12 +132,12 @@ const NODES: RoadmapNode[] = [
     x: C3, y: 480,
   },
 
-  // ─── PHASE 4: Aztec Integration & On-Chain Intelligence (Jul 2026) ─────────────
+  // ─── PHASE 4: Aztec Integration & On-Chain Intelligence (Jul - Sep 2026) ─────────────
   {
     id: 'aztectestnet',
     title: 'Aztec V5 Testnet Live',
     status: 'live',
-    quarter: 'Jul 20, 2026',
+    quarter: 'Completed',
     description: 'Connected to Aztec Labs public RPC for testnet proof delegation and state reading. Full migration to Aztec V5 Alpha Testnet RPC. QD token transfers anchored to real Aztec blocks.',
     x: C4, y: 60,
   },
@@ -145,15 +145,15 @@ const NODES: RoadmapNode[] = [
     id: 'governance',
     title: 'On-Chain Governance',
     status: 'live',
-    quarter: 'Jul 2026',
+    quarter: 'Completed',
     description: 'Protocol governance module live in the terminal. Members vote on proposals spending QDs as voting weight. One-vote-per-wallet nullifier, real-time vote tallying, and proposal lifecycle management (VOTING → APPROVED).',
     x: C4, y: 200,
   },
   {
     id: 'stealth-transfers',
     title: 'ZK Stealth Transfers',
-    status: 'building',
-    quarter: 'Aug 2026',
+    status: 'live',
+    quarter: 'Completed',
     description: 'Private peer-to-peer capital routing leveraging Aztec\'s shielded state. Transfer significant capital between wallets with absolute cryptographic privacy, obscuring sender, receiver, and transaction size from public chain analysis.',
     x: C4, y: 340,
   },

@@ -450,44 +450,38 @@ function ConnectedScreen({
           ))}
         </motion.div>
 
-        {/* APPS SPRINGBOARD - PURE ELEGANT TYPOGRAPHY */}
+        {/* APPS SPRINGBOARD - REDESIGNED HIGH-END GRID */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full flex flex-col items-center gap-6 mb-14"
+          className="w-full grid grid-cols-2 gap-4 mb-14"
         >
           {[
-            { label: 'Dashboard', href: '/terminal' },
-            { label: 'Link Session', action: onScan },
-            { label: 'Portfolio', href: '/portfolio' },
-            { label: 'Whale Chat', href: '/chat' },
-            { label: 'Whale Forum', href: '/forum' },
-            { label: 'Studio Beta', href: '/studio/provenance' },
-            { label: 'Academy', href: '/academy' },
-            { label: 'Privacy', href: '/privacy' },
+            { label: 'Dashboard', href: '/terminal', icon: <LayoutDashboard size={22} strokeWidth={1.5} />, color: 'bg-[#1C1C1E] text-white', border: 'border-transparent' },
+            { label: 'Link Session', action: onScan, icon: <ScanLine size={22} strokeWidth={1.5} />, color: 'bg-white text-black', border: 'border-black/10' },
+            { label: 'ZK Sandbox', href: '/sandbox', icon: <Fingerprint size={22} strokeWidth={1.5} />, color: 'bg-black text-white', border: 'border-transparent' },
+            { label: 'Portfolio', href: '/portfolio', icon: <PieChart size={22} strokeWidth={1.5} />, color: 'bg-[#f5f5f7] text-black', border: 'border-transparent' },
+            { label: 'Markets', href: '/markets', icon: <TrendingUp size={22} strokeWidth={1.5} />, color: 'bg-[#f5f5f7] text-black', border: 'border-transparent' },
+            { label: 'Explorer', href: '/explorer', icon: <Activity size={22} strokeWidth={1.5} />, color: 'bg-[#f5f5f7] text-black', border: 'border-transparent' },
+            { label: 'Whale Chat', href: '/chat', icon: <MessageSquare size={22} strokeWidth={1.5} />, color: 'bg-[#1c7aff] text-white', border: 'border-transparent' },
+            { label: 'Studio Beta', href: '/studio/provenance', icon: <Package size={22} strokeWidth={1.5} />, color: 'bg-gradient-to-tr from-purple-500 to-indigo-600 text-white', border: 'border-transparent' },
           ].map((app, i) => {
             const InnerContent = (
-              <span className="font-sans text-[22px] sm:text-[26px] font-light tracking-tight text-black/70 hover:text-black active:scale-95 transition-all duration-300">
-                {app.label}
-              </span>
+              <div className={`flex flex-col justify-between p-4 h-[120px] rounded-[24px] border ${app.border} ${app.color} shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer`}>
+                <div className="opacity-80">{app.icon}</div>
+                <span className="font-sans text-[15px] font-semibold tracking-tight">
+                  {app.label}
+                </span>
+              </div>
             );
 
             return app.action ? (
-              <button
-                key={i}
-                type="button"
-                onClick={app.action}
-                className="w-full flex justify-center py-2 cursor-pointer group"
-              >
+              <button key={i} type="button" onClick={app.action} className="w-full text-left appearance-none">
                 {InnerContent}
               </button>
             ) : (
-              <Link
-                key={i}
-                href={app.href!}
-                className="w-full flex justify-center py-2 cursor-pointer group"
-              >
+              <Link key={i} href={app.href!} className="w-full block">
                 {InnerContent}
               </Link>
             );
