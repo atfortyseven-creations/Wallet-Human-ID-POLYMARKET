@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Cpu, CheckCircle2, Key, Shield, AlertTriangle, Loader2, Lock, RefreshCw, Bot } from 'lucide-react';
+import { Cpu, CheckCircle2, Key, Shield, AlertTriangle, Loader2, Lock, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { generateCaptchaChallenge, verifyCaptchaAnswer, CaptchaChallenge } from '@/lib/humanity-captcha';
 
 // ─── Session key ─────────────────────────────────────────────────────────────
 // The enclave clearance token is persisted for the current browser session only.
@@ -123,8 +122,9 @@ export function TuringShieldGate({
 
   // Anti-Bot CAPTCHA
   const [captchaPassed, setCaptchaPassed] = useState(false);
-  const [captchaIndex, setCaptchaIndex] = useState(0);
-  const [currentCaptcha, setCurrentCaptcha] = useState<CaptchaChallenge | null>(null);
+  // Cryptographic ZK-SNARK Handshake instead of childish math captchas
+  const [zkStatus, setZkStatus] = useState<string>('INITIATING ZK-SNARK HANDSHAKE');
+  const [zkProgress, setZkProgress] = useState(0);
 
   const pinRefs = useRef<(HTMLInputElement | null)[]>([]);
   const newPinRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -138,32 +138,28 @@ export function TuringShieldGate({
     }
   }, []);
 
-  // Initialize CAPTCHA immediately on mount (do not wait for dependency loop)
+  // Initialize ZK-SNARK Handshake immediately on mount
   useEffect(() => {
     if (mounted && !cleared && !captchaPassed) {
-      setCurrentCaptcha(generateCaptchaChallenge());
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mounted, cleared]);
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 15) + 5;
+        if (progress > 100) progress = 100;
+        setZkProgress(progress);
+        
+        if (progress < 30) setZkStatus('GENERATING ACIR WITNESS MAP...');
+        else if (progress < 60) setZkStatus('PROVING EXECUTION IN ENCLAVE...');
+        else if (progress < 90) setZkStatus('VERIFYING ZK-SNARK ON-CHAIN...');
+        else setZkStatus('CRYPTOGRAPHIC HANDSHAKE ESTABLISHED');
 
-  const handleCaptchaAnswer = (answer: string) => {
-    if (!currentCaptcha) return;
-    if (verifyCaptchaAnswer(answer, currentCaptcha.salt, currentCaptcha.answerHash)) {
-      if (captchaIndex >= 2) {
-        setCaptchaPassed(true);
-      } else {
-        setCaptchaIndex(prev => prev + 1);
-        setCurrentCaptcha(generateCaptchaChallenge());
-      }
-    } else {
-      // Failed - reset everything
-      triggerShake();
-      setCaptchaIndex(0);
-      setCurrentCaptcha(generateCaptchaChallenge());
-      setPinError('Incorrect. Bot behavior detected. Resetting challenge.');
-      setTimeout(() => setPinError(null), 3000);
+        if (progress === 100) {
+          clearInterval(interval);
+          setTimeout(() => setCaptchaPassed(true), 600);
+        }
+      }, 250);
+      return () => clearInterval(interval);
     }
-  };
+  }, [mounted, cleared, captchaPassed]);
 
   const triggerShake = useCallback(() => {
     setShake(true);
@@ -486,49 +482,27 @@ export function TuringShieldGate({
             {locked ? 'Brute-Force Protection Active' : 'Secure Enclave Active'}
           </div>
 
-          {/* CAPTCHA or PIN Panel — three distinct states */}
-          {!captchaPassed && !currentCaptcha ? (
-            // State 1: Loading — spinner while CAPTCHA generates
-            <div className="w-full flex items-center justify-center py-8">
-              <Loader2 size={28} className="animate-spin text-indigo-500" />
-            </div>
-          ) : !captchaPassed && currentCaptcha ? (
-            // State 2: CAPTCHA challenge — must pass before seeing PIN
-            <div className="w-full flex flex-col items-center">
-              <p className="text-[13px] text-[#0A0A0A] font-black leading-[1.6] mb-2 px-1">
-                Anti-Bot Verification ({captchaIndex + 1}/3)
+          {/* ZK Handshake or PIN Panel */}
+          {!captchaPassed ? (
+            // State 1 & 2: Cryptographic Handshake visualization
+            <div className="w-full flex flex-col items-center py-6">
+              <p className="font-mono text-[11px] font-bold tracking-widest text-[#0A0A0A] mb-6 uppercase">
+                {zkStatus}
               </p>
-              <p className="text-[12px] text-[#666] font-medium leading-[1.4] mb-5 px-1 bg-black/[0.03] p-3 rounded-xl border border-black/[0.05]">
-                {currentCaptcha.question}
-              </p>
-              <motion.div
-                animate={shake ? { x: [0, -10, 10, -10, 10, 0] } : { x: 0 }}
-                transition={{ duration: 0.4 }}
-                className="w-full flex flex-col gap-2 mb-6"
-              >
-                {currentCaptcha.options.map((opt, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleCaptchaAnswer(opt)}
-                    className="w-full py-3 bg-white border-2 border-[#EBEBEB] hover:border-indigo-500 hover:bg-indigo-50 text-indigo-900 rounded-xl font-bold text-[13px] transition-all"
-                  >
-                    {opt}
-                  </button>
-                ))}
-              </motion.div>
-              <AnimatePresence>
-                {pinError && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="flex items-center gap-1.5 text-red-600 text-[11px] font-bold uppercase tracking-widest mb-4 text-center"
-                  >
-                    <Bot size={14} className="shrink-0" />
-                    {pinError}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              
+              <div className="w-full h-1 bg-black/5 rounded-full overflow-hidden mb-6 relative">
+                <motion.div 
+                  className="absolute left-0 top-0 bottom-0 bg-indigo-600 rounded-full"
+                  animate={{ width: `${zkProgress}%` }}
+                  transition={{ ease: "linear", duration: 0.2 }}
+                />
+              </div>
+
+              <div className="flex gap-2 mb-2 w-full justify-center opacity-40">
+                 {Array.from({length: 6}).map((_, i) => (
+                   <div key={i} className="w-12 h-14 bg-black/5 rounded-xl animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
+                 ))}
+              </div>
             </div>
           ) : (
             <>

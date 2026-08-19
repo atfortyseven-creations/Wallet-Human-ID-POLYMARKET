@@ -269,78 +269,6 @@ export function WhaleProShell({
 
         <div className={`flex fixed inset-0 bg-white text-[#050505] font-sans selection:bg-black/10 overflow-hidden transition-all duration-300 ${isSessionLocked ? 'scale-[0.99] pointer-events-none' : ''}`}>
 
-            {/* ── Desktop Sidebar ── */}
-            <motion.aside
-                animate={{ width: isCollapsed ? 64 : 240 }}
-                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="hidden lg:flex sticky top-0 h-full border-r border-black/[0.07] bg-white flex-col z-50 shrink-0"
-            >
-                {/* Logo */}
-                {!isCollapsed ? (
-                    <div className="px-4 pt-4 pb-2 shrink-0">
-                        <div className="flex items-center gap-2.5 px-3 py-2">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#050505]">
-                                <circle cx="12" cy="12" r="10" />
-                                <line x1="2" y1="12" x2="22" y2="12" />
-                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                            </svg>
-                            <div className="flex flex-col leading-none">
-                                <span className="text-[11px] font-black uppercase tracking-tight text-[#050505]">Humanity</span>
-                                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#888888]">Ledger</span>
-                            </div>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="pt-4 pb-2 shrink-0 flex justify-center">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#050505]">
-                            <circle cx="12" cy="12" r="10" />
-                            <line x1="2" y1="12" x2="22" y2="12" />
-                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                        </svg>
-                    </div>
-                )}
-
-                {/* Nav items */}
-                <div
-                    className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain pt-1 pb-4 px-2 space-y-0.5 no-scrollbar"
-                    style={{ overscrollBehavior: 'contain', touchAction: 'pan-y', contain: 'strict' }}
-                >
-                    {SIDEBAR_ITEMS
-                        .filter(item => !item.requiresZK || isZkVerified)
-                        .map(item => {
-                            const isActive = activeTab === item.id;
-                            const isLocked = item.minTier && isTierLoaded && tier ? !hasAccess(tier, item.minTier) : false;
-                            return (
-                                <div key={item.id}>
-                                    <AztecSidebarItem
-                                        item={item} isActive={isActive}
-                                        isCollapsed={isCollapsed} isLocked={!!isLocked}
-                                        onClick={() => handleTabChange(item.id)}
-                                    />
-                                </div>
-                            );
-                    })}
-                    {!isCollapsed && (
-                        <div className="px-4 py-5 mt-2">
-                            <div className="w-full h-px bg-black/8" />
-                        </div>
-                    )}
-                </div>
-
-                {/* Collapse toggle */}
-                <div className="px-2 pb-3 pt-1 shrink-0">
-                    <button
-                        onClick={() => setIsCollapsed(!isCollapsed)}
-                        className="w-full flex items-center justify-center p-2 rounded-xl border border-black/10 text-[#888888] hover:text-black hover:bg-black/5 transition-all"
-                    >
-                        {isCollapsed
-                            ? <span className="font-mono text-[10px] font-black">[&gt;]</span>
-                            : <span className="font-mono text-[10px] font-black">[&lt;]</span>
-                        }
-                    </button>
-                </div>
-            </motion.aside>
-
             {/* ── Main Content ── */}
             <div className="flex-1 flex flex-col min-w-0 relative h-full bg-white">
 
@@ -352,76 +280,29 @@ export function WhaleProShell({
                         paddingTop: 'env(safe-area-inset-top, 0px)'
                     }}
                 >
-                    {/* Left: Search button */}
+                    {/* Left: Back to Hub */}
                     <button
-                        onClick={() => setIsPaletteOpen(true)}
-                        className="group flex items-center gap-2.5 h-8 px-3 rounded-full border border-black/[0.08] bg-white hover:bg-black/[0.02] hover:border-black/20 hover:shadow-sm transition-all duration-200 cursor-pointer shrink-0"
+                        onClick={() => router.push('/')}
+                        className="group flex items-center gap-2.5 h-8 px-4 rounded-full bg-black text-white hover:bg-black/80 transition-all duration-200 cursor-pointer shrink-0 shadow-md"
                     >
-                        <span className="text-[10px] font-mono font-black text-[#AAAAAA] group-hover:text-[#555] transition-colors shrink-0">[SCH]</span>
-                        <span className="text-[10px] text-[#AAAAAA] group-hover:text-[#555] font-medium transition-colors hidden sm:block pr-1 ml-1">Search</span>
-                        <span className="hidden sm:flex items-center gap-1 ml-0.5">
-                            <kbd className="text-[9px] font-black font-mono text-[#AAAAAA] bg-black/[0.04] border border-black/[0.08] rounded px-1.5 py-0.5 leading-none">K</kbd>
-                        </span>
+                        <span className="text-[12px] font-bold tracking-widest uppercase">← App Hub</span>
                     </button>
 
-                    {/* Center: ETH metrics (desktop) / Active tab dropdown (mobile) */}
-                    {!showMobileNav ? (
-                        <div className="hidden lg:flex items-center gap-0 divide-x divide-black/10 flex-1 mx-6 overflow-hidden">
-                            {[
-                                { label: 'ETH Block', value: ethSyncing ? '...' : (blockNumber ?? '---') },
-                                { label: 'Base Fee',  value: baseFeeGwei ? `${baseFeeGwei} Gwei` : '---'  },
-                                { label: 'UTC',       value: utcTime ?? '---'                             },
-                            ].map(m => (
-                                <div key={m.label} className="flex flex-col items-start px-4 py-1 min-w-[100px]">
-                                    <span className="font-mono text-[7px] uppercase tracking-[0.25em] text-black/30">{m.label}</span>
-                                    <span className="font-mono text-[10px] font-black text-[#050505] tabular-nums leading-tight">{m.value}</span>
-                                </div>
-                            ))}
-                        <div className="flex flex-col items-start px-4 py-1 min-w-[120px] bg-black/[0.02]">
-                                <span className="font-mono text-[7px] uppercase tracking-[0.25em] text-black/40">Network RPC</span>
-                                <div className="flex items-center gap-1.5 mt-0.5">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-black/80 animate-pulse" />
-                                    <span className="font-mono text-[10px] font-black text-black tabular-nums leading-tight">
-                                        {latency > 0 ? `${latency}ms` : '42ms'} (Connected)
-                                    </span>
-                                </div>
+                    {/* Center: ETH metrics (desktop) */}
+                    <div className="hidden lg:flex items-center gap-0 divide-x divide-black/10 flex-1 mx-6 overflow-hidden justify-center">
+                        {[
+                            { label: 'ETH Block', value: ethSyncing ? '...' : (blockNumber ?? '---') },
+                            { label: 'Base Fee',  value: baseFeeGwei ? `${baseFeeGwei} Gwei` : '---'  },
+                            { label: 'UTC',       value: utcTime ?? '---'                             },
+                        ].map(m => (
+                            <div key={m.label} className="flex flex-col items-center px-6 py-1 min-w-[100px]">
+                                <span className="font-mono text-[7px] uppercase tracking-[0.25em] text-black/30">{m.label}</span>
+                                <span className="font-mono text-[10px] font-black text-[#050505] tabular-nums leading-tight">{m.value}</span>
                             </div>
-                        </div>
-                    ) : (
-                        /* Mobile: active tab name as dropdown trigger */
-                        <div className="flex-1 flex justify-center mx-3 relative">
-                            <button
-                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                className="flex items-center gap-2 px-4 py-2 bg-black/5 rounded-full text-[13px] font-semibold text-[#050505] active:scale-95 transition-transform"
-                            >
-                                {SIDEBAR_ITEMS.find(i => i.id === activeTab)?.label || 'Menu'}
-                                <span className={`transition-transform duration-300 font-mono text-[10px] font-black ml-1 ${isDropdownOpen ? 'rotate-180' : ''}`}>[v]</span>
-                            </button>
-                            <AnimatePresence>
-                                {isDropdownOpen && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-full mt-2 w-[220px] bg-white border border-black/10 rounded-2xl shadow-2xl overflow-hidden z-50 flex flex-col py-2"
-                                        style={{ willChange: 'transform, opacity' }}
-                                    >
-                                        {SIDEBAR_ITEMS.filter(item => !item.requiresZK || isZkVerified).map(item => (
-                                            <button
-                                                key={item.id}
-                                                onClick={() => { handleTabChange(item.id); setIsDropdownOpen(false); }}
-                                                className={`px-4 py-3 text-left text-[13px] font-semibold transition-colors ${
-                                                    activeTab === item.id ? 'bg-black text-white' : 'text-[#050505] hover:bg-black/5'
-                                                }`}
-                                            >
-                                                {item.label}
-                                            </button>
-                                        ))}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    )}
+                        ))}
+                    </div>
+
+                    <div className="flex-1 lg:hidden" /> {/* Spacer on mobile */}
 
                     {/* Right: Settings */}
                     <button

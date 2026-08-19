@@ -1,4 +1,4 @@
-import Image from 'next/image';
+
 
 /**
  *  WHALE BRAND IDENTITY ENGINE
