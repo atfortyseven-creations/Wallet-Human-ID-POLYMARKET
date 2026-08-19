@@ -4062,6 +4062,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 </div>
               )}
                 <input type="file" ref={fileRef} className="hidden" onChange={handleFileUpload} />
+                <form onSubmit={handleSend} className="flex flex-col w-full relative">
                   {/* ── App Drawer (iOS 17 iMessage Style) ── */}
                   <AnimatePresence>
                   {showAppDrawer && (
