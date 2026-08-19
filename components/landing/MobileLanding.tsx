@@ -4,7 +4,6 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import dynamic from "next/dynamic";
 import { ZKBiometricGate } from "@/components/security/ZKBiometricGate";
-import { Humanity LedgerArchitectureSection } from "./Humanity LedgerArchitectureSection";
 import { SystemFooter } from "./SystemFooter";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
