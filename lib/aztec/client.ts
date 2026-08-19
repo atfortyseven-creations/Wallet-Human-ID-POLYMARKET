@@ -92,22 +92,39 @@ export function explorerTxUrl(txHash: string | null | undefined): string {
   if (!txHash) return AZTEC_EXPLORER;
   // A real Aztec tx hash is exactly 66 chars: '0x' + 64 hex digits
   const isRealHash = /^0x[a-fA-F0-9]{64}$/.test(txHash);
-  if (isRealHash) return `${AZTEC_EXPLORER}/tx-effect/${txHash}`;
+  if (isRealHash) return `${AZTEC_EXPLORER}/tx-effect/${txHash.replace('0x', '')}`;
   // Virtual hash — route to root so user sees the live explorer, not a 404
   return AZTEC_EXPLORER;
 }
 
 /**
- * Safe wrapper: given a stored explorerUrl from DB (may be old /tx/ format),
+ * Safe wrapper: given a stored explorerUrl from DB (may be old /tx/ format or /tx-effect/ format),
  * sanitise it to the correct AztecScan path format.
+ *
+ * AztecScan routes:
+ *  - /tx-effect/:hash — transaction effect detail (preferred, 64-char hex)
+ *  - /address/:addr   — account page
+ *  - /               — root explorer (fallback for virtual hashes)
  */
 export function sanitiseExplorerUrl(stored: string | null | undefined): string {
   if (!stored) return AZTEC_EXPLORER;
-  // Fix old /tx/ path → /tx-effect/
-  const fixed = stored.replace(/\/tx\/(?=0x[a-fA-F0-9]{64}$)/, '/tx-effect/');
-  // Strip any remaining /tx/ path (virtual hashes that don't belong on-chain)
-  const safe = fixed.replace(/\/tx\/[^/]+$/, '');
-  return safe || AZTEC_EXPLORER;
+
+  // Already a valid /tx-effect/ or /address/ URL — keep as-is
+  if (stored.includes('/tx-effect/') || stored.includes('/address/')) return stored;
+
+  // Old /tx/:hash format — upgrade to /tx-effect/
+  const txMatch = stored.match(/\/tx\/(0x[a-fA-F0-9]{64})$/);
+  if (txMatch) return `${AZTEC_EXPLORER}/tx-effect/${txMatch[1]}`;
+
+  // Bare hash (0x + 64 hex) — wrap in /tx-effect/
+  const hashMatch = stored.match(/(0x[a-fA-F0-9]{64})$/);
+  if (hashMatch) return `${AZTEC_EXPLORER}/tx-effect/${hashMatch[1]}`;
+
+  // Root or just the explorer domain — fine
+  if (stored.startsWith('https://testnet.aztecscan.xyz')) return stored;
+
+  // Unknown format — fall back to root
+  return AZTEC_EXPLORER;
 }
 
 /**

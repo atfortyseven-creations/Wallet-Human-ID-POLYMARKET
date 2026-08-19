@@ -123,10 +123,10 @@ function ForumShowcase() {
                 <span className="text-white/40">deliberate publicly.</span>
               </SectionTitle>
               <SectionBody>
-                The Humanity Ledger Forum is a fully on-chain governance and discourse infrastructure. Every topic, proposal, and debate is cryptographically attributed to a verified Aztec identity — ensuring every voice belongs to a real, Sybil-resistant participant. No bots, no ghost accounts, no anonymous manipulation.
+                The Humanity Ledger Forum is a fully on-chain governance and discourse infrastructure. Every topic, proposal, and debate is cryptographically attributed to a verified Humanity Ledger identity — ensuring every voice belongs to a real, Sybil-resistant participant. No bots, no ghost accounts, no anonymous manipulation.
               </SectionBody>
               <motion.p variants={FADE_UP} className="text-[14px] font-mono text-purple-300/70 mb-10 leading-relaxed border-l-2 border-purple-500/30 pl-4">
-                Built on the Aztec ZK stack, participation is permissionless for reading and identity-gated for writing. Escalate discourse directly to on-chain votes.
+                Built on the Humanity Ledger ZK stack, participation is permissionless for reading and identity-gated for writing. Escalate discourse directly to on-chain votes.
               </motion.p>
               <motion.div variants={FADE_UP} className="flex flex-wrap items-center gap-4">
                 <NavButton href="/forum" label="Enter Forum" />
@@ -142,7 +142,7 @@ function ForumShowcase() {
               <FeatureItem
                 icon={<Building size={20} />}
                 title="Governance Proposals"
-                description="Submit protocol upgrade proposals that escalate directly to Aztec on-chain voting."
+                description="Submit protocol upgrade proposals that escalate directly to Humanity Ledger on-chain voting."
               />
               <FeatureItem
                 icon={<Globe size={20} />}
@@ -192,10 +192,10 @@ function DevelopersShowcase() {
               <SectionLabel>Sovereign Application Layer</SectionLabel>
               <SectionTitle>
                 The sovereign gateway<br />
-                <span className="text-white/40">to Aztec Network.</span>
+                <span className="text-white/40">to Humanity Ledger Network.</span>
               </SectionTitle>
               <SectionBody>
-                Humanity Ledger operates as the sovereign application layer over Aztec's zero knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal — providing high-net-worth individuals and enterprises with complete privacy over their transactions, assets, and communications.
+                Humanity Ledger operates as the sovereign application layer over zero knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal — providing high-net-worth individuals and enterprises with complete privacy over their transactions, assets, and communications.
               </SectionBody>
               <motion.div variants={FADE_UP} className="flex flex-wrap items-center gap-4">
                 <NavButton href="/developers/api-docs" label="View API Docs" />
@@ -233,7 +233,7 @@ function RegistryShowcase() {
           <motion.div variants={STAGGER} className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 border border-white/10">
             {[
               { value: "195", unit: "Countries", label: "Global coverage" },
-              { value: "ZK", unit: "Protocol", label: "Aztec Noir circuits" },
+              { value: "ZK", unit: "Protocol", label: "Noir circuits" },
               { value: "W3C", unit: "Standard", label: "Verifiable Credentials" },
               { value: "0", unit: "Data Leakage", label: "Private by design" },
             ].map((stat, i) => (
@@ -270,7 +270,7 @@ function WhaleChatShowcase() {
                 <span className="text-white/40">a trace.</span>
               </SectionTitle>
               <SectionBody>
-                Whale Chat is the first messaging protocol built natively on the Aztec Private Execution Environment. Messages are encrypted, anchored to your cryptographic identity, and verified without any metadata ever touching a central server. No phone number. No IP logging. No third-party key custody.
+                Whale Chat is the first messaging protocol built natively on the Humanity Ledger Private Execution Environment. Messages are encrypted, anchored to your cryptographic identity, and verified without any metadata ever touching a central server. No phone number. No IP logging. No third-party key custody.
               </SectionBody>
               <motion.div variants={FADE_UP} className="mb-10 p-5 border border-white/10 bg-[#0A0A0A] border-l-2 border-l-emerald-500">
                 <p className="text-[14px] font-light text-white/70 leading-relaxed">
@@ -287,8 +287,8 @@ function WhaleChatShowcase() {
               {[
                 {
                   title: "End to End ZK Encryption",
-                  desc: "Messages are encrypted using keys derived from your Aztec private note. The server processes only nullifiers — never content.",
-                  badge: "Aztec Native",
+                  desc: "Messages are encrypted using keys derived from your private note. The server processes only nullifiers — never content.",
+                  badge: "Humanity Ledger Native",
                 },
                 {
                   title: "Turing-Shield Identity Gate",
@@ -409,7 +409,7 @@ function StudioProvenanceShowcase() {
               <span className="text-white/40">public exposure.</span>
             </SectionTitle>
             <SectionBody>
-              Studio Provenance is a zero knowledge certification engine for digital and physical assets. Built on Noir circuits and deployed on the Aztec rollup, it enables creators, institutions, and collectors to establish irrefutable proof of asset origin, ownership history, and authenticity — all without revealing sensitive metadata to the public ledger.
+              Studio Provenance is a zero knowledge certification engine for digital and physical assets. Built on Noir circuits and deployed on the Humanity Ledger rollup, it enables creators, institutions, and collectors to establish irrefutable proof of asset origin, ownership history, and authenticity — all without revealing sensitive metadata to the public ledger.
             </SectionBody>
             <motion.div variants={FADE_UP} className="flex flex-wrap items-center justify-center gap-4 mt-2">
               <NavButton href="/studio/provenance" label="Open Studio" />
@@ -428,13 +428,13 @@ function StudioProvenanceShowcase() {
               {
                 step: "02",
                 title: "ZK Proof Generation",
-                desc: "A Noir circuit generates a zero knowledge proof of your asset's provenance, signed by your Aztec identity.",
+                desc: "A Noir circuit generates a zero knowledge proof of your asset's provenance, signed by your Humanity Ledger identity.",
                 icon: <Cpu size={24} />,
               },
               {
                 step: "03",
                 title: "On-Chain Certification",
-                desc: "The proof is published to the Aztec rollup, creating a permanent, tamper-proof record verifiable by anyone.",
+                desc: "The proof is published to the Humanity Ledger rollup, creating a permanent, tamper-proof record verifiable by anyone.",
                 icon: <Shield size={24} />,
               },
             ].map((item, i) => (
@@ -498,7 +498,7 @@ function QDSShowcase() {
                 ))}
               </div>
               <div className="mt-8 pt-6 border-t border-white/10 text-[11px] font-mono text-white/30 text-center uppercase tracking-widest">
-                Real-time Aztec network scoring engine
+                Real-time Humanity Ledger network scoring engine
               </div>
             </motion.div>
             <div>
@@ -547,7 +547,7 @@ function TokenomicsShowcase() {
               { value: "0%", label: "Founder Allocation", sub: "100% merit-driven" },
               { value: "ZK", label: "Proof-of-Participation", sub: "Noir-circuit verified" },
               { value: "∞", label: "Sybil Resistance", sub: "One human, one identity" },
-              { value: "L2", label: "Aztec Settlement", sub: "Ethereum-secured" },
+              { value: "L2", label: "Humanity Ledger Settlement", sub: "Ethereum-secured" },
             ].map((stat, i) => (
               <motion.div key={i} variants={FADE_UP} className="bg-[#0A0A0A] p-8 flex flex-col items-center text-center">
                 <div className="text-[44px] md:text-[56px] font-black text-white tracking-tighter mb-2">{stat.value}</div>

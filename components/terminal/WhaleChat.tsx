@@ -3374,92 +3374,112 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       fontFamily,
     }}>
       {/*  Sidebar: Conversation List — fixed width on desktop, full screen on mobile when no chat is active  */}
-      <div className={`${showList ? 'flex' : 'hidden md:flex'} w-full md:w-80 lg:w-96 flex-col border-r border-black/10 bg-white/60 backdrop-blur-xl shrink-0 h-full overflow-hidden`}>
+      <div className={`${showList ? 'flex' : 'hidden md:flex'} w-full md:w-80 lg:w-96 flex-col border-r border-black/[0.08] bg-white shrink-0 h-full overflow-hidden`}>
 
-        <div className="p-4 border-b border-white/30">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowScanner(true)}
-                className="p-2.5 rounded-xl bg-[#f5f5f7] text-black hover:bg-[#e5e5ea] transition-all text-[12px] font-medium"
-                title="Scan QR"
-              >
-                Scan QR
-              </button>
-              <button
-                onClick={() => setShowMyQR(true)}
-                className="p-2.5 rounded-xl bg-[#f5f5f7] text-black/50 hover:bg-[#e5e5ea] transition-all text-[12px] font-medium"
-                title="Show My QR"
-              >
-                My QR
-              </button>
-              <button
-                onClick={() => setShowSettings(true)}
-                className="p-2.5 rounded-xl bg-[#f5f5f7] text-black/50 hover:bg-[#e5e5ea] transition-all"
-                title="Settings"
-              >
-                <Settings size={14} />
-              </button>
-              <button
-                onClick={() => setShowVault(true)}
-                className="p-2.5 rounded-xl bg-[#f5f5f7] text-black/50 hover:bg-[#e5e5ea] transition-all"
-                title="Secure Vault"
-              >
-                <Lock size={14} />
-              </button>
+        {/* ── Sidebar Header ── */}
+        <div className="pt-4 pb-0 px-4 border-b border-black/[0.06] bg-white">
+          {/* Top row: title + action buttons */}
+          <div className="flex items-center justify-between mb-3">
+            <h1 className="text-[22px] font-black text-[#000000] tracking-tight">Messages</h1>
+            <div className="flex items-center gap-1">
               <button
                 onClick={() => setShowUserSearch(true)}
-                className="p-2.5 rounded-xl bg-[#f5f5f7] text-black/50 hover:bg-[#e5e5ea] transition-all"
-                title="Search Global Network"
+                className="w-10 h-10 rounded-full bg-[#F2F2F7] flex items-center justify-center text-[#007AFF] hover:bg-[#E5E5EA] transition-all active:scale-95"
+                title="Find people"
               >
-                <Search size={14} />
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </button>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#f5f5f7] border border-black/10 rounded-xl" title="Available QDs">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#050505] shadow-sm animate-pulse" />
-                <span className="text-[11px] font-mono font-bold text-black">{balance.toFixed(2)} QD</span>
-              </div>
+              <button
+                onClick={() => {
+                  setPeerInput('');
+                  // focus the input below
+                  setTimeout(() => document.getElementById('whale-new-chat-input')?.focus(), 100);
+                }}
+                className="w-10 h-10 rounded-full bg-[#007AFF] flex items-center justify-center text-white hover:bg-[#0071E3] transition-all active:scale-95 shadow-sm"
+                title="New conversation"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
             </div>
           </div>
 
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Address or .eth"
-              value={peerInput}
-              onChange={e => setPeerInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleStartConversation()}
-              className="flex-1 bg-[#f5f5f7] border-none rounded-xl px-3 py-2.5 text-[13px] focus:outline-none focus:ring-1 focus:ring-gray-200 placeholder:text-black/40 text-gray-900"
-            />
+          {/* New chat input */}
+          <div className="flex gap-2 mb-3">
+            <div className="flex-1 relative">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="absolute left-3 top-1/2 -translate-y-1/2 text-black/30 pointer-events-none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input
+                id="whale-new-chat-input"
+                type="text"
+                placeholder="Wallet address or .eth name"
+                value={peerInput}
+                onChange={e => setPeerInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleStartConversation()}
+                className="w-full bg-[#F2F2F7] rounded-[12px] pl-9 pr-3 py-2.5 text-[14px] text-[#000000] placeholder:text-[#8E8E93] focus:outline-none focus:ring-2 focus:ring-[#007AFF]/30 transition-all"
+              />
+            </div>
             <button
               onClick={handleStartConversation}
-              disabled={sending}
-              className="w-10 h-10 bg-[#050505] rounded-xl flex items-center justify-center text-white hover:opacity-80 transition-colors active:scale-95 disabled:opacity-50 text-[18px]"
+              disabled={sending || !peerInput.trim()}
+              className="h-[42px] px-4 bg-[#007AFF] disabled:bg-[#C7C7CC] rounded-[12px] flex items-center justify-center text-white font-bold text-[14px] hover:bg-[#0071E3] transition-all active:scale-95 disabled:cursor-not-allowed whitespace-nowrap"
             >
-              +
+              Open
             </button>
+          </div>
+
+          {/* Secondary actions row: QR, Vault, Settings */}
+          <div className="flex items-center gap-2 pb-3">
+            <button onClick={() => setShowScanner(true)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-[10px] bg-[#F2F2F7] text-[#000000] hover:bg-[#E5E5EA] transition-all text-[12px] font-semibold active:scale-95">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><line x1="21" y1="21" x2="21" y2="21.01"/><path d="M16 11V9a2 2 0 0 1 2-2h3"/><line x1="21" y1="9" x2="21" y2="9.01"/></svg>
+              Scan QR
+            </button>
+            <button onClick={() => setShowMyQR(true)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-[10px] bg-[#F2F2F7] text-[#000000] hover:bg-[#E5E5EA] transition-all text-[12px] font-semibold active:scale-95">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              My QR
+            </button>
+            <button onClick={() => setShowVault(true)} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-[10px] bg-[#F2F2F7] text-[#000000] hover:bg-[#E5E5EA] transition-all text-[12px] font-semibold active:scale-95">
+              <Lock size={13} /> Vault
+            </button>
+            <button onClick={() => setShowSettings(true)} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-[10px] bg-[#F2F2F7] text-[#000000] hover:bg-[#E5E5EA] transition-all text-[12px] font-semibold active:scale-95">
+              <Settings size={13} />
+            </button>
+          </div>
+
+          {/* QD Balance */}
+          <div className="flex items-center justify-between pb-2">
+            <div className="flex items-center gap-1.5 text-[12px] text-[#8E8E93]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#34C759] animate-pulse" />
+              <span className="font-mono">{balance.toFixed(4)} QD available</span>
+            </div>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto flex flex-col">
-          {/* Tab row — Chats | Calls | Contacts */}
-          <div className="flex border-b border-black/5 shrink-0">
-            {(['chats', 'calls', 'contacts'] as const).map(tab => (
-              <button
-                key={tab}
-                onClick={() => setSidebarTab(tab)}
-                className={`flex-1 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all ${
-                  sidebarTab === tab
-                    ? 'text-[#050505] border-b-2 border-[#050505]'
-                    : 'text-black/30 hover:text-black/60'
-                }`}
-              >
-                {tab === 'chats' ? '💬' : tab === 'calls' ? '📞' : '👤'} {tab}
-              </button>
-            ))}
-          </div>
+        {/* ── Tab Bar ── */}
+        <div className="flex border-b border-black/[0.06] bg-white shrink-0">
+          {(['chats', 'calls', 'contacts'] as const).map(tab => (
+            <button
+              key={tab}
+              onClick={() => setSidebarTab(tab)}
+              className={`flex-1 py-3 flex flex-col items-center gap-0.5 transition-all ${
+                sidebarTab === tab
+                  ? 'text-[#007AFF]'
+                  : 'text-[#8E8E93] hover:text-[#000000]'
+              }`}
+            >
+              {tab === 'chats' ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill={sidebarTab === 'chats' ? '#007AFF' : 'none'} stroke={sidebarTab === 'chats' ? '#007AFF' : '#8E8E93'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              ) : tab === 'calls' ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill={sidebarTab === 'calls' ? '#007AFF' : 'none'} stroke={sidebarTab === 'calls' ? '#007AFF' : '#8E8E93'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.6 4.35 2 2 0 0 1 3.57 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.1 6.1l.9-.9a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill={sidebarTab === 'contacts' ? '#007AFF' : 'none'} stroke={sidebarTab === 'contacts' ? '#007AFF' : '#8E8E93'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              )}
+              <span className={`text-[10px] font-semibold tracking-wide ${sidebarTab === tab ? 'text-[#007AFF]' : 'text-[#8E8E93]'}`}>
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <div className="flex-1 overflow-y-auto flex flex-col bg-white">
 
           {/* ── CHATS TAB ── */}
           {sidebarTab === 'chats' && (
@@ -3467,68 +3487,89 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               {conversations.length > 0 && archivedPeers.size > 0 && (
                 <button
                   onClick={() => setShowArchived(!showArchived)}
-                  className="w-full text-left p-3.5 border-b border-white/20 bg-[#f5f5f7]/50 hover:bg-[#e5e5ea]/50 transition-all flex items-center justify-between"
+                  className="w-full text-left px-4 py-3 border-b border-black/[0.04] bg-[#F9F9F9] hover:bg-[#F2F2F7] transition-all flex items-center justify-between"
                 >
-                  <div className="flex items-center gap-2 text-black/50">
+                  <div className="flex items-center gap-2 text-[#8E8E93]">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-                    <span className="text-[11px] font-bold uppercase tracking-wider">Archived Chats ({archivedPeers.size})</span>
+                    <span className="text-[13px] font-semibold">Archived ({archivedPeers.size})</span>
                   </div>
-                  <span className="text-[10px] font-bold text-black/40">{showArchived ? 'Hide' : 'Show'}</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`text-[#8E8E93] transition-transform ${showArchived ? 'rotate-90' : ''}`}><path d="M9 18l6-6-6-6"/></svg>
                 </button>
               )}
               {conversations.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full gap-3 p-6 text-center">
-                  <p className="text-[10px] text-black/30 font-medium uppercase tracking-widest">Vault is Empty</p>
+                <div className="flex flex-col items-center justify-center flex-1 gap-4 p-8 text-center">
+                  <div className="w-20 h-20 rounded-full bg-[#F2F2F7] flex items-center justify-center">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#C7C7CC" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </div>
+                  <div>
+                    <p className="text-[16px] font-bold text-[#000000] mb-1">No Conversations Yet</p>
+                    <p className="text-[13px] text-[#8E8E93] leading-relaxed">Enter a wallet address above<br/>to start your first chat.</p>
+                  </div>
                 </div>
               ) : (
             conversations.filter(conv => showArchived ? archivedPeers.has(conv.peerAddress.toLowerCase()) : !archivedPeers.has(conv.peerAddress.toLowerCase())).map((conv, i) => {
               const isActive = activePeer?.toLowerCase() === conv.peerAddress.toLowerCase();
+              const contactName = resolveContactName(effectiveAddress, conv.peerAddress);
+              const displayLabel = contactName || whaleSettings?.displayName || shortAddr(conv.peerAddress);
               return (
-                <div key={i} className="relative w-full overflow-hidden border-b border-white/20">
-                  <div className="absolute inset-y-0 right-0 flex flex-col items-center justify-center w-20 bg-[#050505]/90 text-white text-[10px] font-bold tracking-widest uppercase transition-colors" onClick={() => toggleArchive(conv.peerAddress)}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="mb-1"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-                    {archivedPeers.has(conv.peerAddress.toLowerCase()) ? 'Unarchive' : 'Archive'}
+                <div key={i} className="relative w-full overflow-hidden border-b border-black/[0.04]">
+                  <div className="absolute inset-y-0 right-0 flex items-center justify-center w-20 bg-[#FF3B30] text-white text-[11px] font-semibold cursor-pointer" onClick={() => toggleArchive(conv.peerAddress)}>
+                    <div className="flex flex-col items-center gap-1">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/></svg>
+                      {archivedPeers.has(conv.peerAddress.toLowerCase()) ? 'Unarchive' : 'Archive'}
+                    </div>
                   </div>
                   <motion.div
                     drag="x"
                     dragConstraints={{ left: -80, right: 0 }}
-                    dragElastic={0.1}
+                    dragElastic={0.08}
                     whileTap={{ cursor: "grabbing" }}
-                    onDragEnd={(e, info) => {
-                      if (info.offset.x < -50) {
-                        toggleArchive(conv.peerAddress);
-                      }
-                    }}
-                    className="relative z-10 w-full bg-white shadow-sm"
+                    onDragEnd={(e, info) => { if (info.offset.x < -50) { toggleArchive(conv.peerAddress); } }}
+                    className="relative z-10 w-full bg-white"
                   >
                     <button
-                      onContextMenu={(e) => {
-                        e.preventDefault();
-                        setSidebarMenu({ peer: conv.peerAddress, x: e.clientX, y: e.clientY });
-                      }}
+                      onContextMenu={(e) => { e.preventDefault(); setSidebarMenu({ peer: conv.peerAddress, x: e.clientX, y: e.clientY }); }}
                       onClick={() => { setActivePeer(conv.peerAddress); setShowList(false); }}
-                      className={`w-full text-left p-3.5 transition-all ${
-                        isActive ? 'bg-black/5' : 'hover:bg-black/5'
-                      }`}
+                      className={`w-full text-left px-4 py-3.5 transition-all ${isActive ? 'bg-[#F2F2F7]' : 'hover:bg-[#F9F9F9]'}`}
                     >
-                      <div className="flex items-center justify-between gap-3 w-full">
-                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="flex items-center gap-3 w-full">
+                        <div className="relative shrink-0">
                           <Avatar address={conv.peerAddress} />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[11px] font-bold text-[#050505]  font-mono truncate">{shortAddr(conv.peerAddress)}</p>
+                          {peerStatus.status === 'online' && activePeer?.toLowerCase() === conv.peerAddress.toLowerCase() && (
+                            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#34C759] border-2 border-white" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1 mb-0.5">
+                            <p className="text-[15px] font-semibold text-[#000000] truncate">{displayLabel}</p>
                             {conv.lastMessage && (
-                              <p className="text-[10px] text-black/40  truncate mt-0.5">{formatMessagePreview(conv.lastMessage)}</p>
+                              <span className="text-[12px] text-[#8E8E93] shrink-0">
+                                {(() => {
+                                  const t = (conv as any).lastMessageTime;
+                                  if (!t) return '';
+                                  const d = new Date(t);
+                                  const now = new Date();
+                                  const isToday = d.toDateString() === now.toDateString();
+                                  return isToday
+                                    ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                                    : d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                                })()}
+                              </span>
                             )}
                           </div>
+                          {conv.lastMessage && (
+                            <div className="flex items-center justify-between gap-2">
+                              <p className="text-[13px] text-[#8E8E93] truncate">{formatMessagePreview(conv.lastMessage)}</p>
+                              {conv.unreadCount && conv.unreadCount > 0 ? (
+                                <div className="min-w-[20px] h-5 bg-[#007AFF] rounded-full flex items-center justify-center px-1.5 shrink-0">
+                                  <span className="text-[11px] font-bold text-white tabular-nums">
+                                    {conv.unreadCount > 99 ? '99+' : conv.unreadCount}
+                                  </span>
+                                </div>
+                              ) : null}
+                            </div>
+                          )}
                         </div>
-                        {conv.unreadCount && conv.unreadCount > 0 ? (
-                          <div className="relative w-6 h-6 flex items-center justify-center shrink-0">
-                            <div className="absolute inset-0 w-full h-full opacity-90 bg-black/5 rounded-full" />
-                            <span className="relative z-10 text-[8px] font-black text-black mt-0.5">
-                              {conv.unreadCount > 9 ? '+9' : conv.unreadCount}
-                            </span>
-                          </div>
-                        ) : null}
                       </div>
                     </button>
                   </motion.div>
@@ -3543,9 +3584,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           {sidebarTab === 'calls' && (
             <div className="flex-1 overflow-y-auto">
               {callHistoryList.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full p-6 text-center gap-3">
-                  <span className="text-3xl opacity-30">📞</span>
-                  <p className="text-[10px] text-black/30 font-medium uppercase tracking-widest">No Call History</p>
+                <div className="flex flex-col items-center justify-center h-full p-8 text-center gap-4">
+                  <div className="w-20 h-20 rounded-full bg-[#F2F2F7] flex items-center justify-center">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#C7C7CC" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.6 4.35 2 2 0 0 1 3.57 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.1 6.1l.9-.9a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  </div>
+                  <div>
+                    <p className="text-[16px] font-bold text-[#000000] mb-1">No Calls Yet</p>
+                    <p className="text-[13px] text-[#8E8E93]">Open a chat and tap the phone<br/>icon to start a call.</p>
+                  </div>
                 </div>
               ) : callHistoryList.map((call) => {
                 const isToday = new Date(call.timestamp).toDateString() === new Date().toDateString();
@@ -3556,24 +3602,34 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   : new Date(call.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' });
                 const mins = Math.floor(call.durationSeconds / 60).toString().padStart(2, '0');
                 const secs = (call.durationSeconds % 60).toString().padStart(2, '0');
+                const isMissed = call.status === 'missed' || call.status === 'declined';
                 return (
                   <button
                     key={call.id}
-                    className="w-full p-3 border-b border-black/5 flex items-center gap-3 hover:bg-black/[0.02] transition-colors text-left"
+                    className="w-full px-4 py-3.5 border-b border-black/[0.04] flex items-center gap-3 hover:bg-[#F9F9F9] transition-colors text-left active:bg-[#F2F2F7]"
                     onClick={() => { setActivePeer(call.peerAddress); setSidebarTab('chats'); setShowList(false); }}
                   >
-                    <Avatar address={call.peerAddress} />
+                    <div className="relative shrink-0">
+                      <Avatar address={call.peerAddress} />
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-bold text-[#050505] font-mono truncate">{getDisplayName(call.peerAddress)}</p>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className={`text-[10px] font-bold ${call.status === 'missed' || call.status === 'declined' ? 'text-red-400' : 'text-black/40'}`}>
-                          {call.direction === 'incoming' ? '↙' : '↗'} {call.status}
+                      <p className="text-[15px] font-semibold text-[#000000] truncate mb-0.5">{getDisplayName(call.peerAddress)}</p>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[13px] font-medium ${isMissed ? 'text-[#FF3B30]' : 'text-[#8E8E93]'}`}>
+                          {call.direction === 'incoming' ? '↙' : '↗'} {call.type === 'video' ? 'Video' : 'Voice'} • {isMissed ? 'Missed' : call.durationSeconds > 0 ? `${mins}:${secs}` : 'No answer'}
                         </span>
-                        {call.durationSeconds > 0 && <span className="text-[10px] text-black/30 font-mono">{mins}:{secs}</span>}
-                        <span className="text-[9px] text-black/25 ml-auto font-mono">{call.type === 'video' ? '📹' : '🎙️'}</span>
                       </div>
                     </div>
-                    <span className="text-[9px] text-black/30 font-mono shrink-0">{timeLabel}</span>
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      <span className="text-[12px] text-[#8E8E93]">{timeLabel}</span>
+                      <button
+                        onClick={e => { e.stopPropagation(); setActivePeer(call.peerAddress); setSidebarTab('chats'); setShowList(false); setTimeout(() => handleStartCall(call.type), 300); }}
+                        className="w-8 h-8 rounded-full bg-[#F2F2F7] flex items-center justify-center text-[#007AFF] hover:bg-[#E5E5EA] transition-all active:scale-90"
+                        title={`Call back (${call.type})`}
+                      >
+                        {call.type === 'video' ? <Video size={14} /> : <Phone size={14} />}
+                      </button>
+                    </div>
                   </button>
                 );
               })}
@@ -3584,23 +3640,27 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           {sidebarTab === 'contacts' && (
             <div className="flex-1 overflow-y-auto">
               {localContacts.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full p-6 text-center gap-3">
-                  <span className="text-3xl opacity-30">👤</span>
-                  <p className="text-[10px] text-black/30 font-medium uppercase tracking-widest">No Saved Contacts</p>
-                  <p className="text-[10px] text-black/20">Open a chat and tap the contact icon in the header</p>
+                <div className="flex flex-col items-center justify-center h-full p-8 text-center gap-4">
+                  <div className="w-20 h-20 rounded-full bg-[#F2F2F7] flex items-center justify-center">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#C7C7CC" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </div>
+                  <div>
+                    <p className="text-[16px] font-bold text-[#000000] mb-1">No Saved Contacts</p>
+                    <p className="text-[13px] text-[#8E8E93] leading-relaxed">Open a chat, then tap the<br/>person icon to save a contact.</p>
+                  </div>
                 </div>
               ) : localContacts.map((contact) => (
                 <button
                   key={contact.id}
-                  className="w-full p-3 border-b border-black/5 flex items-center gap-3 hover:bg-black/[0.02] transition-colors text-left"
+                  className="w-full px-4 py-3.5 border-b border-black/[0.04] flex items-center gap-3 hover:bg-[#F9F9F9] transition-colors text-left active:bg-[#F2F2F7]"
                   onClick={() => { setActivePeer(contact.peerAddress); setSidebarTab('chats'); setShowList(false); }}
                 >
                   <Avatar address={contact.peerAddress} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[11px] font-bold text-[#050505] font-mono truncate">{contact.name}</p>
-                    <p className="text-[10px] text-black/30 font-mono truncate">{shortAddr(contact.peerAddress)}</p>
+                    <p className="text-[15px] font-semibold text-[#000000] truncate">{contact.name}</p>
+                    <p className="text-[13px] text-[#8E8E93] font-mono truncate">{shortAddr(contact.peerAddress)}</p>
                   </div>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-black/20 shrink-0"><path d="M9 18l6-6-6-6"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C7C7CC" strokeWidth="2.5" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
               ))}
             </div>
@@ -4127,7 +4187,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                           }
                         }}
                         disabled={isUploading}
-                        placeholder={isUploading ? "Uploading..." : "iMessage"}
+                        placeholder={isUploading ? "Uploading..." : "Message"}
                         rows={1}
                         // [CRITICAL FIX] font-size: 16px is required on iOS Safari to prevent the UI from zooming in when focused!
                         className="flex-1 bg-transparent px-4 py-2 text-[#050505] focus:outline-none placeholder:text-black/30 disabled:opacity-50 text-[16px] resize-none max-h-[120px] scrollbar-none leading-relaxed min-h-[38px]"

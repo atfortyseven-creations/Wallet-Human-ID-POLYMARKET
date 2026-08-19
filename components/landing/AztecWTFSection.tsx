@@ -96,7 +96,7 @@ export function AztecWTFSection() {
   return (
     <section
       ref={heroRef}
-      id="wtf-is-aztec"
+      id="wtf-is-humanity-ledger"
       className="w-full bg-[#FAFAFC] py-16 md:py-24 relative overflow-hidden"
     >
       {/* Premium subtle background glow */}
@@ -111,16 +111,16 @@ export function AztecWTFSection() {
           variants={fadeUp}
           className="text-center mb-12 md:mb-16"
         >
-          <Tag>Aztec Network Education</Tag>
+          <Tag>humanidfi.com Education</Tag>
           <h2
             className="text-[56px] md:text-[88px] lg:text-[104px] font-bold tracking-tight leading-[0.95] text-slate-900 mb-10 drop-shadow-sm"
           >
             Understanding what<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Aztec Network is</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">humanidfi.com is</span>
           </h2>
           <p className="text-[20px] md:text-[24px] text-slate-500 leading-relaxed max-w-[720px] mx-auto font-medium">
             Blockchains like Bitcoin and Ethereum provide humanity with programmable digital money.
-            Aztec is a privacy first Layer 2 on Ethereum. It enables a critical dimension of programmable
+            Humanity Ledger is a privacy first Layer 2 on Ethereum. It enables a critical dimension of programmable
             digital money that has heretofore been ignored:{" "}
             <strong className="text-indigo-600 font-bold">privacy.</strong>
           </p>
@@ -147,7 +147,7 @@ export function AztecWTFSection() {
             ]} />
             <div className="mt-12 pt-10 border-t border-slate-200/60">
               <p className="text-[22px] md:text-[28px] font-bold text-slate-900 leading-relaxed">
-                Aztec is a privacy first Layer 2 on Ethereum. It enables a critical dimension of
+                Humanity Ledger is a privacy first Layer 2 on Ethereum. It enables a critical dimension of
                 programmable digital money that has heretofore been ignored:{" "}
                 <span className="text-indigo-600">privacy.</span>
               </p>
@@ -171,9 +171,9 @@ export function AztecWTFSection() {
                 </ul>
               </div>
               <div>
-                <p className="text-[14px] font-black uppercase tracking-wide text-slate-900 mb-5">Part 2: How Aztec provides privacy</p>
+                <p className="text-[14px] font-black uppercase tracking-wide text-slate-900 mb-5">Part 2: How Humanity Ledger provides privacy</p>
                 <ul className="space-y-4">
-                  {["Programmable composable privacy", "Private state", "Composing private state and public state", "How Aztec smart contracts are executed"].map((t, i) => (
+                  {["Programmable composable privacy", "Private state", "Composing private state and public state", "How Humanity Ledger smart contracts are executed"].map((t, i) => (
                     <li key={i} className="text-[15px] text-slate-500 flex gap-3 items-center">
                       <span className="w-1.5 h-1.5 rounded-full bg-indigo-200" /> {t}
                     </li>
@@ -334,12 +334,12 @@ export function AztecWTFSection() {
 
         {/* ─── PART 2 ────────────────────────────────────────────────── */}
         <Section className="mb-16 mt-32">
-          <PartLabel number="2" title="How has Aztec managed to provide privacy?" />
+          <PartLabel number="2" title="How has Humanity Ledger managed to provide privacy?" />
           <h3
             className="text-[40px] md:text-[64px] font-bold tracking-tight text-slate-900 mb-8 leading-[1.05]"
           >
             Part 2<br />
-            <span className="text-slate-400">How has Aztec managed to provide privacy?</span>
+            <span className="text-slate-400">How has Humanity Ledger managed to provide privacy?</span>
           </h3>
           <p className="text-[20px] md:text-[24px] text-slate-600 leading-relaxed">
             We discussed how privacy is insufficient without programmability. But even programmability is not very useful without composability.
@@ -361,7 +361,7 @@ export function AztecWTFSection() {
           </div>
           <h5 className="text-[24px] font-bold text-slate-900 mb-6">Composability for functional goals</h5>
           <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
-            Imagine a privacy preserving DEX on Aztec Network. Users can make swaps without disclosing what they are swapping or in what volumes. Asset names and transaction volumes stay private.
+            Imagine a privacy preserving DEX on humanidfi.com. Users can make swaps without disclosing what they are swapping or in what volumes. Asset names and transaction volumes stay private.
           </p>
           <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
             However, if we make all DEX information private, users cannot know asset prices, and without prices, they cannot make trading decisions. So some information, like current asset prices, must stay public.
@@ -382,15 +382,15 @@ export function AztecWTFSection() {
             Private state
           </h4>
           <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
-            Aztec design for private state intends to leak no data at all. That is why we cannot just encrypt account based state and modify it in place in the tree, modifying a particular encrypted leaf leaks information like the leaf location in the tree, what contract and state it touches, etc.
+            Humanity Ledger design for private state intends to leak no data at all. That is why we cannot just encrypt account based state and modify it in place in the tree, modifying a particular encrypted leaf leaks information like the leaf location in the tree, what contract and state it touches, etc.
           </p>
           <div className="bg-white/60 backdrop-blur-xl shadow-[0_30px_80px_rgba(0,0,0,0.03)] border-l-4 border-indigo-500 p-8 rounded-r-2xl mb-6">
             <p className="text-[18px] md:text-[22px] text-slate-800 leading-relaxed">
-              Therefore, to store private state, Aztec uses an <strong className="font-bold">append only</strong> approach. Existing entries in the database cannot be modified or deleted, only new entries can be appended.
+              Therefore, to store private state, Humanity Ledger uses an <strong className="font-bold">append only</strong> approach. Existing entries in the database cannot be modified or deleted, only new entries can be appended.
             </p>
           </div>
           <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed">
-            To delete or update an entry, Aztec uses <strong className="text-slate-900 font-bold">nullifiers</strong>. Nullifiers live in a separate nullifier tree, the <em>Nullifier Set</em>. To delete an entry, a matching nullifier is created in the nullifier tree.
+            To delete or update an entry, Humanity Ledger uses <strong className="text-slate-900 font-bold">nullifiers</strong>. Nullifiers live in a separate nullifier tree, the <em>Nullifier Set</em>. To delete an entry, a matching nullifier is created in the nullifier tree.
           </p>
         </Section>
 
@@ -464,10 +464,10 @@ export function AztecWTFSection() {
         {/* How smart contracts are executed */}
         <Section className="mb-12">
           <h4 className="text-[28px] md:text-[36px] font-bold text-slate-900 mb-8 tracking-tight">
-            How Aztec smart contracts are executed
+            How Humanity Ledger smart contracts are executed
           </h4>
           <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-10">
-            Aztec smart contract execution follows a specific order:
+            Humanity Ledger smart contract execution follows a specific order:
           </p>
           
           {/* Premium inline execution flow diagram */}
@@ -484,13 +484,13 @@ export function AztecWTFSection() {
             <a href="https://noir-lang.org/" target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-bold hover:underline">
               Noir
             </a>
-            {" "}programming language, a Domain Specific Language for SNARK proving systems developed by the Aztec team.
+            {" "}programming language, a Domain Specific Language for SNARK proving systems developed by the Humanity Ledger team.
           </p>
           
           <div className="bg-white/60 backdrop-blur-xl border-slate-200/50 shadow-[0_30px_80px_rgba(0,0,0,0.03)] rounded-[28px] p-10 mb-8 border">
             <h5 className="text-[24px] font-bold text-indigo-900 mb-4">The Private Kernel Circuit</h5>
             <p className="text-[18px] md:text-[22px] text-indigo-700 leading-relaxed">
-              To execute all private functions and build a proof of transaction execution correctness, Aztec uses the Private Kernel Circuit, which runs <strong className="font-bold">locally on the user device</strong> so all private inputs remain private.
+              To execute all private functions and build a proof of transaction execution correctness, Humanity Ledger uses the Private Kernel Circuit, which runs <strong className="font-bold">locally on the user device</strong> so all private inputs remain private.
             </p>
           </div>
         </Section>
@@ -527,7 +527,7 @@ export function AztecWTFSection() {
               Privacy is a fundamental<br />human right.
             </h3>
             <p className="text-[20px] md:text-[24px] text-slate-500 leading-relaxed mb-12 max-w-[700px] mx-auto">
-              We all expect privacy with our personal info, payments, and daily communications. Aztec Labs is building toward a blockchain-based internet where privacy will be protected.
+              We all expect privacy with our personal info, payments, and daily communications. Humanity Ledger Labs is building toward a blockchain-based internet where privacy will be protected.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mb-16">
@@ -553,12 +553,12 @@ export function AztecWTFSection() {
             
             <div>
               <a
-                href="https://aztec.network"
+                href="https://humanidfi.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 px-10 py-5 bg-white border border-black/[0.06] text-indigo-600 text-[14px] font-black uppercase tracking-[0.2em] rounded-full hover:bg-indigo-50 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300"
               >
-                Learn More at aztec.network
+                Learn More at humanidfi.com
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
               </a>
             </div>

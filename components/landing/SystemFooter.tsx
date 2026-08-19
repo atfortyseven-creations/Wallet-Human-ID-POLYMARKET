@@ -27,7 +27,7 @@ const NAV_COLUMNS = [
     label: "DOCUMENTATION",
     links: [
       { label: "Overview",       href: "/docs/overview" },
-      { label: "Architecture",   href: "/docs/aztec-l2" },
+      { label: "Architecture",   href: "/architecture" },
       { label: "Security Model", href: "/docs/security-model" },
       { label: "Privacy Model",  href: "/docs/privacy-model" },
     ]
@@ -109,8 +109,8 @@ export function SystemFooter() {
             © 2026 Humanity Ledger S.L. · All rights reserved
           </span>
           <div className="flex items-center gap-4">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-black/20 border border-black/10 rounded px-2 py-1">
-              Aztec Native · MiCA Compliant
+            <span className="text-black/30 font-mono tracking-widest text-[9px] uppercase font-bold flex items-center gap-1.5 px-3 py-1 bg-black/[0.03] rounded-full">
+              Humanity Ledger Native • MiCA Compliant
             </span>
             <Link href="/legal/terms" className="text-[11px] font-bold uppercase tracking-wider text-black/30 hover:text-black transition-colors">
               Terms &amp; Attestation

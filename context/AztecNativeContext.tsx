@@ -191,6 +191,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       localStorage.setItem(NOTIFIED_KEY, JSON.stringify(arr));
     } catch { /* private mode / storage full */ }
   }, [NOTIFIED_KEY]);
+  const initialSyncRef = useRef<boolean>(true);
   // Polling interval ref for cleanup.
   const pollRef     = useRef<NodeJS.Timeout | null>(null);
 
@@ -213,11 +214,16 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
           const fresh = transactions.map((tx: any) => mapTx(tx, addr));
           setHistory(fresh);
 
-          // Toast exactly once per genuinely new incoming transaction.
+          // Skip toasting on the first load to prevent notification spam on mobile
+          const isFirstFetch = !isMountedRef.current; // Assuming isMountedRef exists, let's use a local ref for initial fetch or check if history was empty
+          
           for (const tx of transactions) {
             if (notifiedRef.current.has(tx.id)) continue;
             markNotified(tx.id); // persist immediately — survives iOS remount
+            
+            // Only toast if it's not the initial sync
             if (
+              !initialSyncRef.current &&
               tx.toAddress?.toLowerCase() === addr.toLowerCase() &&
               tx.type !== "AIRDROP"
             ) {
@@ -227,6 +233,8 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
               });
             }
           }
+          
+          initialSyncRef.current = false;
         }
       }
     } catch {

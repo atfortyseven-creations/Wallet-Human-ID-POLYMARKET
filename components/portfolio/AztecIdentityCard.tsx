@@ -245,8 +245,9 @@ function SendQDsPanel() {
   const [amount, setAmount] = useState('');
   const [step, setStep]     = useState<'idle' | 'building' | 'done' | 'error'>('idle');
   const [txHash, setTxHash] = useState('');
-  const [blockNum, setBlockNum]   = useState<number | string>(0);
-  const [toValid, setToValid]     = useState<boolean | null>(null);
+  const [blockNum, setBlockNum]     = useState<number | string>(0);
+  const [explorerUrl, setExplorerUrl] = useState('');
+  const [toValid, setToValid]       = useState<boolean | null>(null);
   const [lottieData, setLottieData] = useState<any>(null);
   const [errMsg, setErrMsg]         = useState('');
 
@@ -285,6 +286,7 @@ function SendQDsPanel() {
 
       setTxHash(data.txHash);
       setBlockNum(data.blockNumber || 'Sequencing...');
+      setExplorerUrl(data.explorerUrl || `https://testnet.aztecscan.xyz/tx-effect/${(data.txHash || '').replace('0x', '')}`);
       setStep('done');
       toast.success(`${amount} QDs sent!`, { description: `Block #${data.blockNumber}` });
 
@@ -329,7 +331,7 @@ function SendQDsPanel() {
           </button>
         </div>
         <a
-          href={`${AZTEC_EXPLORER}/block/${blockNum}`}
+          href={explorerUrl || `${AZTEC_EXPLORER}/tx-effect/${txHash.replace('0x', '')}`}
           target="_blank" rel="noopener noreferrer"
           className="flex items-center justify-between w-full py-3 px-4 border border-emerald-200 bg-emerald-50 hover:border-emerald-400 hover:bg-emerald-100 text-emerald-700 text-[9px] font-black uppercase tracking-widest transition-all group"
         >
@@ -575,17 +577,21 @@ function HistoryPanel() {
                       {sign}{Number(tx.amount).toFixed(tx.amount < 1 ? 3 : 2)}
                       <span className="text-[7px] ml-0.5 font-normal">QD</span>
                     </span>
-                    {tx.explorerUrl && (
-                      <a
-                        href={tx.explorerUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
-                        title="Ver en AztecScan"
-                      >
-                        <ExternalLink size={9} className="text-zinc-900/40 hover:text-zinc-900" />
-                      </a>
-                    )}
+                    <a
+                      href={
+                        tx.explorerUrl && tx.explorerUrl !== AZTEC_EXPLORER
+                          ? tx.explorerUrl
+                          : tx.txHash && /^0x[a-fA-F0-9]{64}$/.test(tx.txHash)
+                            ? `${AZTEC_EXPLORER}/tx-effect/${tx.txHash.replace('0x', '')}`
+                            : `${AZTEC_EXPLORER}/address/${aztecAddress}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-zinc-900/30 hover:text-emerald-600 transition-colors"
+                      title="Ver en AztecScan"
+                    >
+                      <ExternalLink size={9} />
+                    </a>
                   </div>
                 </div>
               );

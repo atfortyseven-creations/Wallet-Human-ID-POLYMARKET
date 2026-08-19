@@ -15,11 +15,11 @@ const PRODUCTS = [
     href: "/developer",
     cta: "Open Whale Chat",
     description:
-      "End-to-end encrypted P2P messaging gated by your Aztec ZK identity. No phone number, no IP, no metadata — just a cryptographic handshake.",
+      "End-to-end encrypted P2P messaging gated by your Humanity Ledger ZK identity. No phone number, no IP, no metadata — just a cryptographic handshake.",
     mobileSteps: [
       {
         label: "Connect",
-        desc: "Scan QR with Aztec identity",
+        desc: "Scan QR with Humanity Ledger identity",
         icon: "📱",
         color: "bg-violet-50 border-violet-100",
         dot: "bg-violet-500",
@@ -41,7 +41,7 @@ const PRODUCTS = [
     ],
     pcDemo: {
       title: "Whale Chat — Encrypted Session",
-      subtitle: "Aztec Identity Verified · No IP Logged",
+      subtitle: "Humanity Ledger identity Verified · No IP Logged",
       messages: [
         { side: "left", text: "Your ZK identity has been verified.", time: "14:32", system: true },
         { side: "left", text: "This session is end-to-end encrypted. No server can read this.", time: "14:32", system: false },
@@ -58,7 +58,7 @@ const PRODUCTS = [
     href: "/portfolio",
     cta: "Open Studio",
     description:
-      "Register real-world assets on Aztec L2. The existence proof is public and verifiable. Ownership and valuation remain encrypted — only your keys reveal them.",
+      "Register real-world assets on Humanity Ledger L2. The existence proof is public and verifiable. Ownership and valuation remain encrypted — only your keys reveal them.",
     mobileSteps: [
       {
         label: "Photograph",
@@ -76,7 +76,7 @@ const PRODUCTS = [
       },
       {
         label: "Register",
-        desc: "Proof posted to Aztec L2",
+        desc: "Proof posted to Humanity Ledger L2",
         icon: "✅",
         color: "bg-green-50 border-green-100",
         dot: "bg-green-500",
@@ -101,7 +101,7 @@ const PRODUCTS = [
     href: "/terminal",
     cta: "Open Terminal",
     description:
-      "Multi-chain asset tracking inside your Private Execution Environment. Track balances across Ethereum, Aztec L2, and more — your data never leaves your device.",
+      "Multi-chain asset tracking inside your Private Execution Environment. Track balances across Ethereum, Humanity Ledger L2, and more — your data never leaves your device.",
     mobileSteps: [
       {
         label: "Connect",
@@ -129,7 +129,7 @@ const PRODUCTS = [
       title: "Portfolio Terminal — PXE View",
       subtitle: "3 Chains · Decrypted Locally · Block Explorer Sees: Nothing",
       messages: [
-        { side: "left", text: "ETH: 12.40 · USDC: 4,210 · Private Aztec: [ENCRYPTED]", time: "09:00", system: true },
+        { side: "left", text: "ETH: 12.40 · USDC: 4,210 · Private HL: [ENCRYPTED]", time: "09:00", system: true },
         { side: "left", text: "PXE decrypted 3 private notes. Total private balance unlocked.", time: "09:00", system: false },
         { side: "right", text: "Export portfolio report?", time: "09:01", system: false },
         { side: "left", text: "PDF generated client-side. Zero server contact.", time: "09:01", system: false },
@@ -313,7 +313,7 @@ export function SeeInActionSection() {
           transition={{ duration: 0.9, ease: EASE }}
           className="mb-16 md:mb-20"
         >
-          <span className="block text-[10.5px] font-mono uppercase tracking-[0.25em] text-black/30 mb-5">
+          <span className="block text-[10.5px] font-mono uppercase tracking-[0.25em] text-black/55 mb-5">
             See It In Action
           </span>
           <h2
@@ -326,7 +326,7 @@ export function SeeInActionSection() {
           >
             Watch it work.
             <br />
-            <span style={{ color: "rgba(0,0,0,0.2)" }}>Live, on your screen.</span>
+            <span style={{ color: "rgba(0,0,0,0.55)" }}>Live, on your screen.</span>
           </h2>
           <p className="text-[15px] text-black/50 max-w-xl leading-relaxed">
             Three products. Each one privacy-first, running client-side, with your keys never leaving your device.
@@ -380,7 +380,7 @@ export function SeeInActionSection() {
               {/* iOS/Android preview */}
               <div className="flex flex-col items-center gap-8">
                 <div className="text-center">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/30 mb-2 block">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/55 mb-2 block">
                     iOS &amp; Android
                   </span>
                   <p className="text-sm font-semibold text-black/60">Mobile Experience</p>
@@ -404,7 +404,7 @@ export function SeeInActionSection() {
               {/* Desktop preview */}
               <div className="flex flex-col items-center gap-8">
                 <div className="text-center">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/30 mb-2 block">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/55 mb-2 block">
                     Web App
                   </span>
                   <p className="text-sm font-semibold text-black/60">Desktop Experience</p>

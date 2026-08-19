@@ -73,11 +73,11 @@ export function MobileManifesto() {
           <motion.h1 variants={FADE_UP} className="text-[40px] sm:text-[48px] font-black tracking-tighter leading-[0.95] text-[#0A0A0A] mb-6 max-w-[320px] mx-auto">
             The Sovereign Gateway
             <br />
-            <span className="text-[#0A0A0A]/30">to Aztec.</span>
+            <span className="text-[#0A0A0A]/30">to Humanity Ledger.</span>
           </motion.h1>
 
           <motion.p variants={FADE_UP} className="text-[15px] text-[#444] leading-[1.6] mb-10 max-w-[340px] mx-auto px-4 font-medium">
-            Humanity Ledger operates as the sovereign application layer over Aztec's zero knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal.
+            Humanity Ledger operates as the sovereign application layer over Humanity Ledger's zero knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal.
           </motion.p>
 
           <motion.div variants={FADE_UP} className="w-full max-w-[300px] mx-auto flex flex-col items-center gap-3">
@@ -151,14 +151,14 @@ export function MobileManifesto() {
                 Client-Side <span className="text-[#0A0A0A]/30">Privacy.</span>
             </motion.h2>
             <motion.p initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={FADE_UP} className="text-[16px] text-[#555] font-medium leading-relaxed max-w-[320px] mx-auto px-2">
-                By leveraging the Aztec Network Private Execution Environment, we shift all computation to your local device.
+                By leveraging the Humanity Ledger Network Private Execution Environment, we shift all computation to your local device.
             </motion.p>
         </div>
 
         <div className="space-y-6 relative z-10">
           {[
             { num: '01', title: 'Local Proving', desc: 'Your device runs Noir circuits locally, generating a zero knowledge proof before touching the network.' },
-            { num: '02', title: 'Encrypted State', desc: 'Balances and identity credentials are stored as encrypted UTXO notes on the Aztec L2.' },
+            { num: '02', title: 'Encrypted State', desc: 'Balances and identity credentials are stored as encrypted UTXO notes on the Humanity Ledger L2.' },
             { num: '03', title: 'Nullifier Resistance', desc: 'The protocol emits a deterministic nullifier, preventing double spending without linking your identity to the network.' },
           ].map((block, i) => (
             <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={FADE_UP} className="flex flex-col gap-3 bg-[#F9F8F6] p-8 rounded-3xl border border-[#EBEBEB] shadow-sm">
@@ -217,7 +217,7 @@ export function MobileManifesto() {
       </section>
 
       {/* 
-          4. AZTEC
+          4. Humanity Ledger
        */}
       <section
         className="px-6 py-24 bg-[#F9F8F6] border-t border-black/10 text-center flex-1"
@@ -228,10 +228,10 @@ export function MobileManifesto() {
             Infrastructure Partner
           </span>
           <h2 className="text-[32px] font-black tracking-tighter uppercase leading-[0.95] text-[#0A0A0A] mb-6">
-            Powered by <br/><span className="text-[#0A0A0A]/55">Aztec Network.</span>
+            Powered by <br/><span className="text-[#0A0A0A]/55">Humanity Ledger Network.</span>
           </h2>
           <p className="font-serif text-[15px] text-[#555] leading-[1.6] max-w-[320px] mx-auto px-2">
-            The foundation of this absolute transparency and security is built upon the Aztec Network L2 zk-Rollup. It is the definitive infrastructure for sovereign security.
+            The foundation of this absolute transparency and security is built upon the Humanity Ledger Network L2 zk-Rollup. It is the definitive infrastructure for sovereign security.
           </p>
         </motion.div>
       </section>

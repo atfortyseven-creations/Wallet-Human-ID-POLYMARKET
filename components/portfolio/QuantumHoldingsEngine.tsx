@@ -309,9 +309,6 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                                             <button onClick={(e) => { e.stopPropagation(); handleAction('RECEIVE', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Receive">
                                                 <Download size={12} />
                                             </button>
-                                            <button onClick={(e) => { e.stopPropagation(); handleAction('SWAP', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Swap">
-                                                <ArrowRightLeft size={12} />
-                                            </button>
                                             <button onClick={(e) => { e.stopPropagation(); handleAction('BRIDGE', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Bridge">
                                                 <Route size={12} />
                                             </button>
@@ -590,10 +587,6 @@ function TokenDetailPanel({ token, onClose, onAction, symbol = '$' }: { token: a
                     <button onClick={() => onAction('RECEIVE')} className="flex flex-col items-center justify-center p-4 bg-black/[0.02] hover:bg-black hover:text-white border border-black/5 hover:border-black transition-all group">
                         <Download size={16} className="mb-2 opacity-50 group-hover:opacity-100" />
                         <span className="text-[9px] font-black uppercase tracking-widest">Receive</span>
-                    </button>
-                    <button onClick={() => onAction('SWAP')} className="flex flex-col items-center justify-center p-4 bg-black/[0.02] hover:bg-black hover:text-white border border-black/5 hover:border-black transition-all group">
-                        <ArrowRightLeft size={16} className="mb-2 opacity-50 group-hover:opacity-100" />
-                        <span className="text-[9px] font-black uppercase tracking-widest">Swap</span>
                     </button>
                     <button onClick={() => onAction('BRIDGE')} className="flex flex-col items-center justify-center p-4 bg-black/[0.02] hover:bg-black hover:text-white border border-black/5 hover:border-black transition-all group">
                         <Route size={16} className="mb-2 opacity-50 group-hover:opacity-100" />

@@ -534,7 +534,7 @@ export const MessageBubble = React.memo(({
                   }}
                 >
                   <p
-                    className={`whitespace-pre-wrap leading-relaxed select-text ${
+                    className={`whitespace-pre-wrap break-words leading-relaxed select-text ${
                       isMe ? 'text-white' : 'text-[#1c1c1e]'
                     }`}
                     style={{ fontSize: `${fontSizePx}px`, fontFamily, WebkitUserSelect: 'text', userSelect: 'text' } as React.CSSProperties}

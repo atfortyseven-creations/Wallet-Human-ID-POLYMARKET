@@ -271,7 +271,7 @@ function DOMAnnotations({ scrollProgress }: { scrollProgress: number }) {
             className="absolute bottom-[20%] right-[10%] max-w-[340px]"
           >
             <div className="bg-[#0a0a0a]/90 backdrop-blur-xl border-l-[3px] border-[var(--aztec-orchid)] p-8 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
+              <div className="absolute top-0 right-0 p-4 opacity-40">
                   <Cpu size={80} />
               </div>
               <h3 className="text-white font-aztec-serif italic text-2xl mb-3 relative z-10">
@@ -395,11 +395,11 @@ export default function SubmarineDeconstruction3D() {
         </Canvas>
 
         {/* Cinematic Watermarks */}
-        <div className="absolute top-12 left-12 opacity-10 font-aztec-mono text-[9px] uppercase tracking-[0.6em] text-white pointer-events-none hidden md:block z-0 mix-blend-overlay">
+        <div className="absolute top-12 left-12 opacity-40 font-aztec-mono text-[9px] uppercase tracking-[0.6em] text-white pointer-events-none hidden md:block z-0 mix-blend-overlay">
           Protocol: System Deep / Phase {Math.floor(scroll * 6)} / Grid Active
         </div>
         
-        <div className="absolute bottom-12 right-12 text-right opacity-10 font-aztec-serif italic text-white text-[10vw] leading-none select-none pointer-events-none hidden md:block z-0 mix-blend-overlay">
+        <div className="absolute bottom-12 right-12 text-right opacity-40 font-aztec-serif italic text-white text-[10vw] leading-none select-none pointer-events-none hidden md:block z-0 mix-blend-overlay">
           WHALE
         </div>
       </div>

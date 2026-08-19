@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Cpu, CheckCircle2, Key, Shield, AlertTriangle, Loader2, Lock, RefreshCw } from 'lucide-react';
+import { Cpu, CheckCircle2, Key, Shield, AlertTriangle, Loader2, Lock, RefreshCw, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 // ─── Session key ─────────────────────────────────────────────────────────────
 // The enclave clearance token is persisted for the current browser session only.
@@ -120,6 +121,15 @@ export function TuringShieldGate({
   const [confirmReset, setConfirmReset] = useState(false);
   const [resetting, setResetting] = useState(false);
 
+  const [resetFlowState, setResetFlowState] = useState<'idle' | 'requesting' | 'awaiting_otp' | 'verifying_otp'>('idle');
+  const [resetEmail, setResetEmail] = useState<string | null>(null);
+  const [resetOtp, setResetOtp] = useState(['', '', '', '', '', '']);
+  const [resetOtpError, setResetOtpError] = useState<string | null>(null);
+  const [resetAttemptsLeft, setResetAttemptsLeft] = useState<number | null>(null);
+  const [tempClearanceToken, setTempClearanceToken] = useState<string | null>(null);
+  const [tempClearanceTs, setTempClearanceTs] = useState<number | null>(null);
+  const resetOtpRefs = useRef<(HTMLInputElement | null)[]>([]);
+
   // Anti-Bot CAPTCHA
   const [captchaPassed, setCaptchaPassed] = useState(false);
   // Cryptographic ZK-SNARK Handshake instead of childish math captchas
@@ -135,6 +145,18 @@ export function TuringShieldGate({
     if (readClearance()) {
       setCleared(true);
       setCaptchaPassed(true);
+    } else {
+      // Check if user even has a PIN set
+      fetch('/api/auth/enclave-pin')
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.hasPin === false) {
+            setIsFirstTime(true);
+            setSettingPin(true);
+            setCaptchaPassed(true); // skip captcha if setting pin
+          }
+        })
+        .catch(console.error);
     }
   }, []);
 
@@ -165,6 +187,82 @@ export function TuringShieldGate({
     setShake(true);
     setTimeout(() => setShake(false), 500);
   }, []);
+
+  const handleRequestOtp = async () => {
+    setResetFlowState('requesting');
+    setResetOtpError(null);
+    try {
+      const res = await fetch('/api/auth/enclave-pin-reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'request' })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        if (data.error === 'no_email') {
+          // Wallet-only user. Use the legacy reset flow which logs them out.
+          setResetFlowState('idle');
+          setConfirmReset(true);
+          return;
+        }
+        throw new Error(data.error || 'Failed to request OTP');
+      }
+      setResetEmail(data.maskedEmail);
+      setResetFlowState('awaiting_otp');
+      setResetOtp(['', '', '', '', '', '']);
+      setTimeout(() => resetOtpRefs.current[0]?.focus(), 100);
+    } catch (err: any) {
+      setResetFlowState('idle');
+      setPinError(err.message);
+      triggerShake();
+    }
+  };
+
+  const handleVerifyOtp = async (digits: string[]) => {
+    const code = digits.join('');
+    if (code.length !== 6) return;
+    setResetFlowState('verifying_otp');
+    setResetOtpError(null);
+    try {
+      const res = await fetch('/api/auth/enclave-pin-reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'verify', otp: code })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setResetAttemptsLeft(data.remaining ?? null);
+        if (data.expired || data.invalidated) {
+          setResetFlowState('idle');
+          setPinError(data.error);
+        } else {
+          setResetFlowState('awaiting_otp');
+          setResetOtpError(data.error || 'Invalid code');
+          setResetOtp(['', '', '', '', '', '']);
+          resetOtpRefs.current[0]?.focus();
+        }
+        triggerShake();
+        return;
+      }
+      
+      // Success! Proceed to set new PIN flow.
+      setTempClearanceToken(data.clearanceToken || null);
+      setTempClearanceTs(data.clearanceTs || null);
+      setResetFlowState('idle');
+      setConfirmReset(false);
+      setSettingPin(true);
+      setIsFirstTime(false); // we're resetting, not first time setup
+      setPinSetStep('new');
+      setNewPin(['', '', '', '', '', '']);
+      setConfirmPin(['', '', '', '', '', '']);
+      setTimeout(() => newPinRefs.current[0]?.focus(), 100);
+      toast.success('Identity verified. Please set a new PIN.');
+    } catch (err: any) {
+      setResetFlowState('awaiting_otp');
+      setResetOtpError(err.message);
+      triggerShake();
+    }
+  };
 
   // ─── Verify PIN against server ─────────────────────────────────────────────
   const handleSubmit = useCallback(async (digits: string[]) => {
@@ -317,14 +415,25 @@ export function TuringShieldGate({
     // a network failure left the user in a broken state (cleared but no PIN saved).
     setPinSetError(null);
     try {
+      const payload: any = { newPin: code };
+      if (tempClearanceToken && tempClearanceTs) {
+        payload.clearanceToken = tempClearanceToken;
+        payload.clearanceTs = tempClearanceTs;
+      }
+
       const res = await fetch('/api/auth/enclave-pin', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ newPin: code }),
+        body: JSON.stringify(payload),
         credentials: 'include',
       });
       const data = await res.json();
       if (res.ok) {
+        if (data.clearanceToken && data.clearanceTs) {
+          writeClearance(data.clearanceToken, data.clearanceTs);
+          setCleared(true);
+          if (onVerified) onVerified(data.clearanceToken);
+        }
         setPinSetSuccess(true);
         // Only NOW close the input step and show the success message
         setSettingPin(true);
@@ -348,11 +457,11 @@ export function TuringShieldGate({
   // Prevent Hydration Mismatch
   if (!mounted) return null;
 
-  // ─── Set PIN Overlay (shown after first successful login with default PIN) ──
-  if (cleared && settingPin) {
+  // ─── Set PIN Overlay (shown after first successful login or if no PIN is set) ──
+  if (settingPin) {
     return (
       <>
-        {children}
+        {cleared && children}
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <motion.div
             initial={{ scale: 0.92, opacity: 0, y: 20 }}
@@ -382,7 +491,7 @@ export function TuringShieldGate({
               <>
                 <p className="text-[12px] text-[#666] mb-5 leading-relaxed px-2">
                   {isFirstTime
-                    ? 'You logged in with the default PIN. Set your own personal PIN now for maximum security.'
+                    ? (cleared ? 'You logged in with the default PIN. Set your own personal PIN now for maximum security.' : 'Set your personal 6-digit Enclave PIN now to secure your session.')
                     : `${pinSetStep === 'confirm' ? 'Confirm your new PIN.' : 'Enter a new 6-digit PIN.'}`
                   }
                 </p>
@@ -426,12 +535,14 @@ export function TuringShieldGate({
                 >
                   {pinSetStep === 'new' ? 'Next: Confirm PIN →' : 'Save PIN'}
                 </button>
-                <button
-                  onClick={() => setSettingPin(false)}
-                  className="w-full py-2.5 text-[11px] text-[#999] hover:text-black transition-colors"
-                >
-                  Skip for now (use default PIN next time)
-                </button>
+                {cleared && (
+                  <button
+                    onClick={() => setSettingPin(false)}
+                    className="w-full py-2.5 text-[11px] text-[#999] hover:text-black transition-colors"
+                  >
+                    Skip for now (use default PIN next time)
+                  </button>
+                )}
               </>
             )}
           </motion.div>
@@ -582,10 +693,11 @@ export function TuringShieldGate({
                   </button>
                   
                   <button
-                    onClick={() => setConfirmReset(true)}
-                    className="w-full text-center text-[12px] font-bold text-[#999] hover:text-black transition-colors mb-2"
+                    onClick={handleRequestOtp}
+                    disabled={resetFlowState === 'requesting'}
+                    className="w-full text-center text-[12px] font-bold text-[#999] hover:text-black transition-colors mb-2 disabled:opacity-50"
                   >
-                    Forgot PIN? Reset Enclave
+                    {resetFlowState === 'requesting' ? 'Requesting Reset Code...' : 'Forgot PIN? Reset Enclave'}
                   </button>
                 </>
               )}
@@ -632,7 +744,127 @@ export function TuringShieldGate({
             </div>
           )}
 
-          {/* Reset Confirmation */}
+          {/* ── OTP Reset Flow ───────────────────────────────────────────── */}
+          <AnimatePresence>
+            {(resetFlowState === 'awaiting_otp' || resetFlowState === 'verifying_otp') && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="w-full overflow-hidden mt-4"
+              >
+                <div className="w-full p-5 bg-indigo-50 border border-indigo-100 rounded-2xl text-left">
+                  {/* Header */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <Mail size={14} className="text-indigo-600 shrink-0" />
+                    <h3 className="text-indigo-800 font-black text-[13px] uppercase tracking-widest">
+                      Verify Your Identity
+                    </h3>
+                  </div>
+                  <p className="text-indigo-700/80 text-[12px] font-medium leading-relaxed mb-4">
+                    A 6-digit code has been sent to <span className="font-black text-indigo-800">{resetEmail}</span>.
+                    Enter it below to reset your Enclave PIN. Code expires in 10 minutes.
+                  </p>
+
+                  {/* OTP Input */}
+                  <div className="flex gap-2 justify-center mb-4">
+                    {resetOtp.map((digit, i) => (
+                      <input
+                        key={i}
+                        ref={el => { resetOtpRefs.current[i] = el; }}
+                        type="text"
+                        inputMode="numeric"
+                        pattern="\d*"
+                        autoComplete="one-time-code"
+                        maxLength={1}
+                        value={digit}
+                        disabled={resetFlowState === 'verifying_otp'}
+                        onChange={e => {
+                          const val = e.target.value.replace(/\D/g, '');
+                          if (!val && !digit) return;
+                          const next = [...resetOtp];
+                          next[i] = val.slice(-1);
+                          setResetOtp(next);
+                          setResetOtpError(null);
+                          if (val && i < 5) resetOtpRefs.current[i + 1]?.focus();
+                          if (next.every(d => d !== '')) handleVerifyOtp(next);
+                        }}
+                        onKeyDown={e => {
+                          if (e.key === 'Backspace' && !digit && i > 0) {
+                            resetOtpRefs.current[i - 1]?.focus();
+                          }
+                          if (e.key === 'Enter' && resetOtp.every(d => d !== '')) {
+                            handleVerifyOtp(resetOtp);
+                          }
+                        }}
+                        className={`w-10 h-12 text-center text-[18px] font-black rounded-xl outline-none transition-all duration-200 disabled:opacity-50
+                          ${resetOtpError
+                            ? 'bg-red-50 border-2 border-red-400 text-red-600'
+                            : digit
+                            ? 'bg-indigo-100 border-2 border-indigo-500 text-indigo-800'
+                            : 'bg-white border border-indigo-200 text-black focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20'
+                          }`}
+                        style={{ height: '48px' }}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Error */}
+                  {resetOtpError && (
+                    <div className="flex items-center gap-1.5 text-red-600 text-[11px] font-bold mb-3">
+                      <AlertTriangle size={11} className="shrink-0" />
+                      {resetOtpError}
+                      {resetAttemptsLeft !== null && resetAttemptsLeft > 0 && (
+                        <span className="text-orange-500 ml-1">({resetAttemptsLeft} left)</span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Loading indicator */}
+                  {resetFlowState === 'verifying_otp' && (
+                    <div className="flex items-center gap-2 text-indigo-600 text-[11px] font-bold mb-3">
+                      <Loader2 size={12} className="animate-spin" />
+                      Verifying code...
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setResetFlowState('idle');
+                        setResetOtp(['', '', '', '', '', '']);
+                        setResetOtpError(null);
+                        setResetAttemptsLeft(null);
+                      }}
+                      disabled={resetFlowState === 'verifying_otp'}
+                      className="flex-1 py-2 rounded-xl border border-indigo-200 text-indigo-700 text-[11px] font-bold uppercase tracking-widest hover:bg-indigo-100 transition-colors disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => handleVerifyOtp(resetOtp)}
+                      disabled={resetOtp.some(d => d === '') || resetFlowState === 'verifying_otp'}
+                      className="flex-1 py-2 rounded-xl bg-indigo-600 text-white text-[11px] font-bold uppercase tracking-widest hover:bg-indigo-700 transition-colors disabled:opacity-40"
+                    >
+                      {resetFlowState === 'verifying_otp' ? 'Verifying...' : 'Verify Code →'}
+                    </button>
+                  </div>
+
+                  {/* Resend link */}
+                  <button
+                    onClick={handleRequestOtp}
+                    disabled={resetFlowState === 'verifying_otp'}
+                    className="w-full text-center text-[11px] text-indigo-500 hover:text-indigo-700 transition-colors mt-3 disabled:opacity-40"
+                  >
+                    Didn't receive it? Send a new code
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* ── Wallet-only Fallback (no email) ─── */}
           <AnimatePresence>
             {confirmReset && (
               <motion.div
@@ -646,7 +878,8 @@ export function TuringShieldGate({
                     <AlertTriangle size={14} /> Reset Enclave PIN
                   </h3>
                   <p className="text-red-600/80 text-[12px] font-medium leading-relaxed mb-4">
-                    Resetting your PIN will log you out immediately. To set a new PIN, you must prove ownership of this account by re-authenticating with your wallet or email.
+                    No email is linked to this wallet. To reset your Enclave PIN, you must re-authenticate
+                    by re-connecting your wallet — this cryptographically proves ownership.
                   </p>
                   <div className="flex gap-2">
                     <button
@@ -672,7 +905,7 @@ export function TuringShieldGate({
                       disabled={resetting}
                       className="flex-1 py-2.5 rounded-xl bg-red-600 text-white text-[11px] font-bold uppercase tracking-widest hover:bg-red-700 transition-colors disabled:opacity-50"
                     >
-                      {resetting ? 'Resetting...' : 'Log Out & Reset'}
+                      {resetting ? 'Logging out...' : 'Log Out & Re-connect'}
                     </button>
                   </div>
                 </div>

@@ -37,6 +37,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({
             status: 'evaluated',
+            simulation: true, // [AUDIT C7] This is a testnet simulation — not real FHE evaluation
             threatScore: parseFloat(threatScore.toFixed(4)),
             isThreatDetected,
             fheSignature: crypto.createHash('sha384').update(hash + senderEnclaveId).digest('hex'),

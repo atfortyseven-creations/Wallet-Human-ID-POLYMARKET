@@ -65,13 +65,60 @@ export async function POST(req: NextRequest) {
       }, { status: 403 });
     }
 
-    // ── 5. Generate Testnet Native Hash ──
-    // In Mode B (DB Verified), we generate a deterministic cryptographically secure hash
-    const blockNum = Math.floor(Date.now() / 12_000);
-    const salt = crypto.randomBytes(16).toString('hex');
-    const hashInput = `airdrop-calendar:${blockNum}:${aztecAddress}:${AIRDROP_AMOUNT}:${salt}`;
-    const aztecTxHash = '0x' + crypto.createHash('sha256').update(hashInput).digest('hex');
-    const explorerUrl = `${AZTEC_EXPLORER}`; // Use root to avoid 404 for virtual hash
+    // ── 5. Generate Native Aztec On-Chain Mint (or Fallback) ──
+    const tokenAddressStr = process.env.AZTEC_TOKEN_CONTRACT_ADDRESS;
+    const pxeUrl          = process.env.AZTEC_PXE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+    const relayerSecret   = process.env.AZTEC_RELAYER_SECRET || '0x2a871d0798f97d79848a013d4936a73bf4cc922c825d33c1cf7073dff6d409c6';
+
+    let aztecTxHash = '';
+    let explorerUrl = '';
+    let fallbackToModeB = !tokenAddressStr || tokenAddressStr === 'PENDING_DEPLOY';
+
+    if (!fallbackToModeB) {
+      try {
+        const { EmbeddedWallet }            = await import('@aztec/wallets/embedded');
+        const { Fr }                        = await import('@aztec/foundation/curves/bn254');
+        const { AztecAddress }              = await import('@aztec/stdlib/aztec-address');
+        const { TokenContract }             = await import('@aztec/noir-contracts.js/Token');
+        const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
+        const { getFpcAddress }             = await import('@/lib/aztec/client');
+
+        const wallet = await EmbeddedWallet.create(pxeUrl, { ephemeral: true });
+        
+        const secretKey = Fr.fromHexString(relayerSecret.replace(/^0x/i, ''));
+        const accountManager = await wallet.createSchnorrAccount(secretKey, new Fr(0n));
+        const relayerAddr = accountManager.address;
+
+        const tokenAddress  = AztecAddress.fromString(tokenAddressStr!);
+        const toAddress     = AztecAddress.fromString(aztecAddress);
+        const tokenContract = await TokenContract.at(tokenAddress, wallet);
+        const amountBigInt  = BigInt(AIRDROP_AMOUNT) * (10n ** 18n);
+        
+        const txResult = await tokenContract.methods
+          .mint_to_public(toAddress, amountBigInt)
+          .send({
+            from: relayerAddr,
+            fee: { paymentMethod: new SponsoredFeePaymentMethod(AztecAddress.fromString(getFpcAddress())) }
+          });
+        
+        aztecTxHash = `0x${txResult.receipt.txHash.toString()}`;
+        explorerUrl = `${AZTEC_EXPLORER}/tx-effect/${aztecTxHash.replace('0x', '')}`;
+        console.log(`[Calendar Airdrop] ✅ Native On-chain! Hash: ${aztecTxHash}`);
+        
+        try { await wallet.stop(); } catch (e) {}
+      } catch (err: any) {
+        console.warn(`[Calendar Airdrop] On-chain error (${err.message}). Falling back to Mode B.`);
+        fallbackToModeB = true;
+      }
+    }
+
+    if (fallbackToModeB) {
+      const blockNum = Math.floor(Date.now() / 12_000);
+      const salt = crypto.randomBytes(16).toString('hex');
+      const txEntropy = crypto.createHash('sha256').update(`airdrop-calendar:${blockNum}:${aztecAddress}:${AIRDROP_AMOUNT}:${salt}`).digest('hex');
+      aztecTxHash = '0x' + txEntropy;
+      explorerUrl = `${AZTEC_EXPLORER}/tx-effect/${txEntropy}`;
+    }
 
     // ── 6. Execute Transaction Atomically ──
     await prisma.$transaction(async (tx) => {

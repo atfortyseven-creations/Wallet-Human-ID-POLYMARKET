@@ -183,24 +183,16 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// ── PUT — Set/Update PIN ──────────────────────────────────────────────────────
-export async function PUT(req: NextRequest) {
+// ── GET — Check if PIN is set ─────────────────────────────────────────────
+export async function GET(req: NextRequest) {
   try {
     const session = await getSession();
     if (!session?.userId) {
-      return NextResponse.json({ error: 'Session expired. Please reconnect.' }, { status: 401 });
+      return NextResponse.json({ hasPin: false });
     }
-
     const userId = session.userId;
-    const body = await req.json();
-    const { currentPin, newPin } = body;
-
-    if (!newPin || !/^\d{6}$/.test(newPin)) {
-      return NextResponse.json({ error: 'New PIN must be exactly 6 digits.' }, { status: 400 });
-    }
-
-    // Fetch stored PIN hash from DB to determine if user is first-time
     let storedPinHash: string | null = null;
+    
     const user = await prisma.user.findUnique({
       where: { walletAddress: userId.toLowerCase() },
       select: { enclavePinHash: true } as any,
@@ -217,10 +209,91 @@ export async function PUT(req: NextRequest) {
         storedPinHash = (authUser as any).enclavePinHash;
       }
     }
+    
+    return NextResponse.json({ hasPin: !!storedPinHash });
+  } catch (err) {
+    return NextResponse.json({ hasPin: false });
+  }
+}
+
+// ── PUT — Set/Update PIN ──────────────────────────────────────────────────────
+export async function PUT(req: NextRequest) {
+  try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: 'Session expired. Please reconnect.' }, { status: 401 });
+    }
+
+    const userId = session.userId;
+    const body = await req.json();
+    const { currentPin, newPin, clearanceToken: clientClearanceToken, clearanceTs: clientClearanceTs } = body;
+
+    if (!newPin || !/^\d{6}$/.test(newPin)) {
+      return NextResponse.json({ error: 'New PIN must be exactly 6 digits.' }, { status: 400 });
+    }
+
+    // Fetch stored PIN hash + clearance fields from DB
+    let storedPinHash: string | null = null;
+    let dbClearanceToken: string | null = null;
+    let dbClearanceTs: Date | null = null;
+    let dbId: string | null = null;
+    let dbTable: 'user' | 'authUser' = 'user';
+
+    const userRow = await prisma.user.findUnique({
+      where: { walletAddress: userId.toLowerCase() },
+      select: { id: true, enclavePinHash: true, enclaveClearanceToken: true, enclaveClearanceTs: true } as any,
+    }).catch(() => null);
+
+    if (userRow) {
+      dbId = (userRow as any).id;
+      storedPinHash     = (userRow as any).enclavePinHash ?? null;
+      dbClearanceToken  = (userRow as any).enclaveClearanceToken ?? null;
+      dbClearanceTs     = (userRow as any).enclaveClearanceTs ?? null;
+    } else {
+      const authRow = await prisma.authUser.findFirst({
+        where: { OR: [{ id: userId }, { walletAddress: userId.toLowerCase() }] },
+        select: { id: true, enclavePinHash: true, enclaveClearanceToken: true, enclaveClearanceTs: true } as any,
+      }).catch(() => null);
+      if (authRow) {
+        dbId = (authRow as any).id;
+        dbTable = 'authUser';
+        storedPinHash    = (authRow as any).enclavePinHash ?? null;
+        dbClearanceToken = (authRow as any).enclaveClearanceToken ?? null;
+        dbClearanceTs    = (authRow as any).enclaveClearanceTs ?? null;
+      }
+    }
 
     const isFirstTimeUser = !storedPinHash;
 
-    // [SECURITY FIX] If they already have a PIN, they MUST provide the current PIN
+    // [SECURITY] If PIN was cleared by OTP reset, require a valid clearance token
+    // from the database — not just from client. This closes the race-condition gap.
+    if (isFirstTimeUser) {
+      const CLEARANCE_TTL = 15 * 60 * 1000; // 15 min
+      const tokenOk = (
+        dbClearanceToken &&
+        dbClearanceTs &&
+        clientClearanceToken &&
+        clientClearanceTs &&
+        Date.now() - new Date(dbClearanceTs).getTime() < CLEARANCE_TTL
+      );
+      if (!tokenOk) {
+        return NextResponse.json({
+          error: 'PIN reset clearance required. Please use the OTP reset flow to set a new PIN.',
+        }, { status: 403 });
+      }
+      // Constant-time compare of client token vs DB token (prevents timing oracle)
+      try {
+        const clientBuf = Buffer.from(String(clientClearanceToken), 'hex');
+        const dbBuf     = Buffer.from(String(dbClearanceToken), 'hex');
+        if (clientBuf.length !== dbBuf.length || !crypto.timingSafeEqual(clientBuf, dbBuf)) {
+          return NextResponse.json({ error: 'Invalid clearance token.' }, { status: 403 });
+        }
+      } catch {
+        return NextResponse.json({ error: 'Invalid clearance token.' }, { status: 403 });
+      }
+    }
+
+    // [SECURITY] If they already have a PIN, they MUST provide the current PIN
     if (!isFirstTimeUser && !currentPin) {
       return NextResponse.json({ error: 'Current PIN is required to change PIN.' }, { status: 400 });
     }
@@ -233,7 +306,7 @@ export async function PUT(req: NextRequest) {
         return NextResponse.json({ error: 'Too many attempts. Try again in 15 minutes.' }, { status: 429 });
       }
 
-      const expectedHash = storedPinHash ?? getDefaultPinHash(userId);
+      const expectedHash  = storedPinHash ?? getDefaultPinHash(userId);
       const submittedHash = hashPin(userId, currentPin);
 
       const isValid = crypto.timingSafeEqual(
@@ -267,7 +340,19 @@ export async function PUT(req: NextRequest) {
       });
     });
 
-    return NextResponse.json({ success: true, message: 'Enclave PIN updated successfully.' });
+    const clearanceTs = Date.now();
+    const clearanceSecret = process.env.ENCLAVE_PIN_SECRET || process.env.JWT_SECRET || 'default-enclave-secret-change-me';
+    const clearanceToken = crypto
+      .createHmac('sha256', clearanceSecret)
+      .update(`${userId}:cleared:${clearanceTs}`)
+      .digest('hex');
+
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Enclave PIN updated successfully.',
+      clearanceToken,
+      clearanceTs
+    });
 
   } catch (err: any) {
     console.error('[Enclave PIN] Update error:', err);

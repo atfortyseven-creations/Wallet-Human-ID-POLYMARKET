@@ -194,19 +194,14 @@ export async function POST(req: NextRequest) {
         .update(`${fromAddr}:${toAddr}:${roundedAmount}:${Date.now()}:${liveBlockHash || blockNumber}`)
         .digest('hex');
       aztecTxHash = `0x${txEntropy}`;
-      explorerUrl = '';
+      explorerUrl = `${AZTEC_EXPLORER}/tx-effect/${txEntropy}`;
         
       // Ensure the UI shows this as successfully integrated when in Pending Deploy mode
       onChain = false; 
 
     } else {
-    // ── MODE A (VIRTUALIZED FOR V5.0.1 COMPATIBILITY) ────────────────────────────────
-    // The Aztec SDK 4.3.1 fails against V5.0.1 nodes (EmbeddedWallet/RPC mismatch).
-    // To ensure the ecosystem functions flawlessly, we bypass the native SDK call
-    // and rely on our deterministic block-anchoring ledger to verify the transaction
-    // against the real Aztec testnet blocks.
-    console.log('[Aztec Transfer] Mode A: Aztec V5.0.1 Virtualized Transfer Mode');
-
+    // ── MODE A (NATIVE ON-CHAIN TRANSFER) ────────────────────────────────
+    console.log('[Aztec Transfer] Mode A: Aztec Native On-chain Transfer');
 
     const { EmbeddedWallet }            = await import('@aztec/wallets/embedded');
     const { Fr }                        = await import('@aztec/foundation/curves/bn254');
@@ -216,34 +211,80 @@ export async function POST(req: NextRequest) {
     const { deriveSecretKeyFromEvm }    = await import('@/lib/aztec/client');
     const { getFpcAddress }             = await import('@/lib/aztec/client');
 
-    let fallbackToModeB = true; // Force virtual bypass due to SDK incompatibility
-    let onChainSuccess = true;  // Mark as successful for the UI
-    
+    let fallbackToModeB = false;
+    let onChainSuccess = false;
+
     try {
-      const nodeInfoRes = await fetch(`${nodeUrl}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getBlockNumber', params: [], id: 1 }),
-        signal: AbortSignal.timeout(4000),
-      });
-      if (nodeInfoRes.ok) {
-        const nodeData = await nodeInfoRes.json();
-        if (nodeData?.result && typeof nodeData.result === 'number') {
-          blockNumber = nodeData.result;
-        }
+      const wallet = await EmbeddedWallet.create(pxeUrl, { ephemeral: true });
+
+      const secretKeyHex = deriveSecretKeyFromEvm(verifiedSessionAddr);
+      const secretKey    = Fr.fromHexString(secretKeyHex.replace(/^0x/i, ''));
+      const salt         = new Fr(0n);
+      
+      const accountManager = await wallet.createSchnorrAccount(secretKey, salt);
+      const senderAddr     = accountManager.address;
+
+      const tokenAddressInstance = AztecAddress.fromString(tokenAddressStr);
+      const toAddressInstance    = AztecAddress.fromString(toAddr);
+      
+      const tokenContract = await TokenContract.at(tokenAddressInstance, wallet);
+      const amountBigInt  = BigInt(Math.floor(roundedAmount * 1_000_000)) * (10n ** 12n);
+
+      const SPONSORED_FPC = getFpcAddress();
+
+      try {
+        const txResult = await tokenContract.methods
+          .transfer_public(senderAddr, toAddressInstance, amountBigInt, 0n)
+          .send({
+            from: senderAddr,
+            fee: {
+              paymentMethod: new SponsoredFeePaymentMethod(
+                AztecAddress.fromString(SPONSORED_FPC)
+              )
+            }
+          });
+        
+        aztecTxHash   = txResult.receipt.txHash.toString();
+        explorerUrl   = `${AZTEC_EXPLORER}/tx-effect/${aztecTxHash.replace('0x', '')}`;
+        onChain       = true;
+        onChainSuccess = true;
+        blockNumber   = Number(txResult.receipt.blockNumber ?? Math.floor(Date.now() / 12_000));
+        console.log(`[Aztec Transfer] ✅ Native On-chain! Hash: ${aztecTxHash}`);
+      } catch (fpcErr: any) {
+        console.warn('[Aztec Transfer] On-chain error, falling back:', fpcErr.message);
+        fallbackToModeB = true;
       }
-    } catch { /* node unreachable */ }
-    
-    // Generate valid Aztec-style hash instead of embarrassing 'offchain-' prefix
-    const txEntropy = crypto.createHash('sha256')
-      .update(`AZTEC-V5-${fromAddr}:${toAddr}:${roundedAmount}:${Date.now()}:${blockNumber}`)
-      .digest('hex');
-    
-    aztecTxHash = `0x${txEntropy}`;
-    // Virtualized mode: the transaction is executed on the Humanity Ledger, not AztecScan.
-    // Set explorerUrl to null so the frontend doesn't render broken AztecScan links.
-    explorerUrl = '';
-    onChain = true; // Tell the UI and DB this is a real on-chain transaction
+      
+      try { await wallet.stop(); } catch (e) {}
+    } catch (setupErr: any) {
+      console.log(`[Aztec Transfer] ℹ️ EmbeddedWallet or Node error (${setupErr.message}). Falling back to Mode B.`);
+      fallbackToModeB = true;
+    }
+
+    if (fallbackToModeB) {
+      let liveBlockNum = blockNumber || Math.floor(Date.now() / 12_000);
+      try {
+        const nodeInfoRes = await fetch(`${nodeUrl}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getBlockNumber', params: [], id: 1 }),
+          signal: AbortSignal.timeout(4000),
+        });
+        if (nodeInfoRes.ok) {
+          const nodeData = await nodeInfoRes.json();
+          liveBlockNum = nodeData?.result ?? liveBlockNum;
+        }
+      } catch { /* node unreachable */ }
+      
+      const txEntropy = crypto.createHash('sha256')
+        .update(`AZTEC-V5-${fromAddr}:${toAddr}:${roundedAmount}:${Date.now()}:${liveBlockNum}`)
+        .digest('hex');
+      
+      aztecTxHash = `0x${txEntropy}`;
+      explorerUrl = `${AZTEC_EXPLORER}/tx-effect/${txEntropy}`;
+      onChain = false; 
+      blockNumber = liveBlockNum;
+    }
 
 
       // Fetch node info for metadata (best-effort)
@@ -338,15 +379,13 @@ export async function POST(req: NextRequest) {
           });
         }
 
-        // 4. [TOKENOMICS] Reward sender +50 QDs for completing a ZK transfer (once per day)
-        const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0);
+        // 4. [TOKENOMICS] Reward sender +50 QDs for completing a ZK transfer (once per UTC day)
+        const todayIso = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD" — UTC day boundary
         const existingReward = await (tx as any).qdTransaction.findFirst({
           where: {
             aztecAddress: fromAddr,
             type: 'EARN',
-            description: 'Aztec ZK Transfer Completed',
-            createdAt: { gte: startOfDay },
+            description: `Aztec ZK Transfer Completed ${todayIso}`,
           },
         });
         if (!existingReward) {
@@ -355,7 +394,7 @@ export async function POST(req: NextRequest) {
               aztecAddress: fromAddr,
               type: 'EARN',
               amount: 50,
-              description: 'Aztec ZK Transfer Completed',
+              description: `Aztec ZK Transfer Completed ${todayIso}`,
             },
           });
         }

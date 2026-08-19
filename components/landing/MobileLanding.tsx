@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import dynamic from "next/dynamic";
 import { ZKBiometricGate } from "@/components/security/ZKBiometricGate";
-import { AztecArchitectureSection } from "./AztecArchitectureSection";
+import { Humanity LedgerArchitectureSection } from "./Humanity LedgerArchitectureSection";
 import { SystemFooter } from "./SystemFooter";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -115,7 +115,7 @@ function buildSystemMessage(address: string): string {
     '',
     `Identity: ${address}`,
     `Nonce: ${Date.now()}`,
-    `Network: AZTEC_IDENTITY_NETWORK`,
+    `Network: Humanity Ledger_IDENTITY_NETWORK`,
     `Connected at: ${new Date().toISOString().slice(0, 19).replace('T', ' ')}`,
     `Status: VERIFIED_IDENTITY_CLAIM`,
     'By signing you confirm that',
@@ -392,7 +392,7 @@ function ConnectedScreen({
              <img
                src="/system-shots/aztec-logo.png"
                className="h-20 w-auto object-contain"
-               alt="Aztec"
+               alt="Humanity Ledger"
              />
           </div>
           
@@ -1395,9 +1395,9 @@ export function MobileLanding() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="mt-4 text-[10px] font-mono uppercase tracking-[0.25em] text-black/30"
+          className="mt-4 text-[10px] font-mono uppercase tracking-[0.25em] text-black/55"
         >
-          Aztec · ZK-Native · Sovereign
+          Humanity Ledger · ZK-Native · Sovereign
         </motion.p>
 
         {/* ── ANDROID/iOS RECOVERY BANNER ───────────────────────────────── */}
@@ -1419,7 +1419,7 @@ export function MobileLanding() {
               <RefreshCw size={16} strokeWidth={2.5} />
               {fallbackStatus === 'checking' ? 'Reconnecting…' : 'Already Connected? Tap Here'}
             </button>
-            <p className="text-center text-[9px] font-mono text-black/30 uppercase tracking-widest mt-2">
+            <p className="text-center text-[9px] font-mono text-black/55 uppercase tracking-widest mt-2">
               Tap after approving in your wallet app
             </p>
           </motion.div>
@@ -1483,7 +1483,7 @@ export function MobileLanding() {
           {/* Divider */}
           <div className="flex items-center gap-3 py-0.5">
             <div className="flex-1 h-px bg-black/8" />
-            <span className="text-[9px] font-mono uppercase tracking-widest text-black/25">or</span>
+            <span className="text-[9px] font-mono uppercase tracking-widest text-black/55">or</span>
             <div className="flex-1 h-px bg-black/8" />
           </div>
 
@@ -1511,8 +1511,8 @@ export function MobileLanding() {
           />
         </div>
 
-        <p className="text-center text-[9px] font-mono text-black/20 uppercase tracking-[0.2em] mt-3 mb-0.5">
-          Secured by Aztec · ZK-Native · End to End Encrypted
+        <p className="text-center text-[9px] font-mono text-black/55 uppercase tracking-[0.2em] mt-3 mb-0.5">
+          Secured by Humanity Ledger · ZK-Native · End to End Encrypted
         </p>
       </motion.div>
 

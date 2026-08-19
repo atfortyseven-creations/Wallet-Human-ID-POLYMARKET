@@ -60,14 +60,14 @@ model Sector {
 // 
 
 model GoldRegistryAudit {
-  id                 String  @id @default(uuid())
-  platformName       String
-  slug               String  @unique
-  type               String // "Casino", "Wallet", "Exchange", "PredictionMarket"
-  isVerifiedOnChain  Boolean @default(false)
-  smartContractRef   String? // Contract validated by local/Polygon ping
-  solvencyStatus     String // "Confirmed", "Suspicious", "Unknown"
-  systemBridgeUrl String // E.g., The dark-pool routed affiliate bridge
+  id                String  @id @default(uuid())
+  platformName      String
+  slug              String  @unique
+  type              String // "Casino", "Wallet", "Exchange", "PredictionMarket"
+  isVerifiedOnChain Boolean @default(false)
+  smartContractRef  String? // Contract validated by local/Polygon ping
+  solvencyStatus    String // "Confirmed", "Suspicious", "Unknown"
+  systemBridgeUrl   String // E.g., The dark-pool routed affiliate bridge
 
   // High-performance metrics tailored to CryptoSlate's taxonomies
   features        String[] // ["No KYC", "Instant Withdrawal", "Cold Storage"]
@@ -111,17 +111,17 @@ model User {
   theme         String @default("light")
   currency      String @default("USD")
   language      String @default("en")
-  timeFormat    String @default("24h")       // "12h" | "24h"
+  timeFormat    String @default("24h") // "12h" | "24h"
   dateFormat    String @default("DD/MM/YYYY") // "DD/MM/YYYY" | "MM/DD/YYYY"
-  addressFormat String @default("truncated")  // "truncated" | "full"
+  addressFormat String @default("truncated") // "truncated" | "full"
 
   //  Display & Hardware 
-  showBalances        Boolean  @default(true)
-  hiddenAssets        String[] @default([])
-  defaultTimeframe    String   @default("1W")    // "1D", "1W", "1M", "ALL"
-  displayUnit         String   @default("FIAT")  // "FIAT", "BTC", "ETH"
-  layoutDensity       String   @default("compact") // "relaxed" | "compact" | "dense"
-  hardwareAcceleration Boolean @default(true)
+  showBalances         Boolean  @default(true)
+  hiddenAssets         String[] @default([])
+  defaultTimeframe     String   @default("1W") // "1D", "1W", "1M", "ALL"
+  displayUnit          String   @default("FIAT") // "FIAT", "BTC", "ETH"
+  layoutDensity        String   @default("compact") // "relaxed" | "compact" | "dense"
+  hardwareAcceleration Boolean  @default(true)
 
   //  Network & RPC 
   gasPreset     String  @default("STANDARD") // "ECONOMY" | "STANDARD" | "FAST" | "INSTANT"
@@ -152,16 +152,27 @@ model User {
   // Enclave PIN (Turing Shield Gate) — HMAC-SHA256 hash, never plaintext
   enclavePinHash String?
 
-  // Forum-specific settings
-  isAdmin          Boolean @default(false)
-  notifyOnReply    Boolean @default(true)
-  notifyOnMention  Boolean @default(true)
+  // Enclave PIN Reset — OTP fields (10-min TTL, max 5 verify attempts)
+  enclaveOtpHash      String?
+  enclaveOtpExpiresAt DateTime?
+  enclaveOtpAttempts  Int       @default(0)
 
-  clerkId                String? @unique
-  email                  String? @unique
-  snxAccountId           String? @unique
-  stripeCustomerId       String? @unique
-  stripeSubscriptionId   String? @unique
+  // Enclave PIN Reset — Rate Limiting & Clearance Token
+  otpSentCount          Int       @default(0)
+  otpLastSentAt         DateTime?
+  enclaveClearanceToken String?
+  enclaveClearanceTs    DateTime?
+
+  // Forum-specific settings
+  isAdmin         Boolean @default(false)
+  notifyOnReply   Boolean @default(true)
+  notifyOnMention Boolean @default(true)
+
+  clerkId              String? @unique
+  email                String? @unique
+  snxAccountId         String? @unique
+  stripeCustomerId     String? @unique
+  stripeSubscriptionId String? @unique
 
   watchlists       Watchlist[]
   alerts           Alert[]
@@ -178,43 +189,45 @@ model User {
   forumNotifications ForumNotification[]
   actorNotifications ForumNotification[] @relation("ActorNotifications")
 
+  apiKeys           ApiKey[]
+  watchedWallets    WatchedWallet[]
+  exchangePositions ExchangePosition[]
+
+  // System Credits & Humanity Ledger (Node V4.0)
+  creditsBalance Int             @default(2500)
+  humanityScore  Int             @default(0)
+  creditLedgers  CreditLedger[]
+  humanityEvents HumanityEvent[]
+  notifications  Notification[]
+
   //   INDEXACIÓN CÓSMICA: Segmentación de usuarios para analytics y acceso a nivel Pro
   @@index([tier, lastActive(sort: Desc)]) // Consulta de usuarios activos por tier
   @@index([isPro, createdAt(sort: Desc)]) // Funnel de conversión Pro
   @@index([createdAt(sort: Desc)]) // Registro cronológico general
-
-  apiKeys            ApiKey[]
-  watchedWallets     WatchedWallet[]
-  exchangePositions  ExchangePosition[]
-
-  // System Credits & Humanity Ledger (Node V4.0)
-  creditsBalance     Int             @default(2500)
-  humanityScore      Int             @default(0)
-  creditLedgers      CreditLedger[]
-  humanityEvents     HumanityEvent[]
-  notifications      Notification[]
 }
 
 model CreditLedger {
   id          String   @id @default(uuid())
   userId      String
-  amount      Int      // Negative for usage, positive for top-up
-  action      String   // E.g., 'NEO4J_QUERY', 'Z_SCORE_THERMO'
+  amount      Int // Negative for usage, positive for top-up
+  action      String // E.g., 'NEO4J_QUERY', 'Z_SCORE_THERMO'
   description String?
   timestamp   DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId, timestamp(sort: Desc)])
 }
 
 model HumanityEvent {
-  id          String   @id @default(uuid())
-  userId      String
-  eventType   String   // E.g., 'EIP191_SIGNATURE', 'FORUM_POST'
-  points      Int
-  timestamp   DateTime @default(now())
+  id        String   @id @default(uuid())
+  userId    String
+  eventType String // E.g., 'EIP191_SIGNATURE', 'FORUM_POST'
+  points    Int
+  timestamp DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId, timestamp(sort: Desc)])
 }
 
@@ -226,7 +239,7 @@ model ApiKey {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [walletAddress], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [walletAddress], onDelete: Cascade)
 
   @@index([userId, isActive])
 }
@@ -241,7 +254,7 @@ model AuthUser {
   encryptedMnemonic   String?   @db.Text
   walletSalt          String?
   verified            Boolean   @default(false)
-  verificationCode    String?   // legacy inline code field (kept for compatibility)
+  verificationCode    String? // legacy inline code field (kept for compatibility)
   codeExpiresAt       DateTime?
   totpSecret          String?   @db.Text
   backupCodes         String[]  @default([])
@@ -252,17 +265,26 @@ model AuthUser {
   updatedAt           DateTime  @updatedAt
 
   // Enclave PIN (Turing Shield Gate) — HMAC-SHA256 hash, never plaintext
-  enclavePinHash      String?
+  enclavePinHash String?
 
-  securityEvents      SecurityEvent[]
-  verificationCodes   VerificationCode[]
+  // Enclave PIN Reset — OTP fields (10-min TTL, max 5 verify attempts)
+  enclaveOtpHash      String?
+  enclaveOtpExpiresAt DateTime?
+  enclaveOtpAttempts  Int       @default(0)
+
+  // Enclave PIN Reset — Rate Limiting & Clearance Token
+  otpSentCount          Int       @default(0)
+  otpLastSentAt         DateTime?
+  enclaveClearanceToken String?
+  enclaveClearanceTs    DateTime?
+
+  securityEvents    SecurityEvent[]
+  verificationCodes VerificationCode[]
 
   @@index([email])
   @@index([walletAddress])
   @@index([username])
 }
-
-
 
 model EmailSubscriber {
   id               String   @id @default(uuid())
@@ -300,7 +322,7 @@ model WatchedWallet {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @default(now()) @updatedAt
 
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, address])
   @@index([userId, createdAt(sort: Desc)])
@@ -358,7 +380,7 @@ model ExchangePosition {
   status        String   @default("OPEN")
   createdAt     DateTime @default(now())
 
-  user          User     @relation(fields: [userId], references: [walletAddress], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [walletAddress], onDelete: Cascade)
 
   @@index([userId, status])
 }
@@ -752,15 +774,15 @@ model SecurityEvent {
 }
 
 model Transaction {
-  id          String   @id @default(uuid())
-  txHash      String   @unique
-  status      String   @default("PENDING")
-  type        String // SEND, RECEIVE, REBALANCE
-  amount      Float
-  token       String
-  fromAddress String
-  toAddress   String
-  timestamp   DateTime @default(now())
+  id           String   @id @default(uuid())
+  txHash       String   @unique
+  status       String   @default("PENDING")
+  type         String // SEND, RECEIVE, REBALANCE
+  amount       Float
+  token        String
+  fromAddress  String
+  toAddress    String
+  timestamp    DateTime @default(now())
   identityHash String? // ZK Proof derived hash of identity (Zero-Knowledge Data Isolation)
 
   chainId     Int     @default(1)
@@ -847,14 +869,14 @@ model SystemAuditLog {
   id          String   @id @default(uuid())
   createdAt   DateTime @default(now())
   // Event classification
-  event       String   // AuditEventType  see lib/audit/audit-trail.ts
-  actor       String   // Wallet address (0x...) or system identifier
+  event       String // AuditEventType  see lib/audit/audit-trail.ts
+  actor       String // Wallet address (0x...) or system identifier
   ip          String
   metadata    String   @db.Text // JSON-serialized, included in payloadHash
   // Cryptographic chain fields
   payloadHash String   @unique // SHA-256(timestamp+event+actor+ip+metadata)
-  hmacSig     String   // HMAC-SHA256(payloadHash:prevHash, AUDIT_SECRET)
-  prevHash    String   // payloadHash of the previous entry, or 'GENESIS'
+  hmacSig     String // HMAC-SHA256(payloadHash:prevHash, AUDIT_SECRET)
+  prevHash    String // payloadHash of the previous entry, or 'GENESIS'
 
   @@index([event, createdAt(sort: Desc)])
   @@index([actor, createdAt(sort: Desc)])
@@ -977,17 +999,17 @@ model UserSessionLog {
 }
 
 model UserPrivacyProfile {
-  id                  String   @id @default(uuid())
-  userId              String   @unique
-  logLevel            String   @default("MEDIUM")
-  dataSharing         Boolean  @default(true)
-  sessionAutoLogout   String   @default("1h")
-  ipWhitelist         String[] @default([])
-  twoFAEnabled        Boolean  @default(false)
-  systemVisibility String   @default("Public")
-  exportEncryption    Boolean  @default(false)
-  updatedAt           DateTime @updatedAt
-  createdAt           DateTime @default(now())
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  logLevel          String   @default("MEDIUM")
+  dataSharing       Boolean  @default(true)
+  sessionAutoLogout String   @default("1h")
+  ipWhitelist       String[] @default([])
+  twoFAEnabled      Boolean  @default(false)
+  systemVisibility  String   @default("Public")
+  exportEncryption  Boolean  @default(false)
+  updatedAt         DateTime @updatedAt
+  createdAt         DateTime @default(now())
 }
 
 // 
@@ -1176,24 +1198,24 @@ model ForumTelemetry {
 // 
 
 model BetaTelemetry {
-  id              String   @id @default(uuid())
-  metricType      String   // e.g., 'HANDSHAKE_LATENCY', 'WHALE_DETECTION_LATENCY', 'WS_UPTIME'
-  value           Float    // Numeric value of the metric (e.g., milliseconds or percentage)
-  p95             Float?   // Pre-calculated P95 for aggregated flushes
-  sampleSize      Int      // Number of events aggregated in this record
-  timestamp       DateTime @default(now())
-  environment     String   @default("production") // e.g., 'staging', 'production'
-  
+  id          String   @id @default(uuid())
+  metricType  String // e.g., 'HANDSHAKE_LATENCY', 'WHALE_DETECTION_LATENCY', 'WS_UPTIME'
+  value       Float // Numeric value of the metric (e.g., milliseconds or percentage)
+  p95         Float? // Pre-calculated P95 for aggregated flushes
+  sampleSize  Int // Number of events aggregated in this record
+  timestamp   DateTime @default(now())
+  environment String   @default("production") // e.g., 'staging', 'production'
+
   @@index([metricType, timestamp])
 }
 
 model NPSSurvey {
-  id              String   @id @default(uuid())
-  walletAddress   String   @unique // The address of the beta tester. One survey per wallet.
-  score           Int      // 0-10 NPS score
-  feedback        String?  @db.Text
-  signature       String   // EIP-191 signature of the score and feedback (preventing forgery)
-  timestamp       DateTime @default(now())
+  id            String   @id @default(uuid())
+  walletAddress String   @unique // The address of the beta tester. One survey per wallet.
+  score         Int // 0-10 NPS score
+  feedback      String?  @db.Text
+  signature     String // EIP-191 signature of the score and feedback (preventing forgery)
+  timestamp     DateTime @default(now())
 }
 
 // 
@@ -1209,7 +1231,7 @@ model VerificationCode {
   expiresAt DateTime
   createdAt DateTime @default(now())
 
-  user      AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, used, expiresAt])
   @@index([code])
@@ -1223,8 +1245,8 @@ model VerificationCode {
 model WalletAnalytics {
   id        String   @id @default(uuid())
   address   String   @unique
-  forensics Json?    // Risk signals, entity labels, etc.
-  category  String?  // 'EXCHANGE', 'WHALE', 'DEFI', 'UNKNOWN'
+  forensics Json? // Risk signals, entity labels, etc.
+  category  String? // 'EXCHANGE', 'WHALE', 'DEFI', 'UNKNOWN'
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
@@ -1243,20 +1265,19 @@ model Notification {
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
 
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, isGlobal])
   @@index([createdAt(sort: Desc)])
 }
-
 
 // 
 // HUMANITY PROVENANCE FRAMEWORK — Product passports (public read, optional on-chain anchor)
 // 
 
 model ProductPassport {
-  id            String   @id @default(cuid())
-  publicSlug    String   @unique
+  id            String            @id @default(cuid())
+  publicSlug    String            @unique
   title         String
   category      String?
   issuerAddress String?
@@ -1265,8 +1286,8 @@ model ProductPassport {
   txHash        String?
   chainId       Int?
   gs1Gtin       String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
   events        ProvenanceEvent[]
 
   @@index([issuerAddress])
@@ -1275,12 +1296,12 @@ model ProductPassport {
 }
 
 model ProvenanceEvent {
-  id         String   @id @default(cuid())
+  id         String          @id @default(cuid())
   passportId String
   passport   ProductPassport @relation(fields: [passportId], references: [id], onDelete: Cascade)
   eventType  String
   payload    Json
-  createdAt  DateTime @default(now())
+  createdAt  DateTime        @default(now())
 
   @@index([passportId, createdAt(sort: Desc)])
 }
@@ -1292,28 +1313,28 @@ model ProvenanceEvent {
 //
 
 model LoginGeoEvent {
-  id           String   @id @default(uuid())
+  id            String   @id @default(uuid())
   // Anonymized identity — never store raw IP or wallet
-  userId       String?  // Hashed user reference (nullable = pre-auth probe)
-  sessionType  String   // "WALLET_CONNECT" | "EMAIL_LOGIN" | "QR_SCAN" | "METAMASK" | "RAINBOW" | "HUMANITY_ID"
+  userId        String? // Hashed user reference (nullable = pre-auth probe)
+  sessionType   String // "WALLET_CONNECT" | "EMAIL_LOGIN" | "QR_SCAN" | "METAMASK" | "RAINBOW" | "HUMANITY_ID"
   // Geographic intelligence
-  countryCode  String   // ISO 3166-1 alpha-2: "ES", "US", "JP"
-  countryName  String
-  region       String?  // State/province
-  city         String?
-  latitude     Float?
-  longitude    Float?
+  countryCode   String // ISO 3166-1 alpha-2: "ES", "US", "JP"
+  countryName   String
+  region        String? // State/province
+  city          String?
+  latitude      Float?
+  longitude     Float?
   // Network intelligence
-  ipHash       String?  // SHA-256(ip+salt) — anonymous, non-reversible
-  asn          String?  // Autonomous System Number for network analysis
-  isTor        Boolean  @default(false)
-  isVpn        Boolean  @default(false)
-  isDatacenter Boolean  @default(false)
+  ipHash        String? // SHA-256(ip+salt) — anonymous, non-reversible
+  asn           String? // Autonomous System Number for network analysis
+  isTor         Boolean  @default(false)
+  isVpn         Boolean  @default(false)
+  isDatacenter  Boolean  @default(false)
   // Session metadata
-  authMethod   String   @default("UNKNOWN") // "SIWE", "EMAIL", "QR", "METAMASK"
-  deviceType   String?  // "MOBILE" | "DESKTOP" | "TABLET"
-  wasSuccessful Boolean @default(true)
-  timestamp    DateTime @default(now())
+  authMethod    String   @default("UNKNOWN") // "SIWE", "EMAIL", "QR", "METAMASK"
+  deviceType    String? // "MOBILE" | "DESKTOP" | "TABLET"
+  wasSuccessful Boolean  @default(true)
+  timestamp     DateTime @default(now())
 
   @@index([countryCode, timestamp(sort: Desc)])
   @@index([userId, timestamp(sort: Desc)])
@@ -1342,22 +1363,22 @@ model ZkNullifier {
 // 
 
 model MarketProposal {
-  id              String   @id @default(uuid())
+  id              String    @id @default(uuid())
   question        String
-  description     String   @db.Text
-  outcomes        String[] @default(["FOR", "AGAINST", "ABSTAIN"])
-  category        String   @default("CORE")
+  description     String    @db.Text
+  outcomes        String[]  @default(["FOR", "AGAINST", "ABSTAIN"])
+  category        String    @default("CORE")
   creatorAddress  String
-  status          String   @default("VOTING") // VOTING, APPROVED, REJECTED, EXECUTED
-  votesFor        Int      @default(0)
-  votesAgainst    Int      @default(0)
-  votingThreshold Int      @default(100) // Minimum votes required to pass
+  status          String    @default("VOTING") // VOTING, APPROVED, REJECTED, EXECUTED
+  votesFor        Int       @default(0)
+  votesAgainst    Int       @default(0)
+  votingThreshold Int       @default(100) // Minimum votes required to pass
   votingEndsAt    DateTime
   approvedAt      DateTime?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
-  votes           ProposalVote[]
+  votes ProposalVote[]
 
   @@index([status, createdAt(sort: Desc)])
   @@index([category])
@@ -1367,14 +1388,14 @@ model ProposalVote {
   id                String   @id @default(uuid())
   proposalId        String
   voterAddress      String
-  vote              String   // FOR, AGAINST, ABSTAIN
+  vote              String // FOR, AGAINST, ABSTAIN
   nullifierHash     String   @unique // Cryptographic proof against double voting
   merkleRoot        String
   proof             String   @db.Text
   verificationLevel String
   votedAt           DateTime @default(now())
 
-  proposal          MarketProposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  proposal MarketProposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
 
   @@unique([proposalId, nullifierHash])
   @@index([proposalId, vote])
@@ -1407,20 +1428,20 @@ model AztecQuest {
   qdReward    Float
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
-  
-  claims      QuestClaim[]
+
+  claims QuestClaim[]
 }
 
 model QuestClaim {
-  id             String   @id @default(uuid())
-  questId        String
-  identityHash   String   @default("") // ZK Proof derived hash of identity (Zero-Knowledge Data Isolation)
-  ipHash         String   @default("") // SHA-256(ip) to prevent multi-account farming
-  status         String   @default("CLAIMED") // CLAIMED, SLASHED
-  claimedAt      DateTime @default(now())
-  slashedAt      DateTime?
-  
-  quest          AztecQuest @relation(fields: [questId], references: [id], onDelete: Cascade)
+  id           String    @id @default(uuid())
+  questId      String
+  identityHash String    @default("") // ZK Proof derived hash of identity (Zero-Knowledge Data Isolation)
+  ipHash       String    @default("") // SHA-256(ip) to prevent multi-account farming
+  status       String    @default("CLAIMED") // CLAIMED, SLASHED
+  claimedAt    DateTime  @default(now())
+  slashedAt    DateTime?
+
+  quest AztecQuest @relation(fields: [questId], references: [id], onDelete: Cascade)
 
   @@unique([questId, identityHash])
   @@unique([questId, ipHash]) // IP can only claim a specific quest once
@@ -1436,11 +1457,11 @@ model QuestClaim {
 
 model QdTransaction {
   id           String   @id @default(uuid())
-  aztecAddress String   // The L2 Identity address spending/receiving QDs
-  type         String   // "EARN", "SPEND", "SLASH", "STAKE", "UNSTAKE", "FEE", "REWARD"
+  aztecAddress String // The L2 Identity address spending/receiving QDs
+  type         String // "EARN", "SPEND", "SLASH", "STAKE", "UNSTAKE", "FEE", "REWARD"
   amount       Float
   description  String   @db.Text
-  txHash       String?  // Optional L2 Tx hash if executed on-chain
+  txHash       String? // Optional L2 Tx hash if executed on-chain
   createdAt    DateTime @default(now())
 
   @@index([aztecAddress, createdAt(sort: Desc)])
@@ -1455,7 +1476,7 @@ model SovereignNode {
   id             String   @id @default(uuid())
   aztecAddress   String   @unique
   identityHash   String
-  tier           String   // BRONZE, SILVER, GOLD
+  tier           String // BRONZE, SILVER, GOLD
   stakedAmount   Float
   lockedAt       DateTime @default(now())
   unlockAt       DateTime
@@ -1471,16 +1492,16 @@ model SovereignNode {
 // SOCIAL VERIFICATION & PENALTIES
 // 
 model SocialVerification {
-  id            String   @id @default(uuid())
-  walletAddress String   @unique
-  twitterId     String?
-  twitterFollow Boolean  @default(false)
-  youtubeId     String?
-  youtubeFollow Boolean  @default(false)
-  telegramId    String?
-  telegramFollow Boolean @default(false)
+  id             String   @id @default(uuid())
+  walletAddress  String   @unique
+  twitterId      String?
+  twitterFollow  Boolean  @default(false)
+  youtubeId      String?
+  youtubeFollow  Boolean  @default(false)
+  telegramId     String?
+  telegramFollow Boolean  @default(false)
   lastVerifiedAt DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  updatedAt      DateTime @updatedAt
 
   @@index([walletAddress])
 }
@@ -1502,7 +1523,6 @@ model AirdropClaim {
   @@index([walletAddress])
 }
 
-
 model ModerationReport {
   id              String   @id @default(uuid())
   reporterAddress String
@@ -1510,4 +1530,3 @@ model ModerationReport {
   timestamp       DateTime @default(now())
   status          String   @default("PENDING")
 }
-

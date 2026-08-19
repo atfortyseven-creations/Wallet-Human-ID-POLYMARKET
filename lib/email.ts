@@ -269,3 +269,113 @@ export async function sendSupportEmail(message: string, section: string, senderE
   }
 }
 
+/**
+ * Send Enclave PIN reset OTP email
+ * Triggered when a user requests to reset their Turing Shield enclave PIN.
+ * The OTP is valid for 10 minutes and is the ONLY delivery channel — never logged.
+ */
+export async function sendEnclaveResetEmail(email: string, otp: string): Promise<void> {
+  const MAX_RETRIES = 3;
+  let lastError: any = null;
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const { data, error } = await resend.emails.send({
+        from:    getSender('Humanity Ledger Security'),
+        to:      email,
+        subject: '🔐 Your Enclave PIN Reset Code',
+        replyTo: 'security@humanidfi.com',
+        html: `
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background-color:#F2ECD8;">
+            <table role="presentation" style="width:100%;border-collapse:collapse;">
+              <tr>
+                <td align="center" style="padding:48px 20px;">
+                  <table role="presentation" style="width:100%;max-width:520px;border-collapse:collapse;background:#fff;border:2px solid #0A0A0A;box-shadow:8px 8px 0 #0A0A0A;">
+
+                    <!-- Header -->
+                    <tr>
+                      <td style="padding:36px 40px 20px;border-bottom:2px solid #0A0A0A;">
+                        <div style="font-family:'Courier New',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.4em;color:#666;margin-bottom:12px;">
+                          TURING SHIELD // SECURE ENCLAVE
+                        </div>
+                        <h1 style="margin:0;font-size:28px;font-weight:900;color:#0A0A0A;letter-spacing:-1px;text-transform:uppercase;">
+                          Enclave PIN Reset
+                        </h1>
+                      </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                      <td style="padding:32px 40px;">
+                        <p style="margin:0 0 20px;font-size:14px;color:#333;line-height:1.7;">
+                          A request was made to reset your <strong>Turing Shield Enclave PIN</strong>.
+                          Enter the 6-digit code below in the reset screen.
+                        </p>
+
+                        <!-- OTP Box -->
+                        <div style="background:#0A0A0A;border-radius:4px;padding:28px;text-align:center;margin:24px 0;">
+                          <div style="font-family:'Courier New',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.4em;color:rgba(255,255,255,0.4);margin-bottom:14px;">
+                            One-Time Reset Code
+                          </div>
+                          <div style="font-size:44px;font-weight:900;letter-spacing:16px;color:#FFFFFF;font-family:'Courier New',monospace;">
+                            ${otp}
+                          </div>
+                          <div style="font-family:'Courier New',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.3em;color:rgba(255,255,255,0.3);margin-top:14px;">
+                            Valid for 10 minutes only
+                          </div>
+                        </div>
+
+                        <!-- Security Notice -->
+                        <div style="background:#FFF8E1;border-left:4px solid #F59E0B;padding:16px 20px;margin-bottom:24px;">
+                          <p style="margin:0;font-size:12px;color:#92400E;line-height:1.6;font-weight:600;">
+                            ⚠ Security Notice: If you did not request this reset, your account may be under access. Do NOT share this code with anyone. Humanity Ledger staff will never ask for it.
+                          </p>
+                        </div>
+
+                        <p style="margin:0;font-size:13px;color:#666;line-height:1.6;">
+                          After entering this code, you will be prompted to set a new 6-digit Enclave PIN.
+                          This code expires automatically and can only be used once.
+                        </p>
+                      </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                      <td style="padding:20px 40px;background:#0A0A0A;border-top:2px solid #0A0A0A;">
+                        <div style="font-family:'Courier New',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.2em;color:rgba(255,255,255,0.35);">
+                          Humanity Ledger Corporation // Confidential // ${new Date().getFullYear()}
+                        </div>
+                      </td>
+                    </tr>
+
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </body>
+          </html>
+        `,
+      });
+
+      if (error) throw error;
+      console.log(`[Email] Enclave reset OTP sent (attempt ${attempt})`);
+      return;
+
+    } catch (err: any) {
+      lastError = err;
+      console.error(`[Email] Enclave reset attempt ${attempt}/${MAX_RETRIES} failed:`, err?.message);
+      if (err?.statusCode === 422) throw err; // Fatal — don't retry
+      if (attempt < MAX_RETRIES) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+      }
+    }
+  }
+
+  throw lastError;
+}

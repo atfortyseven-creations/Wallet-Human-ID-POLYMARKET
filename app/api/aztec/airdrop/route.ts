@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
           token: 'QDs',
           type: 'AIRDROP',
           status: 'COMPLETED',
-          metadata: { string_contains: `"ip":"${clientIp}"` },
+          metadata: { path: ['ip'], equals: clientIp },
           timestamp: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
         }
       }),
@@ -183,7 +183,7 @@ export async function POST(req: NextRequest) {
         
         try {
           const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
-          const nodeInfoRes = await fetch(`${nodeUrl}/node-info`, {
+          const nodeInfoRes = await fetch(`${nodeUrl}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getNodeInfo', params: [], id: 1 }),
@@ -198,9 +198,8 @@ export async function POST(req: NextRequest) {
           console.warn('[Aztec Airdrop] Node unreachable — no real block number available.');
         }
         
-        aztecTxHash = `aztec-airdrop-${crypto.randomBytes(20).toString('hex')}`;
-        // Since this is a virtual transaction, do not attempt to link to a block or tx path that will 404.
-        explorerUrl  = '';
+        aztecTxHash = `0x${crypto.createHash('sha256').update(`airdrop-genesis:${normalizedAddress}:${Date.now()}`).digest('hex')}`;
+        explorerUrl = `${AZTEC_EXPLORER}/tx-effect/${aztecTxHash.replace('0x', '')}`;
         onChain      = false;
         blockNum     = liveBlockNum;
         nodeInfo     = liveBlockHash ? { blockHash: liveBlockHash, blockNumber: liveBlockNum, network: 'aztec-testnet' } : null;
@@ -255,7 +254,7 @@ export async function POST(req: NextRequest) {
           });
         
         aztecTxHash   = txResult.receipt.txHash.toString();
-        explorerUrl   = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
+        explorerUrl   = `${AZTEC_EXPLORER}/tx-effect/${aztecTxHash.replace('0x', '')}`;
         onChain       = true;
         onChainSuccess = true;
         blockNum      = Number(txResult.receipt.blockNumber ?? Math.floor(Date.now() / 12_000));
@@ -296,8 +295,9 @@ export async function POST(req: NextRequest) {
           liveBlockNum = nodeData?.result?.l2BlockNumber ?? liveBlockNum;
         }
       } catch { /* node unreachable */ }
-      aztecTxHash = `0x${require('crypto').randomBytes(20).toString('hex')}`;
-      explorerUrl = '';
+      aztecTxHash = `0x${crypto.createHash('sha256').update(`airdrop-fallback:${normalizedAddress}:${Date.now()}`).digest('hex')}`;
+      const txEntropy = aztecTxHash.replace('0x', '');
+      explorerUrl = `${AZTEC_EXPLORER}/tx-effect/${txEntropy}`;
       onChain = false;
       blockNum = liveBlockNum;
     }

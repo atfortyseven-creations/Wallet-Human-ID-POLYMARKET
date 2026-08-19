@@ -206,7 +206,7 @@ function LandingNav() {
               href="https://github.com/humanityledger"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[12.5px] font-medium text-black/40 hover:text-black transition-colors"
+              className="text-[12.5px] font-medium text-black/60 hover:text-black transition-colors"
             >
               GitHub
             </a>
@@ -224,7 +224,7 @@ function LandingNav() {
                 </Link>
                 <button
                   onClick={() => nuclearDisconnect()}
-                  className="text-[11.5px] text-black/30 hover:text-red-500 transition-colors"
+                  className="text-[11.5px] text-black/50 hover:text-red-500 transition-colors"
                 >
                   Sign out
                 </button>
@@ -438,7 +438,7 @@ function HeroSection() {
         <motion.p
           variants={fadeIn}
           custom={0}
-          className="text-[13px] tracking-[0.3em] uppercase text-black/30 font-medium mb-5"
+          className="text-[13px] tracking-[0.3em] uppercase text-black/50 font-medium mb-5"
         >
           You are now entering
         </motion.p>
@@ -468,7 +468,7 @@ function HeroSection() {
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
               className="tracking-tight leading-[0.9]"
               style={{
-                color: "rgba(0,0,0,0.2)",
+                color: "rgba(0,0,0,0.6)",
                 fontFamily: "var(--font-aztec-serif), Georgia, serif",
                 fontSize: "clamp(3.8rem, 11vw, 9rem)",
                 fontWeight: 700,
@@ -489,8 +489,8 @@ function HeroSection() {
             className="flex flex-col gap-2 max-w-[560px]"
             style={{ willChange: "transform" }}
           >
-            <p className="text-[16px] md:text-[19px] text-black/45 leading-relaxed font-medium">
-              Humanity Ledger operates as an Institutional-Grade System Execution Environment. Modular, sovereign Mini-Apps shielded by Aztec Network cryptography.
+            <p className="text-[16px] md:text-[19px] text-black/65 leading-relaxed font-medium">
+              Humanity Ledger operates as an Institutional-Grade System Execution Environment. Modular, sovereign Mini-Apps shielded by zero-knowledge cryptography.
             </p>
             <p className="text-[13px] md:text-[14px] font-semibold text-indigo-600/90 tracking-wide uppercase mt-2">
               Official Institutional Ecosystem Launch — January 2027
@@ -528,7 +528,7 @@ function HeroSection() {
         transition={{ delay: 2, duration: 1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="text-[9px] tracking-[0.25em] uppercase text-black/20 font-semibold">
+        <span className="text-[9px] tracking-[0.25em] uppercase text-black/50 font-semibold">
           Scroll
         </span>
         <motion.span
@@ -566,7 +566,7 @@ function StatementSection() {
         >
           Privacy isn&apos;t a feature.
           <br />
-          <span style={{ color: "rgba(0,0,0,0.2)" }}>
+          <span style={{ color: "rgba(0,0,0,0.6)" }}>
             It&apos;s the foundation.
           </span>
         </motion.p>
@@ -582,12 +582,12 @@ function StatementSection() {
             {
               n: "02",
               title: "Encrypted State",
-              body: "Balances and credentials are encrypted UTXO notes on Aztec L2. Only your keys unlock them.",
+              body: "Balances and credentials are encrypted UTXO notes on the Humanity Ledger L2. Only your keys unlock them.",
             },
             {
               n: "03",
               title: "Hybrid Execution",
-              body: "Bridge Ethereum liquidity with private Aztec execution. Full composability, zero metadata leakage.",
+              body: "Bridge Ethereum liquidity with private sovereign execution. Full composability, zero metadata leakage.",
             },
           ].map((item, i) => (
             <motion.div
@@ -598,7 +598,7 @@ function StatementSection() {
               custom={i * 0.12}
               className="flex flex-col gap-4"
             >
-              <span className="font-mono text-[10.5px] text-black/20 tracking-[0.2em] uppercase">
+              <span className="font-mono text-[10.5px] text-black/50 tracking-[0.2em] uppercase">
                 {item.n}
               </span>
               <h3
@@ -639,7 +639,7 @@ const MODULES = [
     ),
     tag: "On-Chain Registry",
     title: "Studio Provenance",
-    desc: "Register and tokenize real-world assets on Aztec L2. Immutable public proofs with absolute ownership privacy.",
+    desc: "Register and tokenize real-world assets on the Humanity Ledger L2. Immutable public proofs with absolute ownership privacy.",
     href: "/studio/provenance",
     cta: "Open Studio",
     id: "module-studio-btn",
@@ -702,7 +702,7 @@ function ModulesSection() {
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
             variants={fadeIn}
-            className="block text-[10.5px] font-mono uppercase tracking-[0.25em] text-black/30 mb-5"
+            className="block text-[10.5px] font-mono uppercase tracking-[0.25em] text-black/50 mb-5"
           >
             Protocol Modules
           </motion.span>
@@ -719,7 +719,7 @@ function ModulesSection() {
           >
             Three products.
             <br />
-            <span style={{ color: "rgba(0,0,0,0.2)" }}>One identity.</span>
+            <span style={{ color: "rgba(0,0,0,0.6)" }}>One identity.</span>
           </motion.h2>
         </div>
 
@@ -733,11 +733,11 @@ function ModulesSection() {
               custom={i * 0.12}
               className="flex flex-col bg-white rounded-3xl border border-black/[0.06] p-8 gap-6 hover:border-black/12 hover:shadow-[0_4px_32px_rgba(0,0,0,0.06)] transition-all duration-300 group"
             >
-              <div className="w-10 h-10 bg-zinc-50 border border-black/[0.06] rounded-xl flex items-center justify-center text-black/40 group-hover:text-black/70 transition-colors">
+              <div className="w-10 h-10 bg-zinc-50 border border-black/[0.06] rounded-xl flex items-center justify-center text-black/60 group-hover:text-black/70 transition-colors">
                 {mod.icon}
               </div>
               <div className="flex flex-col gap-2 flex-1">
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/25">
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/50">
                   {mod.tag}
                 </span>
                 <h3
@@ -797,7 +797,7 @@ function RegistrySection({ hideMap }: { hideMap?: boolean }) {
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
               variants={fadeIn}
-              className="block text-[10.5px] font-mono uppercase tracking-[0.25em] text-black/30 mb-5"
+              className="block text-[10.5px] font-mono uppercase tracking-[0.25em] text-black/50 mb-5"
             >
               Global Network
             </motion.span>
@@ -814,7 +814,7 @@ function RegistrySection({ hideMap }: { hideMap?: boolean }) {
             >
               Verification
               <br />
-              <span style={{ color: "rgba(0,0,0,0.2)" }}>Registry Map</span>
+              <span style={{ color: "rgba(0,0,0,0.6)" }}>Registry Map</span>
             </motion.h2>
           </div>
           <motion.div
@@ -853,8 +853,6 @@ function RegistrySection({ hideMap }: { hideMap?: boolean }) {
         >
           <RealWorldMap />
         </motion.div>
-        <RoadmapSection />
-        <FAQSection />
       </div>
     </section>
   );
@@ -867,7 +865,7 @@ const ROADMAP_STEPS = [
     title: "Testnet Genesis",
     status: "Completed",
     date: "Q3 2024",
-    desc: "Deployment of the core Aztec L2 rollup, Noir circuits, and basic privacy infrastructure.",
+    desc: "Deployment of the core Humanity Ledger L2 rollup, Noir circuits, and basic privacy infrastructure.",
   },
   {
     phase: "Phase 2",
@@ -915,7 +913,7 @@ function RoadmapSection() {
             }}
             className="leading-[1.05] tracking-tight text-black mb-6"
           >
-            The path to full <br/><span style={{ color: "rgba(0,0,0,0.2)" }}>decentralization</span>
+            The path to full <br/><span style={{ color: "rgba(0,0,0,0.6)" }}>decentralization</span>
           </motion.h2>
           <motion.p
             initial="hidden"
@@ -959,11 +957,11 @@ function RoadmapSection() {
                       )}
                       
                       <div className={`flex items-center gap-3 mb-4 ${isEven ? 'md:justify-end' : 'md:justify-start'}`}>
-                        {isEven && <span className="hidden md:inline-block text-[11px] font-mono font-medium text-black/40">{step.date}</span>}
+                        {isEven && <span className="hidden md:inline-block text-[11px] font-mono font-medium text-black/60">{step.date}</span>}
                         <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full ${isCurrent ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-black/5 text-black/50'}`}>
                           {step.phase}
                         </span>
-                        {(!isEven || true) && <span className={`${isEven ? 'md:hidden' : ''} inline-block text-[11px] font-mono font-medium text-black/40`}>{step.date}</span>}
+                        {(!isEven || true) && <span className={`${isEven ? 'md:hidden' : ''} inline-block text-[11px] font-mono font-medium text-black/60`}>{step.date}</span>}
                       </div>
                       <h3 className={`text-[18px] font-bold tracking-tight mb-2 ${isCurrent ? 'text-indigo-950' : 'text-black'}`}>
                         {step.title}
@@ -998,7 +996,7 @@ const FAQS = [
     a: "Only if you explicitly grant it. You can generate a scoped viewing key that reveals specific transactions for attestation purposes, while the rest of your portfolio stays private.",
   },
   {
-    q: "What can I do with a verified Aztec identity?",
+    q: "What can I do with a verified Humanity Ledger identity?",
     a: "Full access to the Humanity Ledger ecosystem: Whale Chat encrypted messaging, Studio Provenance asset registry, Portfolio Terminal analytics, and cross-protocol session management.",
   },
 ];
@@ -1034,7 +1032,7 @@ function FAQItem({
           {faq.q}
         </span>
         <span
-          className={`shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center rounded-full border border-black/10 text-black/40 transition-all duration-300 ${
+          className={`shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center rounded-full border border-black/10 text-black/60 transition-all duration-300 ${
             open ? "rotate-45 border-black/20 bg-zinc-50" : ""
           }`}
         >
@@ -1084,7 +1082,7 @@ function FAQSection() {
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           variants={fadeIn}
-          className="block text-[10.5px] font-mono uppercase tracking-[0.25em] text-black/30 mb-5"
+          className="block text-[10.5px] font-mono uppercase tracking-[0.25em] text-black/50 mb-5"
         >
           FAQ
         </motion.span>
@@ -1152,7 +1150,7 @@ function AztecCTASection() {
         >
           Your identity.
           <br />
-          <span className="text-black/30 italic">
+          <span className="text-black/50 italic">
             Proven without disclosure.
           </span>
         </motion.h2>
@@ -1194,7 +1192,7 @@ function AztecCTASection() {
         </motion.div>
       </div>
 
-      {/* ── GIANT "WHALE" WORDMARK — responsive and contained ── */}
+      {/* ── GIANT "HUMANITY" WORDMARK — responsive and contained ── */}
       <div className="relative w-full overflow-hidden select-none pointer-events-none mt-20 md:mt-28 flex justify-center h-[12vw] min-h-[80px] max-h-[200px]">
         <motion.p
           initial={{ opacity: 0, y: 40 }}
@@ -1203,11 +1201,11 @@ function AztecCTASection() {
           className="absolute bottom-0 leading-[0.75] font-black text-black whitespace-nowrap"
           style={{
             fontFamily: "var(--font-aztec-serif), Georgia, serif",
-            fontSize: "clamp(6rem, 24vw, 22rem)",
+            fontSize: "clamp(4rem, 16vw, 18rem)",
             letterSpacing: "-0.04em",
           }}
         >
-          WHALE
+          HUMANITY
         </motion.p>
       </div>
     </section>
@@ -1236,6 +1234,7 @@ export function ImmersiveManifestoLanding({
             <ModulesSection />
             <SeeInActionSection />
             <RegistrySection hideMap={hideMap} />
+            <RoadmapSection />
             <FAQSection />
             <AztecCTASection />
           </main>
