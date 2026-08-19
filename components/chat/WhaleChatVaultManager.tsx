@@ -41,18 +41,20 @@ export function WhaleChatVaultManager({ onClose }: VaultManagerProps) {
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    // In a real implementation, we would query the IndexedDB/SecureVault for the actual stored files.
-    // For this demonstration, we'll simulate loading the encrypted file registry.
-    setTimeout(() => {
-      const mockFiles: VaultFile[] = [
-        { id: '1', name: 'passport_scan.pdf', type: 'application/pdf', size: 1024 * 1024 * 2.5, createdAt: Date.now() - 86400000, encrypted: true },
-        { id: '2', name: 'seed_phrase_backup.txt', type: 'text/plain', size: 1024 * 5, createdAt: Date.now() - 86400000 * 2, encrypted: true },
-        { id: '3', name: 'vacation_photo.jpg', type: 'image/jpeg', size: 1024 * 1024 * 4.2, createdAt: Date.now() - 86400000 * 5, encrypted: true },
-        { id: '4', name: 'contract_signed.pdf', type: 'application/pdf', size: 1024 * 1024 * 1.8, createdAt: Date.now() - 86400000 * 10, encrypted: true },
-      ];
-      setFiles(mockFiles);
-      setLoading(false);
-    }, 800);
+    (async () => {
+      try {
+        const stored = await vault.getItem('whale_vault_files');
+        if (stored) {
+          setFiles(JSON.parse(stored));
+        } else {
+          setFiles([]);
+        }
+      } catch {
+        setFiles([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
   const filteredFiles = files.filter(f => {
@@ -69,14 +71,35 @@ export function WhaleChatVaultManager({ onClose }: VaultManagerProps) {
     setSelectedFiles(next);
   };
 
-  const handleDownloadSelected = () => {
-    // Implement encrypted download logic here
-    alert(`Downloading ${selectedFiles.size} files...`);
+  const handleDownloadSelected = async () => {
+    for (const id of Array.from(selectedFiles)) {
+      try {
+        const fileData = await vault.getItem(`whale_vault_data_${id}`);
+        const fileMeta = files.find(f => f.id === id);
+        if (fileData && fileMeta) {
+          // fileData is expected to be a base64 or DataURL string
+          const a = document.createElement('a');
+          a.href = fileData;
+          a.download = fileMeta.name;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+      } catch (e) {
+        console.error('Download failed for', id, e);
+      }
+    }
     setSelectedFiles(new Set());
   };
 
-  const handleDeleteSelected = () => {
-    setFiles(prev => prev.filter(f => !selectedFiles.has(f.id)));
+  const handleDeleteSelected = async () => {
+    const toDelete = Array.from(selectedFiles);
+    for (const id of toDelete) {
+      await vault.removeItem(`whale_vault_data_${id}`);
+    }
+    const nextFiles = files.filter(f => !selectedFiles.has(f.id));
+    await vault.setItem('whale_vault_files', JSON.stringify(nextFiles));
+    setFiles(nextFiles);
     setSelectedFiles(new Set());
   };
 

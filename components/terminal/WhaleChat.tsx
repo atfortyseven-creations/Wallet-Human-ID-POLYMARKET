@@ -26,6 +26,8 @@ import { getLocalContacts, saveLocalContact, resolveContactName, LocalContact } 
 import { getCallHistory, saveCallRecord, CallRecord } from '@/lib/wallet/callHistory';
 import { WhaleChatProfile } from '@/components/chat/WhaleChatProfile';
 import { WhaleChatVaultManager } from '@/components/chat/WhaleChatVaultManager';
+import { WhaleChatOnboarding } from '@/components/chat/WhaleChatOnboarding';
+import { WhaleChatUserSearch } from '@/components/chat/WhaleChatUserSearch';
 import { WhaleChatStatusBar } from '@/components/chat/WhaleChatStatusBar';
 import { useWhaleChatPresence } from '@/hooks/useWhaleChatPresence';
 import { WhaleChatSearchModal } from '@/components/chat/WhaleChatSearchModal';
@@ -251,19 +253,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const [showSaveContactModal, setShowSaveContactModal] = useState(false);
   const [saveContactName, setSaveContactName] = useState('');
 
-  // ── v2: Sovereign contacts + call history sync ──────────────────────────────
-  useEffect(() => {
+  const loadContacts = useCallback(() => {
     if (address) {
       setLocalContacts(getLocalContacts(address));
-      const handler = (e: any) => {
-        if (e.detail.walletAddress.toLowerCase() === address.toLowerCase()) {
-          setLocalContacts(e.detail.contacts);
-        }
-      };
-      window.addEventListener('whale_contacts_updated', handler);
-      return () => window.removeEventListener('whale_contacts_updated', handler);
     }
   }, [address]);
+
+  useEffect(() => {
+    loadContacts();
+    const handler = (e: any) => {
+      if (e.detail?.walletAddress?.toLowerCase() === address?.toLowerCase()) {
+        setLocalContacts(e.detail.contacts);
+      }
+    };
+    window.addEventListener('whale_contacts_updated', handler);
+    return () => window.removeEventListener('whale_contacts_updated', handler);
+  }, [loadContacts, address]);
 
   useEffect(() => {
     if (address) {
@@ -335,6 +340,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const [showProfile, setShowProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showVault, setShowVault] = useState(false);
+  const [showUserSearch, setShowUserSearch] = useState(false);
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [blockedPeers, setBlockedPeers] = useState<Set<string>>(new Set());
 
@@ -464,6 +470,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // Offline Queue State
   const [isOffline, setIsOffline] = useState(false);
   const [hasAcceptedEula, setHasAcceptedEula] = useState(false);
+  const [isOnboarded, setIsOnboarded] = useState(false);
   const [hasMediaPermission, setHasMediaPermission] = useState(false);
   const [pendingCallType, setPendingCallType] = useState<'audio' | 'video' | 'answer' | null>(null);
 
@@ -477,6 +484,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         if (eula === 'true') setHasAcceptedEula(true);
         const perm = await vault.getItem('whale_media_perm');
         if (perm === 'true') setHasMediaPermission(true);
+        if (typeof window !== 'undefined') {
+          const onboarded = localStorage.getItem('whale_onboarded_' + effectiveAddress);
+          if (onboarded === 'true') setIsOnboarded(true);
+        }
       } catch {}
     };
     loadBlocked();
@@ -1001,10 +1012,21 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       });
       peer.on('error', (err) => {
         console.warn('[WhaleChat:PeerJS] Error:', err.type, err.message);
+        if (err.type === 'unavailable-id' || err.type === 'network' || err.type === 'server-error') {
+           try { peer.destroy(); } catch {}
+           setPeerInstance(null);
+           peerInstanceRef.current = null;
+        }
       });
       peer.on('disconnected', () => {
         console.warn('[WhaleChat:PeerJS] Disconnected — attempting reconnect...');
-        try { peer.reconnect(); } catch {}
+        try { 
+          if (!peer.destroyed) peer.reconnect(); 
+        } catch {
+          try { peer.destroy(); } catch {}
+          setPeerInstance(null);
+          peerInstanceRef.current = null;
+        }
       });
       setPeerInstance(peer);
       peerInstanceRef.current = peer; // [ANDROID FIX] sync ref immediately
@@ -3292,6 +3314,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     );
   }
 
+  if (!isOnboarded) {
+    return (
+      <WhaleChatOnboarding 
+        address={effectiveAddress} 
+        onComplete={() => setIsOnboarded(true)} 
+      />
+    );
+  }
+
   return (
     <TuringShieldGate>
       {/* FULL SCREEN MODALS */}
@@ -3305,6 +3336,18 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         
         {showVault && (
           <WhaleChatVaultManager onClose={() => setShowVault(false)} />
+        )}
+
+        {showUserSearch && (
+          <WhaleChatUserSearch 
+            myAddress={effectiveAddress}
+            onClose={() => setShowUserSearch(false)}
+            onAddContact={(addr) => {
+              loadContacts();
+              setActivePeer(addr);
+              if (isMobile) setShowList(false);
+            }}
+          />
         )}
       </AnimatePresence>
 
@@ -3350,6 +3393,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 title="Secure Vault"
               >
                 <Lock size={14} />
+              </button>
+              <button
+                onClick={() => setShowUserSearch(true)}
+                className="p-2.5 rounded-xl bg-[#f5f5f7] text-black/50 hover:bg-[#e5e5ea] transition-all"
+                title="Search Global Network"
+              >
+                <Search size={14} />
               </button>
             </div>
             
@@ -4099,51 +4149,38 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center bg-white/30 backdrop-blur-lg relative overflow-hidden p-6 md:p-12 border-l border-white/40">
+          <div className="flex-1 flex flex-col items-center justify-center bg-[#f9f9fb] relative overflow-y-auto p-6 md:p-12 border-l border-black/10 shadow-inner">
             {/* Ambient glows */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-black/5 rounded-full blur-[100px] pointer-events-none" />
-            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-black/5 rounded-full blur-[80px] pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#1c7aff]/5 rounded-full blur-[120px] pointer-events-none" />
 
-            <div className="w-full flex flex-col items-center text-center relative z-10 animate-in fade-in zoom-in-95 duration-700">
+            <div className="w-full max-w-2xl flex flex-col items-center text-center relative z-10 animate-in fade-in zoom-in-95 duration-700">
               
-              {/* Whale Logo */}
-              <div className="w-40 h-40 mb-8 rounded-full bg-white/50 backdrop-blur-xl shadow-2xl border border-white flex items-center justify-center relative">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/40 to-transparent pointer-events-none" />
-                <img 
-                  src="/official-whale-monochrome.png" 
-                  alt="Humanity Ledger" 
-                  className="w-24 h-24 object-contain opacity-90 drop-shadow-md" 
-                  style={{ filter: 'invert(var(--dark-invert, 0))' }}
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                />
-              </div>
-
-              {/* Main Typography */}
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4 bg-clip-text text-transparent bg-gradient-to-b from-gray-900 to-gray-600">
+              {/* Main Typography - Accessible and Huge */}
+              <h1 className="text-5xl md:text-7xl font-black tracking-tight text-[#050505] mb-6 drop-shadow-sm">
                 WHALE CHAT
               </h1>
-              <h2 className="text-sm md:text-base font-semibold tracking-[0.2em] uppercase text-black mb-8">
+              <h2 className="text-lg md:text-xl font-bold tracking-[0.1em] uppercase text-[#1c7aff] mb-12">
                 The Native Web3 Social Network
               </h2>
 
-              {/* Marketing Banner */}
-              <div className="w-full bg-white/60 backdrop-blur-md border border-white/60 rounded-3xl p-6 shadow-xl mb-12 transform hover:scale-[1.02] transition-transform duration-500">
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  <div className="w-2 h-2 rounded-full bg-[#050505] animate-pulse" />
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-black/50">Global Release</span>
+              {/* Marketing Banner - High Contrast */}
+              <div className="w-full bg-white border-2 border-black/10 rounded-3xl p-8 shadow-2xl mb-12">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <div className="w-3 h-3 rounded-full bg-[#30d158] animate-pulse shadow-[0_0_10px_#30d158]" />
+                  <span className="text-[14px] font-black uppercase tracking-widest text-[#050505]">Global Release</span>
                 </div>
-                <p className="text-2xl font-black text-gray-800 tracking-tight mb-2">01 / 01 / 2027</p>
-                <div className="flex items-center justify-center gap-4 text-black/40 mt-4">
-                   <span className="text-[12px] font-medium border border-black/10/50 bg-white/50 px-3 py-1 rounded-full">App Store</span>
-                   <span className="text-[12px] font-medium border border-black/10/50 bg-white/50 px-3 py-1 rounded-full">Google Play</span>
+                <p className="text-4xl md:text-5xl font-black text-[#050505] tracking-tight mb-6">01 / 01 / 2027</p>
+                <div className="flex flex-wrap items-center justify-center gap-4 text-[#050505] mt-6">
+                   <span className="text-[16px] font-black border-2 border-black/10 bg-[#f5f5f7] px-6 py-3 rounded-full shadow-sm">App Store</span>
+                   <span className="text-[16px] font-black border-2 border-black/10 bg-[#f5f5f7] px-6 py-3 rounded-full shadow-sm">Google Play</span>
                 </div>
               </div>
 
-              {/* Action Call */}
-              <div className="w-full px-8 py-5 bg-white/40 backdrop-blur-sm rounded-2xl border border-white/50 shadow-sm">
-                <span className="text-[14px] font-medium text-gray-600 flex items-center justify-center gap-2">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-black"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                  Select a wallet to initialize an encrypted tunnel
+              {/* Action Call - Very Clear */}
+              <div className="w-full px-8 py-6 bg-[#050505] rounded-3xl shadow-xl hover:scale-105 transition-transform duration-300 cursor-default">
+                <span className="text-[18px] md:text-[22px] font-black text-white flex items-center justify-center gap-4">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#30d158]"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                  Select a contact on the left to start chatting
                 </span>
               </div>
 

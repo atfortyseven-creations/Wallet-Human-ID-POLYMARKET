@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, useAnimation, PanInfo, AnimatePresence } from 'framer-motion';
-import { FastForward, MapPin, Clock, PhoneOff, Check, CheckCheck, Pencil } from 'lucide-react';
+import { FastForward, MapPin, Clock, PhoneOff, Check, CheckCheck, Pencil, Lock } from 'lucide-react';
 import { CustomAudioPlayer } from './CustomAudioPlayer';
 
 export interface MessageProps {
@@ -467,7 +467,30 @@ export const MessageBubble = React.memo(({
                 </div>
               </a>
             ) : attachment ? (
-              <div className={`rounded-[18px] overflow-hidden border shadow ${isMe ? 'bg-[#1c7aff] border-transparent rounded-br-[4px]' : 'bg-white border-black/8 rounded-bl-[4px]'}`}>
+              <div className={`rounded-[18px] overflow-hidden border shadow relative group ${isMe ? 'bg-[#1c7aff] border-transparent rounded-br-[4px]' : 'bg-white border-black/8 rounded-bl-[4px]'}`}>
+                
+                {/* Vault Save Button */}
+                <button 
+                  onClick={async (e) => {
+                    e.stopPropagation(); e.preventDefault();
+                    try {
+                      const fileId = Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5);
+                      const newFile = { id: fileId, name: attachment.name, type: attachment.mime, size: Math.round(attachment.url.length * 0.75), createdAt: Date.now(), encrypted: true };
+                      const { vault } = await import('@/lib/core/SecureVault');
+                      const stored = await vault.getItem('whale_vault_files');
+                      const files = stored ? JSON.parse(stored) : [];
+                      files.push(newFile);
+                      await vault.setItem('whale_vault_files', JSON.stringify(files));
+                      await vault.setItem(`whale_vault_data_${fileId}`, attachment.url);
+                      alert('Saved securely to Whale Vault!');
+                    } catch (err) { alert('Failed to save to vault.'); }
+                  }}
+                  className="absolute top-2 right-2 bg-black/60 backdrop-blur-md p-1.5 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                  title="Save to Secure Vault"
+                >
+                  <Lock size={14} />
+                </button>
+
                 {attachment.mime.startsWith('image/') || ['jpg','jpeg','png','gif','webp'].includes(attachment.name.split('.').pop()?.toLowerCase() || '') ? (
                   <button onClick={() => onOpenLightbox(attachment.url)} className="block">
                     <img src={attachment.url} alt={attachment.name} className="max-w-[220px] max-h-[280px] object-cover" />
@@ -475,10 +498,12 @@ export const MessageBubble = React.memo(({
                 ) : attachment.mime.startsWith('video/') ? (
                   <video src={attachment.url} controls className="max-w-[240px] max-h-[200px] bg-black" playsInline />
                 ) : (
-                  <a href={attachment.url} download={attachment.name} className={`flex items-center gap-2 px-4 py-3 ${isMe ? 'text-white' : 'text-[#1c1c1e]'}`}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                    <span className="text-[12px] font-mono underline break-all">{attachment.name}</span>
-                  </a>
+                  <div className={`flex items-center justify-between px-4 py-3 ${isMe ? 'text-white' : 'text-[#1c1c1e]'}`}>
+                    <a href={attachment.url} download={attachment.name} className="flex items-center gap-2">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      <span className="text-[12px] font-mono underline break-all">{attachment.name}</span>
+                    </a>
+                  </div>
                 )}
               </div>
             ) : (

@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, ChevronRight, Check } from 'lucide-react';
+import { Camera, ChevronRight, Check, MapPin, AtSign } from 'lucide-react';
 import { useWhaleSettings } from '@/components/terminal/WhaleChatSettings';
 
 interface OnboardingProps {
@@ -10,175 +10,219 @@ interface OnboardingProps {
   onComplete: () => void;
 }
 
+const COUNTRIES = [
+  "Global (Earth)", "United States", "United Kingdom", "Spain", "Mexico", 
+  "Argentina", "Colombia", "Brazil", "France", "Germany", "Japan", "South Korea"
+];
+
 export function WhaleChatOnboarding({ address, onComplete }: OnboardingProps) {
   const { updateBatch, isLoaded } = useWhaleSettings(address);
   const [step, setStep] = useState(1);
   const [username, setUsername] = useState('');
   const [avatar, setAvatar] = useState('');
+  const [country, setCountry] = useState('Global (Earth)');
   const [pin, setPin] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  if (!isLoaded) return null;
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setAvatar(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        if (ev.target?.result) setAvatar(ev.target.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
-  const finishOnboarding = async () => {
-    setIsSubmitting(true);
-    // Persist PIN to secure vault
-    if (pin.length === 4) {
-      localStorage.setItem(`whale_pin_${address.toLowerCase()}`, pin);
+  const handleNext = () => {
+    if (step === 1 && username.trim().length >= 3) {
+      // Ensure nickname starts with @
+      let finalUsername = username.trim();
+      if (!finalUsername.startsWith('@')) {
+        finalUsername = '@' + finalUsername;
+      }
+      setUsername(finalUsername);
+      setStep(2);
+    } else if (step === 2 && pin.length >= 4) {
+      setStep(3);
     }
-    
-    // Update PXE settings
+  };
+
+  const handleFinish = async () => {
+    setIsSubmitting(true);
+    // Enforce nickname format one last time
+    let finalUsername = username.trim();
+    if (!finalUsername.startsWith('@')) finalUsername = '@' + finalUsername;
+
     await updateBatch({
-      username: username.replace('@', '').toLowerCase(),
-      displayName: username,
+      displayName: finalUsername,
       avatar_url: avatar,
-      passcode_enabled: pin.length === 4
+      bio: `From ${country}`,
+      privacy_last_seen: 'everybody',
     });
     
-    // Mark onboarding complete in local storage as a quick-check flag
-    localStorage.setItem(`whale_onboarding_${address.toLowerCase()}`, 'true');
+    // Set PIN in local storage as well for simplicity (usually handled by vault)
+    if (typeof window !== 'undefined') {
+       localStorage.setItem(`whale_onboarded_${address}`, 'true');
+    }
     
     setIsSubmitting(false);
     onComplete();
   };
 
-  if (!isLoaded) return null;
-
   return (
-    <div className="flex-1 flex flex-col h-full bg-[#050505] items-center justify-center p-6 fixed inset-0 z-[100000]">
-      <div className="w-full max-w-md bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-none p-10 flex flex-col items-center relative overflow-hidden">
-        
-        {/* Progress Bar Brutalist */}
-        <div className="absolute top-0 left-0 w-full h-2 bg-black/10">
-          <div 
-            className="h-full bg-black transition-all duration-500 ease-out" 
-            style={{ width: `${(step / 3) * 100}%` }}
+    <div className="fixed inset-0 z-[999999] bg-[#050505] flex flex-col items-center justify-center p-6 sm:p-12 font-sans overflow-y-auto">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-lg bg-white rounded-[32px] p-8 sm:p-12 shadow-2xl relative overflow-hidden"
+      >
+        <div className="absolute top-0 left-0 w-full h-2 bg-[#f5f5f7]">
+          <motion.div 
+            className="h-full bg-[#1c7aff]"
+            initial={{ width: 0 }}
+            animate={{ width: `${(step / 3) * 100}%` }}
+            transition={{ duration: 0.4 }}
           />
-        </div>
-
-        <div className="w-16 h-16 bg-black flex items-center justify-center mb-6">
-          <span className="text-3xl">🐋</span>
         </div>
 
         <AnimatePresence mode="wait">
           {step === 1 && (
-            <motion.div
+            <motion.div 
               key="step1"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="w-full flex flex-col items-center"
+              className="flex flex-col items-center"
             >
-              <h2 className="text-[28px] font-black tracking-tighter text-black mb-2 uppercase">Claim Handle</h2>
-              <p className="text-[13px] font-mono text-[#555] text-center mb-8">
-                Your cryptographic alias on the sovereign network. Irrevocable.
+              <h2 className="text-3xl font-black text-[#050505] mb-2 text-center tracking-tight">Create your Identity</h2>
+              <p className="text-[#050505]/50 text-[15px] font-medium text-center mb-8">
+                Set up your profile to connect with others.
               </p>
-              
-              <div className="w-full relative flex items-center mb-8">
-                <span className="absolute left-4 text-2xl font-black text-black/40">@</span>
+
+              {/* Avatar Upload */}
+              <div 
+                className="w-32 h-32 rounded-full bg-[#f5f5f7] border-[3px] border-dashed border-black/10 flex items-center justify-center relative cursor-pointer hover:border-[#1c7aff] transition-colors mb-8 overflow-hidden shadow-sm"
+                onClick={() => fileRef.current?.click()}
+              >
+                {avatar ? (
+                  <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="flex flex-col items-center text-[#1c7aff]">
+                    <Camera size={32} />
+                    <span className="text-[12px] font-bold mt-2">Upload Photo</span>
+                  </div>
+                )}
+                <input type="file" ref={fileRef} accept="image/*" className="hidden" onChange={handleFileChange} />
+              </div>
+
+              {/* Nickname Input */}
+              <div className="w-full mb-6">
+                <label className="block text-[13px] font-bold text-[#050505] mb-2">Nickname (e.g. @satoshi)</label>
+                <div className="relative">
+                  <AtSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-black/30" />
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="satoshi"
+                    className="w-full bg-[#f5f5f7] border-2 border-transparent focus:border-[#1c7aff] focus:bg-white rounded-2xl py-4 pl-12 pr-4 text-[16px] font-bold text-black outline-none transition-all shadow-inner"
+                  />
+                </div>
+              </div>
+
+              {/* Country Selection */}
+              <div className="w-full mb-10">
+                <label className="block text-[13px] font-bold text-[#050505] mb-2">Country / Region</label>
+                <div className="relative">
+                  <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-black/30" />
+                  <select 
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="w-full bg-[#f5f5f7] border-2 border-transparent focus:border-[#1c7aff] focus:bg-white rounded-2xl py-4 pl-12 pr-4 text-[16px] font-bold text-black outline-none transition-all appearance-none cursor-pointer shadow-inner"
+                  >
+                    {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <button 
+                onClick={handleNext}
+                disabled={username.trim().length < 3}
+                className="w-full py-4 bg-[#1c7aff] hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-[#1c7aff] rounded-2xl text-white font-black text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+              >
+                Continue <ChevronRight size={20} />
+              </button>
+            </motion.div>
+          )}
+
+          {step === 2 && (
+            <motion.div 
+              key="step2"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="flex flex-col items-center"
+            >
+              <h2 className="text-3xl font-black text-[#050505] mb-2 text-center tracking-tight">Secure your Vault</h2>
+              <p className="text-[#050505]/50 text-[15px] font-medium text-center mb-8">
+                Create a PIN to lock your private messages and encrypted files.
+              </p>
+
+              <div className="w-full mb-10">
                 <input
-                  autoFocus
-                  type="text"
-                  value={username}
-                  onChange={e => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase())}
-                  placeholder="nickname"
-                  className="w-full bg-[#f4f4f4] border-2 border-black p-4 pl-12 text-2xl font-black tracking-tight text-black outline-none focus:bg-white transition-colors uppercase"
-                  maxLength={15}
+                  type="password"
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))}
+                  placeholder="Enter 4-8 digit PIN"
+                  maxLength={8}
+                  className="w-full bg-[#f5f5f7] border-2 border-transparent focus:border-[#1c7aff] focus:bg-white rounded-2xl p-6 text-center text-3xl tracking-[0.5em] font-black text-black outline-none transition-all shadow-inner"
                 />
               </div>
 
-                            <button
-                onClick={() => fileRef.current?.click()}
-                className="w-32 h-32 rounded-full border-4 border-black mb-8 overflow-hidden bg-[#f4f4f4] flex items-center justify-center relative group"
+              <button 
+                onClick={handleNext}
+                disabled={pin.length < 4}
+                className="w-full py-4 bg-[#1c7aff] hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-[#1c7aff] rounded-2xl text-white font-black text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
               >
-                {avatar ? (
-                  <img src={avatar} alt="avatar" className="w-full h-full object-cover" />
-                ) : (
-                  // Procedural identicon fallback based on the address
-                  <div className="w-full h-full flex flex-wrap" style={{ background: `hsl(${parseInt(address.slice(2,8), 16) % 360}, 60%, 80%)` }}>
-                    {Array.from({ length: 9 }).map((_, i) => (
-                      <div key={i} className="w-1/3 h-1/3" style={{ opacity: (parseInt(address.slice(i+2, i+3), 16) % 2 === 0) ? 1 : 0, background: 'black' }} />
-                    ))}
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Camera size={24} className="text-white mb-1" />
-                  <span className="text-white font-bold text-[10px] uppercase tracking-widest">Override</span>
-                </div>
-              </button>
-
-              <button
-                onClick={() => setStep(3)}
-                className="w-full h-[60px] bg-black text-white font-black uppercase tracking-widest text-[14px] flex items-center justify-center gap-2 hover:bg-[#111] active:translate-y-1 transition-all"
-              >
-                {avatar ? 'Continue' : 'Skip for now'} <ChevronRight size={18} />
+                Continue <ChevronRight size={20} />
               </button>
             </motion.div>
           )}
 
           {step === 3 && (
-            <motion.div
+            <motion.div 
               key="step3"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="w-full flex flex-col items-center"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex flex-col items-center text-center py-6"
             >
-              <h2 className="text-[28px] font-black tracking-tighter text-black mb-2 uppercase">Secure Vault</h2>
-              <p className="text-[13px] font-mono text-[#555] text-center mb-6">
-                Set a 4-digit master PIN. If forgotten, your local chat vault is permanently lost.
-              </p>
+              <div className="w-24 h-24 rounded-full bg-[#30d158]/10 flex items-center justify-center mb-6">
+                <div className="w-16 h-16 rounded-full bg-[#30d158] flex items-center justify-center shadow-[0_0_20px_#30d158]">
+                  <Check size={32} className="text-white" />
+                </div>
+              </div>
               
-              {/* PIN dots */}
-              <div className="flex gap-4 mb-6">
-                {[0, 1, 2, 3].map(i => (
-                  <div key={i} className={`w-14 h-14 border-b-4 ${pin.length > i ? 'border-black' : 'border-black/20'} flex items-center justify-center text-3xl font-black text-black`}>
-                    {pin[i] ? '●' : ''}
-                  </div>
-                ))}
-              </div>
+              <h2 className="text-3xl font-black text-[#050505] mb-3 tracking-tight">All Set!</h2>
+              <p className="text-[#050505]/60 text-[16px] font-medium mb-10 leading-relaxed">
+                Your identity is secured. Welcome to the native Web3 social network, <strong className="text-[#050505]">{username.startsWith('@') ? username : `@${username}`}</strong> from {country}.
+              </p>
 
-              {/* Number pad */}
-              <div className="w-full grid grid-cols-3 gap-2 mb-6">
-                {['1','2','3','4','5','6','7','8','9','','0','⌫'].map((k, i) => {
-                  if (k === '') return <div key={i} />;
-                  return (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => {
-                        if (k === '⌫') { setPin(p => p.slice(0,-1)); return; }
-                        if (pin.length < 4) setPin(p => p + k);
-                      }}
-                      className="h-[60px] bg-[#f4f4f4] border-2 border-black text-black text-[22px] font-black flex items-center justify-center hover:bg-black hover:text-white transition-all active:translate-y-0.5"
-                    >
-                      {k}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <button
-                disabled={pin.length < 4 || isSubmitting}
-                onClick={finishOnboarding}
-                className="w-full h-[60px] bg-[#30d158] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-black uppercase tracking-widest text-[14px] flex items-center justify-center gap-2 hover:bg-[#28b34c] active:translate-y-1 active:shadow-none transition-all disabled:opacity-50 disabled:active:translate-y-0"
+              <button 
+                onClick={handleFinish}
+                disabled={isSubmitting}
+                className="w-full py-4 bg-[#050505] hover:bg-black/80 rounded-2xl text-white font-black text-[16px] flex items-center justify-center transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1"
               >
-                {isSubmitting ? 'Securing...' : 'Finalize Initialization'} <Check size={18} />
+                {isSubmitting ? 'Finalizing...' : 'Enter Whale Chat'}
               </button>
             </motion.div>
           )}
         </AnimatePresence>
-
-      </div>
+      </motion.div>
     </div>
   );
 }
