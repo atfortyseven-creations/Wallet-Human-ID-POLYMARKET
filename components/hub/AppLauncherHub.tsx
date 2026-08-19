@@ -1,191 +1,277 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useAccount, useBalance, useEnsName, useDisconnect } from 'wagmi';
+import { useRouter } from 'next/navigation';
+import type { LucideIcon } from 'lucide-react';
+import {
+  LayoutDashboard, MessageSquare, ShieldCheck, TrendingUp,
+  Globe, BookOpen, Package, Fingerprint,
+  LogOut, ChevronRight, Coins, Vote,
+} from 'lucide-react';
 
-const APPS = [
+// ─── App definitions ─────────────────────────────────────────────────────────
+
+const APPS: {
+  id: string;
+  label: string;
+  desc: string;
+  href: string;
+  icon: LucideIcon;
+  bg: string;
+  fg: string;
+  colSpan: string;
+}[] = [
   {
-    id: 'portfolio',
-    title: 'Portfolio Terminal',
-    description: 'Track multi-chain balances and assets entirely locally. No server indexing.',
+    id: 'terminal',
+    label: 'Dashboard',
+    desc: 'Portfolio, Markets & Identity',
     href: '/terminal',
-    icon: (
-      <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-    color: 'bg-blue-50 border-blue-100',
-    tag: 'Financial',
+    icon: LayoutDashboard,
+    bg: '#0A0A0A',
+    fg: '#FFFFFF',
+    colSpan: 'col-span-2',
   },
   {
     id: 'chat',
-    title: 'Whale Chat',
-    description: 'E2E encrypted P2P messaging with onion routing and Aztec ZK Identity.',
+    label: 'Whale Chat',
+    desc: 'E2E encrypted messaging',
     href: '/chat',
-    icon: (
-      <svg className="w-6 h-6 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-      </svg>
-    ),
-    color: 'bg-violet-50 border-violet-100',
-    tag: 'Social',
-  },
-  {
-    id: 'studio',
-    title: 'Studio Provenance',
-    description: 'Register real-world assets on L2. Public proof, encrypted ownership.',
-    href: '/studio/provenance',
-    icon: (
-      <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-      </svg>
-    ),
-    color: 'bg-emerald-50 border-emerald-100',
-    tag: 'Registry',
-  },
-  {
-    id: 'roadmap',
-    title: 'Roadmap',
-    description: 'Track protocol milestones, technical upgrades, and the governance timeline.',
-    href: '/terminal?tab=humanity-ledger',
-    icon: (
-      <svg className="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-      </svg>
-    ),
-    color: 'bg-amber-50 border-amber-100',
-    tag: 'Protocol',
-  },
-  {
-    id: 'identity',
-    title: 'Identity',
-    description: 'Sovereign ZK identity layer. Claim your unique human credential on-chain.',
-    href: '/terminal?tab=gold',
-    icon: (
-      <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-      </svg>
-    ),
-    color: 'bg-indigo-50 border-indigo-100',
-    tag: 'Identity',
+    icon: MessageSquare,
+    bg: '#1C7AFF',
+    fg: '#FFFFFF',
+    colSpan: 'col-span-1',
   },
   {
     id: 'markets',
-    title: 'Markets',
-    description: 'Private DeFi position tracking and on-chain market data aggregation.',
+    label: 'Markets',
+    desc: 'Live DeFi intelligence',
     href: '/terminal?tab=markets',
-    icon: (
-      <svg className="w-6 h-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-      </svg>
-    ),
-    color: 'bg-orange-50 border-orange-100',
-    tag: 'Markets',
+    icon: TrendingUp,
+    bg: '#F5F5F7',
+    fg: '#0A0A0A',
+    colSpan: 'col-span-1',
   },
   {
-    id: 'privacy',
-    title: 'Privacy',
-    description: 'Read the Humanity Ledger privacy architecture and data governance policy.',
-    href: '/privacy',
-    icon: (
-      <svg className="w-6 h-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-      </svg>
-    ),
-    color: 'bg-slate-50 border-slate-200',
-    tag: 'Legal',
+    id: 'studio',
+    label: 'Studio',
+    desc: 'Asset provenance & NFTs',
+    href: '/studio/provenance',
+    icon: Package,
+    bg: '#7C3AED',
+    fg: '#FFFFFF',
+    colSpan: 'col-span-1',
   },
   {
-    id: 'token',
-    title: 'QDS Token',
-    description: 'Quantum Defence Shield governance and utility token. Stake, vote, earn.',
-    href: '/qds',
-    icon: (
-      <svg className="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-      </svg>
-    ),
-    color: 'bg-yellow-50 border-yellow-100',
-    tag: 'Token',
+    id: 'governance',
+    label: 'Governance',
+    desc: 'Vote on proposals',
+    href: '/terminal?tab=governance',
+    icon: Vote,
+    bg: '#F5F5F7',
+    fg: '#0A0A0A',
+    colSpan: 'col-span-1',
   },
   {
-    id: 'registry',
-    title: 'Registry',
-    description: 'Explore global node coverage, registered asset passports, and country data.',
-    href: '/registry',
-    icon: (
-      <svg className="w-6 h-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-    color: 'bg-teal-50 border-teal-100',
-    tag: 'Network',
+    id: 'identity',
+    label: 'Identity',
+    desc: 'ZK sovereign credential',
+    href: '/terminal?tab=gold',
+    icon: Fingerprint,
+    bg: '#0A0A0A',
+    fg: '#FFFFFF',
+    colSpan: 'col-span-1',
+  },
+  {
+    id: 'network',
+    label: 'Network',
+    desc: 'Global node map',
+    href: '/terminal?tab=map',
+    icon: Globe,
+    bg: '#F5F5F7',
+    fg: '#0A0A0A',
+    colSpan: 'col-span-1',
   },
   {
     id: 'academy',
-    title: 'Academy',
-    description: 'Deep dive into cryptography, network economics, and protocol architecture.',
+    label: 'Academy',
+    desc: 'Learn cryptography',
     href: '/academy',
-    icon: (
-      <svg className="w-6 h-6 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
-      </svg>
-    ),
-    color: 'bg-rose-50 border-rose-100',
-    tag: 'Education',
+    icon: BookOpen,
+    bg: '#F5F5F7',
+    fg: '#0A0A0A',
+    colSpan: 'col-span-1',
+  },
+  {
+    id: 'registry',
+    label: 'Registry',
+    desc: 'Asset passport explorer',
+    href: '/registry',
+    icon: ShieldCheck,
+    bg: '#F5F5F7',
+    fg: '#0A0A0A',
+    colSpan: 'col-span-1',
+  },
+  {
+    id: 'token',
+    label: 'QDS Token',
+    desc: 'Stake · Vote · Earn',
+    href: '/qds',
+    icon: Coins,
+    bg: '#F59E0B',
+    fg: '#FFFFFF',
+    colSpan: 'col-span-2',
   },
 ];
 
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.055 },
-  },
-};
+// ─── App Card ────────────────────────────────────────────────────────────────
 
-const item: any = {
-  hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 320, damping: 28 } },
-};
+function AppCard({ app, index }: { app: typeof APPS[0]; index: number }) {
+  const Icon: LucideIcon = app.icon;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.04, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className={app.colSpan}
+    >
+      <Link href={app.href} className="block h-full">
+        <div
+          className="relative h-full rounded-[24px] p-5 flex flex-col justify-between overflow-hidden
+            cursor-pointer select-none transition-all duration-200
+            hover:scale-[1.025] active:scale-[0.97] hover:shadow-xl shadow-sm"
+          style={{ backgroundColor: app.bg, minHeight: '120px' }}
+        >
+          {/* Icon bubble */}
+          <div
+            className="w-10 h-10 rounded-2xl flex items-center justify-center"
+            style={{ background: app.fg === '#FFFFFF' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.06)' }}
+          >
+            <Icon size={20} strokeWidth={1.8} color={app.fg} />
+          </div>
+
+          {/* Label */}
+          <div className="mt-auto pt-5">
+            <p className="font-semibold text-[15px] leading-tight" style={{ color: app.fg }}>
+              {app.label}
+            </p>
+            <p className="text-[12px] mt-0.5 font-medium" style={{ color: app.fg, opacity: 0.55 }}>
+              {app.desc}
+            </p>
+          </div>
+
+          {/* Arrow */}
+          <ChevronRight
+            size={14}
+            className="absolute bottom-5 right-5"
+            style={{ color: app.fg, opacity: 0.25 }}
+          />
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
+// ─── Identity Panel ───────────────────────────────────────────────────────────
+
+function IdentityPanel() {
+  const { address, connector, chainId } = useAccount();
+  const { data: balance } = useBalance({ address });
+  const { data: ens } = useEnsName({ address, chainId: 1 });
+  const { disconnect } = useDisconnect();
+  const router = useRouter();
+  const [time, setTime] = useState('');
+  const [date, setDate] = useState('');
+
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      setTime(now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+      setDate(now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }));
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const short = address ? `${address.slice(0, 6)}···${address.slice(-4)}` : null;
+  const bal = balance ? `${parseFloat(balance.formatted).toFixed(4)} ${balance.symbol}` : null;
+
+  if (!address) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      className="mb-6 bg-white rounded-[24px] border border-black/[0.06] p-6 shadow-sm"
+    >
+      <div className="flex items-start justify-between gap-4">
+        {/* Clock */}
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-black/30 mb-1">Session Active</p>
+          <p className="font-mono text-[28px] font-bold text-black tracking-tight tabular-nums leading-none">{time}</p>
+          <p className="font-mono text-[11px] text-black/30 mt-1">{date}</p>
+        </div>
+
+        {/* Wallet info */}
+        <div className="text-right flex-shrink-0">
+          <div className="inline-flex items-center gap-2 bg-black/[0.04] rounded-full px-4 py-2 mb-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="font-mono text-[12px] font-bold text-black">{short}</span>
+          </div>
+          {ens && <p className="font-mono text-[11px] text-black/40 mb-1">{ens}</p>}
+          {bal && <p className="font-mono text-[11px] text-black/35">{bal}</p>}
+          {connector?.name && (
+            <p className="font-mono text-[10px] text-black/25 mt-1">{connector.name}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="mt-5 pt-4 border-t border-black/[0.05] flex items-center gap-2.5">
+        <Link
+          href="/terminal"
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-black text-white text-[12px] font-bold tracking-wide hover:bg-black/80 transition-all active:scale-95"
+        >
+          <LayoutDashboard size={13} />
+          Open Dashboard
+        </Link>
+        <button
+          onClick={() => {
+            disconnect();
+            try { localStorage.setItem('__disconnected__', '1'); sessionStorage.setItem('__disconnected__', '1'); } catch {}
+            router.push('/');
+          }}
+          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-black/10 text-black/40 text-[12px] font-bold tracking-wide hover:text-red-500 hover:border-red-200 transition-all active:scale-95"
+        >
+          <LogOut size={13} />
+          Sign Out
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Main Export ─────────────────────────────────────────────────────────────
 
 export function AppLauncherHub() {
   return (
-    <motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5"
-    >
-      {APPS.map((app) => (
-        <motion.div key={app.id} variants={item}>
-          <Link href={app.href} className="block h-full group">
-            <div className="bg-white border border-slate-200/80 rounded-[20px] p-5 md:p-6 h-full transition-all duration-300 hover:shadow-lg hover:shadow-slate-200/60 hover:border-slate-300 relative overflow-hidden cursor-pointer">
-              {/* Subtle corner gradient */}
-              <div className="absolute top-0 right-0 w-28 h-28 bg-gradient-to-bl from-slate-50/80 to-transparent rounded-bl-[80px] -z-0 opacity-50 group-hover:opacity-100 transition-opacity" />
+    <div>
+      <IdentityPanel />
 
-              <div className="flex items-start justify-between mb-4 relative z-10">
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center border ${app.color} flex-shrink-0`}>
-                  {app.icon}
-                </div>
-                <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100 flex-shrink-0">
-                  {app.tag}
-                </span>
-              </div>
+      {/* Section label */}
+      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-black/25 mb-4 px-1">
+        Applications
+      </p>
 
-              <div className="relative z-10">
-                <h3 className="text-[16px] md:text-[17px] font-bold text-slate-900 mb-1.5 group-hover:text-indigo-600 transition-colors leading-snug">
-                  {app.title}
-                </h3>
-                <p className="text-[13px] text-slate-500 leading-relaxed">
-                  {app.description}
-                </p>
-              </div>
-            </div>
-          </Link>
-        </motion.div>
-      ))}
-    </motion.div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {APPS.map((app, i) => (
+          <AppCard key={app.id} app={app} index={i} />
+        ))}
+      </div>
+    </div>
   );
 }

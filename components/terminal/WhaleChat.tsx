@@ -2,7 +2,7 @@
 import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings, Clock, Lock } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { Video, VideoOff, Phone, PhoneOff, Mic, MicOff, Volume2, Smile } from 'lucide-react';
+import { Video, VideoOff, Phone, PhoneOff, Mic, MicOff, Volume2, Smile, Paperclip, BarChart2, Wallet, Flame } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import type Peer from 'peerjs';
@@ -484,9 +484,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         if (eula === 'true') setHasAcceptedEula(true);
         const perm = await vault.getItem('whale_media_perm');
         if (perm === 'true') setHasMediaPermission(true);
+
+        // [BUG FIX] "Create Your Identity" shown to returning users.
+        // The flag 'whale_onboarded_' is written on first setup, but may be
+        // missing after clearing storage or switching devices. We cross-check
+        // with the actual whaleSettings.displayName — if it already exists,
+        // the user clearly completed onboarding at some point. Never ask again.
         if (typeof window !== 'undefined') {
-          const onboarded = localStorage.getItem('whale_onboarded_' + effectiveAddress);
-          if (onboarded === 'true') setIsOnboarded(true);
+          const flagOnboarded = localStorage.getItem('whale_onboarded_' + effectiveAddress) === 'true';
+          const hasProfile = !!(whaleSettings?.displayName && whaleSettings.displayName.trim().length > 0);
+          if (flagOnboarded || hasProfile) {
+            setIsOnboarded(true);
+            // Backfill the flag so future checks are instant
+            if (hasProfile && !flagOnboarded) {
+              try { localStorage.setItem('whale_onboarded_' + effectiveAddress, 'true'); } catch {}
+            }
+          }
         }
       } catch {}
     };
@@ -495,7 +508,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }
-  }, []);
+  }, [whaleSettings?.displayName]);
 
   useEffect(() => {
     if (address) {
@@ -4049,42 +4062,48 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 </div>
               )}
                 <input type="file" ref={fileRef} className="hidden" onChange={handleFileUpload} />
-                <form onSubmit={handleSend} className="flex flex-col w-full relative">
-                  {/* ── App Drawer (iMessage Style Apps) ── */}
+                  {/* ── App Drawer (iOS 17 iMessage Style) ── */}
+                  <AnimatePresence>
                   {showAppDrawer && (
-                    <div className="flex items-center gap-4 px-4 pt-3 pb-4 overflow-x-auto scrollbar-none animate-in slide-in-from-bottom-2 fade-in duration-200 border-b border-black/5 mb-1">
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.96 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      className="absolute bottom-full left-3 mb-2 w-[240px] bg-white/90 backdrop-blur-xl border border-black/[0.08] shadow-[0_16px_40px_rgba(0,0,0,0.12)] rounded-[24px] overflow-hidden flex flex-col z-50"
+                    >
                       {[
-                        { id: 'gif', icon: <span className="font-black text-[12px]">GIF</span>, label: 'GIFs', color: 'bg-rose-500', onClick: () => { setShowGifPicker(true); setShowAppDrawer(false); } },
-                        { id: 'sticker', icon: <span className="text-[20px] leading-none">🐋</span>, label: 'Stickers', color: 'bg-blue-500', onClick: () => { setShowStickerPicker(true); setShowAppDrawer(false); } },
-                        { id: 'emoji', icon: <span className="text-[20px] leading-none">😊</span>, label: 'Emojis', color: 'bg-amber-500', onClick: () => { 
-                          const emojis = ['😂','❤️','🔥','👍','🙏','💯','😍','🥺','😭','🎉'];
-                          setInputText(prev => prev + emojis[Math.floor(Math.random() * emojis.length)]);
-                          setShowAppDrawer(false);
-                          setTimeout(() => inputRef.current?.focus(), 50);
-                        }},
-                        { id: 'attach', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>, label: 'Files', color: 'bg-gray-500', onClick: () => { fileRef.current?.click(); setShowAppDrawer(false); } },
-                        { id: 'poll', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>, label: 'Polls', color: 'bg-indigo-500', onClick: () => { setShowPollCreator(true); setShowAppDrawer(false); } },
-                        { id: 'qd', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>, label: 'Pay', color: 'bg-emerald-500', onClick: () => { setShowWalletTransfer(true); setShowAppDrawer(false); } },
-                        { id: 'burn', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"></path></svg>, label: 'Burn', color: 'bg-red-600', onClick: () => { setBurnTimer(burnTimer ? null : 60); setShowAppDrawer(false); } },
-                      ].map(app => (
-                        <button key={app.id} type="button" onClick={app.onClick} className="flex flex-col items-center gap-1.5 shrink-0 group">
-                          <div className={`w-[52px] h-[52px] rounded-full ${app.color} flex items-center justify-center text-white shadow-md transform transition-transform group-hover:scale-105 group-active:scale-95`}>
+                        { id: 'attach', icon: <Paperclip size={18} />, label: 'Files', color: 'text-white', bg: 'bg-[#007AFF]', onClick: () => { fileRef.current?.click(); setShowAppDrawer(false); } },
+                        { id: 'gif', icon: <span className="font-black text-[10px] tracking-widest">GIF</span>, label: 'GIFs (Beta)', color: 'text-white', bg: 'bg-[#FF2D55]', onClick: () => { setShowGifPicker(true); setShowAppDrawer(false); } },
+                        { id: 'sticker', icon: <Smile size={18} />, label: 'Stickers', color: 'text-white', bg: 'bg-[#5856D6]', onClick: () => { setShowStickerPicker(true); setShowAppDrawer(false); } },
+                        { id: 'poll', icon: <BarChart2 size={18} />, label: 'Polls', color: 'text-white', bg: 'bg-[#34C759]', onClick: () => { setShowPollCreator(true); setShowAppDrawer(false); } },
+                        { id: 'qd', icon: <Wallet size={18} />, label: 'Pay', color: 'text-white', bg: 'bg-[#FF9500]', onClick: () => { setShowWalletTransfer(true); setShowAppDrawer(false); } },
+                        { id: 'burn', icon: <Flame size={18} />, label: 'Burn Timer', color: 'text-white', bg: 'bg-[#FF3B30]', onClick: () => { setBurnTimer(burnTimer ? null : 60); setShowAppDrawer(false); } },
+                      ].map((app, idx) => (
+                        <button 
+                          key={app.id} 
+                          type="button" 
+                          onClick={app.onClick} 
+                          className={`flex items-center gap-3.5 px-4 py-3 hover:bg-black/5 active:bg-black/10 transition-colors w-full text-left ${idx !== 0 ? 'border-t border-black/[0.04]' : ''}`}
+                        >
+                          <div className={`w-8 h-8 rounded-full ${app.bg} ${app.color} flex items-center justify-center shrink-0 shadow-sm`}>
                             {app.icon}
                           </div>
-                          <span className="text-[10px] font-semibold text-black/60 tracking-wide">{app.label}</span>
+                          <span className="text-[15px] font-semibold text-[#000000] tracking-tight">{app.label}</span>
                         </button>
                       ))}
-                    </div>
+                    </motion.div>
                   )}
+                  </AnimatePresence>
 
                   {/* ── Main Input Row ── */}
-                  <div className="flex items-end gap-2 px-3 pb-3 pt-1 w-full">
+                  <div className="flex items-end gap-2 px-3 pb-3 pt-2 w-full relative z-40 bg-white">
                     <button
                       type="button"
                       onClick={() => setShowAppDrawer(d => !d)}
-                      className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition-all mt-auto mb-1 ${showAppDrawer ? 'bg-black/10 text-black rotate-45' : 'bg-gray-200 text-black/50 hover:bg-gray-300'}`}
+                      className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center transition-all duration-300 mt-auto mb-0.5 ${showAppDrawer ? 'bg-[#000000] text-white rotate-45 scale-90 shadow-md' : 'bg-[#E5E5EA] text-[#8E8E93] hover:bg-[#D1D1D6] hover:text-[#000000]'}`}
                     >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     </button>
 
                     <div className="flex-1 bg-white border border-[#c8c8cc] rounded-3xl flex items-end relative shadow-sm overflow-hidden min-h-[38px] transition-all focus-within:border-blue-400">
@@ -4290,7 +4309,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               onClick={() => setIsCallMinimized(false)}
               className="fixed z-[100000] w-28 h-40 md:w-36 md:h-52 rounded-2xl overflow-hidden shadow-2xl bg-black cursor-pointer border-2 border-black/30"
             >
-               <video ref={remoteVideoRef} autoPlay playsInline muted={false} className="w-full h-full object-cover" />
+               <video 
+                  ref={el => { if (el && el.srcObject !== remoteStream) el.srcObject = remoteStream; }} 
+                  autoPlay playsInline muted={false} className="w-full h-full object-cover" 
+               />
                <div className="absolute top-2 left-2 bg-black text-white text-[10px] font-mono px-2 py-0.5 rounded-full font-bold">
                  {formatDuration(callDurationSeconds)}
                </div>
@@ -4318,7 +4340,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             <div className="absolute inset-0">
               {callTypeRef.current === 'video' ? (
                 remoteStream ? (
-                  <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full object-cover" style={{ filter: networkQuality === 'poor' ? 'blur(4px)' : 'none' }} />
+                  <video 
+                     ref={el => { if (el && el.srcObject !== remoteStream) el.srcObject = remoteStream; }} 
+                     autoPlay playsInline className="w-full h-full object-cover" 
+                     style={{ filter: networkQuality === 'poor' ? 'blur(4px)' : 'none' }} 
+                  />
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center gap-4 bg-[#f5f5f7]">
                     <div className="relative">
@@ -4372,7 +4398,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               >
                 {!isCamOff && localStream ? (
                   <div className="w-28 h-40 md:w-36 md:h-52 rounded-2xl overflow-hidden border-2 border-white/60 shadow-[0_20px_60px_rgba(0,0,0,0.5)] bg-black">
-                    <video ref={myVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+                    <video 
+                       ref={el => { if (el && el.srcObject !== localStream) el.srcObject = localStream; }} 
+                       autoPlay playsInline muted className="w-full h-full object-cover" 
+                    />
                   </div>
                 ) : (
                   <div className="w-28 h-40 md:w-36 md:h-52 rounded-2xl bg-black/80 border-2 border-white/20 flex items-center justify-center">
