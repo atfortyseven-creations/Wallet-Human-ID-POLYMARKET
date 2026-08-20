@@ -20,7 +20,7 @@ export default function DocLayout({ children, title, description, lastUpdated, c
     };
 
     return (
-        <div className="min-h-screen bg-transparent text-[var(--aztec-ink)] overflow-x-hidden">
+        <div className="w-full bg-transparent text-[var(--aztec-ink)] overflow-x-hidden">
             {/* Header */}
             <div className={`border-b border-black/5 ${categoryColors[category]} py-20`}>
                 <div className="max-w-4xl mx-auto px-6">
