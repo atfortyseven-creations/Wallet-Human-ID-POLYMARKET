@@ -104,7 +104,7 @@ export function WhaleChatSettings({ onClose, address }: WhaleChatSettingsProps) 
     : view === 'defi_tools' ? 'WHALE TOOLS'
     : view === 'network' ? 'NETWORK PROTOCOL'
     : view === 'premium' ? 'WHALE NETWORK PRO'
-    : view === 'stars' ? 'QUANTUM DUST'
+    : view === 'stars' ? 'QUANTUM DOTS'
     : view.toUpperCase().replace(/_/g, ' ');
 
   return (
@@ -216,7 +216,7 @@ function RootView({ onNavigate, address, s }: any) {
         <div onClick={() => onNavigate('stars')} className="w-full border-[3px] border-black bg-yellow-400 text-black p-4 flex items-center gap-4 cursor-pointer hover:bg-yellow-300 transition-colors shadow-[6px_6px_0_0_#000]">
           <Star size={28} className="fill-black shrink-0" />
           <div className="flex flex-col">
-            <span className="text-[16px] font-black uppercase">Quantum Dust</span>
+            <span className="text-[16px] font-black uppercase">Quantum Dots</span>
             <span className="text-[11px] font-bold">1,250 QD Balance</span>
           </div>
           <ArrowRight size={18} className="ml-auto" />
@@ -254,7 +254,7 @@ function ProfileView({ address, s }: any) {
       <div className="p-4 space-y-4">
         {showQR && (
           <div className="bg-white border-[3px] border-black p-6 flex flex-col items-center shadow-[8px_8px_0_0_#000]">
-            <QRCode value={address} size={180} fgColor="#000" />
+            <QRCode value={address || '0x0000000000000000000000000000000000000000'} size={180} fgColor="#000" />
             <span className="mt-4 text-[11px] font-bold bg-zinc-100 px-3 py-2 border border-black text-center break-all">{address}</span>
             <div className="flex gap-2 mt-3 w-full">
               <button onClick={() => { navigator.clipboard.writeText(address); toast.success('Address copied.'); }} className="flex-1 py-2 bg-black text-white font-black text-xs uppercase border-2 border-black">COPY</button>
@@ -962,51 +962,65 @@ function PremiumView() {
       </div>
       <h1 className="text-3xl font-black uppercase text-center mb-2">Whale Pro</h1>
       <p className="text-sm font-bold text-zinc-600 text-center mb-8 max-w-xs">Unlimited limits. Autonomous tooling. Complete sovereignty.</p>
+      <div className="w-full bg-black border-[3px] border-[#1c7aff] p-3 mb-4 flex items-center gap-2 shadow-[4px_4px_0_0_#1c7aff]">
+        <span className="text-[10px] font-black text-[#1c7aff] uppercase tracking-widest">⚡ Paid with Aztec Network — Zero-knowledge, private, on-chain</span>
+      </div>
       <div className="w-full flex gap-4 mb-8">
         <div className="flex-1 border-[3px] border-black bg-white p-4 flex flex-col shadow-[4px_4px_0_0_#000]">
           <span className="font-black">MONTHLY</span>
-          <span className="font-black text-[#1c7aff] text-2xl mt-2">€4.49</span>
+          <span className="font-black text-[#1c7aff] text-2xl mt-2">4.49 AZT</span>
+          <span className="text-[10px] font-bold text-zinc-400 mt-1">≈ Aztec Network</span>
         </div>
         <div className="flex-1 border-[3px] border-[#1c7aff] bg-black text-white p-4 flex flex-col shadow-[4px_4px_0_0_#1c7aff]">
           <span className="text-[10px] bg-[#1c7aff] px-1 py-0.5 w-fit font-black mb-1">-35%</span>
           <span className="font-black">ANNUAL</span>
-          <span className="font-black text-[#1c7aff] text-2xl mt-2">€2.83<span className="text-sm text-zinc-400">/mo</span></span>
+          <span className="font-black text-[#1c7aff] text-2xl mt-2">2.83 AZT<span className="text-sm text-zinc-400">/mo</span></span>
+          <span className="text-[10px] font-bold text-zinc-500 mt-1">≈ Aztec Network</span>
         </div>
       </div>
-      <button onClick={() => toast.success('Redirecting to Smart Contract...')} className="w-full py-4 bg-[#1c7aff] text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[8px_8px_0_0_#000] active:translate-y-1">
-        AUTHORIZE UPGRADE
+      <button onClick={() => toast.success('Initiating ZK payment via Aztec Network...')} className="w-full py-4 bg-[#1c7aff] text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[8px_8px_0_0_#000] active:translate-y-1">
+        PAY WITH AZTEC COINS
       </button>
+      <p className="text-[10px] font-bold text-zinc-400 text-center mt-3 max-w-xs">
+        Payment is processed privately via Aztec Network ZK proofs. No bank data. No KYC. Complete privacy.
+      </p>
     </div>
   );
 }
 
 function StarsView() {
   const packages = [
-    { qd: 100, price: '€2.15' }, { qd: 250, price: '€5.39' }, { qd: 500, price: '€10.85' },
-    { qd: 1000, price: '€21.40' }, { qd: 2500, price: '€54.00' }, { qd: 35000, price: '€700.00' },
+    { qd: 100, price: '0.43 AZT' }, { qd: 250, price: '1.08 AZT' }, { qd: 500, price: '2.17 AZT' },
+    { qd: 1000, price: '4.28 AZT' }, { qd: 2500, price: '10.80 AZT' }, { qd: 35000, price: '140 AZT' },
   ];
   return (
     <div className="p-4 pb-20 flex flex-col items-center">
       <div className="w-32 h-32 border-[4px] border-black bg-yellow-400 flex items-center justify-center shadow-[10px_10px_0_0_#000] mb-8">
         <Star size={64} className="fill-black text-black" />
       </div>
-      <h1 className="text-3xl font-black uppercase text-center mb-2">Quantum Dust</h1>
+      <h1 className="text-3xl font-black uppercase text-center mb-2">Quantum Dots</h1>
       <p className="text-sm font-bold text-zinc-600 text-center mb-6 max-w-xs">Fuel your economy. Trade, tip, and power decentralized protocols.</p>
+      <div className="w-full bg-black border-[3px] border-yellow-400 p-3 mb-4 flex items-center gap-2 shadow-[4px_4px_0_0_#000]">
+        <span className="text-[10px] font-black text-yellow-400 uppercase tracking-widest">⚡ Buy with Aztec Coins — ZK private on-chain payment</span>
+      </div>
       <div className="flex flex-col items-center mb-8">
         <span className="text-[12px] font-black uppercase tracking-widest text-zinc-500 mb-1">NODE BALANCE</span>
         <span className="text-5xl font-black">1,250 QD</span>
       </div>
       <div className="w-full flex flex-col gap-3">
         {packages.map((pkg, i) => (
-          <div key={i} onClick={() => toast.success(`Purchasing ${pkg.qd} QD`)} className="w-full bg-white border-[3px] border-black p-4 flex items-center justify-between shadow-[4px_4px_0_0_#000] active:translate-y-1 cursor-pointer">
+          <div key={i} onClick={() => toast.success(`Initiating ZK payment for ${pkg.qd} QD via Aztec Network…`)} className="w-full bg-white border-[3px] border-black p-4 flex items-center justify-between shadow-[4px_4px_0_0_#000] active:translate-y-1 cursor-pointer">
             <div className="flex items-center gap-3">
               <Star size={18} className="fill-yellow-400 text-black" />
               <span className="font-black text-xl">{pkg.qd.toLocaleString()} QD</span>
             </div>
-            <div className="bg-black text-white px-4 py-2 font-black border-2 border-black">{pkg.price}</div>
+            <div className="bg-black text-yellow-400 px-4 py-2 font-black border-2 border-black text-sm">{pkg.price}</div>
           </div>
         ))}
       </div>
+      <p className="text-[10px] font-bold text-zinc-400 text-center mt-4 max-w-xs">
+        All purchases are processed via Aztec Network. ZK proof guarantees payment privacy.
+      </p>
     </div>
   );
 }

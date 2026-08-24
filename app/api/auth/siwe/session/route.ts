@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
-import { jwtVerify } from 'jose';
 
 export async function GET(req: NextRequest) {
   try {
@@ -14,13 +13,8 @@ export async function GET(req: NextRequest) {
 
     let sessionId;
     try {
-      const jwtSecret = process.env.JWT_SECRET;
-      if (!jwtSecret) {
-        console.error('[SIWE Session] JWT_SECRET is not set — rejecting request.');
-        return NextResponse.json({ authenticated: false }, { status: 500 });
-      }
-      const secret = new TextEncoder().encode(jwtSecret);
-      const { payload } = await jwtVerify(token, secret);
+      const { verifyJWT } = await import('@/lib/jwt');
+      const payload = await verifyJWT(token);
       sessionId = (payload.sessionId ?? payload.sid) as string;
     } catch {
       return NextResponse.json({ authenticated: false }, { status: 401 });

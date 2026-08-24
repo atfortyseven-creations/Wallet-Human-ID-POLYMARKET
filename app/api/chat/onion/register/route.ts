@@ -28,7 +28,6 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { jwtVerify }                 from 'jose';
 
 export const dynamic = 'force-dynamic';
 
@@ -120,12 +119,11 @@ async function verifyAuth(req: NextRequest): Promise<string | null> {
   const token = whaleCookie ?? bearerToken;
 
   if (!token) return null;
-  const jwtSec = process.env.JWT_SECRET;
-  if (!jwtSec) return null; // Fail closed — no secret, no auth
-  const secret = new TextEncoder().encode(jwtSec);
+  
   try {
-    const { payload } = await jwtVerify(token, secret);
-    return ((payload as any).address ?? (payload as any).sub ?? (payload as any).userId) as string | null;
+    const { verifyJWT } = await import('@/lib/jwt');
+    const payload = await verifyJWT(token);
+    return (payload.address ?? payload.sub ?? payload.userId) as string | null;
   } catch {
     return null;
   }

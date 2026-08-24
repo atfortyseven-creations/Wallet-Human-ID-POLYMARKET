@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
 import {
   type OnionLayer,
   decryptLayer,
@@ -72,16 +71,10 @@ async function verifyAuth(req: NextRequest): Promise<boolean> {
   if (!authHeader?.startsWith('Bearer ')) return false;
 
   const token  = authHeader.slice(7);
-  const secretVal = process.env.JWT_SECRET;
-  if (!secretVal) {
-    console.error('[Onion Relay] JWT_SECRET is not set — rejecting token.');
-    return false; // Fail closed in ALL environments
-  }
-
-  const secret = new TextEncoder().encode(secretVal);
 
   try {
-    await jwtVerify(token, secret);
+    const { verifyJWT } = await import('@/lib/jwt');
+    await verifyJWT(token);
     return true;
   } catch {
     return false;

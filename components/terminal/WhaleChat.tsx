@@ -1313,8 +1313,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // Android WebViews will strip the transient user-activation token.
   const startCall = async (type: 'audio' | 'video') => {
     if (!activePeer) return;
-    if (!peerInstance) {
-      toast.error("WebRTC is initializing. Please wait a moment and try again.");
+    const livePeer = peerInstanceRef.current;
+    if (!livePeer || livePeer.destroyed) {
+      // Peer not yet ready — try to reconnect then retry
+      toast.error("WebRTC is not ready. Reconnecting… please try again in a moment.");
+      // Trigger re-init by nulling the state (useEffect will re-create)
+      setPeerInstance(null);
+      peerInstanceRef.current = null;
       return;
     }
 

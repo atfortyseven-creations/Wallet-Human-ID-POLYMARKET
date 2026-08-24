@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { SignJWT } from 'jose';
 
 export async function POST(req: Request) {
     try {
@@ -70,26 +69,8 @@ export async function POST(req: Request) {
                 sameSite: 'lax' as const
             };
             
-            // CRITICAL SECURITY FIX: Hardcoded fallback JWT secret removed.
-            // 'WhaleAlert_KYC_MasterKey_2026_Secure' was in plain-text source code.
-            // Any attacker with source access could forge KYC tokens and bypass
-            // the Iron Gate middleware, gaining full system platform access.
-            // In production: server will return 500 rather than issue a forged token.
-            const rawSecret = process.env.KYC_SECRET;
-            if (!rawSecret) {
-                console.error('[Verify]  CRITICAL: KYC_SECRET environment variable is not set.');
-                return NextResponse.json({ verified: false, detail: 'Server configuration error: KYC secret missing.' }, { status: 500 });
-            }
-            const JWT_SECRET = new TextEncoder().encode(rawSecret);
-            const token = await new SignJWT({ address: address.toLowerCase(), status: 'APPROVED' })
-                .setProtectedHeader({ alg: 'HS256' })
-                .setIssuedAt()
-                .setExpirationTime('7d')
-                .sign(JWT_SECRET);
-
-            response.cookies.set('kyc_token', token, cookieOptions);
+            // Only set kyc_status for client UI logic, without overwriting secure sessions
             response.cookies.set('kyc_status', 'APPROVED', { ...cookieOptions, httpOnly: false });
-            response.cookies.set('human_session', 'true', cookieOptions);
 
             return response;
         } else {

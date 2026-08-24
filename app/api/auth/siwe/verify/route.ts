@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { SiweMessage } from 'siwe';
 import { cookies } from 'next/headers';
-import { SignJWT } from 'jose';
 import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
@@ -140,24 +139,17 @@ export async function POST(req: NextRequest) {
     });
 
     // 5. Sign a JWT for Edge Middleware compatibility
-    const { requireSecret } = await import('@/lib/security/env-assert');
-    const secretKey = requireSecret('JWT_SECRET');
-    const secret = new TextEncoder().encode(secretKey);
-    
+    const { mintJWT } = await import('@/lib/jwt');
     const expectedIssuer = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     
-    const jwt = await new SignJWT({ 
+    const jwt = await mintJWT({ 
+        sub: session.sessionId,
         sessionId: session.sessionId, 
         identityId: identity.id, 
-        walletAddress: identity.walletAddress 
-    })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setIssuer(expectedIssuer)
-      .setAudience(expectedIssuer)
-      .setSubject(session.sessionId)
-      .setExpirationTime(Math.floor(Date.now() / 1000) + SESSION_CONFIG.SESSION_ACCESS_TTL)
-      .sign(secret);
+        walletAddress: identity.walletAddress,
+        iss: expectedIssuer,
+        aud: expectedIssuer
+    });
 
     // 5. Issue secure HttpOnly cookie
     const cookieStore = await cookies();

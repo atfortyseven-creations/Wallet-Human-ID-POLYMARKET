@@ -104,7 +104,20 @@ async function extractSessionAddress(req: NextRequest): Promise<string | null> {
 
   if (whaleCookie) {
     try {
-      const { payload } = await jwtVerify(whaleCookie, getEdgeSecret());
+      const isEdDSA = !!process.env.JWT_EDDSA_PUBLIC_JWK;
+      let payload;
+      
+      if (isEdDSA) {
+        const { importJWK } = await import('jose');
+        const pubJwk = JSON.parse(process.env.JWT_EDDSA_PUBLIC_JWK!);
+        const publicKey = await importJWK(pubJwk, 'EdDSA');
+        const result = await jwtVerify(whaleCookie, publicKey, { algorithms: ['EdDSA'] });
+        payload = result.payload;
+      } else {
+        const result = await jwtVerify(whaleCookie, getEdgeSecret(), { algorithms: ['HS256'] });
+        payload = result.payload;
+      }
+      
       const addr = (payload as any).address ?? (payload as any).sub;
       if (addr && typeof addr === 'string') return addr.toLowerCase();
     } catch {
