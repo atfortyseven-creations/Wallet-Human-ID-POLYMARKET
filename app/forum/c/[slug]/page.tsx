@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { formatDistanceToNowStrict } from 'date-fns';
 
 export default function CategoryPage() {
-  const { slug } = useParams();
+  const params = useParams();
+  const slug = params?.slug as string | undefined;
   const [category, setCategory] = useState<any>(null);
 
   useEffect(() => {

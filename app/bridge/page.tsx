@@ -9,7 +9,7 @@ type Stage = 'loading' | 'success' | 'error' | 'already_linked';
 
 export default function BridgePage() {
   const searchParams = useSearchParams();
-  const token = searchParams.get('token');
+  const token = searchParams?.get('token');
   const [stage, setStage] = useState<Stage>('loading');
   const [message, setMessage] = useState('');
 

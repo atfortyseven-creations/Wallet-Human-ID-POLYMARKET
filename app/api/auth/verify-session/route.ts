@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
  * Checks ALL valid session token types used across the system:
  *   - whale_session   : JWT from system-verify (MetaMask/Rainbow/Wagmi connect)
  *   - human_session   : JWT from qr-hydrate or system-verify
+ *   - humanity_session: JWT from SIWE flow (P2-C.1 Identity Adapter)
  *   - system_handshake: raw 0x address (QR mobile handshake, fast path)
  *   - human.session-token: NextAuth JWT (Google OAuth, Email OTP via NextAuth)
  *
@@ -16,6 +17,8 @@ import { NextRequest, NextResponse } from 'next/server';
  *   3. If JWT invalid/missing → check NextAuth session (Google OAuth).
  *   4. If NextAuth valid → authenticated. Heal system_handshake with email_ prefix.
  *   5. Otherwise → 401 Unauthenticated.
+ *
+ * Also checks for humanity_session (SIWE P2-C.1) as supplementary identity context.
  */
 export async function GET(request: NextRequest) {
     try {
@@ -39,9 +42,29 @@ export async function GET(request: NextRequest) {
 
                 if (address) {
                     // JWT is cryptographically valid → session is authentic.
+                    // Additionally, check for humanity_session (P2-C.1 Identity Adapter)
+                    // to expose supplementary identity context to the client.
+                    let humanityIdentity: { address: string; sessionId: string } | null = null;
+                    const humanityCookie = request.cookies.get('humanity_session')?.value;
+                    if (humanityCookie) {
+                        try {
+                            const humanityPayload = await verifyJWT(humanityCookie) as any;
+                            if (humanityPayload.sub && humanityPayload.sid) {
+                                humanityIdentity = {
+                                    address: (humanityPayload.sub as string).toLowerCase(),
+                                    sessionId: humanityPayload.sid as string,
+                                };
+                            }
+                        } catch {
+                            // humanity_session invalid/expired — not critical, legacy session is still valid
+                        }
+                    }
+
                     const res = NextResponse.json({
                         authenticated: true,
-                        user: { address, tier: payload.tier ?? 'FREE' }
+                        user: { address, tier: payload.tier ?? 'FREE' },
+                        // Supplementary SIWE identity context (null if not on P2-C.1 SIWE flow)
+                        humanityIdentity,
                     });
 
                     // [HEAL] If system_handshake was missing, restore it now so

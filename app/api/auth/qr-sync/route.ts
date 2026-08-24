@@ -104,7 +104,7 @@ export async function POST(req: Request) {
             tier: user.tier || 'FREE',
             kycStatus: 'UNVERIFIED',
             humanityScore: user.humanityScore || 0,
-            iss: 'whale-alert-network',
+            iss: 'humanity-ledger',
             source: 'qr-sync-handshake',
             issuedAt: new Date().toISOString()
         });

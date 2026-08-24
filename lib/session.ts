@@ -14,24 +14,20 @@ import crypto from 'crypto';
 // the container starts. Validation fires lazily at request time via getSessionSecret().
 function getSessionSecret(): Uint8Array {
     const secret = process.env.JWT_SECRET;
-    if (!secret && process.env.NODE_ENV === 'production') {
-        throw new Error(
-            '[SECURITY CRITICAL] JWT_SECRET is not set in production. '
-            + 'This fires at request time — set JWT_SECRET in Railway env vars immediately.'
-        );
-    }
     if (!secret) {
-        console.warn(
-            '\x1b[33m[WARNING] JWT_SECRET not set. Using dev-only fallback secret.\n'
-            + 'This is INSECURE. Set JWT_SECRET before deploying to production.\x1b[0m'
+        throw new Error(
+            '[SECURITY CRITICAL] JWT_SECRET is not set. '
+            + 'This fires at request time — set JWT_SECRET immediately.'
         );
     }
-    return new TextEncoder().encode(secret || 'VOID_SECRET_99_POLY_DEV_ONLY_CHANGE_IN_PRODUCTION');
+    return new TextEncoder().encode(secret);
 }
 
 // Session configuration
 export const SESSION_CONFIG = {
-    ACCESS_TOKEN_DURATION: 7 * 24 * 60 * 60, // 7 days in seconds
+    // Single Source of Truth for Session TTL
+    SESSION_ACCESS_TTL: 24 * 60 * 60, // 24 hours in seconds
+    ACCESS_TOKEN_DURATION: 24 * 60 * 60, // Legacy email access token (align with SIWE)
     REFRESH_TOKEN_DURATION: 7 * 24 * 60 * 60, // 7 days in seconds
     REFRESH_INTERVAL: 15 * 60 * 1000, // 15 minutes in milliseconds (for client-side)
 } as const;

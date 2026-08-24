@@ -145,7 +145,7 @@ export async function POST(req: NextRequest) {
           type: 'AIRDROP',
           status: 'COMPLETED',
           chainId: 89021716, // Aztec Testnet v5
-          blockNumber: BigInt(blockNum),
+          blockNumber: BigInt(0),
           metadata: {
             network: 'aztec-testnet',
             aztecTxHash: aztecTxHash,

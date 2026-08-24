@@ -75,7 +75,8 @@ const BOUNDED_PREFIXES = [
 ];
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
+  const _pathname = usePathname();
+  const pathname = _pathname ?? '/'; // usePathname() can return null during static rendering
   const { isConnected } = useAccount();
   const { fetchSettings, settings } = useSettingsStore();
 

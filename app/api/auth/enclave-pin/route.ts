@@ -67,7 +67,7 @@ function clearAttempts(key: string) {
 //   2. The HMAC secret adds a server-side factor (knowing the DB is not enough)
 // For production, bcrypt would be ideal but adds latency on Edge.
 function hashPin(userId: string, pin: string): string {
-  const secret = process.env.ENCLAVE_PIN_SECRET || process.env.JWT_SECRET || 'default-enclave-secret-change-me';
+  const secret = (() => { const s = process.env.ENCLAVE_PIN_SECRET || process.env.JWT_SECRET; if (!s) throw new Error('CRITICAL: Missing ENCLAVE_PIN_SECRET'); return s; })();
   return crypto
     .createHmac('sha256', secret)
     .update(`${userId}:${pin}`)
@@ -162,7 +162,7 @@ export async function POST(req: NextRequest) {
 
     // Issue a short-lived clearance token (HMAC of userId+timestamp)
     const clearanceTs = Date.now();
-    const clearanceSecret = process.env.ENCLAVE_PIN_SECRET || process.env.JWT_SECRET || 'default-enclave-secret-change-me';
+    const clearanceSecret = (() => { const s = process.env.ENCLAVE_PIN_SECRET || process.env.JWT_SECRET; if (!s) throw new Error('CRITICAL: Missing ENCLAVE_PIN_SECRET'); return s; })();
     const clearanceToken = crypto
       .createHmac('sha256', clearanceSecret)
       .update(`${userId}:cleared:${clearanceTs}`)
@@ -341,7 +341,7 @@ export async function PUT(req: NextRequest) {
     });
 
     const clearanceTs = Date.now();
-    const clearanceSecret = process.env.ENCLAVE_PIN_SECRET || process.env.JWT_SECRET || 'default-enclave-secret-change-me';
+    const clearanceSecret = (() => { const s = process.env.ENCLAVE_PIN_SECRET || process.env.JWT_SECRET; if (!s) throw new Error('CRITICAL: Missing ENCLAVE_PIN_SECRET'); return s; })();
     const clearanceToken = crypto
       .createHmac('sha256', clearanceSecret)
       .update(`${userId}:cleared:${clearanceTs}`)

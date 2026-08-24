@@ -1,0 +1,11 @@
+{
+  "route": "/registry",
+  "apiCalls": [
+    "/api/registry/real-users",
+    "/api/humanidfi/activity",
+    "/api/auth/siwe/session"
+  ],
+  "siweIntegration": "SiweRegistryAdapter (Feature Flagged)",
+  "authentication": "SIWE Session check (Authoritative DB)",
+  "authorization": "Public Reads allowed, Registry page gated by SIWE if enabled"
+}

@@ -17,23 +17,30 @@ contract MATTERToken is ERC20, Ownable(msg.sender) {
 
     /**
      * @notice Buy $MATTER by depositing Reserve Token.
-     * Price increases as supply increases.
      */
     function buy(uint256 depositAmount) external {
+        require(depositAmount > 0, "Deposit amount must be > 0");
         uint256 tokensToMint = calculatePurchaseReturn(totalSupply(), reserveBalance(), RESERVE_RATIO, depositAmount);
-        _mint(msg.sender, tokensToMint);
+        
         // Transfer USDC from user to contract (Bonding Curve Reserve)
-        // reserveToken.transferFrom(msg.sender, address(this), depositAmount);
+        require(reserveToken.transferFrom(msg.sender, address(this), depositAmount), "Transfer failed");
+        
+        _mint(msg.sender, tokensToMint);
     }
 
     /**
      * @notice Sell $MATTER for Reserve Token.
      */
     function sell(uint256 sellAmount) external {
-        /* uint256 reserveReturn = */ calculateSaleReturn(totalSupply(), reserveBalance(), RESERVE_RATIO, sellAmount);
+        require(sellAmount > 0, "Sell amount must be > 0");
+        require(balanceOf(msg.sender) >= sellAmount, "Insufficient MATTER balance");
+        
+        uint256 reserveReturn = calculateSaleReturn(totalSupply(), reserveBalance(), RESERVE_RATIO, sellAmount);
+        
         _burn(msg.sender, sellAmount);
+        
         // Transfer USDC from Reserve to User
-        // reserveToken.transfer(msg.sender, reserveReturn);
+        require(reserveToken.transfer(msg.sender, reserveReturn), "Transfer failed");
     }
 
     // Simplified Bancor Formula Stub
@@ -45,8 +52,8 @@ contract MATTERToken is ERC20, Ownable(msg.sender) {
         return _sellAmount; // Real formula is complex power function
     }
 
-    function reserveBalance() public pure returns (uint256) {
-        return 1000 * 10**18; // Mock
+    function reserveBalance() public view returns (uint256) {
+        return reserveToken.balanceOf(address(this));
     }
 }
 

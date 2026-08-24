@@ -1,36 +1,52 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, Loader2 } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Loader2, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 
-// SECURITY: Session gate for Studio Provenance / Terminal.
-// Authentication priority:
-//   1. Server-side JWT (human_session / whale_session) via /api/auth/verify-session
-//   2. Live system/wagmi wallet connection (address present = wallet connected in browser)
+// ─────────────────────────────────────────────────────────────────────────────
+// ProvenanceSessionGate — P2-C.1 Studio Pilot (Step 3: Shadow Mode)
+// ─────────────────────────────────────────────────────────────────────────────
 //
-// Rationale: The terminal is a read-heavy dashboard. A connected wallet is
-// sufficient to view your own data. Destructive write operations within each
-// module perform their own SIWE re-authentication at the action level.
+// Authentication priority:
+//   1. Server-side JWT (whale_session / human_session) via /api/auth/verify-session
+//   2. Live wagmi wallet connection (address present = wallet connected in browser)
+//
+// P2-C.1 additions (SHADOW mode):
+//   - /api/auth/verify-session now also returns `humanityIdentity` if a
+//     humanity_session cookie is present. This data is logged for observability
+//     to detect identity mismatches between the legacy and SIWE identity systems.
+//   - In SHADOW mode: the gate still authorizes based on legacy identity.
+//     The humanityIdentity is only logged (no behaviour change for the user).
+//   - In PILOT/LIVE mode (future): The gate will enforce humanity_session first.
+//
+// Destructive write operations within each module perform their own SIWE
+// re-authentication at the action level (Option D in API routes).
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface VerifySessionResponse {
+  authenticated: boolean;
+  user?: { address: string; tier: string };
+  humanityIdentity?: { address: string; sessionId: string } | null;
+}
 
 export function ProvenanceSessionGate({ children }: { children: React.ReactNode }) {
   // null = loading, true = authenticated, false = not authenticated
   const [authState, setAuthState] = useState<null | boolean>(null);
   const { address, isConnected } = useSystemAccount();
-
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
-  const handleManualSiwe = async () => {
+  const handleManualSiwe = useCallback(async () => {
     if (!address) return;
     try {
       setIsAuthenticating(true);
       const { signMessage } = await import('@wagmi/core');
       const { config } = await import('@/lib/wagmi-config');
-      
+
       const resNonce = await fetch('/api/siwe/nonce');
       const nonce = await resNonce.text();
-      
+
       const { SiweMessage } = await import('siwe');
       const message = new SiweMessage({
         domain: window.location.host,
@@ -43,11 +59,11 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
       });
 
       // Mobile Safari / Chrome Deep Link Helper
-      const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase());
+      const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
+        navigator.userAgent.toLowerCase()
+      );
       if (isMobile) {
-        setTimeout(() => {
-          window.location.href = 'wc://';
-        }, 50);
+        setTimeout(() => { window.location.href = 'wc://'; }, 50);
       }
 
       const signature = await signMessage(config as any, {
@@ -70,30 +86,56 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
         alert('Signature verification failed. Please try again.');
       }
     } catch (e) {
-      console.error(e);
+      console.error('[ProvenanceSessionGate] SIWE sign-in error:', e);
     } finally {
       setIsAuthenticating(false);
     }
-  };
+  }, [address]);
 
   useEffect(() => {
     let cancelled = false;
+
     async function checkSession() {
-      // Fast path: any connected user (wagmi direct OR QR handshake) gets in.
-      // Studio write operations do their own per-action SIWE re-auth.
+      // Fast path: wallet connected — attempt server session verification
       if (isConnected) {
-        // Also verify server session if possible (non-blocking)
         try {
           const res = await fetch('/api/auth/verify-session', { cache: 'no-store', credentials: 'include' });
           if (!cancelled && res.ok) {
-            const data = await res.json();
-            if (data.authenticated) { setAuthState(true); return; }
+            const data: VerifySessionResponse = await res.json();
+            if (data.authenticated) {
+              // ── P2-C.1 SHADOW: Log identity adapter telemetry ─────────────
+              // In SHADOW mode, this is purely observational. Zero behaviour change.
+              if (data.humanityIdentity) {
+                const legacyAddr = data.user?.address?.toLowerCase();
+                const humanityAddr = data.humanityIdentity.address.toLowerCase();
+                if (legacyAddr && humanityAddr && legacyAddr !== humanityAddr) {
+                  console.warn(
+                    '[ProvenanceSessionGate:SHADOW] Identity mismatch:',
+                    `legacy=${legacyAddr}`,
+                    `humanity=${humanityAddr}`,
+                    `sessionId=${data.humanityIdentity.sessionId}`
+                  );
+                } else if (legacyAddr && humanityAddr) {
+                  console.info(
+                    '[ProvenanceSessionGate:SHADOW] Identities matched:',
+                    legacyAddr,
+                    `sessionId=${data.humanityIdentity.sessionId}`
+                  );
+                }
+              }
+              setAuthState(true);
+              return;
+            }
           }
-        } catch {}
-        // Connected but server session not found — still allow read access
+        } catch {
+          // Server session check failed — still allow read access if connected
+        }
+        // Wallet is connected but no server session — allow read access
+        // Write operations enforce their own SIWE re-auth at the action level
         if (!cancelled) setAuthState(true);
         return;
       }
+
       // Slow path: check SIWE session for non-wallet users
       try {
         const res = await fetch('/api/siwe/session', { cache: 'no-store' });
@@ -101,8 +143,8 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
         if (res.ok) {
           const data = await res.json();
           if (data.address && (!address || data.address.toLowerCase() === address.toLowerCase())) {
-             setAuthState(true);
-             return;
+            setAuthState(true);
+            return;
           }
         }
         setAuthState(false);
@@ -110,11 +152,12 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
         if (!cancelled) setAuthState(false);
       }
     }
+
     checkSession();
     return () => { cancelled = true; };
   }, [isConnected, address]);
 
-  // Loading state
+  // ── Loading state ─────────────────────────────────────────────────────────
   if (authState === null || isAuthenticating) {
     return (
       <div className="h-full w-full flex-1 bg-[#FFFFFF] flex items-center justify-center">
@@ -123,18 +166,23 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
     );
   }
 
-  // Not authenticated via Wagmi OR SIWE
+  // ── Not authenticated ─────────────────────────────────────────────────────
   if (!authState) {
     return (
       <div className="h-full w-full flex-1 bg-[#FFFFFF] text-[#050505] flex flex-col px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-[calc(2rem+env(safe-area-inset-bottom))]">
         <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto text-center gap-4">
-          <h1 className="text-xl font-black tracking-tight">{isConnected ? 'Verify Identity' : 'Connect your wallet'}</h1>
+          <div className="flex justify-center mb-2">
+            <ShieldCheck size={32} className="text-black/20" />
+          </div>
+          <h1 className="text-xl font-black tracking-tight">
+            {isConnected ? 'Verify Identity' : 'Connect your wallet'}
+          </h1>
           <p className="text-sm text-black/60 leading-relaxed">
-            {isConnected 
+            {isConnected
               ? 'Please sign the message in your wallet to verify your identity and enable write access to the Studio Provenance database.'
               : 'Connect your wallet to access the Humanity Ledger terminal and all its modules.'}
           </p>
-          
+
           {isConnected ? (
             <button
               onClick={handleManualSiwe}
@@ -155,4 +203,3 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
 
   return <>{children}</>;
 }
-

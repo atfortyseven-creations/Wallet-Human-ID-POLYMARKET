@@ -4,7 +4,11 @@
 
 A purely deterministic enclave for humanity. Zero-knowledge cryptographic circuits ensure absolute sovereignty. No marketing. No tracking. Pure mathematics.
 
-**Humanity Ledger** is an end-to-end encrypted, L2 ZK-rollup ecosystem settled on the Aztec Network. It provides an immersive, brutalist, and uncompromisingly private infrastructure for real-world asset tokenization (Studio Provenance), un-censorable peer-to-peer communication (Whale Chat), and sovereign financial tracking.
+**Humanity Ledger** is a hybrid Web2.5 intelligence platform and Mini-App ecosystem. It provides robust tools for real-world asset tracking (Studio Provenance), un-censorable peer-to-peer communication (Whale Chat via XMTP), and sovereign financial tracking.
+
+While the system is preparing for a full migration to an L2 ZK-rollup ecosystem settled on the Aztec Network, current cryptographic features (such as ZK proofs) are either simulated or rely on standard Web2 cryptography and SIWE (Sign-In with Ethereum). 
+
+> **"a For the definitive, evidence-based status of all decentralization, ZK, and smart contract features, see the [Humanity Ledger Capability Matrix](docs/STATUS.md).**
 
 ---
 

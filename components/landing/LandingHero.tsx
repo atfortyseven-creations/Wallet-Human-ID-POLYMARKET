@@ -22,7 +22,7 @@ export function LandingHero({ onStart }: LandingHeroProps) {
     const [loginSuccess, setLoginSuccess] = useState(false);
     const [isDisconnectGuarded, setIsDisconnectGuarded] = useState(false);
 
-    const isLoginRedirect = searchParams.get('login') === 'true';
+    const isLoginRedirect = searchParams?.get('login') === 'true';
 
     // [ABSOLUTE DISCONNECT FIREWALL] Check the guard on mount synchronously.
     // wagmi auto-reconnects on page reload even after logout, which would cause
@@ -89,15 +89,15 @@ export function LandingHero({ onStart }: LandingHeroProps) {
 
                     <div className="grid grid-cols-3 gap-8 w-full max-w-lg mb-12">
                         <div>
-                            <div className="text-2xl md:text-3xl font-black text-white mb-1">10M+</div>
+                            <div className="text-2xl md:text-3xl font-black text-white mb-1">100K+</div>
                             <div className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{t.landing.hero.stats.identities}</div>
                         </div>
                         <div>
-                            <div className="text-2xl md:text-3xl font-black text-white mb-1">$1B+</div>
+                            <div className="text-2xl md:text-3xl font-black text-white mb-1">$50M+</div>
                             <div className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{t.landing.hero.stats.secured}</div>
                         </div>
                         <div>
-                            <div className="text-2xl md:text-3xl font-black text-white mb-1">100%</div>
+                            <div className="text-2xl md:text-3xl font-black text-white mb-1">99.9%</div>
                             <div className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{t.landing.hero.stats.decentralised}</div>
                         </div>
                     </div>

@@ -81,7 +81,7 @@ function renderBody(description: string, darkMode = false) {
 
 function FullReportContent() {
   const params = useSearchParams();
-  const articleId = params.get('id');
+  const articleId = params?.get('id');
   const { archive } = useNewsStore();
 
   const [article, setArticle] = useState<NewsArticle | null>(null);

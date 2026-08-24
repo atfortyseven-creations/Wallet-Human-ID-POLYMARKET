@@ -152,8 +152,8 @@ const queryClient = new QueryClient()
 const CANONICAL_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://humanidfi.com';
 
 const metadata = {
-    name: 'Whale Alert Network',
-    description: 'Sovereign Grade Whale Tracking',
+    name: 'Humanity Ledger',
+    description: 'Zero-Knowledge Identity Infrastructure',
     url: CANONICAL_APP_URL,
     icons: [`${CANONICAL_APP_URL}/official-whale-monochrome.png`],
 }
@@ -166,7 +166,7 @@ const siweConfig = createSIWEConfig({
     domain: typeof window !== 'undefined' ? window.location.host : 'humanidfi.com',
     uri: typeof window !== 'undefined' ? window.location.origin : 'https://humanidfi.com',
     chains: [1, 10, 56, 137, 8453, 42161, 480],
-    statement: 'Sign in to Whale Alert Network'
+    statement: 'Authenticate to Humanity Ledger'
   }),
   createMessage: ({ address, ...args }) => formatMessage(args, address),
   getNonce: async () => {

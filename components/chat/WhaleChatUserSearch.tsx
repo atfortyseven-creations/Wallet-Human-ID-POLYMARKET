@@ -220,7 +220,9 @@ export function WhaleChatUserSearch({ myAddress, onClose, onAddContact }: WhaleC
                           <div className="flex items-center gap-1.5">
                             <span className="text-[15px] font-bold text-black truncate">{user.nickname}</span>
                             {user.isVerified && (
-                              <ShieldCheck size={13} className="text-[#30d158] shrink-0" title="ZK Verified" />
+                              <div title="ZK Verified">
+                                <ShieldCheck size={13} className="text-[#30d158] shrink-0" />
+                              </div>
                             )}
                           </div>
                           <div className="flex items-center gap-2 mt-0.5">

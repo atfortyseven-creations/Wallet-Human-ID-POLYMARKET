@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
       tier: existingUser?.tier || 'FREE',
       kycStatus: 'UNVERIFIED',
       humanityScore: existingUser?.humanityScore || 0,
-      iss: 'whale-alert-network',
+      iss: 'humanity-ledger',
       source: 'qr-mobile-handshake',
       nonce: cryptographicNonce, //  INHUMAN OPTIMIZATION: Replay Prevention
       issuedAt: new Date().toISOString()

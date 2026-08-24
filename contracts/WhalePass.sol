@@ -50,6 +50,7 @@ contract WhalePass is ERC1155, Ownable, ERC1155Supply {
         if (!isWhitelistSaleActive) revert SaleNotActive();
         if (totalSupply(GOLD_TICKET) + 1 > maxSupply) revert ExceedsSupply();
         if (msg.value < mintPrice) revert InsufficientPayment();
+        require(balanceOf(msg.sender, GOLD_TICKET) == 0, "Max 1 per wallet");
 
         // Verify Merkle Proof
         bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
@@ -63,6 +64,7 @@ contract WhalePass is ERC1155, Ownable, ERC1155Supply {
         if (!isPublicSaleActive) revert SaleNotActive();
         if (totalSupply(GOLD_TICKET) + 1 > maxSupply) revert ExceedsSupply();
         if (msg.value < mintPrice) revert InsufficientPayment();
+        require(balanceOf(msg.sender, GOLD_TICKET) == 0, "Max 1 per wallet");
 
         _mint(msg.sender, GOLD_TICKET, 1, "");
     }

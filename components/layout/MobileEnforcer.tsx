@@ -12,7 +12,7 @@ export function MobileEnforcer({ children }: { children: React.ReactNode }) {
     const [mounted, setMounted] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const { isConnected, address, isZkVerified } = useSystemAccount();
-    const pathname = usePathname();
+    const pathname = usePathname() ?? '/';
 
     // Track previous connection state to detect NEW wallet connections
     const prevConnected = useRef<boolean>(false);

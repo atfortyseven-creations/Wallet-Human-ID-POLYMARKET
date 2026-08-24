@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 // Maximum space enforcement: 7 Days Rolling Window
 const RETENTION_DAYS = 7;

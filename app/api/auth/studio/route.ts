@@ -2,8 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_VERIFICATION_SECRET || 'super-secret-sso-key';
 const STUDIO_B2B_URL = process.env.STUDIO_B2B_URL || 'https://studio-provenance-production.up.railway.app';
+
+// [BUILD DETERMINISM] Do NOT throw at module scope.
+// Next.js eagerly evaluates module-level code during `next build` (page data collection).
+// Secrets are NOT injected at build time — only at container start (Railway/Vercel).
+// Validation must be lazy, inside the request handler.
+function getStudioSecret(): string {
+  const s = process.env.JWT_VERIFICATION_SECRET;
+  if (!s) throw new Error('[SECURITY FATAL] JWT_VERIFICATION_SECRET is not set.');
+  return s;
+}
+
 
 export async function GET(req: NextRequest) {
   try {
@@ -30,7 +40,7 @@ export async function GET(req: NextRequest) {
       exp: Math.floor(Date.now() / 1000) + (60 * 5) // 5 minutes expiration for the nonce
     };
 
-    const token = jwt.sign(payload, JWT_SECRET, { algorithm: 'HS256' });
+    const token = jwt.sign(payload, getStudioSecret(), { algorithm: 'HS256' });
 
     // 3. Redirect to the Studio Provenance B2B Private Repository
     const redirectUrl = new URL('/api/auth/callback', STUDIO_B2B_URL);

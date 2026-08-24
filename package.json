@@ -8,7 +8,7 @@
     "dev": "next dev",
     "push:railway": "git add . && git commit -m \"perf: institutional forum hardening, wave removal, profile fix\" && git push origin main",
     "db:sync": "npx prisma db push --accept-data-loss",
-    "build": "echo 'LEGENDARY_BUILD_777' && prisma generate && prisma db push --accept-data-loss && cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" next build",
+    "build": "echo 'LEGENDARY_BUILD_777' && prisma generate && cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" next build",
     "build:local": "echo 'LOCAL_BUILD' && prisma generate --no-engine && cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" next build",
     "build:ipfs": "cross-env IPFS_BUILD=true next build",
     "build:railway": "npx tailwindcss -i ./app/globals.css -o ./app/globals-compiled.css && echo 'LEGENDARY_BUILD_777' && prisma generate && prisma db push --accept-data-loss && cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" next build",

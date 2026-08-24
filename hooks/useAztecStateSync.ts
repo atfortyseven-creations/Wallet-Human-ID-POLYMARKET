@@ -32,7 +32,7 @@ export function useAztecStateSync(onStateChange: () => void) {
     const searchParams = useSearchParams();
     
     const resolveInitialRoute = (): string => {
-        const param = searchParams.get('tab');
+        const param = searchParams?.get('tab');
         if (!param) return DEFAULT_ROUTE;
         if (ROUTE_ALIAS[param]) return ROUTE_ALIAS[param];
         if (LEGACY_ROUTE_MAP.has(param)) return DEFAULT_ROUTE;
@@ -43,7 +43,7 @@ export function useAztecStateSync(onStateChange: () => void) {
 
     // Sync from URL changes (browser back/forward)
     useEffect(() => {
-        const param = searchParams.get('tab');
+        const param = searchParams?.get('tab');
         if (param && param !== activeRoute) {
             if (ROUTE_ALIAS[param]) {
                 setActiveRoute(ROUTE_ALIAS[param]);

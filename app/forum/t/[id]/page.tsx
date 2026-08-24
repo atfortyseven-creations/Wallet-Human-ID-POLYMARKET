@@ -9,7 +9,8 @@ import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { useWalletStore } from '@/lib/store/wallet-store';
 
 export default function TopicPage() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.id as string | undefined;
   const router = useRouter();
   const [topic, setTopic]               = useState<any>(null);
   const [replyContent, setReplyContent] = useState('');

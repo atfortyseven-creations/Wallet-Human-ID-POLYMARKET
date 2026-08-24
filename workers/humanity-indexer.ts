@@ -1,8 +1,6 @@
 import { createPublicClient, http, fallback } from 'viem';
 import { mainnet } from 'viem/chains';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 // High performance resilient client
 const ethClient = createPublicClient({

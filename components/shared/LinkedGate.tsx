@@ -117,7 +117,7 @@ function usePrevious<T>(value: T): T | undefined {
 
 //  MAIN GATE COMPONENT 
 export function LinkedGate({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '/';
   const router = useRouter();
   const { isLinked, setLinked } = useUIStore();
   const { isConnected: isWalletConnected, address } = useAccount();

@@ -89,7 +89,7 @@ function RealDeviceRouter() {
           <RemoteLottie path="/system-shots/block abstract.json" className="w-full h-full object-contain" />
         </div>
         <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#050505]/50 animate-pulse font-bold">
-          Loading...
+          INITIALIZING SECURE ENCLAVE...
         </div>
       </div>
     );
@@ -106,7 +106,7 @@ export default function Page() {
           <RemoteLottie path="/system-shots/block abstract.json" className="w-full h-full object-contain" />
         </div>
         <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#050505]/50 animate-pulse font-bold">
-          Loading...
+          INITIALIZING SECURE ENCLAVE...
         </div>
       </div>
     }>

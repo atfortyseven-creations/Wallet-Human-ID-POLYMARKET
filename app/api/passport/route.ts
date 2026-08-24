@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/session';
+import {
+  resolveStudioIdentity,
+  checkDbSessionValidInTx,
+} from '@/lib/security/studio-identity-adapter';
 import { serializePassport, slugifyTitle } from '@/lib/passport/serialize';
 import { sequencer } from '@/lib/provenance/qd-sequencer';
 import { z } from 'zod';
@@ -8,9 +12,7 @@ import OpenAI from 'openai';
 import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
 import crypto from 'crypto';
 
-// Init OpenAI for semantic validation
-// It will be instantiated inside the POST request to respect dynamic env vars
-// Strict sovereign schema
+// ─── Strict Sovereign Schema ──────────────────────────────────────────────────
 const passportSchema = z.object({
   title: z.string().min(2).max(150).regex(/^[a-zA-Z0-9\s\-_.]+$/, "Invalid characters in title"),
   category: z.enum(['PHARMA', 'FOOD', 'TECH', 'INFRASTRUCTURE', 'TEXTILE', 'DOCUMENTS', 'OTHER']),
@@ -51,18 +53,60 @@ const passportSchema = z.object({
   })).optional(),
 });
 
-export async function POST(req: NextRequest) {
-  const session = await getSession();
-  if (!session?.userId) {
-    return NextResponse.json({ error: 'Connect your wallet to create a passport' }, { status: 401 });
-  }
-  const issuerAddress = session.userId.toLowerCase();
+// ─── Anti-XSS sanitization ────────────────────────────────────────────────────
+function sanitizeHTML(str: string): string {
+  return str.replace(/[&<>'"]/g,
+    tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+  );
+}
 
+// ─── Static Profanity / Obscenity Filter ─────────────────────────────────────
+const PROFANITY_BLACKLIST = [
+  'fuck', 'shit', 'bitch', 'asshole', 'cunt', 'dick', 'pussy', 'whore', 'slut', 'fag', 'nigger', 'cock', 'bastard',
+  'puta', 'mierda', 'pendejo', 'cabron', 'maricon', 'verga', 'culo', 'zorra', 'puto', 'gilipollas', 'concha', 'cojones',
+  // Cryptographic Strict Mode / Anti-Nonsense
+  'scam', 'ponzi', 'rugpull', 'fake', 'bullshit', 'crap', 'idiot', 'moron', 'stupid', 'tonto', 'estupido', 'estúpido', 'basura', 'engaño'
+];
+
+function containsProfanity(text: string): boolean {
+  if (!text) return false;
+  const lower = text.toLowerCase();
+  return PROFANITY_BLACKLIST.some(word => {
+    // Escape special regex chars to prevent ReDoS attacks
+    const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`\\b${escaped}\\b`, 'i').test(lower);
+  });
+}
+
+// ─── POST /api/passport ────────────────────────────────────────────────────────
+export async function POST(req: NextRequest) {
+  // ─────────────────────────────────────────────────────────────────────────────
+  // STEP 3+4: Studio Identity Adapter (Shadow → Pilot/Live)
+  //
+  // resolveStudioIdentity() returns:
+  //   OFF/SHADOW → authorizedAddress = legacy getSession() address (unchanged behaviour)
+  //   PILOT/LIVE → authorizedAddress = HumanityIdentity address verified in DB
+  //              → null if session is revoked or expired (→ 401)
+  //
+  // For PILOT/LIVE modes: The DB authority check below runs INSIDE the Prisma
+  // $transaction that creates the passport. This eliminates the race window
+  // between session verification and the actual mutation (Option D architecture).
+  // ─────────────────────────────────────────────────────────────────────────────
+  const identity = await resolveStudioIdentity(/* skipDbCheck = */ false);
+
+  if (!identity.authorizedAddress) {
+    return NextResponse.json(
+      { error: 'Connect your wallet to create a passport' },
+      { status: 401 }
+    );
+  }
+
+  const issuerAddress = identity.authorizedAddress.toLowerCase();
   const adminWallet = (process.env.ADMIN_WALLET_ADDRESS || '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a').toLowerCase();
   const isOwner = issuerAddress === adminWallet;
 
   if (!isOwner) {
-    // 1. Rate Limiting (DB-based: max 5 passports per minute per wallet)
+    // ── Rate Limiting: max 5 passports per minute per wallet ─────────────────
     const oneMinuteAgo = new Date(Date.now() - 60000);
     const recentCount = await prisma.productPassport.count({
       where: {
@@ -78,10 +122,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Strict Global Limit based on Tier
+    // ── Strict Global Limit based on Tier ────────────────────────────────────
     const userNode = await prisma.user.findUnique({ where: { walletAddress: issuerAddress } });
     const tier = userNode?.tier || 'FREE';
-    
+
     const totalCount = await prisma.productPassport.count({
       where: { issuerAddress },
     });
@@ -96,8 +140,8 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // 3. Parse and validate syntax
-  let body;
+  // ── Parse and validate body ───────────────────────────────────────────────
+  let body: unknown;
   try {
     body = await req.json();
   } catch {
@@ -106,8 +150,7 @@ export async function POST(req: NextRequest) {
 
   const parseResult = passportSchema.safeParse(body);
   if (!parseResult.success) {
-    // Build a human-readable error pointing to the first invalid field
-    const firstError = parseResult.error.issues?.[0] || (parseResult.error as any).errors?.[0];
+    const firstError = parseResult.error.issues?.[0];
     const fieldName = firstError?.path?.join('.') || 'unknown field';
     const message = firstError?.message || 'Validation failed';
     return NextResponse.json(
@@ -118,29 +161,7 @@ export async function POST(req: NextRequest) {
 
   const validData = parseResult.data;
 
-  // 3. Static Profanity / Obscenity Filter (Deterministic Blacklist)
-  const PROFANITY_BLACKLIST = [
-    'fuck', 'shit', 'bitch', 'asshole', 'cunt', 'dick', 'pussy', 'whore', 'slut', 'fag', 'nigger', 'cock', 'bastard',
-    'puta', 'mierda', 'pendejo', 'cabron', 'maricon', 'verga', 'culo', 'zorra', 'puto', 'gilipollas', 'concha', 'cojones',
-    // Cryptographic Strict Mode / Anti-Nonsense
-    'scam', 'ponzi', 'rugpull', 'fake', 'bullshit', 'crap', 'idiot', 'moron', 'stupid', 'tonto', 'estupido', 'estúpido', 'basura', 'engaño'
-  ];
-
-  // Anti-XSS Payload Sanitization Function
-  const sanitizeHTML = (str: string) => str.replace(/[&<>'"]/g, 
-    tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-  );
-
-  function containsProfanity(text: string): boolean {
-    if (!text) return false;
-    const lower = text.toLowerCase();
-    // Escape special chars to prevent ReDoS attacks
-    return PROFANITY_BLACKLIST.some(word => {
-      const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      return new RegExp(`\\b${escaped}\\b`, 'i').test(lower);
-    });
-  }
-
+  // ── Static Profanity Check ────────────────────────────────────────────────
   const fieldsToCheck = [
     validData.title,
     validData.category,
@@ -151,7 +172,7 @@ export async function POST(req: NextRequest) {
     validData.payload?.logistics?.trackingNumber,
     validData.payload?.logistics?.dimensions,
     validData.payload?.logistics?.handlingConditions,
-    validData.payload?.lifecycle?.materialComposition
+    validData.payload?.lifecycle?.materialComposition,
   ];
 
   if (fieldsToCheck.some(field => typeof field === 'string' && containsProfanity(field))) {
@@ -161,7 +182,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 3.5 Semantic AI Validation
+  // ── Semantic AI Validation ────────────────────────────────────────────────
   const apiKey = process.env.OPENAI_API_KEY;
   if (apiKey) {
     const openai = new OpenAI({ apiKey });
@@ -183,64 +204,110 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // 4. Create the passport with resilient Anti-Collision Retry Loop
+  // ── Build slug ────────────────────────────────────────────────────────────
   let publicSlug = (validData.publicSlug || '').trim();
   if (!publicSlug) publicSlug = slugifyTitle(validData.title);
-  
-  // Fortification: Strip invalid URL characters
   publicSlug = publicSlug.replace(/[^a-z0-9-]/gi, '').toLowerCase();
 
-  let passport = null;
+  // ── Sanitize payload ──────────────────────────────────────────────────────
+  const sanitizedPayload = validData.payload ? JSON.parse(JSON.stringify({
+    ...validData.payload,
+    description: validData.payload.description ? sanitizeHTML(validData.payload.description) : undefined,
+    origin: validData.payload.origin ? sanitizeHTML(validData.payload.origin) : undefined,
+    batchId: validData.payload.batchId ? sanitizeHTML(validData.payload.batchId) : undefined,
+    logistics: validData.payload.logistics,
+    lifecycle: validData.payload.lifecycle,
+    telemetry: validData.payload.telemetry,
+  })) : {};
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // STEP 4 — OPTION D: Authoritative Session Check INSIDE the Prisma transaction.
+  //
+  // This is the core security primitive that closes the 24h revocation gap.
+  // For PILOT/LIVE modes, we verify the HumanitySession is not revoked WITHIN
+  // the same atomic transaction that creates the passport. If the session is
+  // revoked between the initial resolveStudioIdentity() call and this write,
+  // the transaction will throw and rollback — no passport is created.
+  //
+  // For OFF/SHADOW modes, identity.sessionId is null and the check is a no-op.
+  // ─────────────────────────────────────────────────────────────────────────────
+  let passport: any = null;
   let attempts = 0;
   const MAX_ATTEMPTS = 3;
 
   while (attempts < MAX_ATTEMPTS) {
     try {
-      passport = await prisma.productPassport.create({
-        data: {
-          publicSlug,
-          title: sanitizeHTML(validData.title),
-          category: validData.category,
-          issuerAddress,
-          payload: validData.payload ? JSON.parse(JSON.stringify({
-            ...validData.payload,
-            description: validData.payload.description ? sanitizeHTML(validData.payload.description) : undefined,
-            origin: validData.payload.origin ? sanitizeHTML(validData.payload.origin) : undefined,
-            batchId: validData.payload.batchId ? sanitizeHTML(validData.payload.batchId) : undefined,
-            logistics: validData.payload.logistics,
-            lifecycle: validData.payload.lifecycle,
-            telemetry: validData.payload.telemetry,
-          })) : {},
-          gs1Gtin: validData.gs1Gtin?.replace(/\D/g, '') || null,
-          events: {
-            create: [{ eventType: 'manufactured', payload: { note: 'Registered via Studio Provenance API' } }],
+      passport = await prisma.$transaction(async (tx) => {
+        // ── [OPTION D] Authoritative DB Session Check ─────────────────────
+        // Only enforce in PILOT/LIVE. In OFF/SHADOW, sessionId is null → skip.
+        if (identity.sessionId && (identity.mode === 'PILOT' || identity.mode === 'LIVE')) {
+          const sessionStillValid = await checkDbSessionValidInTx(
+            tx,
+            identity.sessionId,
+            issuerAddress
+          );
+          if (!sessionStillValid) {
+            throw Object.assign(
+              new Error('SESSION_REVOKED'),
+              { code: 'SESSION_REVOKED' }
+            );
+          }
+        }
+
+        // ── Create passport atomically ─────────────────────────────────────
+        return tx.productPassport.create({
+          data: {
+            publicSlug,
+            title: sanitizeHTML(validData.title),
+            category: validData.category,
+            issuerAddress,
+            payload: sanitizedPayload,
+            gs1Gtin: validData.gs1Gtin?.replace(/\D/g, '') || null,
+            events: {
+              create: [{ eventType: 'manufactured', payload: { note: 'Registered via Studio Provenance API' } }],
+            },
           },
-        },
-        include: { events: { orderBy: { createdAt: 'desc' } } },
+          include: { events: { orderBy: { createdAt: 'desc' } } },
+        });
       });
-      break; // Success, break loop
+
+      break; // Success — exit retry loop
+
     } catch (error: any) {
+      if (error.code === 'SESSION_REVOKED') {
+        // Session was revoked between identity resolution and mutation — deny
+        return NextResponse.json(
+          { error: 'Session has been revoked. Please sign in again.' },
+          { status: 401 }
+        );
+      }
       if (error.code === 'P2002' && error.meta?.target?.includes('publicSlug')) {
+        // Slug collision — retry with entropy suffix
         attempts++;
         publicSlug = `${slugifyTitle(validData.title)}-${crypto.randomUUID().split('-')[0]}`;
-      } else {
-        console.error('[WhaleFortress] Atomic DB Guard caught Prisma exception:', error);
-        return NextResponse.json({ error: 'Internal database error during quantum registry.' }, { status: 500 });
+        continue;
       }
+      // Unknown DB error — fail with 500
+      console.error('[WhaleFortress] Atomic DB Guard caught Prisma exception:', error);
+      return NextResponse.json(
+        { error: 'Internal database error during quantum registry.' },
+        { status: 500 }
+      );
     }
   }
 
   if (!passport) {
-    return NextResponse.json({ error: 'System under heavy load. Unique slug generation failed. Try again.' }, { status: 409 });
+    return NextResponse.json(
+      { error: 'System under heavy load. Unique slug generation failed. Try again.' },
+      { status: 409 }
+    );
   }
 
-  // 5. Instantly trigger the robust Aztec Sequencer (Async Queue)
-  // This executes "como la mantequilla": it won't block the API response
-  // but will safely handle PXE init, proof generation, and txHash DB sync.
+  // ── Async Aztec Sequencer (fire-and-forget, non-blocking) ─────────────────
   sequencer.submitPassportToAztec(passport.id, {
     slug: publicSlug,
     batchId: validData.payload?.batchId,
-    supplierId: issuerAddress, // For this initial system, issuer acts as supplier
+    supplierId: issuerAddress,
     metadata: validData.payload
   }).catch(err => {
     console.error(`[API] Failed to trigger sequencer for ${passport.id}:`, err);

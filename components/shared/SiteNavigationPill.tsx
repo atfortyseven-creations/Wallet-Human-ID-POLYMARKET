@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Crown, LayoutDashboard, Globe, HelpCircle, Atom } from 'lucide-react';
 
 export function SiteNavigationPill() {
-    const pathname = usePathname();
+    const pathname = usePathname() ?? '/';
 
     const navLinks = [
         { href: '/ledger',    label: 'Ledger',    icon: Globe,         active: pathname.startsWith('/ledger') },

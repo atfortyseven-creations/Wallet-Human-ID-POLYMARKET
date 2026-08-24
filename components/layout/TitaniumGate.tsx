@@ -18,11 +18,12 @@ export const useGateState = () => useContext(GateStateContext);
 
 interface TitaniumGateProps {
     children: React.ReactNode;
+    requiredTier?: string;
 }
 
-export function TitaniumGate({ children }: TitaniumGateProps) {
+export function TitaniumGate({ children, requiredTier = 'PRO' }: TitaniumGateProps) {
     const { isConnected, isConnecting, isReconnecting } = useAccount();
-    const pathname = usePathname();
+    const pathname = usePathname() ?? '/';
     const router = useRouter();
 
     // Pre-compute isPublicPage synchronously so we can use it as the initial state.

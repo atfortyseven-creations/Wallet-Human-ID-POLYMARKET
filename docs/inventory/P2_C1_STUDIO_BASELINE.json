@@ -1,0 +1,32 @@
+{
+  "api_passport": {
+    "method": "POST",
+    "results": {
+      "unauthenticated": 401,
+      "legacy_auth": 401
+    }
+  },
+  "api_prover": {
+    "method": "POST",
+    "results": {
+      "unauthenticated": 401,
+      "legacy_auth": 401
+    }
+  },
+  "api_transfer": {
+    "method": "POST",
+    "results": {
+      "unauthenticated": 401,
+      "legacy_auth": 401
+    }
+  },
+  "idempotency": {
+    "req1": 401,
+    "req2": 401
+  },
+  "revocation": {
+    "before_revoke": 401,
+    "after_revoke": 401,
+    "note": "Legacy behavior allows mutation after DB revocation due to JWT trust."
+  }
+}

@@ -120,9 +120,9 @@ async function verifyAuth(req: NextRequest): Promise<string | null> {
   const token = whaleCookie ?? bearerToken;
 
   if (!token) return null;
-  const secret = new TextEncoder().encode(
-    process.env.JWT_SECRET || 'VOID_SECRET_99_POLY_DEV_ONLY_CHANGE_IN_PRODUCTION',
-  );
+  const jwtSec = process.env.JWT_SECRET;
+  if (!jwtSec) return null; // Fail closed — no secret, no auth
+  const secret = new TextEncoder().encode(jwtSec);
   try {
     const { payload } = await jwtVerify(token, secret);
     return ((payload as any).address ?? (payload as any).sub ?? (payload as any).userId) as string | null;

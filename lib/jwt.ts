@@ -11,13 +11,13 @@ const alg = 'EdDSA';
 // during actual HTTP request handling — never at import / build time.
 function getHS256Secret(): string {
   const secret = process.env.JWT_SECRET;
-  if (!secret && process.env.NODE_ENV === 'production') {
+  if (!secret) {
     throw new Error(
       '[SECURITY CRITICAL] JWT_SECRET is not set. ' +
-      'This error fires at request time — set JWT_SECRET in Railway environment variables.'
+      'This error fires at request time — set JWT_SECRET in environment variables.'
     );
   }
-  return secret || 'dev-only-fallback-jwt-secret-change-me-in-production';
+  return secret;
 }
 
 // ─── EdDSA key cache ──────────────────────────────────────────────────────────

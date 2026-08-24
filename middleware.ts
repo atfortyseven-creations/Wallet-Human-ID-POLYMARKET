@@ -64,11 +64,14 @@ const PUBLIC_PREFIXES = [
   '/api/aztec/deploy-token',     // Admin deploy endpoint — has own DEPLOY_SECRET auth inside
   '/api/health',
   '/api/status',
+  '/api/registry/',              // Registry public API
+  '/api/humanidfi/',             // HumanIDFi public API
   '/_next/',
   '/connect',
   '/terminal',
   '/portfolio',
   '/studio',                     // Studio Provenance public page
+  '/registry',                   // Registry page
   '/fonts/',
   '/images/',
   '/icons/',
@@ -81,16 +84,22 @@ function isPublicPath(pathname: string): boolean {
   return PUBLIC_PREFIXES.some(prefix => pathname.startsWith(prefix));
 }
 
-// ── JWT Secret (Edge-compatible — TextEncoder only) ───────────────────────────
+// ── JWT Secret (Edge-compatible — TextEncoder only) ─────────────────────────
 function getEdgeSecret(): Uint8Array {
-  const secret = process.env.JWT_SECRET || 'VOID_SECRET_99_POLY_DEV_ONLY_CHANGE_IN_PRODUCTION';
+  // We can't import requireSecret easily in edge middleware without messing up bundle,
+  // so we inline the fail closed logic.
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('CRITICAL SECURITY ERROR: JWT_SECRET is not defined.');
+  }
   return new TextEncoder().encode(secret);
 }
 
 // ── Extract session JWT from cookies ─────────────────────────────────────────
 async function extractSessionAddress(req: NextRequest): Promise<string | null> {
   // Priority 1: SIWE whale session
-  const whaleCookie = req.cookies.get('whale_session')?.value
+  const whaleCookie = req.cookies.get('humanity_session')?.value
+    ?? req.cookies.get('whale_session')?.value
     ?? req.cookies.get('human_session')?.value;
 
   if (whaleCookie) {

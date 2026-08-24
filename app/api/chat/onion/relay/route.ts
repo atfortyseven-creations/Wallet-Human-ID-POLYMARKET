@@ -73,13 +73,12 @@ async function verifyAuth(req: NextRequest): Promise<boolean> {
 
   const token  = authHeader.slice(7);
   const secretVal = process.env.JWT_SECRET;
-  if (!secretVal && process.env.NODE_ENV === 'production') {
-    throw new Error('FATAL: JWT_SECRET environment variable is not set in production. Security compromised.');
+  if (!secretVal) {
+    console.error('[Onion Relay] JWT_SECRET is not set — rejecting token.');
+    return false; // Fail closed in ALL environments
   }
 
-  const secret = new TextEncoder().encode(
-    secretVal || 'VOID_SECRET_99_POLY_DEV_ONLY_CHANGE_IN_PRODUCTION',
-  );
+  const secret = new TextEncoder().encode(secretVal);
 
   try {
     await jwtVerify(token, secret);

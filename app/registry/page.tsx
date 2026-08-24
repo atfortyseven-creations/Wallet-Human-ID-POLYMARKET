@@ -21,6 +21,7 @@ import {
 import { toast } from "sonner";
 import { RealWorldMap } from "@/components/landing/RealWorldMap";
 import { SystemFooter } from "@/components/landing/SystemFooter";
+import { SiweRegistryAdapter } from "@/components/auth/SiweRegistryAdapter";
 
 // ─── Humanity Ledger: Single Aztec Testnet config ────────────────────────────────
 // All registry data comes exclusively from Humanity Ledger internals:
@@ -744,6 +745,14 @@ function WhaleNetworkActivityTab({ isDark }: { isDark: boolean }) {
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 export default function RegistryPage() {
+  return (
+    <SiweRegistryAdapter>
+      <RegistryContent />
+    </SiweRegistryAdapter>
+  );
+}
+
+function RegistryContent() {
   // ── UI State
   const [activeTab, setActiveTab] = useState<TabType>("map");
   const [network, setNetwork] = useState<NetworkType>("testnet");

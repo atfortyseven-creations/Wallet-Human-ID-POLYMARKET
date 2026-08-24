@@ -100,15 +100,38 @@ export async function POST(req: NextRequest) {
             }
         });
 
+        // ── [IDENTITY ADAPTER INTEGRATION] Create Studio Identity ──
+        const identity = await prisma.humanityIdentity.upsert({
+            where: { walletAddress: rawAddress },
+            update: { lastVerifiedAt: new Date() },
+            create: {
+                walletAddress: rawAddress,
+                chainId: 1, // Default EVM chain
+                verificationStatus: 'SIWE_VERIFIED',
+                lastVerifiedAt: new Date(),
+                permissions: []
+            }
+        });
+
+        const humanitySession = await prisma.humanitySession.create({
+            data: {
+                identityId: identity.id,
+                authenticationMethod: 'SIWE',
+                expiresAt: new Date(Date.now() + 604800 * 1000), // 7 days
+                securityContext: { ipAddress: ip, userAgent: req.headers.get('user-agent') || 'Unknown' },
+            }
+        });
+
         // Mint JWT
         const jwt = await mintJWT({
             sub: rawAddress,
+            sid: humanitySession.sessionId, // Required for Option D revocation checks
             address: rawAddress,
             clearance: 'Private',
             tier: user.tier || 'FREE',
             kycStatus: 'UNVERIFIED',
             humanityScore: user.humanityScore || 0,
-            iss: 'whale-alert-network',
+            iss: 'humanity-ledger', // Fixed old 'whale-alert-network' brand
             source: 'system-verify',
             issuedAt: new Date().toISOString(),
         });
@@ -160,6 +183,7 @@ export async function POST(req: NextRequest) {
         // Set all three session cookies so every auth gate works
         response.cookies.set('whale_session', jwt, secureCookieBase);
         response.cookies.set('human_session', jwt, secureCookieBase);
+        response.cookies.set('humanity_session', jwt, secureCookieBase); // New Option D SIWE session
 
         // system_handshake must be JS-readable for mobile isLinked detection
         response.cookies.set('system_handshake', rawAddress, {

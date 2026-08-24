@@ -4,11 +4,7 @@ import { prisma } from '@/lib/prisma';
 
 // FIX: Same VOID_SECRET_99_POLY vulnerability as lib/session.ts.
 // Removed hardcoded fallback. Guard instead of silently using a known secret.
-const _rawJwtSecret = process.env.JWT_SECRET;
-if (!_rawJwtSecret && process.env.NODE_ENV === 'production' && process.env.SKIP_ENV_VALIDATION !== 'true') {
-    throw new Error('[SECURITY FATAL] JWT_SECRET not set. Cannot mint SIWE session tokens safely.');
-}
-const JWT_SECRET = new TextEncoder().encode(_rawJwtSecret || 'dev-only-not-for-production-jwt-secret-change-me');
+
 
 export async function POST(req: NextRequest) {
   try {

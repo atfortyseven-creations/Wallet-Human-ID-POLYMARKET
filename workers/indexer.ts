@@ -16,7 +16,7 @@ const redis = new Redis(REDIS_URL);
 const wssClients = [
   {
     chain: mainnet,
-    url: process.env.GB_ETH_WSS_1 || 'wss://shared.us-east-1.getblock.io/d53ccda1da9f451999b60cd4e0871a27'
+    url: process.env.GETBLOCK_WSS_URL || 'wss://shared.us-east-1.getblock.io/d53ccda1da9f451999b60cd4e0871a27'
   },
   {
     chain: mainnet,

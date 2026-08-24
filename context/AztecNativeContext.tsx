@@ -215,7 +215,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
           setHistory(fresh);
 
           // Skip toasting on the first load to prevent notification spam on mobile
-          const isFirstFetch = !isMountedRef.current; // Assuming isMountedRef exists, let's use a local ref for initial fetch or check if history was empty
+          const isFirstFetch = !initialSyncRef.current; // Assuming isMountedRef exists, let's use a local ref for initial fetch or check if history was empty
           
           for (const tx of transactions) {
             if (notifiedRef.current.has(tx.id)) continue;

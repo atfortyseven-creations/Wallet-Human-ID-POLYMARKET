@@ -570,8 +570,8 @@ export default function ConnectPage() {
     <div className="flex flex-col gap-2">
       <WalletButton
         logo="/email-icon.svg"
-        name="Sign in with Email"
-        badge="6-digit code sent to your inbox"
+        name="Authenticate via Email"
+        badge="Enterprise-grade OTP delivery"
         onClick={() => setEmailModalOpen(true)}
         delay={0.3}
         extraIcon={
@@ -580,7 +580,7 @@ export default function ConnectPage() {
       />
       <div className="text-center mt-1">
         <span className="text-[9px] font-mono uppercase tracking-widest text-slate-400">
-          *Web3 wallet required later for L2 Aztec features
+          *Self-custodial wallet required later for L2 execution
         </span>
       </div>
     </div>
@@ -621,7 +621,7 @@ export default function ConnectPage() {
                 </button>
               )}
               <button onClick={handleTotalDisconnect} className={`flex items-center justify-center gap-2 px-5 py-3 border border-black/20 text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-black hover:bg-black hover:text-white transition-all active:scale-[0.98] ${isMobile ? 'w-full' : ''}`}>
-                Total Disconnect
+                Terminate Session
               </button>
             </div>
           </motion.div>
@@ -632,15 +632,15 @@ export default function ConnectPage() {
               <Lock size={20} strokeWidth={1.5} />
             </div>
             <div>
-              <h2 className="text-[24px] font-serif font-black tracking-tight text-black mb-2 uppercase">Signature Required</h2>
-              <p className="text-[10px] text-black/60 font-mono uppercase tracking-[0.1em] leading-relaxed max-w-[260px] mx-auto">Please check your wallet to sign the deterministic request.</p>
+              <h2 className="text-[24px] font-serif font-black tracking-tight text-black mb-2 uppercase">Cryptographic Signature Required</h2>
+              <p className="text-[10px] text-black/60 font-mono uppercase tracking-[0.1em] leading-relaxed max-w-[260px] mx-auto">Please check your wallet to sign the deterministic verification request.</p>
             </div>
             {authStatus === 'failed' ? (
               <div className="flex flex-col gap-3 w-full mt-4 pt-6 border-t border-black/10">
                 <button onClick={() => { triggerManualVerify(); }} className="w-full flex items-center justify-center gap-2 py-4 border border-black bg-black text-white font-mono text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-colors">
                   <ExternalLink size={13} /> Retry Signature
                 </button>
-                <button onClick={handleTotalDisconnect} className="w-full py-4 border border-black/20 text-black hover:bg-black hover:text-white font-mono text-[10px] font-bold uppercase tracking-[0.2em] transition-colors">Disconnect</button>
+                <button onClick={handleTotalDisconnect} className="w-full py-4 border border-black/20 text-black hover:bg-black hover:text-white font-mono text-[10px] font-bold uppercase tracking-[0.2em] transition-colors">Terminate Session</button>
               </div>
             ) : (
               <div className="flex flex-col gap-3 w-full mt-4 pt-6 border-t border-black/10">
@@ -649,7 +649,7 @@ export default function ConnectPage() {
                 </div>
                 <div className="flex items-center justify-center gap-2 mt-2">
                   <div className="w-1.5 h-1.5 bg-black animate-pulse" />
-                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black font-bold animate-pulse">Awaiting signature...</span>
+                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black font-bold animate-pulse">Awaiting cryptographic signature...</span>
                 </div>
               </div>
             )}
@@ -666,8 +666,8 @@ export default function ConnectPage() {
             <div className="h-px w-full bg-black/10 my-4" />
             <WalletButton
               logo="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Logo/Blue%20(Default)/Logo.svg"
-              name="Web3 Wallet"
-              badge="Select from 300+ wallets"
+              name="Self-Custodial Wallet"
+              badge="Connect via WalletConnect protocol"
               onClick={() => openAppKitSafe()}
               delay={0.35}
             />
@@ -684,12 +684,12 @@ export default function ConnectPage() {
                   <div className="p-4 bg-white border border-black">
                     <QRCodeSVG value={qrData} size={220} fgColor="#000000" bgColor="#FFFFFF" level="L" includeMargin={false} />
                   </div>
-                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-black font-bold">Scan via Humanity Protocol</span>
+                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-black font-bold">Scan to Authenticate</span>
                   {pinCode && (
                     <div className="w-full border-t border-black/10 pt-6 mt-2">
                       <div className="flex items-center justify-center mb-4 gap-2">
                         <Shield size={12} className="text-black" />
-                        <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black">Visual PIN</span>
+                        <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black">Security Checksum</span>
                       </div>
                       <div className="flex items-center justify-center gap-4">
                         {pinCode.split('').map((digit, idx) => (
@@ -708,7 +708,7 @@ export default function ConnectPage() {
                   <div className="w-full aspect-square max-w-[220px] border border-black/20 flex items-center justify-center bg-transparent">
                     <Loader2 size={24} className="animate-spin text-black/40" />
                   </div>
-                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold animate-pulse">Securing Tunnel...</span>
+                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold animate-pulse">Establishing Secure Connection...</span>
                 </div>
               </div>
             ) : syncStatus === "ERROR" ? (
@@ -733,38 +733,58 @@ export default function ConnectPage() {
     </div>
   );
 
-  // ── LEFT PANEL (Branding & Info) ──
+  // ── LEFT PANEL (Branding & Info) — Desktop only ──
   const renderInfoPanel = () => (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="flex flex-col justify-center h-full w-full z-10 mix-blend-difference text-white"
+      className="flex flex-col justify-between h-full w-full z-10"
     >
-      <div className="flex flex-col gap-0 w-full mb-12">
-        <h1 className="font-serif font-black uppercase leading-[0.85] tracking-tighter" style={{ fontSize: 'clamp(50px, 10vw, 150px)' }}>
+      {/* Top: Wordmark */}
+      <div className="flex flex-col gap-0 w-full">
+        <h1 className="font-serif font-black uppercase leading-[0.85] tracking-tighter text-white mix-blend-difference" style={{ fontSize: 'clamp(48px, 9vw, 140px)' }}>
           HUMANITY
         </h1>
-        <h1 className="font-serif font-black uppercase leading-[0.85] tracking-tighter ml-[5vw] lg:ml-[10vw]" style={{ fontSize: 'clamp(50px, 10vw, 150px)' }}>
+        <h1 className="font-serif font-black uppercase leading-[0.85] tracking-tighter text-white mix-blend-difference ml-[4vw]" style={{ fontSize: 'clamp(48px, 9vw, 140px)' }}>
           LEDGER
         </h1>
       </div>
-      
-      <div className="mt-8 lg:mt-24 max-w-lg">
-        <div className="h-px w-full bg-white/30 mb-8" />
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-          <span className="text-[9px] font-mono uppercase tracking-[0.4em] font-bold">
-            Settled on Aztec Network
+
+      {/* Bottom: Honest descriptor */}
+      <div className="max-w-md">
+        <div className="h-px w-full bg-white/20 mb-8" />
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse shrink-0" />
+          <span className="text-[9px] font-mono uppercase tracking-[0.4em] font-bold text-white">
+            Settled on Aztec Network L2
           </span>
         </div>
-        <p className="text-[11px] lg:text-[13px] font-mono uppercase tracking-[0.1em] leading-[1.8] text-white/70">
-          A purely deterministic enclave for humanity. 
-          Zero-knowledge cryptographic circuits ensure absolute sovereignty.
-          No marketing. No tracking. Pure mathematics.
+        <p className="text-[11px] lg:text-[13px] font-mono uppercase tracking-[0.1em] leading-[1.8] text-white/65">
+          Zero-Knowledge identity infrastructure for hybrid privacy and institutional compliance.
+          Verifiable credentials. No tracking. Auditable by design.
+        </p>
+        {/* Phase 13 honesty: infrastructure note */}
+        <p className="text-[10px] font-mono text-white/30 mt-6 leading-relaxed uppercase tracking-widest">
+          Frontend: Web2 (Vercel) · L2: Aztec Network Testnet
         </p>
       </div>
     </motion.div>
+  );
+
+  // ── MOBILE TOP HEADER (replaces the huge left panel on small screens) ──
+  const renderMobileHeader = () => (
+    <div className="flex items-center justify-between px-5 pt-safe-top pb-4 border-b border-black/10 bg-white">
+      <Link href="/" className="flex items-center gap-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-black">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        <span className="text-[13px] font-bold tracking-tight text-black">Humanity Ledger</span>
+      </Link>
+      <span className="text-[9px] font-mono uppercase tracking-[0.25em] text-black/40 font-bold">Aztec L2</span>
+    </div>
   );
 
   if (!mounted) {
@@ -774,23 +794,68 @@ export default function ConnectPage() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-white flex shrink-0 relative overflow-hidden text-black selection:bg-black selection:text-white cursor-crosshair">
+    <div className="w-full min-h-[100dvh] bg-white flex flex-col shrink-0 relative overflow-x-hidden text-black selection:bg-black selection:text-white">
 
-      {/* Custom Optical Lens Cursor */}
-      <motion.div 
+      {/* Custom Optical Lens Cursor — desktop only */}
+      <motion.div
          className="pointer-events-none fixed top-0 left-0 w-24 h-24 rounded-full bg-white z-[9999] mix-blend-difference hidden lg:block"
          style={{ x: mousePosition.x - 48, y: mousePosition.y - 48 }}
       />
 
-      <div className="w-full relative z-10 flex flex-col lg:flex-row min-h-screen">
-        
+      {/* ── MOBILE LAYOUT ── */}
+      <div className="flex flex-col lg:hidden min-h-[100dvh]">
+        {/* Compact branded header */}
+        {renderMobileHeader()}
+
+        {/* Auth form — takes all remaining space, centered */}
+        <div className="flex-1 flex flex-col items-center justify-center px-5 py-8 pb-safe-bottom overflow-y-auto">
+          <div className="w-full max-w-[400px]">
+            {/* Mini trust signals on mobile */}
+            <div className="flex items-center gap-2 mb-6">
+              <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/[0.03] border border-black/8 rounded-full">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold">ZK Secure</span>
+              </div>
+              <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/[0.03] border border-black/8 rounded-full">
+                <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold">⚡ Aztec L2</span>
+              </div>
+            </div>
+            {renderLoginCard()}
+          </div>
+        </div>
+
+        {/* Mobile bottom trust strip */}
+        <div className="px-5 py-4 border-t border-black/8 bg-white flex items-center justify-between pb-safe-bottom">
+          <span className="text-[9px] font-mono text-black/30 uppercase tracking-widest">Non-custodial</span>
+          <span className="text-[9px] font-mono text-black/30 uppercase tracking-widest">GDPR-Aligned</span>
+          <span className="text-[9px] font-mono text-black/30 uppercase tracking-widest">MiCA-Aware</span>
+        </div>
+      </div>
+
+      {/* ── DESKTOP LAYOUT ── */}
+      <div className="hidden lg:flex w-full min-h-[100dvh]">
+
         {/* Left Side: Manifesto Canvas */}
-        <div className="w-full lg:w-[60%] lg:border-r border-black/10 flex flex-col justify-center px-6 py-16 lg:p-20 relative bg-black selection:bg-white selection:text-black">
+        <div className="w-[60%] border-r border-black/10 flex flex-col justify-between px-20 py-20 relative bg-black selection:bg-white selection:text-black">
           {renderInfoPanel()}
         </div>
 
-        {/* Right Side: Naked Auth */}
-        <div className="w-full lg:w-[40%] flex flex-col items-center justify-center px-6 py-12 lg:p-20 relative bg-white">
+        {/* Right Side: Auth */}
+        <div className="w-[40%] flex flex-col items-center justify-center px-16 py-20 relative bg-white">
+          {/* Trust signals bar */}
+          <div className="w-full max-w-[420px] flex items-center gap-3 mb-10">
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/[0.03] border border-black/8 rounded-full">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold">ZK Secure</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/[0.03] border border-black/8 rounded-full">
+              <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold">⚡ Aztec Network</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/[0.03] border border-black/8 rounded-full">
+              <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold">Non-custodial</span>
+            </div>
+          </div>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -799,24 +864,32 @@ export default function ConnectPage() {
           >
             {renderLoginCard()}
           </motion.div>
+
+          {/* Desktop bottom micro-disclaimer */}
+          <p className="text-[9px] font-mono text-black/25 text-center mt-10 max-w-[360px] leading-relaxed uppercase tracking-widest">
+            By connecting you agree to our{" "}
+            <Link href="/legal/terms" className="underline hover:text-black/50 transition-colors">Terms</Link>
+            {" & "}
+            <Link href="/legal/privacy" className="underline hover:text-black/50 transition-colors">Privacy Policy</Link>.
+            Not financial advice. Aztec Network Testnet.
+          </p>
         </div>
-
-        {/* Mobile QR Scanner modal */}
-        {isMobile && mounted && (
-          <DynamicUniversalScanModal
-            isOpen={showMobileScanner}
-            onClose={() => setShowMobileScanner(false)}
-            address={address ?? ""}
-            mode="session-only"
-            onScan={() => { setShowMobileScanner(false); toast.success("Session synchronized"); }}
-          />
-        )}
-
-        {/* Global Email Login Modal */}
-        <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
       </div>
 
-      
+      {/* Mobile QR Scanner modal */}
+      {isMobile && mounted && (
+        <DynamicUniversalScanModal
+          isOpen={showMobileScanner}
+          onClose={() => setShowMobileScanner(false)}
+          address={address ?? ""}
+          mode="session-only"
+          onScan={() => { setShowMobileScanner(false); toast.success("Session synchronized"); }}
+        />
+      )}
+
+      {/* Global Email Login Modal */}
+      <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
+
       {/* Hidden AppKit button for native mobile dispatch */}
       <div aria-hidden="true" style={{ position: 'absolute', opacity: 0, width: '1px', height: '1px', pointerEvents: 'none', overflow: 'hidden' }}>
         {/* @ts-ignore */}
@@ -826,3 +899,5 @@ export default function ConnectPage() {
     </div>
   );
 }
+
+

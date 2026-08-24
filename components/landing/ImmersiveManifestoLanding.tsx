@@ -490,7 +490,7 @@ function HeroSection() {
             style={{ willChange: "transform" }}
           >
             <p className="text-[16px] md:text-[19px] text-black/65 leading-relaxed font-medium">
-              Humanity Ledger operates as an Institutional-Grade System Execution Environment. Modular, sovereign Mini-Apps shielded by zero-knowledge cryptography.
+              Humanity Ledger operates as a Hybrid Execution Environment. Modular Mini-Apps shielded by zero-knowledge cryptography, designed for enterprise compliance and privacy.
             </p>
             <p className="text-[13px] md:text-[14px] font-semibold text-indigo-600/90 tracking-wide uppercase mt-2">
               Official Institutional Ecosystem Launch — January 2027
@@ -587,7 +587,7 @@ function StatementSection() {
             {
               n: "03",
               title: "Hybrid Execution",
-              body: "Bridge Ethereum liquidity with private sovereign execution. Full composability, zero metadata leakage.",
+              body: "Bridge Ethereum liquidity with zero-knowledge L2 execution via Aztec Network. High composability with regulated visibility.",
             },
           ].map((item, i) => (
             <motion.div
@@ -639,7 +639,7 @@ const MODULES = [
     ),
     tag: "On-Chain Registry",
     title: "Studio Provenance",
-    desc: "Register and tokenize real-world assets on the Humanity Ledger L2. Immutable public proofs with absolute ownership privacy.",
+    desc: "Register and tokenize real-world assets on the Humanity Ledger L2 via Aztec Network. Verifiable public proofs with configurable ownership privacy.",
     href: "/studio/provenance",
     cta: "Open Studio",
     id: "module-studio-btn",
@@ -680,7 +680,7 @@ const MODULES = [
     ),
     tag: "Shielded Analytics",
     title: "Portfolio Terminal",
-    desc: "Multi-chain asset tracking enclosed within your local Private Execution Environment. Total financial opacity.",
+    desc: "Multi-chain asset tracking processed locally in your browser. Your keys and data never leave your device by default.",
     href: "/portfolio",
     cta: "Open Portfolio",
     id: "module-terminal-btn",
@@ -770,6 +770,232 @@ function ModulesSection() {
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </Link>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── SDK Early Access — Phase 15 ─────────────────────────────────────────────
+// Replaces "Ghost Ecosystem" with an honest Early Access framing
+function DeveloperSection() {
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <section
+      ref={ref}
+      className="w-full bg-black border-t border-white/5 py-32 md:py-48 text-white"
+    >
+      <div className="w-full max-w-5xl mx-auto px-6">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16">
+          <div>
+            <motion.span
+              initial="hidden"
+              animate={inView ? "visible" : "hidden"}
+              variants={fadeIn}
+              className="block text-[10.5px] font-mono uppercase tracking-[0.25em] text-white/40 mb-5"
+            >
+              SDK & Developer Platform
+            </motion.span>
+            <div className="flex items-center gap-3 mb-4">
+              <motion.h2
+                initial="hidden"
+                animate={inView ? "visible" : "hidden"}
+                variants={fadeUp}
+                style={{
+                  fontFamily: "var(--font-aztec-serif), Georgia, serif",
+                  fontSize: "clamp(2rem, 4.5vw, 4rem)",
+                  fontWeight: 700,
+                }}
+                className="leading-[1.05] tracking-tight text-white"
+              >
+                Build on Humanity.
+              </motion.h2>
+              <span className="text-[10px] font-bold uppercase tracking-widest bg-amber-400/20 text-amber-300 px-2.5 py-1 rounded-full self-start mt-2">
+                Early Access
+              </span>
+            </div>
+            <motion.p
+              initial="hidden"
+              animate={inView ? "visible" : "hidden"}
+              variants={fadeUp}
+              custom={0.1}
+              className="text-[15px] md:text-[17px] text-white/50 max-w-[500px] leading-relaxed"
+            >
+              We are opening access to the Humanity Ledger developer platform. Build your own Mini-App, integrate ZK identity into your dApp, or contribute to the open-source ecosystem.
+            </motion.p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {[
+            {
+              icon: "⚡",
+              title: "ZK Identity SDK",
+              status: "Early Access",
+              desc: "Integrate HumanityIdentity into your dApp. Verify users with SIWE + ZK proofs. No PII stored on your servers.",
+              href: "/developers/sdk-early-access",
+              statusColor: "bg-amber-400/15 text-amber-300",
+            },
+            {
+              icon: "📡",
+              title: "API Reference",
+              status: "Available",
+              desc: "RESTful API for passport creation, provenance events, and session management. Full OpenAPI spec included.",
+              href: "/developers/api-docs",
+              statusColor: "bg-green-400/15 text-green-300",
+            },
+            {
+              icon: "🧪",
+              title: "ZK Sandbox",
+              status: "Testnet",
+              desc: "Experiment with Noir circuits over Aztec Network Testnet without spending real assets. Developer-friendly defaults.",
+              href: "/developer/sandbox",
+              statusColor: "bg-blue-400/15 text-blue-300",
+            },
+          ].map((item, i) => (
+            <motion.div
+              key={item.title}
+              initial="hidden"
+              animate={inView ? "visible" : "hidden"}
+              variants={fadeUp}
+              custom={i * 0.12}
+              className="flex flex-col bg-white/[0.04] border border-white/10 rounded-3xl p-8 gap-6 hover:bg-white/[0.07] hover:border-white/15 transition-all duration-300 group"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-2xl">{item.icon}</span>
+                <span className={`text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${item.statusColor}`}>
+                  {item.status}
+                </span>
+              </div>
+              <div className="flex flex-col gap-2 flex-1">
+                <h3 className="text-[18px] text-white tracking-tight font-bold">
+                  {item.title}
+                </h3>
+                <p className="text-[13px] text-white/50 leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+              <Link
+                href={item.href}
+                className="self-start flex items-center gap-1.5 text-[13px] font-semibold text-white/50 hover:text-white hover:gap-2.5 transition-all duration-200"
+              >
+                Explore →
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={fadeUp}
+          custom={0.3}
+          className="mt-12 flex flex-col sm:flex-row items-center gap-4"
+        >
+          <Link
+            href="/developers/waitlist"
+            id="dev-waitlist-btn"
+            className="px-8 py-4 bg-white text-black rounded-full text-[14px] font-bold hover:bg-zinc-100 transition-all shadow-[0_4px_24px_rgba(255,255,255,0.1)]"
+          >
+            Join the Builder Waitlist →
+          </Link>
+          <a
+            href="https://github.com/humanityledger/Humanity-Ledger"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-8 py-4 border border-white/20 text-white rounded-full text-[14px] font-medium hover:bg-white/5 transition-all"
+          >
+            View on GitHub (Open Source)
+          </a>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Network Economy — Phase 16 ───────────────────────────────────────────────
+// Transparency on sustainability model, QD system, gas subsidies
+function NetworkEconomySection() {
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <section
+      ref={ref}
+      className="w-full bg-zinc-50 border-t border-black/[0.05] py-32 md:py-40"
+    >
+      <div className="w-full max-w-5xl mx-auto px-6">
+        <motion.span
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={fadeIn}
+          className="block text-[10.5px] font-mono uppercase tracking-[0.25em] text-black/40 mb-5"
+        >
+          Network Economy & Sustainability
+        </motion.span>
+        <motion.h2
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={fadeUp}
+          style={{
+            fontFamily: "var(--font-aztec-serif), Georgia, serif",
+            fontSize: "clamp(2rem, 4.5vw, 4rem)",
+            fontWeight: 700,
+          }}
+          className="leading-[1.05] tracking-tight text-black mb-6"
+        >
+          Who pays the gas?
+          <br />
+          <span style={{ color: "rgba(0,0,0,0.5)" }}>Honest answers.</span>
+        </motion.h2>
+        <motion.p
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={fadeUp}
+          custom={0.1}
+          className="text-[15px] md:text-[17px] text-black/55 max-w-[600px] leading-relaxed mb-16"
+        >
+          We believe institutional-grade adoption requires economic transparency. Here is how the Humanity Ledger network sustains itself.
+        </motion.p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {[
+            {
+              title: "Quantum Dusts (QDs)",
+              desc: "QDs are the native credit system of the Humanity Ledger ecosystem. They are earned through verified activity (provenance events, ZK verifications, referrals) and used to subsidize gas costs on Aztec Network Testnet. Not a security. Not a speculative token.",
+              icon: "⚛️",
+            },
+            {
+              title: "Gas Subsidies",
+              desc: "During early access, Aztec Network Testnet transactions are gasless by design. As we migrate to Mainnet, a portion of subscription revenue and QD usage will be dedicated to a Gas Subsidy Fund managed transparently on-chain.",
+              icon: "⛽",
+            },
+            {
+              title: "Subscription Revenue",
+              desc: "Institutional and Elite tiers (ARCHIVE_PROVER, ELITE) fund ongoing infrastructure costs including server-side ZK proving, WebRTC relay nodes, and Aztec L2 integrations. No hidden monetization of user data.",
+              icon: "📊",
+            },
+            {
+              title: "ZK Proving Costs",
+              desc: "Client-side proving (Noir circuits in browser) is free. Server-side proving via Aztec Prover Network has infrastructure costs covered by Elite tier subscriptions. Costs are visible on our public dashboard.",
+              icon: "🔐",
+            },
+          ].map((item, i) => (
+            <motion.div
+              key={item.title}
+              initial="hidden"
+              animate={inView ? "visible" : "hidden"}
+              variants={fadeUp}
+              custom={i * 0.1}
+              className="flex flex-col gap-4 bg-white rounded-3xl border border-black/[0.06] p-8"
+            >
+              <span className="text-2xl">{item.icon}</span>
+              <h3 className="text-[17px] font-bold text-black tracking-tight">{item.title}</h3>
+              <p className="text-[13px] text-black/50 leading-relaxed">{item.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -1162,7 +1388,7 @@ function AztecCTASection() {
           custom={0.1}
           className="text-[16px] md:text-[18px] text-black/50 max-w-[500px] leading-relaxed"
         >
-          Join the sovereign tier. Powered by zero knowledge architecture, client-side proving, and unstoppable cryptography.
+          Join the early access layer. Powered by Zero-Knowledge infrastructure, verifiable trails, and pragmatic corporate compliance over Aztec Network.
         </motion.p>
 
         <motion.div
@@ -1232,6 +1458,8 @@ export function ImmersiveManifestoLanding({
             <StatementSection />
             <AztecWTFSection />
             <ModulesSection />
+            <DeveloperSection />
+            <NetworkEconomySection />
             <SeeInActionSection />
             <RegistrySection hideMap={hideMap} />
             <RoadmapSection />

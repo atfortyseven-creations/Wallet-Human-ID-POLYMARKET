@@ -27,15 +27,15 @@ const en = {
   },
   landing: {
     hero: {
-        badge: 'Elite Tracking Protocol',
-        title: 'Humanity Ledger',
-        subtitle: 'System tracking with advanced security, real-time alerts, and unmatched precision.',
-        keys: 'Real data. Deep insights.',
-        identity: 'Tracking. Data. Alpha.',
+        badge: 'Zero-Knowledge Pragmatic Privacy',
+        title: 'Humanity',
+        subtitle: 'The compliant and scalable ZK-infrastructure for institutional adoption, powered by Aztec Network.',
+        keys: 'Hybrid Governance.',
+        identity: 'Transparent Security. Aztec L2.',
         stats: {
-            identities: 'Entities',
-            secured: 'Monitored',
-            decentralised: 'Active'
+            identities: 'ZK Entities',
+            secured: 'L2 Volume',
+            decentralised: 'Uptime'
         },
         accessGranted: 'Dashboard Ready',
         welcome: 'Welcome,',

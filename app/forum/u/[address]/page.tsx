@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 
 export default function UserProfilePage() {
-  const { address } = useParams();
+  const params = useParams();
+  const address = params?.address as string | undefined;
   const [profile, setProfile] = useState<any>(null);
   const [topics, setTopics]   = useState<any[]>([]);
 

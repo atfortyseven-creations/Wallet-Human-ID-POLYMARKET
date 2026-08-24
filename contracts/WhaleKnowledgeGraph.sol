@@ -28,6 +28,9 @@ contract WhaleKnowledgeGraph is AccessControl {
 
     // Mapping from an Ethereum address to its Analytics Profile
     mapping(address => EntityAnalytics) private _knowledgeGraph;
+    
+    // Nonce for multisig coordination per target
+    mapping(address => uint256) public targetNonce;
 
     // Events for off-chain indexing (TheGraph / WebSockets)
     event EntityUpdated(address indexed targetProxy, string name, string category, uint8 riskScore);
@@ -62,8 +65,10 @@ contract WhaleKnowledgeGraph is AccessControl {
         require(riskScore <= 100, "Risk score must be <= 100");
         require(confidence <= 100, "Confidence score must be <= 100");
 
+        uint256 nonce = targetNonce[target];
+
         // Multisig Validation
-        bytes32 updateHash = keccak256(abi.encodePacked(target, name, category, riskScore, confidence, block.timestamp / 1 hours));
+        bytes32 updateHash = keccak256(abi.encodePacked(target, name, category, riskScore, confidence, nonce));
         require(!hasSigned[updateHash][msg.sender], "Already signed");
         
         hasSigned[updateHash][msg.sender] = true;
@@ -79,6 +84,7 @@ contract WhaleKnowledgeGraph is AccessControl {
                 exists: true
             });
 
+            targetNonce[target]++; // Increment nonce for next update
             emit EntityUpdated(target, name, category, riskScore);
         }
     }

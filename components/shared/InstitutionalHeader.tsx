@@ -57,10 +57,10 @@ function MegaMenuItem({ item }: { item: any }) {
   );
 }
 
-export function InstitutionalHeader() {
+export function InstitutionalHeader({ fixed = true, theme = 'dark' }: { fixed?: boolean, theme?: string }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { t } = useSystemTranslation();
-    const pathname = usePathname();
+    const pathname = usePathname() ?? '/';
 
     const MENU_ITEMS = [
       { label: 'Dashboard', href: "/terminal" },

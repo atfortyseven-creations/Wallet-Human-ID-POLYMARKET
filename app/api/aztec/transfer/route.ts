@@ -61,7 +61,8 @@ export async function POST(req: NextRequest) {
     const roundedAmount = Math.round(rawAmount * 1_000_000) / 1_000_000;
 
     // ── Session Authorization (CSRF / Replay Protection) ────────────────────
-    // Rely strictly on Edge Middleware's cryptographically verified header
+    // Rely on Edge Middleware for basic JWT check, but enhance with Identity Adapter
+    // (Option D) for authoritative DB session checks on SIWE wallets.
     let verifiedSessionAddr = req.headers.get('x-verified-session-address')?.toLowerCase().trim();
 
     if (!verifiedSessionAddr) {
@@ -69,6 +70,21 @@ export async function POST(req: NextRequest) {
         { error: 'Unauthorized: Valid session required.' },
         { status: 401 }
       );
+    }
+
+    // Attempt to resolve SIWE identity to get sessionId for Option D lock later
+    const identityAdapter = await import('@/lib/security/studio-identity-adapter');
+    const identity = await identityAdapter.resolveStudioIdentity(false);
+    
+    // If the middleware address is an EVM address, we can strictly cross-check
+    const isEVM = verifiedSessionAddr.startsWith('0x') && verifiedSessionAddr.length === 42;
+    if (isEVM && identity.mode === 'PILOT') {
+      if (!identity.authorizedAddress || identity.authorizedAddress.toLowerCase() !== verifiedSessionAddr) {
+         return NextResponse.json(
+          { error: 'Unauthorized: Session mismatch or revoked (Identity Adapter PILOT).' },
+          { status: 401 }
+        );
+      }
     }
 
     // [REPLAY ATTACK PROTECTION] Verify session timestamp freshness (Phase 4)
@@ -308,6 +324,18 @@ export async function POST(req: NextRequest) {
 
     try {
       await prisma.$transaction(async (tx) => {
+        // 0. [OPTION D] Authoritative DB Session Check (Zero Revocation Gap)
+        if (identity.sessionId && identity.mode === 'PILOT') {
+          const sessionStillValid = await identityAdapter.checkDbSessionValidInTx(
+            tx,
+            identity.sessionId,
+            verifiedSessionAddr
+          );
+          if (!sessionStillValid) {
+            throw new Error('SESSION_REVOKED: Your session was revoked. Please authenticate again.');
+          }
+        }
+
         // 1. Calculate balance WITHIN the serializable transaction lock
         const receivedAgg = await tx.transaction.aggregate({
           where: { toAddress: fromAddr, token: 'QDs', status: 'COMPLETED' },

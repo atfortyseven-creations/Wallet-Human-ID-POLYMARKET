@@ -22,7 +22,7 @@ contract HumanityLedger {
     fn add_balance(recipient: AztecAddress, amount: Field) {
         // [FASE 7 - QUANTUM SHIELD] Restringir bounds para prevenir field wrap-around
         assert(amount != 0, "Amount cannot be zero");
-        assert(amount as u120 == amount as u120, "Amount exceeds 120-bit safe bound");
+        assert((amount as u120) as Field == amount, "Amount exceeds 120-bit safe bound");
         // En un entorno productivo real, esto requeriría un modificador de acceso (admin o bridge contract)
         // Por ahora, blindamos la integridad matemática del balance.
 
@@ -36,7 +36,7 @@ contract HumanityLedger {
         // [FASE 7 - QUANTUM SHIELD] Filtro Anti-Sybil y Bounds
         assert(sender != recipient, "Self-transfers (wash trading) are forbidden");
         assert(amount != 0, "Transfer amount cannot be zero");
-        assert(amount as u120 == amount as u120, "Amount exceeds 120-bit safe bound");
+        assert((amount as u120) as Field == amount, "Amount exceeds 120-bit safe bound");
         assert(sender == context.msg_sender(), "Unauthorized sender"); // Solo el dueño puede transferir
 
         let sender_balance = storage.balances.at(sender);

@@ -13,11 +13,17 @@ export async function POST(req: NextRequest) {
 
     let event;
 
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!webhookSecret) {
+        console.error('[WEBHOOK_ERROR] STRIPE_WEBHOOK_SECRET is not set. Webhook verification disabled — rejecting all events.');
+        return NextResponse.json({ error: 'Webhook not configured' }, { status: 500 });
+    }
+
     try {
         event = stripe.webhooks.constructEvent(
             body,
             signature,
-            process.env.STRIPE_WEBHOOK_SECRET || ''
+            webhookSecret
         );
     } catch (err: any) {
         console.error(`[WEBHOOK_ERROR] Signature verification failed: ${err.message}`);
@@ -80,7 +86,7 @@ export async function POST(req: NextRequest) {
                         amount: amountTotal,
                         token: 'USD',
                         fromAddress: finalUserId,
-                        toAddress: 'WhaleNetwork'
+                        toAddress: 'HumanityLedger'
                     }
                 });
 
@@ -226,7 +232,7 @@ export async function POST(req: NextRequest) {
                                 amount: amountPaid,
                                 token: 'USD',
                                 fromAddress: subUserId,
-                                toAddress: 'WhaleNetwork'
+                                toAddress: 'HumanityLedger'
                             }
                         });
                     }

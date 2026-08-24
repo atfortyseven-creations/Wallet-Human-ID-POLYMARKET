@@ -449,6 +449,41 @@ model SiweNonce {
 }
 
 // 
+// CANONICAL IDENTITY (P2 SIWE MIGRATION)
+// 
+
+model HumanityIdentity {
+  id                 String    @id @default(uuid())
+  walletAddress      String    @unique
+  chainId            Int
+  walletType         String    @default("EOA") // EOA, SMART_ACCOUNT, MULTISIG
+  verificationStatus String    @default("UNVERIFIED") // UNVERIFIED, SIWE_VERIFIED, ZK_VERIFIED
+  createdAt          DateTime  @default(now())
+  lastVerifiedAt     DateTime?
+  
+  permissions        String[]  @default([]) // e.g. "registry:write", "admin:all"
+  
+  sessions           HumanitySession[]
+}
+
+model HumanitySession {
+  sessionId            String   @id @default(uuid())
+  identityId           String
+  authenticationMethod String   // "SIWE", "LEGACY_ADAPTER"
+  createdAt            DateTime @default(now())
+  expiresAt            DateTime
+  revokedAt            DateTime?
+  lastSeenAt           DateTime @default(now())
+  securityContext      Json?    // { ip: "...", userAgent: "..." }
+  version              Int      @default(1)
+
+  identity HumanityIdentity @relation(fields: [identityId], references: [id], onDelete: Cascade)
+
+  @@index([identityId])
+  @@index([expiresAt])
+}
+
+// 
 // ON-CHAIN ACADEMY PROGRESSION
 // 
 

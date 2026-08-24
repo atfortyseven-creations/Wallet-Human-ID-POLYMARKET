@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
             kycStatus: 'VERIFIED',
             isZkVerified: true,
             humanityScore: user.humanityScore || 100,
-            iss: 'whale-alert-network',
+            iss: 'humanity-ledger',
             issuedAt: new Date().toISOString()
         });
 

@@ -20,7 +20,7 @@ export default function NewTopicPage() {
 function NewTopicContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const preselectedCategory = searchParams.get('category');
+  const preselectedCategory = searchParams?.get('category');
 
   const [categories, setCategories] = useState<any[]>([]);
   const [title, setTitle]           = useState('');

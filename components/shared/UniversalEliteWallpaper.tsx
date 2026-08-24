@@ -13,7 +13,7 @@ import { usePathname } from 'next/navigation';
  * - /connect    hidden — page manages its own background
  */
 export function UniversalEliteWallpaper() {
-    const pathname = usePathname();
+    const pathname = usePathname() ?? '/';
     const theme = useSettingsStore((s) => s.theme);
 
     // /connect has its own full-bleed wallpaper — skip the global overlay
