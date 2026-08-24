@@ -957,19 +957,21 @@ function NetworkView({ s, update }: any) {
 
 function PremiumView() {
   const { open } = useAppKit();
+  const [isPaying, setIsPaying] = useState(false);
 
-  const handlePayment = () => {
-    toast.promise(
-      new Promise((resolve) => setTimeout(resolve, 2000)),
-      {
-        loading: 'Connecting to Azguard Wallet...',
-        success: () => {
-          open(); // Opens AppKit modal so they can select Azguard Wallet
-          return 'Please confirm the ZK transaction in Azguard Wallet';
-        },
-        error: 'Failed to connect to Azguard Wallet'
-      }
-    );
+  const handlePayment = async (planLabel: string, aztAmount: number) => {
+    setIsPaying(true);
+    try {
+      // 1. Open wallet modal (Azguard first in list)
+      open();
+      toast.info('Complete the AZT payment in your wallet, then return here.', { duration: 6000 });
+      // NOTE: In production, listen to on-chain event via Azguard SDK callback.
+      // For now, we show a modal that lets the user paste their txHash.
+    } catch (e: any) {
+      toast.error(e?.message || 'Payment failed');
+    } finally {
+      setIsPaying(false);
+    }
   };
 
   return (
@@ -978,7 +980,28 @@ function PremiumView() {
         <Crown size={48} className="text-[#1c7aff]" />
       </div>
       <h1 className="text-3xl font-black uppercase text-center mb-2">Whale Pro</h1>
-      <p className="text-sm font-bold text-zinc-600 text-center mb-8 max-w-xs">Unlimited limits. Autonomous tooling. Complete sovereignty.</p>
+      <p className="text-sm font-bold text-zinc-600 text-center mb-6 max-w-xs">Unlimited limits. Autonomous tooling. Complete sovereignty.</p>
+
+      {/* Azguard Wallet Banner */}
+      <div className="w-full bg-black border-[3px] border-[#5200FF] p-4 mb-4 flex items-center gap-3 shadow-[4px_4px_0_0_#5200FF]">
+        <img
+          src="https://pbs.twimg.com/profile_images/1798363363365945344/v3F962Fk_400x400.jpg"
+          className="w-10 h-10 rounded border-2 border-[#5200FF] shrink-0 object-cover"
+          alt="Azguard"
+          onError={(e: any) => { e.target.src = 'https://aztec.network/favicon.ico'; }}
+        />
+        <div className="flex flex-col">
+          <span className="text-white font-black text-[13px] uppercase tracking-widest">Azguard Wallet</span>
+          <span className="text-[#5200FF] text-[10px] font-bold">Official Aztec Network Wallet — ZK Native</span>
+        </div>
+        <button
+          onClick={() => open()}
+          className="ml-auto bg-[#5200FF] text-white px-3 py-1 font-black text-[11px] uppercase border-2 border-[#5200FF] hover:bg-[#4000CC] transition-colors shrink-0"
+        >
+          CONNECT
+        </button>
+      </div>
+
       <div className="w-full bg-black border-[3px] border-[#1c7aff] p-3 mb-4 flex items-center gap-2 shadow-[4px_4px_0_0_#1c7aff]">
         <span className="text-[10px] font-black text-[#1c7aff] uppercase tracking-widest">⚡ Paid with Aztec Network — Zero-knowledge, private, on-chain</span>
       </div>
@@ -987,17 +1010,28 @@ function PremiumView() {
           <span className="font-black">MONTHLY</span>
           <span className="font-black text-[#1c7aff] text-2xl mt-2">4.49 AZT</span>
           <span className="text-[10px] font-bold text-zinc-400 mt-1">≈ Aztec Network</span>
+          <button
+            onClick={() => handlePayment('monthly', 4.49)}
+            disabled={isPaying}
+            className="mt-3 py-2 bg-[#1c7aff] text-white font-black text-[11px] uppercase border-2 border-black disabled:opacity-50"
+          >
+            {isPaying ? 'PROCESSING...' : 'SELECT'}
+          </button>
         </div>
         <div className="flex-1 border-[3px] border-[#1c7aff] bg-black text-white p-4 flex flex-col shadow-[4px_4px_0_0_#1c7aff]">
           <span className="text-[10px] bg-[#1c7aff] px-1 py-0.5 w-fit font-black mb-1">-35%</span>
           <span className="font-black">ANNUAL</span>
           <span className="font-black text-[#1c7aff] text-2xl mt-2">2.83 AZT<span className="text-sm text-zinc-400">/mo</span></span>
           <span className="text-[10px] font-bold text-zinc-500 mt-1">≈ Aztec Network</span>
+          <button
+            onClick={() => handlePayment('annual', 33.96)}
+            disabled={isPaying}
+            className="mt-3 py-2 bg-[#1c7aff] text-white font-black text-[11px] uppercase border-2 border-[#1c7aff] disabled:opacity-50"
+          >
+            {isPaying ? 'PROCESSING...' : 'SELECT'}
+          </button>
         </div>
       </div>
-      <button onClick={handlePayment} className="w-full py-4 bg-[#1c7aff] text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[8px_8px_0_0_#000] active:translate-y-1">
-        PAY WITH AZTEC COINS
-      </button>
       <p className="text-[10px] font-bold text-zinc-400 text-center mt-3 max-w-xs">
         Payment is processed privately via Aztec Network ZK proofs. No bank data. No KYC. Complete privacy.
       </p>
@@ -1005,49 +1039,178 @@ function PremiumView() {
   );
 }
 
+const QD_PACKAGES = [
+  { qd: 100, price: '0.43 AZT', index: 0 },
+  { qd: 250, price: '1.08 AZT', index: 1 },
+  { qd: 500, price: '2.17 AZT', index: 2 },
+  { qd: 1000, price: '4.28 AZT', index: 3 },
+  { qd: 2500, price: '10.80 AZT', index: 4 },
+  { qd: 35000, price: '140 AZT', index: 5 },
+];
+
 function StarsView() {
   const { open } = useAppKit();
-  
-  const handlePurchase = (pkg: any) => {
-    toast.promise(
-      new Promise((resolve) => setTimeout(resolve, 2000)),
-      {
-        loading: `Generating ZK proof for ${pkg.qd} QD payment...`,
-        success: () => {
-          open(); // Opens AppKit modal to connect Azguard
-          return `Open Azguard Wallet to confirm ${pkg.price} payment`;
-        },
-        error: 'Failed to initiate ZK payment'
-      }
-    );
+  const [buying, setBuying] = useState<number | null>(null);
+  const [showTxInput, setShowTxInput] = useState<{ pkg: typeof QD_PACKAGES[0]; aztecAddress: string } | null>(null);
+  const [txHashInput, setTxHashInput] = useState('');
+  const [aztecAddress, setAztecAddress] = useState('');
+
+  // Try to get aztecAddress from vault
+  useEffect(() => {
+    import('@/lib/core/SecureVault').then(({ vault }) => {
+      vault.getItem('aztec_session').then((stored) => {
+        if (stored) {
+          try { setAztecAddress(JSON.parse(stored).address || ''); } catch {}
+        }
+      });
+    });
+  }, []);
+
+  const handlePurchase = async (pkg: typeof QD_PACKAGES[0]) => {
+    if (!aztecAddress) {
+      toast.error('Connect your Aztec identity first (Portfolio → Aztec Identity tab).');
+      return;
+    }
+    setBuying(pkg.index);
+    try {
+      open(); // Open AppKit so user can select Azguard and complete AZT payment
+      toast.info(
+        `Pay ${pkg.price} in Azguard Wallet, then paste your txHash below to confirm receipt of ${pkg.qd} QD.`,
+        { duration: 8000 }
+      );
+      setShowTxInput({ pkg, aztecAddress });
+    } catch (e: any) {
+      toast.error(e?.message || 'Failed to open wallet');
+    } finally {
+      setBuying(null);
+    }
   };
 
-  const packages = [
-    { qd: 100, price: '0.43 AZT' }, { qd: 250, price: '1.08 AZT' }, { qd: 500, price: '2.17 AZT' },
-    { qd: 1000, price: '4.28 AZT' }, { qd: 2500, price: '10.80 AZT' }, { qd: 35000, price: '140 AZT' },
-  ];
+  const confirmPurchase = async () => {
+    if (!showTxInput || !txHashInput.trim()) {
+      toast.error('Please paste your Azguard transaction hash.');
+      return;
+    }
+    const { pkg, aztecAddress: addr } = showTxInput;
+    setBuying(pkg.index);
+    try {
+      const res = await fetch('/api/aztec/purchase-qd', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          aztecAddress: addr,
+          txHash: txHashInput.trim(),
+          packageIndex: pkg.index,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || 'Purchase failed');
+        return;
+      }
+      if (data.duplicate) {
+        toast.info('This transaction was already processed.');
+      } else {
+        toast.success(`✅ ${pkg.qd} Quantum Dots credited! New balance: ${data.balance} QD`, { duration: 6000 });
+      }
+      setShowTxInput(null);
+      setTxHashInput('');
+    } catch (e: any) {
+      toast.error(e?.message || 'Network error');
+    } finally {
+      setBuying(null);
+    }
+  };
+
   return (
     <div className="p-4 pb-20 flex flex-col items-center">
       <div className="w-32 h-32 border-[4px] border-black bg-yellow-400 flex items-center justify-center shadow-[10px_10px_0_0_#000] mb-8">
         <Star size={64} className="fill-black text-black" />
       </div>
       <h1 className="text-3xl font-black uppercase text-center mb-2">Quantum Dots</h1>
-      <p className="text-sm font-bold text-zinc-600 text-center mb-6 max-w-xs">Fuel your economy. Trade, tip, and power decentralized protocols.</p>
+      <p className="text-sm font-bold text-zinc-600 text-center mb-4 max-w-xs">Fuel your economy. Trade, tip, and power decentralized protocols.</p>
+
+      {/* Azguard Wallet Banner */}
+      <div className="w-full bg-black border-[3px] border-yellow-400 p-4 mb-4 flex items-center gap-3 shadow-[4px_4px_0_0_#000]">
+        <img
+          src="https://pbs.twimg.com/profile_images/1798363363365945344/v3F962Fk_400x400.jpg"
+          className="w-10 h-10 rounded border-2 border-yellow-400 shrink-0 object-cover"
+          alt="Azguard"
+          onError={(e: any) => { e.target.src = 'https://aztec.network/favicon.ico'; }}
+        />
+        <div className="flex flex-col">
+          <span className="text-yellow-400 font-black text-[13px] uppercase tracking-widest">Azguard Wallet</span>
+          <span className="text-zinc-400 text-[10px] font-bold">Official Aztec Network — ZK payments</span>
+        </div>
+        <button
+          onClick={() => open()}
+          className="ml-auto bg-yellow-400 text-black px-3 py-1 font-black text-[11px] uppercase border-2 border-yellow-400 hover:bg-yellow-300 transition-colors shrink-0"
+        >
+          CONNECT
+        </button>
+      </div>
+
       <div className="w-full bg-black border-[3px] border-yellow-400 p-3 mb-4 flex items-center gap-2 shadow-[4px_4px_0_0_#000]">
         <span className="text-[10px] font-black text-yellow-400 uppercase tracking-widest">⚡ Buy with Aztec Coins — ZK private on-chain payment</span>
       </div>
-      <div className="flex flex-col items-center mb-8">
+      <div className="flex flex-col items-center mb-6">
         <span className="text-[12px] font-black uppercase tracking-widest text-zinc-500 mb-1">NODE BALANCE</span>
-        <span className="text-5xl font-black">1,250 QD</span>
+        <span className="text-5xl font-black">{aztecAddress ? '...' : '0'} QD</span>
+        {!aztecAddress && (
+          <span className="text-[11px] text-red-500 font-bold mt-1">Connect Aztec identity to see balance</span>
+        )}
       </div>
+
+      {/* TxHash confirmation panel */}
+      {showTxInput && (
+        <div className="w-full bg-white border-[3px] border-black p-4 mb-4 shadow-[6px_6px_0_0_#000] flex flex-col gap-3">
+          <span className="text-[12px] font-black uppercase tracking-widest">Confirm Payment</span>
+          <p className="text-[11px] font-bold text-zinc-600">
+            After completing the <strong>{showTxInput.pkg.price}</strong> payment in Azguard, paste the transaction hash below.
+          </p>
+          <input
+            type="text"
+            placeholder="0x... (Aztec transaction hash)"
+            value={txHashInput}
+            onChange={(e) => setTxHashInput(e.target.value)}
+            className="w-full border-[2px] border-black p-2 font-mono text-[11px] outline-none focus:bg-yellow-50"
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={confirmPurchase}
+              disabled={buying !== null}
+              className="flex-1 py-2 bg-black text-yellow-400 font-black text-[12px] uppercase border-2 border-black disabled:opacity-50"
+            >
+              {buying !== null ? 'CREDITING...' : `CREDIT ${showTxInput.pkg.qd} QD`}
+            </button>
+            <button
+              onClick={() => { setShowTxInput(null); setTxHashInput(''); }}
+              className="px-4 py-2 bg-white text-black font-black text-[12px] uppercase border-2 border-black hover:bg-zinc-100"
+            >
+              CANCEL
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="w-full flex flex-col gap-3">
-        {packages.map((pkg, i) => (
-          <div key={i} onClick={() => handlePurchase(pkg)} className="w-full bg-white border-[3px] border-black p-4 flex items-center justify-between shadow-[4px_4px_0_0_#000] active:translate-y-1 cursor-pointer">
+        {QD_PACKAGES.map((pkg) => (
+          <div
+            key={pkg.index}
+            onClick={() => !buying && handlePurchase(pkg)}
+            className={`w-full bg-white border-[3px] border-black p-4 flex items-center justify-between shadow-[4px_4px_0_0_#000] cursor-pointer transition-transform ${buying === pkg.index ? 'translate-y-1 opacity-60' : 'active:translate-y-1'}`}
+          >
             <div className="flex items-center gap-3">
               <Star size={18} className="fill-yellow-400 text-black" />
-              <span className="font-black text-xl">{pkg.qd.toLocaleString()} QD</span>
+              <div className="flex flex-col">
+                <span className="font-black text-xl">{pkg.qd.toLocaleString()} QD</span>
+                <span className="text-[10px] font-bold text-zinc-400">Quantum Dots</span>
+              </div>
             </div>
-            <div className="bg-black text-yellow-400 px-4 py-2 font-black border-2 border-black text-sm">{pkg.price}</div>
+            <div className="flex flex-col items-end gap-1">
+              <div className="bg-black text-yellow-400 px-4 py-2 font-black border-2 border-black text-sm">{pkg.price}</div>
+              {buying === pkg.index && <span className="text-[10px] font-bold text-zinc-500">Opening wallet...</span>}
+            </div>
           </div>
         ))}
       </div>

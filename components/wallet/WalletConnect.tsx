@@ -98,6 +98,28 @@ export default function WalletConnect() {
                         >
                             <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" className="w-5 h-5" alt="MM" />
                         </motion.button>
+
+                        {/* Azguard Wallet (Official Aztec Network Wallet) */}
+                        <motion.button
+                            key="connect-azguard"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => {
+                                // Open AppKit — Azguard appears first via customWallets config
+                                open();
+                                toast.info('Select Azguard Wallet to connect with Aztec Network ZK privacy.', { duration: 4000 });
+                            }}
+                            className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#5200FF]/10 text-[#5200FF] border border-[#5200FF]/20 hover:bg-[#5200FF]/20 transition-all"
+                            title="Connect Azguard — Official Aztec Wallet"
+                        >
+                            <img
+                                src="https://pbs.twimg.com/profile_images/1798363363365945344/v3F962Fk_400x400.jpg"
+                                className="w-5 h-5 rounded-full object-cover"
+                                alt="Azguard"
+                                onError={(e: any) => { e.target.style.display = 'none'; }}
+                            />
+                            <span className="text-[10px] font-black uppercase tracking-wide">Azguard</span>
+                        </motion.button>
                     </div>
                 ) : (
                     <div 
