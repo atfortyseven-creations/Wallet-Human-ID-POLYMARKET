@@ -965,7 +965,7 @@ function NetworkEconomySection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {[
             {
-              title: "Quantum Dusts (QDs)",
+              title: "Quantum Dots (QDs)",
               desc: "QDs are the native credit system of the Humanity Ledger ecosystem. They are earned through verified activity (provenance events, ZK verifications, referrals) and used to subsidize gas costs on Aztec Network Testnet. Not a security. Not a speculative token.",
               icon: "⚛️",
             },
