@@ -253,7 +253,17 @@ try {
             enableEIP6963: true, // MUST BE TRUE for wagmi 2.x to detect injected wallets like MetaMask properly
             enableWalletConnect: true,
             enableCoinbase: true,
-            customWallets: []
+            customWallets: [
+                {
+                    id: 'azguard-aztec-wallet',
+                    name: 'Azguard Wallet',
+                    homepage: 'https://aztec.network',
+                    image_url: 'https://pbs.twimg.com/profile_images/1798363363365945344/v3F962Fk_400x400.jpg',
+                    mobile_link: 'azguard://',
+                    desktop_link: 'azguard://',
+                    webapp_link: 'https://azguard.app',
+                }
+            ]
         });
     }
 } catch (e) {

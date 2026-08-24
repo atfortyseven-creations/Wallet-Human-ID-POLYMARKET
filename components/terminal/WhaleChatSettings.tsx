@@ -20,6 +20,7 @@ import {
   WhaleProtocolSettings,
   DEFAULT_PXE_SETTINGS
 } from '@/lib/wallet/SettingsEnginePXE';
+import { useAppKit } from '@reown/appkit/react';
 
 // ─────────────────────────────────────────────────────────────────────────
 //  HOOK: useWhaleSettings
@@ -955,6 +956,22 @@ function NetworkView({ s, update }: any) {
 // ─────────────────────────────────────────────────────────────────────────
 
 function PremiumView() {
+  const { open } = useAppKit();
+
+  const handlePayment = () => {
+    toast.promise(
+      new Promise((resolve) => setTimeout(resolve, 2000)),
+      {
+        loading: 'Connecting to Azguard Wallet...',
+        success: () => {
+          open(); // Opens AppKit modal so they can select Azguard Wallet
+          return 'Please confirm the ZK transaction in Azguard Wallet';
+        },
+        error: 'Failed to connect to Azguard Wallet'
+      }
+    );
+  };
+
   return (
     <div className="p-4 pb-20 flex flex-col items-center">
       <div className="w-32 h-32 border-[4px] border-[#1c7aff] bg-black flex items-center justify-center shadow-[10px_10px_0_0_#1c7aff] mb-8">
@@ -978,7 +995,7 @@ function PremiumView() {
           <span className="text-[10px] font-bold text-zinc-500 mt-1">≈ Aztec Network</span>
         </div>
       </div>
-      <button onClick={() => toast.success('Initiating ZK payment via Aztec Network...')} className="w-full py-4 bg-[#1c7aff] text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[8px_8px_0_0_#000] active:translate-y-1">
+      <button onClick={handlePayment} className="w-full py-4 bg-[#1c7aff] text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[8px_8px_0_0_#000] active:translate-y-1">
         PAY WITH AZTEC COINS
       </button>
       <p className="text-[10px] font-bold text-zinc-400 text-center mt-3 max-w-xs">
@@ -989,6 +1006,22 @@ function PremiumView() {
 }
 
 function StarsView() {
+  const { open } = useAppKit();
+  
+  const handlePurchase = (pkg: any) => {
+    toast.promise(
+      new Promise((resolve) => setTimeout(resolve, 2000)),
+      {
+        loading: `Generating ZK proof for ${pkg.qd} QD payment...`,
+        success: () => {
+          open(); // Opens AppKit modal to connect Azguard
+          return `Open Azguard Wallet to confirm ${pkg.price} payment`;
+        },
+        error: 'Failed to initiate ZK payment'
+      }
+    );
+  };
+
   const packages = [
     { qd: 100, price: '0.43 AZT' }, { qd: 250, price: '1.08 AZT' }, { qd: 500, price: '2.17 AZT' },
     { qd: 1000, price: '4.28 AZT' }, { qd: 2500, price: '10.80 AZT' }, { qd: 35000, price: '140 AZT' },
@@ -1009,7 +1042,7 @@ function StarsView() {
       </div>
       <div className="w-full flex flex-col gap-3">
         {packages.map((pkg, i) => (
-          <div key={i} onClick={() => toast.success(`Initiating ZK payment for ${pkg.qd} QD via Aztec Network…`)} className="w-full bg-white border-[3px] border-black p-4 flex items-center justify-between shadow-[4px_4px_0_0_#000] active:translate-y-1 cursor-pointer">
+          <div key={i} onClick={() => handlePurchase(pkg)} className="w-full bg-white border-[3px] border-black p-4 flex items-center justify-between shadow-[4px_4px_0_0_#000] active:translate-y-1 cursor-pointer">
             <div className="flex items-center gap-3">
               <Star size={18} className="fill-yellow-400 text-black" />
               <span className="font-black text-xl">{pkg.qd.toLocaleString()} QD</span>
