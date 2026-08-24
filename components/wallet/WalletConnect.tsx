@@ -20,13 +20,19 @@ export default function WalletConnect() {
     const { isConnected: isWagmiConnected } = useAccount();
     
     useEffect(() => {
-        if (isWagmiConnected && address) {
-            fetch('/api/wallet/sync', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ walletAddress: address })
-            }).catch(err => console.error("Sync failed", err));
-        }
+        if (!isWagmiConnected || !address) return;
+        
+        const controller = new AbortController();
+        fetch('/api/wallet/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ walletAddress: address }),
+            signal: controller.signal
+        }).catch(err => {
+            if (err.name !== 'AbortError') console.error("Sync failed", err);
+        });
+        
+        return () => controller.abort();
     }, [isWagmiConnected, address]);
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);

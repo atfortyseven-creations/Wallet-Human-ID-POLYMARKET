@@ -49,19 +49,22 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { aztecAddress, evmAddress, txHash, packageIndex } = body;
 
-    if (!aztecAddress || typeof aztecAddress !== 'string') {
-      return NextResponse.json({ error: 'aztecAddress is required' }, { status: 400 });
+    if (!aztecAddress || typeof aztecAddress !== 'string' || !/^0x[0-9a-fA-F]{40,66}$/.test(aztecAddress)) {
+      return NextResponse.json({ error: 'Valid aztecAddress is required (0x hex format)' }, { status: 400 });
     }
-    if (!txHash || typeof txHash !== 'string') {
-      return NextResponse.json({ error: 'txHash is required' }, { status: 400 });
+    
+    const formattedTxHash = txHash?.toLowerCase().startsWith('0x') ? txHash.toLowerCase() : `0x${txHash?.toLowerCase() || ''}`;
+    if (!txHash || typeof txHash !== 'string' || !/^0x[0-9a-fA-F]{64,66}$/.test(formattedTxHash)) {
+      return NextResponse.json({ error: 'Valid txHash is required (0x hex format, 32 bytes)' }, { status: 400 });
     }
+    
     if (typeof packageIndex !== 'number' || packageIndex < 0 || packageIndex >= QD_PACKAGES.length) {
       return NextResponse.json({ error: 'Invalid packageIndex' }, { status: 400 });
     }
 
     const pkg = QD_PACKAGES[packageIndex];
     const normalizedAddress = aztecAddress.toLowerCase();
-    const normalizedTxHash  = txHash.toLowerCase().startsWith('0x') ? txHash.toLowerCase() : `0x${txHash.toLowerCase()}`;
+    const normalizedTxHash  = formattedTxHash;
 
     // ── Idempotency: one txHash = one credit ─────────────────────────────────
     const existing = await prisma.transaction.findFirst({
