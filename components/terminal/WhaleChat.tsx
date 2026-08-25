@@ -995,10 +995,20 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       peer.on('call', (connection) => {
         console.log('[WhaleChat:PeerJS] Incoming PeerJS connection from:', connection.peer, '| callState:', callStateRef.current);
         
-        if (callStateRef.current === 'ringing') {
+        if (callStateRef.current === 'ringing' || callStateRef.current === 'idle') {
           // Receiver gets the call before clicking Answer — store it for answerCall()
+          // If we were idle, the WebRTC packet beat the XMTP packet. Trigger ringing.
           console.log('[WhaleChat:PeerJS] Storing pending connection for answerCall()');
           pendingConnectionRef.current = connection;
+          
+          if (callStateRef.current === 'idle') {
+             // Fallback trigger ringing state if XMTP is lagging
+             const inCallType = connection.metadata?.callType || 'audio';
+             setCallType(inCallType);
+             callTypeRef.current = inCallType;
+             setCallState('ringing');
+             playRingtone();
+          }
         } else if (
           (callStateRef.current === 'calling' || callStateRef.current === 'connecting')
           && localStreamRef.current

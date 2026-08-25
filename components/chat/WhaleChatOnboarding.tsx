@@ -87,6 +87,22 @@ export function WhaleChatOnboarding({ address, onComplete }: OnboardingProps) {
       }
     }
 
+    // [DB SYNC] Ensure the user is searchable in the central database by nametag/username
+    try {
+      await fetch('/api/user/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          walletAddress: address,
+          displayName: displayName.trim(),
+          chatName: finalUsername.replace('@', ''), // Remove @ for storage
+          bio: `From ${country}`,
+        }),
+      });
+    } catch {
+      // Non-fatal
+    }
+
     // Mark as onboarded for this address
     if (typeof window !== 'undefined') {
        localStorage.setItem(`whale_onboarded_${address}`, 'true');

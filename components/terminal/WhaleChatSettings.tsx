@@ -304,6 +304,21 @@ function EditProfileView({ address, s, update, updateBatch, goBack }: any) {
   const handleSave = async () => {
     setSaving(true);
     await updateBatch({ displayName: name, username, bio });
+    
+    // [DB SYNC] Sync profile to central DB for searchability
+    try {
+      await fetch('/api/user/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          walletAddress: address,
+          displayName: name.trim(),
+          chatName: username.replace('@', '').trim(),
+          bio: bio.trim(),
+        }),
+      });
+    } catch {}
+
     setSaving(false);
     toast.success('Profile matrix updated.');
     goBack();
