@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { SystemsUtilityHeader } from './SystemsUtilityHeader';
-import { SplashContainer } from '@/components/shared/SplashContainer';
 import { useSystemTranslation } from '@/hooks/useSystemTranslation';
 import { usePathname } from 'next/navigation';
 

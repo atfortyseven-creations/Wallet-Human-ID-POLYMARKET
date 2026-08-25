@@ -374,6 +374,7 @@ const nextConfig = {
                     { key: 'X-Content-Type-Options',     value: 'nosniff' },
                     { key: 'X-Frame-Options',            value: 'SAMEORIGIN' },
                     { key: 'X-XSS-Protection',          value: '1; mode=block' },
+                    { key: 'Strict-Transport-Security',  value: 'max-age=63072000; includeSubDomains; preload' },
                     // [WEBRTC FIX] CSP must explicitly allow:
                     //   - blob: in connect-src for WebRTC data channels
                     //   - blob: in media-src for getUserMedia MediaStream playback

@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, ChevronRight, Check, MapPin, AtSign } from 'lucide-react';
+import { Camera, ChevronRight, Check, MapPin, AtSign, User } from 'lucide-react';
 import { useWhaleSettings } from '@/components/terminal/WhaleChatSettings';
 
 interface OnboardingProps {
@@ -12,12 +12,19 @@ interface OnboardingProps {
 
 const COUNTRIES = [
   "Global (Earth)", "United States", "United Kingdom", "Spain", "Mexico", 
-  "Argentina", "Colombia", "Brazil", "France", "Germany", "Japan", "South Korea"
+  "Argentina", "Colombia", "Brazil", "France", "Germany", "Japan", "South Korea",
+  "Canada", "Australia", "India", "China", "Italy", "Netherlands", "Switzerland",
+  "Sweden", "Norway", "Denmark", "Finland", "Russia", "South Africa", "Nigeria",
+  "Egypt", "Kenya", "Saudi Arabia", "United Arab Emirates", "Turkey", "Israel",
+  "Singapore", "Malaysia", "Indonesia", "Vietnam", "Thailand", "Philippines",
+  "New Zealand", "Chile", "Peru", "Venezuela", "Ecuador", "Bolivia", "Paraguay",
+  "Uruguay", "Poland", "Ukraine", "Romania", "Greece", "Portugal", "Ireland"
 ];
 
 export function WhaleChatOnboarding({ address, onComplete }: OnboardingProps) {
   const { updateBatch, isLoaded } = useWhaleSettings(address);
   const [step, setStep] = useState(1);
+  const [displayName, setDisplayName] = useState('');
   const [username, setUsername] = useState('');
   const [avatar, setAvatar] = useState('');
   const [country, setCountry] = useState('Global (Earth)');
@@ -59,7 +66,7 @@ export function WhaleChatOnboarding({ address, onComplete }: OnboardingProps) {
     if (!finalUsername.startsWith('@')) finalUsername = '@' + finalUsername;
 
     await updateBatch({
-      displayName: finalUsername,
+      displayName: displayName.trim() || finalUsername,
       avatar_url: avatar,
       bio: `From ${country}`,
       privacy_last_seen: 'everybody',
@@ -67,12 +74,12 @@ export function WhaleChatOnboarding({ address, onComplete }: OnboardingProps) {
     
     // [SECURITY FIX] Send PIN to the real server-side enclave endpoint
     // so TuringShieldGate can verify it on next login — do NOT store PIN in localStorage
-    if (pin.length >= 4) {
+    if (pin.length === 6) {
       try {
         await fetch('/api/auth/enclave-pin', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pin }),
+          body: JSON.stringify({ newPin: pin }),
           credentials: 'include',
         });
       } catch {
@@ -135,6 +142,21 @@ export function WhaleChatOnboarding({ address, onComplete }: OnboardingProps) {
                 <input type="file" ref={fileRef} accept="image/*" className="hidden" onChange={handleFileChange} />
               </div>
 
+              {/* Display Name Input */}
+              <div className="w-full mb-6">
+                <label className="block text-[13px] font-bold text-[#050505] mb-2">Full Name</label>
+                <div className="relative">
+                  <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-black/30" />
+                  <input
+                    type="text"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    placeholder="Satoshi Nakamoto"
+                    className="w-full bg-[#f5f5f7] border-2 border-transparent focus:border-[#1c7aff] focus:bg-white rounded-2xl py-4 pl-12 pr-4 text-[16px] font-bold text-black outline-none transition-all shadow-inner"
+                  />
+                </div>
+              </div>
+
               {/* Nickname Input */}
               <div className="w-full mb-6">
                 <label className="block text-[13px] font-bold text-[#050505] mb-2">Nickname (e.g. @whale)</label>
@@ -193,15 +215,15 @@ export function WhaleChatOnboarding({ address, onComplete }: OnboardingProps) {
                   type="password"
                   value={pin}
                   onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))}
-                  placeholder="Enter 4-8 digit PIN"
-                  maxLength={8}
+                  placeholder="Enter 6-digit PIN"
+                  maxLength={6}
                   className="w-full bg-[#f5f5f7] border-2 border-transparent focus:border-[#1c7aff] focus:bg-white rounded-2xl p-6 text-center text-3xl tracking-[0.5em] font-black text-black outline-none transition-all shadow-inner"
                 />
               </div>
 
               <button 
                 onClick={handleNext}
-                disabled={pin.length < 4}
+                disabled={pin.length !== 6}
                 className="w-full py-4 bg-[#1c7aff] hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-[#1c7aff] rounded-2xl text-white font-black text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
               >
                 Continue <ChevronRight size={20} />

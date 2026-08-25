@@ -84,6 +84,41 @@ function isPublicPath(pathname: string): boolean {
   return PUBLIC_PREFIXES.some(prefix => pathname.startsWith(prefix));
 }
 
+// ── Rate Limiting (Edge Memory) ──────────────────────────────────────────────
+const rateLimitMap = new Map<string, { count: number, resetTime: number }>();
+function applyRateLimit(ip: string, pathname: string): NextResponse | null {
+  // Allow 150 requests per minute per IP for API routes
+  const LIMIT = 150;
+  const WINDOW_MS = 60 * 1000;
+  
+  const now = Date.now();
+  const key = `${ip}`; // global IP limit across all routes
+
+  let record = rateLimitMap.get(key);
+  if (!record || now > record.resetTime) {
+    record = { count: 1, resetTime: now + WINDOW_MS };
+    rateLimitMap.set(key, record);
+  } else {
+    record.count++;
+  }
+
+  // Optional cleanup to prevent memory leak in long-running edge isolate
+  if (Math.random() < 0.01) {
+    for (const [k, v] of rateLimitMap.entries()) {
+      if (now > v.resetTime) rateLimitMap.delete(k);
+    }
+  }
+
+  if (record.count > LIMIT) {
+    return NextResponse.json({
+      error: 'Too Many Requests',
+      message: 'Rate limit exceeded. Please try again later.'
+    }, { status: 429, headers: { 'Retry-After': String(Math.ceil((record.resetTime - now) / 1000)) } });
+  }
+
+  return null;
+}
+
 // ── JWT Secret (Edge-compatible — TextEncoder only) ─────────────────────────
 function getEdgeSecret(): Uint8Array {
   // We can't import requireSecret easily in edge middleware without messing up bundle,
@@ -159,7 +194,15 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
     );
   }
 
-  // 1. Allow all public paths through immediately
+  // 1. Edge Rate Limiting for ALL API Routes
+  if (pathname.startsWith('/api/')) {
+    const ip = req.headers.get('x-forwarded-for') || req.ip || '127.0.0.1';
+    const clientIp = ip.split(',')[0].trim();
+    const rateLimitRes = applyRateLimit(clientIp, pathname);
+    if (rateLimitRes) return rateLimitRes;
+  }
+
+  // 2. Allow all public paths through immediately
   if (isPublicPath(pathname)) {
     return NextResponse.next();
   }
