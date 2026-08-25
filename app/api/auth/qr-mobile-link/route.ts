@@ -114,28 +114,26 @@ export async function POST(req: NextRequest) {
 
     //  4. Build and store Redis payload depending on mode 
     // PATH A (client-encrypted): store the full ECDH bundle so the desktop
-    //   can decrypt it with X25519(desktop.priv, mobilePub). serverJwt is
-    //   a fallback in case decryption fails (iOS X25519 key format quirk).
-    // PATH B (server-mint): mobile had no JWT to encrypt. Store ONLY serverJwt
-    //   + mobilePub. The desktop poll detects the absence of encryptedPayload
-    //   and goes straight to the serverJwt fallback  no AES-GCM attempted.
+    //   can decrypt it with X25519(desktop.priv, mobilePub).
+    // [SECURITY PATCH A4] Removed insecure serverJwt plaintext fallback.
     let sessionPayload: string;
 
     if (!isServerMint && encryptedPayload && iv) {
-      // PATH A: client encrypted the JWT  store encrypted bundle + fallback
+      // PATH A: client encrypted the JWT  store encrypted bundle
       sessionPayload = JSON.stringify({
         encryptedPayload,
         iv,
         tag: tag || null,
         mobilePub,
-        serverJwt: jwt,
+        // serverJwt fallback strictly removed (A4 fix)
       });
     } else {
-      // PATH B: server mints  store serverJwt only (no encrypted garbage)
-      sessionPayload = JSON.stringify({
-        mobilePub,
-        serverJwt: jwt,
-      });
+      // PATH B (Insecure): Reject this. If they can't encrypt, they can't handshake.
+      console.error(`[QR:Handshake] Server-mint fallback rejected for UUID: ${uuid} (Security A4)`);
+      return NextResponse.json(
+        { error: 'Insecure handshake mode rejected. Please update your mobile app.' },
+        { status: 403 }
+      );
     }
 
     await safeRedisSet(`qr-session:${uuid}`, sessionPayload, 'EX', 300);

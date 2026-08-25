@@ -154,23 +154,14 @@ export async function POST(req: NextRequest) {
     //   3. direct: sessionAddr === fromAddr (email-derived addresses, same address as session)
     const deterministicMatch = isOwner(verifiedSessionAddr, fromAddr);
     if (!deterministicMatch) {
-      // DB-proven ownership: if the from address has an airdrop claim, and so does the session,
-      // they are the same user (one wallet → one airdrop claim = one identity).
-      // This supports the signature-derived address flow.
-      const fromAirdrop = await prisma.transaction.findFirst({
-        where: { toAddress: fromAddr, token: 'QDs', type: 'AIRDROP', status: 'COMPLETED' },
-        select: { id: true, metadata: true },
-      });
-      if (!fromAirdrop) {
-        // The from address has never received an airdrop — definitely not a valid QD wallet
-        return NextResponse.json(
-          { error: `Forbidden: ${fromAddr.slice(0, 12)}… has no QD balance or identity. Claim your Aztec Identity first.` },
-          { status: 403 }
-        );
-      }
-      // The fromAddr is a valid claimed identity. Since we already verified the session
-      // (sessionVerified || fromVerified), and there is only one airdrop per IP per day,
-      // this is sufficient ownership proof for the DB ledger spend.
+      // [SECURITY PATCH B1]: Strict Ownership Verification.
+      // We no longer rely on the DB `fromAirdrop` fallback, which allowed any user 
+      // with a valid session to drain any other address that had received an airdrop.
+      // The session MUST directly own the fromAddr.
+      return NextResponse.json(
+        { error: 'Forbidden: You do not own the sender address.' },
+        { status: 403 }
+      );
     }
 
 

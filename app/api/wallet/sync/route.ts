@@ -16,6 +16,9 @@ export async function POST(req: NextRequest) {
     let rawUserId = walletAddress || hasHandshakeCookie || (session as any)?.user?.email;
     let userId = rawUserId ? rawUserId.toLowerCase() : undefined;
 
+    // [SECURITY PATCH A3]: system_handshake cookie cannot bypass the cryptographic ECDSA signature check.
+    // If walletAddress is missing but handshake cookie is present, they still MUST provide a valid signature.
+    // However, if they are already logged in via NextAuth (email), we allow the session through.
     if (signature && message && walletAddress) {
       try {
             const isValid = await verifyMessage({
@@ -34,8 +37,9 @@ export async function POST(req: NextRequest) {
             console.error(`[Security:Handshake:Error]`, e.message);
             return NextResponse.json({ error: 'Indentity verification error: Invalid payload.' }, { status: 400 });
           }
-    } else if (!(session as any)?.user?.email && !hasHandshakeCookie) {
-      // If no signature/message AND no session AND no handshake cookie, we reject.
+    } else if (!(session as any)?.user?.email) {
+      // If no signature/message AND no authenticated email session, we reject.
+      // system_handshake alone is NOT sufficient.
       return NextResponse.json({ error: 'Unauthorized: Cryptographic Handshake required.' }, { status: 401 });
     }
 
