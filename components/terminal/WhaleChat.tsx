@@ -1311,8 +1311,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // a trusted user-gesture context. Any async indirection breaks this.
   // CRITICAL: We do NOT await anything before getUserMedia, otherwise
   // Android WebViews will strip the transient user-activation token.
-  const startCall = async (type: 'audio' | 'video') => {
-    if (!activePeer) return;
+  const startCall = async (type: 'audio' | 'video', targetPeerOverride?: string) => {
+    const targetPeer = targetPeerOverride || activePeer;
+    if (!targetPeer) return;
+    
+    // Ensure state updates if called from history list
+    if (targetPeerOverride && activePeer !== targetPeerOverride) {
+      setActivePeer(targetPeerOverride);
+    }
+
     const livePeer = peerInstanceRef.current;
     if (!livePeer || livePeer.destroyed) {
       // Peer not yet ready — try to reconnect then retry
@@ -1324,8 +1331,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     }
 
     // [ARCH-FIX] Derive receiver PeerID deterministically — no XMTP round-trip needed
-    const receiverPeerId = derivePeerId(activePeer);
-    console.log('[Call:ARCH-FIX] Derived receiver PeerID:', receiverPeerId, 'for address:', activePeer);
+    const receiverPeerId = derivePeerId(targetPeer);
+    console.log('[Call:ARCH-FIX] Derived receiver PeerID:', receiverPeerId, 'for address:', targetPeer);
 
     let stream: MediaStream | null = null;
     try {
@@ -1559,10 +1566,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     }
   };
 
-  const handleStartCall = (type: 'audio' | 'video') => {
+  const handleStartCall = (type: 'audio' | 'video', targetPeerOverride?: string) => {
     if (hasMediaPermission) {
-      startCall(type);
+      startCall(type, targetPeerOverride);
     } else {
+      if (targetPeerOverride && activePeer !== targetPeerOverride) {
+        setActivePeer(targetPeerOverride); // Ensure UI updates
+      }
       setPendingCallType(type);
     }
   };
@@ -3628,7 +3638,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                     <div className="flex flex-col items-end gap-1 shrink-0">
                       <span className="text-[12px] text-[#8E8E93]">{timeLabel}</span>
                       <button
-                        onClick={e => { e.stopPropagation(); setActivePeer(call.peerAddress); setSidebarTab('chats'); setShowList(false); setTimeout(() => handleStartCall(call.type), 300); }}
+                        onClick={e => { e.stopPropagation(); setSidebarTab('chats'); setShowList(false); handleStartCall(call.type, call.peerAddress); }}
                         className="w-8 h-8 rounded-full bg-[#F2F2F7] flex items-center justify-center text-[#007AFF] hover:bg-[#E5E5EA] transition-all active:scale-90"
                         title={`Call back (${call.type})`}
                       >
@@ -4317,7 +4327,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             <div className="flex flex-col items-center gap-3">
               <button
                 onClick={answerCall}
-                onTouchStart={(e) => { e.preventDefault(); answerCall(); }}
                 className="w-[84px] h-[84px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-xl bg-[#050505]"
               >
                 <Phone size={36} className="text-white" />

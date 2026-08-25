@@ -21,7 +21,11 @@ export function AcademyInteractiveEngine({
     const [mounted, setMounted] = useState(false);
     useEffect(() => setMounted(true), []);
 
-    const isAdmin = true;
+    // [SECURITY FIX] isAdmin must be checked against a real admin address, never hardcoded true
+    // Admin address is checked client-side for UI only — server-side upload endpoints
+    // must independently verify the session/signature before accepting any upload.
+    const ADMIN_ADDRESS = '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a';
+    const isAdmin = !!(address && address.toLowerCase() === ADMIN_ADDRESS.toLowerCase());
 
     // LMS States
     const [isSyncing, setIsSyncing] = useState(false);
@@ -141,7 +145,7 @@ export function AcademyInteractiveEngine({
 
             {!selectedCourseSlug ? (
                 <div className="space-y-6">
-                    <h2 className="text-[12px] font-mono font-bold uppercase tracking-[0.2em] mb-4 text-slate-400">Curriculum</h2>
+                    <h2 className="text-[12px] font-mono font-bold uppercase tracking-[0.2em] mb-4 text-slate-400">Information about Blockchain</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {dbCourses.map(course => {
                             const completedInCourse = course.lessons.filter(l => completedLessons.has(l.id)).length;

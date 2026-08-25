@@ -38,20 +38,18 @@ const NAV_COLUMNS = [
     label: "DEVELOPERS",
     earlyAccess: true,
     links: [
-      { label: "SDK — Early Access",    href: "/developers/sdk-early-access" },
+      { label: "SDK — Early Access",    href: "/developers" },
       { label: "API Reference",         href: "/developers/api-docs" },
-      { label: "ZK Sandbox",            href: "/developer/sandbox" },
+      { label: "ZK Sandbox",            href: "/zk-sandbox" },
       { label: "GitHub (Open Source)",  href: "https://github.com/humanityledger/Humanity-Ledger", isExternal: true },
-      { label: "Builder Waitlist →",    href: "/developers/waitlist" },
     ]
   },
   {
     label: "COMPANY",
     links: [
-      { label: "Vision",   href: "/vision" },
-      { label: "Blog",     href: "/blog" },
-      { label: "Careers",  href: "/careers" },
-      { label: "Press Kit", href: "/press" },
+      { label: "Vision",    href: "/vision" },
+      { label: "News",      href: "/news" },
+      { label: "Contact",   href: "/contact" },
     ]
   },
   {

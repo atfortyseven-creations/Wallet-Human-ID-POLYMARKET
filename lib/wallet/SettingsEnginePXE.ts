@@ -236,8 +236,8 @@ export const DEFAULT_PXE_SETTINGS: WhaleProtocolSettings = {
   date_format: 'DD/MM/YYYY',
 
   // Identity
-  displayName: 'Satoshi Nakamoto',
-  username: 'whale_architect',
+  displayName: '',
+  username: '',
   bio: 'Building the Sovereign Network. Cryptography, Privacy, and Decentralization.',
   avatar_url: '',
 

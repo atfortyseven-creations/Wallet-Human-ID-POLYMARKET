@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { SystemsUtilityHeader } from './SystemsUtilityHeader';
-import Image from 'next/image';
 import { SplashContainer } from '@/components/shared/SplashContainer';
 import { useSystemTranslation } from '@/hooks/useSystemTranslation';
 import { usePathname } from 'next/navigation';
@@ -94,16 +93,23 @@ export function InstitutionalHeader({ fixed = true, theme = 'dark' }: { fixed?: 
                         <motion.div
                             whileHover={{ scale: 1.05 }}
                             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                            className="relative flex items-center justify-center rounded-xl border border-black/5 bg-black/5 overflow-hidden w-[58px] h-[36px]"
+                            className="relative flex items-center justify-center rounded-xl border border-black/8 bg-black/[0.04] overflow-hidden w-[36px] h-[36px]"
                         >
-                            <Image
-                                src="/official-whale-monochrome.png"
-                                alt="Humanity Ledger Logo"
-                                width={52}
-                                height={32}
-                                className="object-contain w-full h-full p-1 opacity-80 mix-blend-multiply"
-                                unoptimized={true}
-                            />
+                            <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#0A0A0A"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden="true"
+                            >
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="2" y1="12" x2="22" y2="12" />
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                            </svg>
                         </motion.div>
                         <div className="flex flex-col leading-none text-[#050505] justify-center">
                             <span className="font-aztec-serif text-[18px] font-black uppercase tracking-tighter leading-none">
