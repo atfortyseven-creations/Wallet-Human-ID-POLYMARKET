@@ -18,6 +18,14 @@ const config: CapacitorConfig = {
   ios: {
     contentInset: 'always',
     allowsLinkPreview: false,
+    // [iOS FIX] Allow audio and video to play inline (not fullscreen) in WKWebView.
+    // Without this, audio elements in CustomAudioPlayer trigger the system media player
+    // and can't be played within the app UI. Required for voice notes & WebRTC.
+    allowsInlineMediaPlayback: true,
+    // [iOS FIX] Allow audio-only content to autoplay without a user gesture lock.
+    // This is needed so that incoming call audio (remoteAudioRef) plays immediately
+    // when the WebRTC stream is attached after the user taps "Answer".
+    mediaTypesRequiringUserActionForPlayback: 'none' as any,
   }
 };
 

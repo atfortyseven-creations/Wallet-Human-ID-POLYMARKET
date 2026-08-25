@@ -322,6 +322,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   //  Audio recording state 
   const [isRecording, setIsRecording] = useState(false);
+  const isRecordingCancelledRef = useRef(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -385,7 +386,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const peerInstanceRef = useRef<Peer | null>(null);
   const [myPeerId, setMyPeerId] = useState<string>('');
   const myPeerIdRef = useRef<string>(''); // [ANDROID FIX] ref mirrors state for async safety
-  // 'idle' | 'calling' | 'ringing' | 'connecting' | 'active'
+  // [WEBRTC RE-INIT FIX] peerInitKey is a counter that forces the PeerJS useEffect
+  // to re-execute when the peer is destroyed (network drop, ID conflict, etc.).
+  // Without this, once peerInstance is destroyed and nulled, the useEffect never
+  // re-runs because 'address' hasn't changed — leaving calls permanently broken.
+  const [peerInitKey, setPeerInitKey] = useState(0);
+  const peerInitKeyRef = useRef(0); // ref for use inside peer callbacks
+
   const [callState, _setCallState] = useState<'idle'|'calling'|'ringing'|'connecting'|'active'>('idle');
   const callStateRef = useRef<'idle'|'calling'|'ringing'|'connecting'|'active'>('idle');
   const setCallState = useCallback((s: 'idle'|'calling'|'ringing'|'connecting'|'active') => {
@@ -936,21 +943,34 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   }, []);
 
   // ─── PeerJS Initialisation ───────────────────────────────────────────────────
-  // Uses a deterministic peer ID derived from the wallet address for stable routing.
-  // [CALL FIX] We MUST use a deterministic, stable PeerID based on the wallet address.
-  // The Reverse-Dial architecture requires the CALLER to know the receiver's PeerID
-  // WITHOUT an XMTP round-trip. derivePeerId(address) gives us that stable ID.
-  // Using a random ID would make startCall's derivePeerId() useless — the IDs would
-  // never match and WebRTC would always fail to connect.
+  // [WEBRTC RE-INIT FIX] This effect now depends on BOTH address AND peerInitKey.
+  // When the peer dies (disconnect, error, ID conflict), we increment peerInitKey
+  // to force this effect to re-run and create a fresh peer instance.
+  // Previously, only 'address' was in the dependency array — so a dead peer could
+  // NEVER be re-created, leaving the user permanently stuck with "WebRTC not ready".
   useEffect(() => {
-    // Re-init if no peer OR if the existing peer was destroyed
-    if (!address || (peerInstance && !peerInstance.destroyed)) return;
+    if (!address) return;
+    // If we already have a live (non-destroyed) peer, don't re-create
+    if (peerInstanceRef.current && !peerInstanceRef.current.destroyed) return;
+
+    let destroyed = false; // guard for async import cleanup
+    const thisKey = peerInitKey; // capture for closure
+
     import('peerjs').then(({ default: Peer }) => {
+      if (destroyed) return; // component unmounted before import resolved
+
       // ─── DETERMINISTIC PEERID — CRITICAL FOR REVERSE-DIAL ARCHITECTURE ───
       // Both peers derive each other's ID from the wallet address alone.
       // This means: Caller computes derivePeerId(activePeer) → dials the receiver.
       // No XMTP signaling of PeerID needed. Connection is instantaneous.
-      const stablePeerId = derivePeerId(address);
+      const basePeerId = derivePeerId(address);
+      // [FIX] For peerInitKey > 0 (i.e. this is a re-init after a failure),
+      // append a short suffix to avoid 'unavailable-id' if the previous session
+      // is still registered on the PeerJS server (lingering ~30s after disconnect).
+      const stablePeerId = thisKey === 0
+        ? basePeerId
+        : `${basePeerId}-r${thisKey}`;
+
       const peer = new Peer(stablePeerId, {
         debug: 0,
         config: {
@@ -960,30 +980,74 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             { urls: 'stun:stun2.l.google.com:19302' },
             { urls: 'stun:stun3.l.google.com:19302' },
             { urls: 'stun:stun4.l.google.com:19302' },
+            // OpenRelay TURN — free, reliable, no account needed
             { urls: 'stun:openrelay.metered.ca:80' },
-            { 
-              urls: 'turn:openrelay.metered.ca:80', 
-              username: 'openrelayproject', 
-              credential: 'openrelayproject' 
+            {
+              urls: 'turn:openrelay.metered.ca:80',
+              username: 'openrelayproject',
+              credential: 'openrelayproject'
             },
-            { 
-              urls: 'turn:openrelay.metered.ca:443', 
-              username: 'openrelayproject', 
-              credential: 'openrelayproject' 
+            {
+              urls: 'turn:openrelay.metered.ca:443',
+              username: 'openrelayproject',
+              credential: 'openrelayproject'
             },
-            { 
-              urls: 'turn:openrelay.metered.ca:443?transport=tcp', 
-              username: 'openrelayproject', 
-              credential: 'openrelayproject' 
-            }
+            {
+              urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+              username: 'openrelayproject',
+              credential: 'openrelayproject'
+            },
+            // Metered.ca free TURN — excellent NAT traversal on mobile networks
+            { urls: 'stun:stun.relay.metered.ca:80' },
+            {
+              urls: 'turn:standard.relay.metered.ca:80',
+              username: 'e5cf5f7e04de1e1baaf0dce6',
+              credential: 'uYFf8G7BYrdLHxcS'
+            },
+            {
+              urls: 'turn:standard.relay.metered.ca:80?transport=tcp',
+              username: 'e5cf5f7e04de1e1baaf0dce6',
+              credential: 'uYFf8G7BYrdLHxcS'
+            },
+            {
+              urls: 'turn:standard.relay.metered.ca:443',
+              username: 'e5cf5f7e04de1e1baaf0dce6',
+              credential: 'uYFf8G7BYrdLHxcS'
+            },
+            {
+              urls: 'turns:standard.relay.metered.ca:443?transport=tcp',
+              username: 'e5cf5f7e04de1e1baaf0dce6',
+              credential: 'uYFf8G7BYrdLHxcS'
+            },
           ],
           sdpSemantics: 'unified-plan',
           iceTransportPolicy: 'all' as RTCIceTransportPolicy,
         },
       });
+
+      // Helper to destroy this peer and schedule a re-init
+      const schedulePeerReinit = (delayMs = 1500) => {
+        try { peer.destroy(); } catch {}
+        setPeerInstance(null);
+        peerInstanceRef.current = null;
+        setMyPeerId('');
+        myPeerIdRef.current = '';
+        // Incrementing peerInitKey triggers the useEffect to re-run
+        const nextKey = peerInitKeyRef.current + 1;
+        peerInitKeyRef.current = nextKey;
+        setTimeout(() => {
+          if (!destroyed) setPeerInitKey(nextKey);
+        }, delayMs);
+      };
+
       peer.on('open', (id) => {
-        console.log('[WhaleChat:PeerJS] Open with dynamic ID:', id);
+        if (destroyed) return;
+        console.log('[WhaleChat:PeerJS] Open — PeerID:', id, '(key:', thisKey, ')');
+        // Sync both state and ref immediately so calls can start without waiting
         setMyPeerId(id);
+        myPeerIdRef.current = id;
+        setPeerInstance(peer);
+        peerInstanceRef.current = peer;
       });
 
       // ─── Universal Incoming Call Handler ─────────────────────────────────
@@ -994,20 +1058,20 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       // can answer it after obtaining the stream (user-gesture on Android).
       peer.on('call', (connection) => {
         console.log('[WhaleChat:PeerJS] Incoming PeerJS connection from:', connection.peer, '| callState:', callStateRef.current);
-        
+
         if (callStateRef.current === 'ringing' || callStateRef.current === 'idle') {
           // Receiver gets the call before clicking Answer — store it for answerCall()
           // If we were idle, the WebRTC packet beat the XMTP packet. Trigger ringing.
           console.log('[WhaleChat:PeerJS] Storing pending connection for answerCall()');
           pendingConnectionRef.current = connection;
-          
+
           if (callStateRef.current === 'idle') {
              // Fallback trigger ringing state if XMTP is lagging
              const inCallType = connection.metadata?.callType || 'audio';
              setCallType(inCallType);
              callTypeRef.current = inCallType;
              setCallState('ringing');
-             playRingtone();
+             startRingtone();
           }
         } else if (
           (callStateRef.current === 'calling' || callStateRef.current === 'connecting')
@@ -1024,7 +1088,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             setCallState('active');
             stopRingtone();
             if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
-            if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; if (whaleSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(() => {}); } }
+            if (remoteAudioRef.current) {
+              remoteAudioRef.current.srcObject = rStream;
+              if (whaleSettings?.notifications_private !== false) {
+                remoteAudioRef.current.play().catch(e => console.warn('[Audio] remote play blocked:', e));
+              }
+            }
           });
           connection.on('close', () => performEndCallRef.current());
           connection.on('error', () => performEndCallRef.current());
@@ -1033,44 +1102,69 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           connection.close();
         }
       });
+
       peer.on('error', (err) => {
         console.warn('[WhaleChat:PeerJS] Error:', err.type, err.message);
-        if (err.type === 'unavailable-id' || err.type === 'network' || err.type === 'server-error') {
-           try { peer.destroy(); } catch {}
-           setPeerInstance(null);
-           peerInstanceRef.current = null;
+        if (err.type === 'unavailable-id') {
+          // The ID is taken by a lingering previous session (happens when quickly
+          // reconnecting). Re-init with a suffix after a short delay.
+          console.warn('[WhaleChat:PeerJS] ID unavailable — re-init with session suffix');
+          schedulePeerReinit(1000);
+        } else if (err.type === 'network' || err.type === 'server-error' || err.type === 'socket-error' || err.type === 'socket-closed') {
+          // Network error — re-init with full backoff
+          console.warn('[WhaleChat:PeerJS] Network error — scheduling re-init');
+          schedulePeerReinit(2000);
+        } else if (err.type === 'peer-unavailable') {
+          // Remote peer is not connected — this is expected, not a fatal error.
+          // Only show an error if we are actively trying to call.
+          if (callStateRef.current === 'calling' || callStateRef.current === 'connecting') {
+            toast.error('Peer is not available. They may be offline.');
+            performEndCallRef.current();
+          }
         }
+        // Other errors (e.g. 'disconnected') are handled by peer.on('disconnected')
       });
+
       peer.on('disconnected', () => {
-        console.warn('[WhaleChat:PeerJS] Disconnected — attempting reconnect...');
-        try { 
-          if (!peer.destroyed) peer.reconnect(); 
-        } catch {
-          try { peer.destroy(); } catch {}
-          setPeerInstance(null);
-          peerInstanceRef.current = null;
-        }
+        console.warn('[WhaleChat:PeerJS] Disconnected — destroying and scheduling re-init');
+        // [FIX] Don't call peer.reconnect() — it can hang indefinitely on mobile
+        // (iOS WKWebView, Android WebView) if the server connection is fully lost.
+        // Instead, destroy and trigger a clean re-init via peerInitKey.
+        schedulePeerReinit(1500);
       });
-      setPeerInstance(peer);
-      peerInstanceRef.current = peer; // [ANDROID FIX] sync ref immediately
+
+      peer.on('close', () => {
+        console.warn('[WhaleChat:PeerJS] Peer closed');
+        if (!destroyed) schedulePeerReinit(2000);
+      });
+
+      // Set state+ref synchronously before 'open' fires (avoids race on fast networks)
+      peerInstanceRef.current = peer;
     });
+
+    return () => {
+      destroyed = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address]);
+  }, [address, peerInitKey]);
 
   // [ANDROID FIX] Keep peerInstanceRef and myPeerIdRef in sync with state
   useEffect(() => { peerInstanceRef.current = peerInstance; }, [peerInstance]);
   useEffect(() => { myPeerIdRef.current = myPeerId; }, [myPeerId]);
+  useEffect(() => { peerInitKeyRef.current = peerInitKey; }, [peerInitKey]);
 
   // Cleanup PeerJS on unmount
   useEffect(() => {
     return () => {
-      if (peerInstance && !peerInstance.destroyed) {
-        try { peerInstance.destroy(); } catch {}
+      if (peerInstanceRef.current && !peerInstanceRef.current.destroyed) {
+        try { peerInstanceRef.current.destroy(); } catch {}
       }
       stopRingtone();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [peerInstance]);
+  }, []);
+
+
 
   // ─── XMTP Signaling Listener ─────────────────────────────────────────────────
   // Monitors XMTP messages for call control signals.
@@ -1856,12 +1950,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       recorder.onstop = async () => {
         // Stop all tracks to release mic
         stream.getTracks().forEach(t => t.stop());
+        if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+        setIsRecording(false);
+
+        // Check if user cancelled
+        if (isRecordingCancelledRef.current) {
+          isRecordingCancelledRef.current = false;
+          setRecordingSeconds(0);
+          audioChunksRef.current = [];
+          return;
+        }
+
         if (audioChunksRef.current.length === 0) return;
 
         const blob = new Blob(audioChunksRef.current, { type: mimeType });
         if (blob.size < 1000) {
             console.warn('[Voice] Recording too short, ignoring.');
-            setIsRecording(false);
             setRecordingSeconds(0);
             return;
         }
@@ -1874,7 +1978,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           // Base64 overhead is ~33%. A 750KB blob is roughly the safe limit.
           if (dataUrl.length > 1024 * 1024) {
               setInitError('Voice message is too long for the secure P2P network. Please record a shorter message (under 30s).');
-              setIsRecording(false);
               setRecordingSeconds(0);
               return;
           }
@@ -1901,8 +2004,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         };
         reader.readAsDataURL(blob);
 
-        if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
-        setIsRecording(false);
         setRecordingSeconds(0);
       };
 
@@ -1910,6 +2011,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       mediaRecorderRef.current = recorder;
       setIsRecording(true);
       setRecordingSeconds(0);
+      isRecordingCancelledRef.current = false; // Reset cancellation flag
       recordingTimerRef.current = setInterval(() => setRecordingSeconds(s => s + 1), 1000);
     } catch (err) {
       console.warn('[Voice] Microphone access denied or unavailable:', err);
@@ -1920,6 +2022,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   const stopRecording = useCallback(() => {
     if (!isRecording || !mediaRecorderRef.current) return;
+    try { mediaRecorderRef.current.stop(); } catch {}
+    if (recordingTimerRef.current) { clearInterval(recordingTimerRef.current); recordingTimerRef.current = null; }
+  }, [isRecording]);
+
+  const cancelRecording = useCallback(() => {
+    if (!isRecording || !mediaRecorderRef.current) return;
+    isRecordingCancelledRef.current = true;
     try { mediaRecorderRef.current.stop(); } catch {}
     if (recordingTimerRef.current) { clearInterval(recordingTimerRef.current); recordingTimerRef.current = null; }
   }, [isRecording]);
@@ -4193,60 +4302,81 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                     </button>
 
                     <div className="flex-1 bg-white border border-[#c8c8cc] rounded-3xl flex items-end relative shadow-sm overflow-hidden min-h-[38px] transition-all focus-within:border-blue-400">
-                      <textarea
-                        ref={inputRef as any}
-                        value={inputText}
-                        onChange={e => {
-                          setInputText(e.target.value);
-                          e.target.style.height = '38px';
-                          e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
-                        }}
-                        onKeyDown={e => {
-                          const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
-                          if (e.key === 'Enter' && !e.shiftKey && !isTouch) {
-                            e.preventDefault();
-                            if (inputText.trim() && !isUploading) {
-                              handleSend(e as any);
-                              (e.target as HTMLTextAreaElement).style.height = '38px';
-                            }
-                          }
-                        }}
-                        disabled={isUploading}
-                        placeholder={isUploading ? "Uploading..." : "Message"}
-                        rows={1}
-                        // [CRITICAL FIX] font-size: 16px is required on iOS Safari to prevent the UI from zooming in when focused!
-                        className="flex-1 bg-transparent px-4 py-2 text-[#050505] focus:outline-none placeholder:text-black/30 disabled:opacity-50 text-[16px] resize-none max-h-[120px] scrollbar-none leading-relaxed min-h-[38px]"
-                        style={{ paddingRight: inputText.trim() ? '45px' : '36px' }}
-                      />
-                      
-                      {/* Inside input right-side actions */}
-                      <div className="absolute right-1 bottom-[3px] flex items-center">
-                        {inputText.trim() ? (
-                          <button
-                            type="submit"
-                            disabled={sending || isUploading}
-                            className="w-8 h-8 rounded-full bg-[#1c7aff] flex items-center justify-center text-white disabled:opacity-30 active:scale-90 transition-all shadow-sm"
-                          >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="ml-0.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-                          </button>
-                        ) : (
-                          <button
-                            type="button"
-                            onTouchStart={startRecording}
-                            onMouseDown={startRecording}
-                            onTouchEnd={stopRecording}
-                            onMouseUp={stopRecording}
-                            onMouseLeave={stopRecording}
-                            onContextMenu={(e) => e.preventDefault()}
-                            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                              isRecording ? 'bg-[#ff3b30] text-white scale-110 shadow-md' : 'text-[#8e8e93] hover:text-black active:scale-95'
-                            }`}
-                            style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
-                          >
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-                          </button>
-                        )}
-                      </div>
+                      {isRecording ? (
+                        <div className="flex-1 flex items-center justify-between px-4 py-2 bg-[#f5f5f7] h-[38px]">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-[#ff3b30] animate-pulse" />
+                            <span className="text-[14px] font-mono font-medium text-[#ff3b30]">
+                              {Math.floor(recordingSeconds / 60)}:{(recordingSeconds % 60).toString().padStart(2, '0')}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={cancelRecording}
+                              className="text-black/40 hover:text-black/80 font-bold text-[12px] uppercase tracking-widest px-2 py-1"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              onClick={stopRecording}
+                              className="w-7 h-7 rounded-full bg-[#30d158] flex items-center justify-center text-white shadow-sm active:scale-95"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="ml-0.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <textarea
+                            ref={inputRef as any}
+                            value={inputText}
+                            onChange={e => {
+                              setInputText(e.target.value);
+                              e.target.style.height = '38px';
+                              e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+                            }}
+                            onKeyDown={e => {
+                              const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+                              if (e.key === 'Enter' && !e.shiftKey && !isTouch) {
+                                e.preventDefault();
+                                if (inputText.trim() && !isUploading) {
+                                  handleSend(e as any);
+                                  (e.target as HTMLTextAreaElement).style.height = '38px';
+                                }
+                              }
+                            }}
+                            disabled={isUploading}
+                            placeholder={isUploading ? "Uploading..." : "Message"}
+                            rows={1}
+                            // [CRITICAL FIX] font-size: 16px is required on iOS Safari to prevent the UI from zooming in when focused!
+                            className="flex-1 bg-transparent px-4 py-2 text-[#050505] focus:outline-none placeholder:text-black/30 disabled:opacity-50 text-[16px] resize-none max-h-[120px] scrollbar-none leading-relaxed min-h-[38px]"
+                            style={{ paddingRight: inputText.trim() ? '45px' : '36px' }}
+                          />
+                          
+                          {/* Inside input right-side actions */}
+                          <div className="absolute right-1 bottom-[3px] flex items-center">
+                            {inputText.trim() ? (
+                              <button
+                                type="submit"
+                                disabled={sending || isUploading}
+                                className="w-8 h-8 rounded-full bg-[#1c7aff] flex items-center justify-center text-white disabled:opacity-30 active:scale-90 transition-all shadow-sm"
+                              >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="ml-0.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={startRecording}
+                                className="w-8 h-8 rounded-full flex items-center justify-center transition-all text-[#8e8e93] hover:text-black active:scale-95"
+                              >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                              </button>
+                            )}
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </form>

@@ -40,11 +40,26 @@ export const CustomAudioPlayer = ({ src, isMe }: { src: string, isMe: boolean })
     };
   }, [src]);
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (!audioRef.current) return;
-    if (isPlaying) audioRef.current.pause();
-    else audioRef.current.play();
-    setIsPlaying(!isPlaying);
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      try {
+        // [iOS/Android FIX] audio.play() returns a Promise that can be rejected
+        // by the browser's autoplay policy (e.g. Capacitor WKWebView, Android Chrome).
+        // We must await it and handle the rejection to keep state consistent.
+        // Without this, isPlaying=true even though audio is actually silent,
+        // and every subsequent tap toggles incorrectly.
+        await audioRef.current.play();
+        setIsPlaying(true);
+      } catch (err) {
+        // Play was blocked — state stays false. User can tap again.
+        console.warn('[AudioPlayer] play() blocked by browser autoplay policy:', err);
+        setIsPlaying(false);
+      }
+    }
   };
 
   const togglePlaybackRate = () => {
