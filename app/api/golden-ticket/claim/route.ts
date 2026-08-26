@@ -426,7 +426,7 @@ export async function GET(req: NextRequest) {
                     userAddress:            true,
                     ticketNumber:           true,
                     claimedAt:              true,
-                    signatureData:          true,
+                    signatureData:          false,
                     serialCode:             true,
                     tier:                   true,
                     badgeColor:             true,
@@ -454,7 +454,7 @@ export async function GET(req: NextRequest) {
             select: {
                 id: true, ticketNumber: true, serialCode: true, tier: true,
                 badgeColor: true, networkLaunchEligible: true, twitterHandle: true,
-                signatureData: true, isActive: true, claimedAt: true,
+                isActive: true, claimedAt: true,
             },
         });
 

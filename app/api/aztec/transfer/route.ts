@@ -399,9 +399,11 @@ export async function POST(req: NextRequest) {
         }
 
         // 4. [TOKENOMICS] Reward sender +50 QDs for completing a ZK transfer (once per UTC day)
-        const todayIso = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD" — UTC day boundary
-        const existingReward = await (tx as any).qdTransaction.findFirst({
-          where: {
+        // [SECURITY PATCH B5]: Prevent 1-QD ping-pong farming by requiring transfer amount >= 50
+        if (roundedAmount >= 50) {
+          const todayIso = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD" - UTC day boundary
+          const existingReward = await (tx as any).qdTransaction.findFirst({
+            where: {
             aztecAddress: fromAddr,
             type: 'EARN',
             description: `Aztec ZK Transfer Completed ${todayIso}`,
@@ -416,6 +418,7 @@ export async function POST(req: NextRequest) {
               description: `Aztec ZK Transfer Completed ${todayIso}`,
             },
           });
+        }
         }
       }, {
         isolationLevel: 'Serializable', // Maximum protection against race conditions

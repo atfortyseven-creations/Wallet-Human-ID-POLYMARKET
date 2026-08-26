@@ -40,6 +40,18 @@ export async function POST(req: NextRequest) {
         const payloadHash = payload.slice(-32); // Use the tail of the base64 as a quick 'hash' for binding
         const message = `[Private ZK-GATE]\nBinding biometric liveness attestation for ${address}\nPayload: ${payloadHash}\nNonce: ${nonce}\nTimestamp: ${timestamp}`;
 
+        // [SECURITY PATCH B4]: Cryptographically validate the biometric signature!
+        const isValidSignature = await verifyMessage({
+            address: address as `0x${string}`,
+            message,
+            signature: signature as `0x${string}`
+        });
+
+        if (!isValidSignature) {
+            console.error(`[ZK-ORACLE] Cryptographic signature validation failed for ${address}`);
+            return NextResponse.json({ error: 'Invalid cryptographic signature' }, { status: 401 });
+        }
+
         // 3. Session Integrity Verification (Zero-Signature Check)
         try {
             const token = req.cookies.get('human_session')?.value;

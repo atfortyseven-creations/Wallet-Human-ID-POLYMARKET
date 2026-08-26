@@ -105,20 +105,11 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET — status check
+// GET - status check
+// [SECURITY PATCH C4]: Remove sensitive config leakage from public endpoint
 export async function GET() {
-  const tokenAddress = process.env.AZTEC_TOKEN_CONTRACT_ADDRESS;
-  const hasRelayerKey = !!process.env.AZTEC_RELAYER_SECRET_KEY;
-  const hasDeploySecret = !!process.env.DEPLOY_SECRET;
-
   return NextResponse.json({
-    status: tokenAddress && tokenAddress !== 'PENDING_DEPLOY' ? 'deployed' : 'pending',
-    tokenAddress: tokenAddress || 'NOT_SET',
-    hasRelayerKey,
-    hasDeploySecret,
-    pxeUrl: process.env.AZTEC_PXE_URL || 'https://v5.testnet.rpc.aztec-labs.com',
-    instructions: hasDeploySecret
-      ? 'POST to this endpoint with {"secret":"YOUR_DEPLOY_SECRET"} to deploy'
-      : 'Set DEPLOY_SECRET env var in Railway first',
+    status: 'online',
+    message: 'Deployment endpoint active'
   });
 }

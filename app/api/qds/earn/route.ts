@@ -45,6 +45,9 @@ export async function POST(req: NextRequest) {
     if (!rawAddress || rawAddress.length < 10) {
       return NextResponse.json({ error: 'Invalid address.' }, { status: 400 });
     }
+    if (rawAddress !== session.userId.toLowerCase()) {
+      return NextResponse.json({ error: 'Forbidden: You can only claim rewards for your own address.' }, { status: 403 });
+    }
     if (!event || !(event in EARN_EVENTS)) {
       return NextResponse.json({ error: `Unknown event. Valid: ${Object.keys(EARN_EVENTS).join(', ')}` }, { status: 400 });
     }

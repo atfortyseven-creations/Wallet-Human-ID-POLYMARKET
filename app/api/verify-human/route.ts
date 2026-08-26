@@ -17,6 +17,13 @@ export async function POST(req: Request) {
 
         console.log(`[Verify]  Verifying World ID for address: ${address}`);
 
+        // [SECURITY PATCH B4]: Enforce Session Ownership
+        const { getSession } = await import('@/lib/session');
+        const session = await getSession();
+        if (!session?.userId || session.userId.toLowerCase() !== address.toLowerCase()) {
+             return NextResponse.json({ verified: false, detail: 'Forbidden: Address mismatch with session.' }, { status: 403 });
+        }
+
         const verifyRes = await fetch(`https://developer.identity.org/api/v2/verify/${app_id}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { sanitiseExplorerUrl } from '@/lib/aztec/client';
+import { getSession } from '@/lib/session';
+import { isOwner } from '@/lib/aztec/zk-identity';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,6 +21,14 @@ export async function GET(req: Request) {
   }
 
   const address = rawAddress.toLowerCase();
+  
+  const session = await getSession();
+  if (!session?.userId) {
+     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  if (!isOwner(session.userId.toLowerCase(), address)) {
+     return NextResponse.json({ error: 'Forbidden: Private Aztec transactions are encrypted.' }, { status: 403 });
+  }
 
   try {
     const txs = await prisma.transaction.findMany({

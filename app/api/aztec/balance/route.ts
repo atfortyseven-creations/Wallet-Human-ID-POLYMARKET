@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getSession } from '@/lib/session';
+import { isOwner } from '@/lib/aztec/zk-identity';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +22,14 @@ export async function GET(req: Request) {
   }
 
   const normalizedAddress = aztecAddress.toLowerCase();
+
+  const session = await getSession();
+  if (!session?.userId) {
+     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  if (!isOwner(session.userId.toLowerCase(), normalizedAddress)) {
+     return NextResponse.json({ error: 'Forbidden: Private Aztec balance is encrypted.' }, { status: 403 });
+  }
 
   try {
     // ─── LEDGER BALANCE CALCULATION ───────────────────────────────────────

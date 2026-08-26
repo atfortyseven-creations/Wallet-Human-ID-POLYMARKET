@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
                 walletAddress: rawAddress,
                 tier: 'FREE',
                 humanityScore: 0,
-                creditsBalance: 2500,
+                creditsBalance: 0,
                 lastActive: new Date(),
             }
         });

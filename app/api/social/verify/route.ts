@@ -17,6 +17,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid Aztec address' }, { status: 400 });
     }
 
+    // [SECURITY PATCH B4]: Enforce Session Ownership
+    const { getSession } = await import('@/lib/session');
+    const { isOwner } = await import('@/lib/aztec/zk-identity');
+    const session = await getSession();
+    if (!session?.userId) {
+       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    if (!isOwner(session.userId.toLowerCase(), aztecAddress)) {
+       return NextResponse.json({ error: 'Forbidden: You can only link your own address.' }, { status: 403 });
+    }
+
+    // Strict validation of the provided IDs to prevent completely arbitrary strings
+    if (twitterId && !/^[A-Za-z0-9_]{4,15}$/.test(twitterId)) return NextResponse.json({ error: 'Invalid Twitter ID format' }, { status: 400 });
+
     // Upsert social verification record
     const social = await prisma.socialVerification.upsert({
       where: { walletAddress: aztecAddress },
