@@ -196,7 +196,7 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
 
   // 1. Edge Rate Limiting for ALL API Routes
   if (pathname.startsWith('/api/')) {
-    const ip = req.headers.get('x-forwarded-for') || req.ip || '127.0.0.1';
+    const ip = req.headers.get('x-forwarded-for') || (req as any).ip || '127.0.0.1';
     const clientIp = ip.split(',')[0].trim();
     const rateLimitRes = applyRateLimit(clientIp, pathname);
     if (rateLimitRes) return rateLimitRes;

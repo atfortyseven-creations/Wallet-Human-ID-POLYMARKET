@@ -118,18 +118,7 @@ export default function ConnectPage() {
   const [pinCode, setPinCode] = useState<string | null>(null);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const redirectingRef = useRef(false);
-
-  useEffect(() => {
-    const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    if (typeof window !== 'undefined') {
-      window.addEventListener('mousemove', updateMousePosition);
-      return () => window.removeEventListener('mousemove', updateMousePosition);
-    }
-  }, []);
 
   let isGuarded = false;
   try {
@@ -739,34 +728,54 @@ export default function ConnectPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="flex flex-col justify-between h-full w-full z-10"
+      className="flex flex-col justify-between h-full w-full z-10 p-4"
     >
-      {/* Top: Wordmark */}
-      <div className="flex flex-col gap-0 w-full">
-        <h1 className="font-serif font-black uppercase leading-[0.85] tracking-tighter text-white mix-blend-difference" style={{ fontSize: 'clamp(48px, 9vw, 140px)' }}>
-          HUMANITY
+      <div className="flex flex-col gap-6 w-full max-w-lg">
+        {/* Simple elegant logo */}
+        <Link href="/" className="flex items-center gap-2 mb-4 text-white">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <span className="text-[16px] font-bold tracking-tight">Humanity Ledger</span>
+        </Link>
+        
+        <h1 className="text-4xl lg:text-5xl font-black text-white leading-[1.1] tracking-tight">
+          Secure identity,<br/>private execution.
         </h1>
-        <h1 className="font-serif font-black uppercase leading-[0.85] tracking-tighter text-white mix-blend-difference ml-[4vw]" style={{ fontSize: 'clamp(48px, 9vw, 140px)' }}>
-          LEDGER
-        </h1>
+        
+        <p className="text-[16px] text-white/70 leading-relaxed max-w-md font-medium mt-2">
+          Connect your wallet to authenticate to the Humanity Ledger ecosystem. Your cryptographic identity operates seamlessly over the Aztec Network L2, providing privacy by default.
+        </p>
+
+        <div className="flex flex-col gap-4 mt-8">
+          <div className="flex items-center gap-4 text-white/90">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+              <Shield size={18} />
+            </div>
+            <div>
+              <p className="text-[14px] font-bold">Zero-Knowledge Proofs</p>
+              <p className="text-[13px] text-white/50">Your data never leaves your device.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 text-white/90">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+              <Smartphone size={18} />
+            </div>
+            <div>
+              <p className="text-[14px] font-bold">Cross-Device Sync</p>
+              <p className="text-[13px] text-white/50">Scan the QR to securely link your mobile.</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Bottom: Honest descriptor */}
+      {/* Footer Info */}
       <div className="max-w-md">
-        <div className="h-px w-full bg-white/20 mb-8" />
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse shrink-0" />
-          <span className="text-[9px] font-mono uppercase tracking-[0.4em] font-bold text-white">
-            Settled on Aztec Network L2
-          </span>
-        </div>
-        <p className="text-[11px] lg:text-[13px] font-mono uppercase tracking-[0.1em] leading-[1.8] text-white/65">
-          Zero-Knowledge identity infrastructure for hybrid privacy and institutional compliance.
-          Verifiable credentials. No tracking. Auditable by design.
-        </p>
-        {/* Phase 13 honesty: infrastructure note */}
-        <p className="text-[10px] font-mono text-white/30 mt-6 leading-relaxed uppercase tracking-widest">
-          Frontend: Web2 (Vercel) · L2: Aztec Network Testnet
+        <p className="text-[11px] font-mono text-white/40 leading-relaxed uppercase tracking-widest">
+          Powered by Aztec Network Testnet<br/>
+          Institutional Ecosystem Launch — Jan 2027
         </p>
       </div>
     </motion.div>
@@ -774,16 +783,15 @@ export default function ConnectPage() {
 
   // ── MOBILE TOP HEADER (replaces the huge left panel on small screens) ──
   const renderMobileHeader = () => (
-    <div className="flex items-center justify-between px-5 pt-safe-top pb-4 border-b border-black/10 bg-white">
-      <Link href="/" className="flex items-center gap-2">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-black">
+    <div className="flex items-center justify-between px-6 pt-safe-top pb-4 border-b border-black/10 bg-white" style={{ paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
+      <Link href="/" className="flex items-center gap-2 text-black">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="10"/>
           <line x1="2" y1="12" x2="22" y2="12"/>
           <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
         </svg>
-        <span className="text-[13px] font-bold tracking-tight text-black">Humanity Ledger</span>
+        <span className="text-[15px] font-bold tracking-tight">Humanity Ledger</span>
       </Link>
-      <span className="text-[9px] font-mono uppercase tracking-[0.25em] text-black/40 font-bold">Aztec L2</span>
     </div>
   );
 
@@ -794,84 +802,51 @@ export default function ConnectPage() {
   }
 
   return (
-    <div className="w-full min-h-[100dvh] bg-white flex flex-col shrink-0 relative overflow-x-hidden text-black selection:bg-black selection:text-white">
-
-      {/* Custom Optical Lens Cursor — desktop only */}
-      <motion.div
-         className="pointer-events-none fixed top-0 left-0 w-24 h-24 rounded-full bg-white z-[9999] mix-blend-difference hidden lg:block"
-         style={{ x: mousePosition.x - 48, y: mousePosition.y - 48 }}
-      />
+    <div className="w-full min-h-[100dvh] bg-white flex flex-col shrink-0 relative text-black">
 
       {/* ── MOBILE LAYOUT ── */}
       <div className="flex flex-col lg:hidden min-h-[100dvh]">
-        {/* Compact branded header */}
         {renderMobileHeader()}
 
-        {/* Auth form — takes all remaining space, centered */}
-        <div className="flex-1 flex flex-col items-center justify-center px-5 py-8 pb-safe-bottom overflow-y-auto">
-          <div className="w-full max-w-[400px]">
-            {/* Mini trust signals on mobile */}
-            <div className="flex items-center gap-2 mb-6">
-              <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/[0.03] border border-black/8 rounded-full">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold">ZK Secure</span>
-              </div>
-              <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/[0.03] border border-black/8 rounded-full">
-                <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold">⚡ Aztec L2</span>
-              </div>
-            </div>
+        <div className="flex-1 flex flex-col px-6 py-8 pb-safe-bottom overflow-y-auto">
+          <div className="w-full max-w-md mx-auto">
+            <h2 className="text-2xl font-black tracking-tight mb-2">Connect to continue</h2>
+            <p className="text-[14px] text-black/60 mb-8 font-medium">Use your self-custodial wallet or email to enter the secure environment.</p>
             {renderLoginCard()}
           </div>
         </div>
 
-        {/* Mobile bottom trust strip */}
-        <div className="px-5 py-4 border-t border-black/8 bg-white flex items-center justify-between pb-safe-bottom">
-          <span className="text-[9px] font-mono text-black/30 uppercase tracking-widest">Non-custodial</span>
-          <span className="text-[9px] font-mono text-black/30 uppercase tracking-widest">GDPR-Aligned</span>
-          <span className="text-[9px] font-mono text-black/30 uppercase tracking-widest">MiCA-Aware</span>
+        <div className="px-6 py-6 border-t border-black/10 bg-zinc-50 flex flex-wrap justify-between gap-4 pb-safe-bottom text-center">
+          <span className="text-[10px] font-bold text-black/40 uppercase tracking-widest w-full">Aztec L2 / Zero-Knowledge Secure</span>
         </div>
       </div>
 
       {/* ── DESKTOP LAYOUT ── */}
       <div className="hidden lg:flex w-full min-h-[100dvh]">
-
-        {/* Left Side: Manifesto Canvas */}
-        <div className="w-[60%] border-r border-black/10 flex flex-col justify-between px-20 py-20 relative bg-black selection:bg-white selection:text-black">
+        {/* Left Side: Info Canvas */}
+        <div className="w-[50%] flex flex-col px-20 py-20 bg-[#050505] text-white">
           {renderInfoPanel()}
         </div>
 
         {/* Right Side: Auth */}
-        <div className="w-[40%] flex flex-col items-center justify-center px-16 py-20 relative bg-white">
-          {/* Trust signals bar */}
-          <div className="w-full max-w-[420px] flex items-center gap-3 mb-10">
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/[0.03] border border-black/8 rounded-full">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold">ZK Secure</span>
-            </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/[0.03] border border-black/8 rounded-full">
-              <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold">⚡ Aztec Network</span>
-            </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/[0.03] border border-black/8 rounded-full">
-              <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold">Non-custodial</span>
-            </div>
-          </div>
-
+        <div className="w-[50%] flex flex-col items-center justify-center px-16 py-20 bg-white">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
             className="w-full max-w-[420px]"
           >
+            <h2 className="text-3xl font-black tracking-tight mb-2">Secure Login</h2>
+            <p className="text-[15px] text-black/60 mb-10 font-medium">Select your preferred method to authenticate.</p>
             {renderLoginCard()}
           </motion.div>
 
-          {/* Desktop bottom micro-disclaimer */}
-          <p className="text-[9px] font-mono text-black/25 text-center mt-10 max-w-[360px] leading-relaxed uppercase tracking-widest">
+          <p className="text-[10px] font-mono text-black/30 text-center mt-12 max-w-[360px] leading-relaxed uppercase tracking-widest">
             By connecting you agree to our{" "}
-            <Link href="/legal/terms" className="underline hover:text-black/50 transition-colors">Terms</Link>
+            <Link href="/legal/terms" className="underline hover:text-black/60 transition-colors">Terms</Link>
             {" & "}
-            <Link href="/legal/privacy" className="underline hover:text-black/50 transition-colors">Privacy Policy</Link>.
-            Not financial advice. Aztec Network Testnet.
+            <Link href="/legal/privacy" className="underline hover:text-black/60 transition-colors">Privacy</Link>.
+            Not financial advice.
           </p>
         </div>
       </div>

@@ -32,7 +32,7 @@ const APPS: {
     icon: LayoutDashboard,
     bg: '#0A0A0A',
     fg: '#FFFFFF',
-    colSpan: 'col-span-2',
+    colSpan: 'col-span-1 sm:col-span-2',
   },
   {
     id: 'chat',
@@ -122,7 +122,7 @@ const APPS: {
     icon: Coins,
     bg: '#F59E0B',
     fg: '#FFFFFF',
-    colSpan: 'col-span-2',
+    colSpan: 'col-span-1 sm:col-span-2',
   },
 ];
 

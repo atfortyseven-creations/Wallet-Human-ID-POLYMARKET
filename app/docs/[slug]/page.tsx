@@ -6,8 +6,9 @@ export function generateStaticParams() {
   return ALL_DOC_SLUGS.map((doc) => ({ slug: doc.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const doc = ALL_DOC_SLUGS.find((d) => d.slug === params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params;
+  const doc = ALL_DOC_SLUGS.find((d) => d.slug === resolvedParams.slug);
   if (!doc) return { title: "Not Found" };
   return {
     title: `${doc.label} — Humanity Ledger Docs`,
@@ -15,8 +16,8 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   };
 }
 
-export default function DocPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default async function DocPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const docInfo = ALL_DOC_SLUGS.find((d) => d.slug === slug);
   if (!docInfo) notFound();
 

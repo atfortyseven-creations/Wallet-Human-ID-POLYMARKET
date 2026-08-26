@@ -14,7 +14,7 @@ export default function HubPage() {
       {/* Minimal header */}
       <header
         className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-black/[0.06] flex items-center justify-between px-5 md:px-10"
-        style={{ minHeight: '60px' }}
+        style={{ minHeight: '60px', paddingTop: 'max(12px, env(safe-area-inset-top, 12px))', paddingBottom: '12px' }}
       >
         {/* HL wordmark */}
         <div className="flex items-center gap-2.5">
