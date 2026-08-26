@@ -1,6 +1,6 @@
 // System layout  No Clerk provider needed (SIWE-native auth)
 import { headers } from 'next/headers'
-import { Inter, Martel, Roboto_Mono } from 'next/font/google'
+import { Inter, UnifrakturMaguntia, Roboto_Mono } from 'next/font/google'
 import './globals-compiled.css'
 import './globals.css'
 import './smooth-scroll.css'
@@ -30,9 +30,9 @@ import { WalletConnectProvider } from '@/components/walletconnect/WalletConnectP
 
 const inter = Inter({ subsets: ['latin'] })
 
-const martel = Martel({
+const aztecFont = UnifrakturMaguntia({
   subsets: ['latin'],
-  weight: ['300', '400', '700', '800', '900'],
+  weight: ['400'],
   variable: '--font-aztec-serif',
   display: 'swap',
 })
@@ -205,7 +205,7 @@ export default async function RootLayout({
   };
 
   return (
-    <html lang="en" className="light bg-white" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html lang="en" className={`light bg-white ${aztecFont.variable} ${robotoMono.variable} ${inter.variable}`} suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         {/* Proper viewport already handled by Next.js `viewport` export above */}
         <meta name="apple-mobile-web-app-capable" content="yes" />

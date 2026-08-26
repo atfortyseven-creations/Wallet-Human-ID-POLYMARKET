@@ -265,31 +265,62 @@ export async function PUT(req: NextRequest) {
 
     const isFirstTimeUser = !storedPinHash;
 
-    // [SECURITY] If PIN was cleared by OTP reset, require a valid clearance token
-    // from the database — not just from client. This closes the race-condition gap.
+    // [SECURITY] If no PIN is set yet, require a valid clearance token
+    // (issued either by POST /api/auth/enclave-pin default-pin verification OR OTP reset).
+    // This prevents unauthenticated first-time PIN setting.
     if (isFirstTimeUser) {
-      const CLEARANCE_TTL = 15 * 60 * 1000; // 15 min
-      const tokenOk = (
-        dbClearanceToken &&
-        dbClearanceTs &&
-        clientClearanceToken &&
-        clientClearanceTs &&
-        Date.now() - new Date(dbClearanceTs).getTime() < CLEARANCE_TTL
-      );
-      if (!tokenOk) {
+      // If they have a DB clearance token (from OTP reset), validate it strictly.
+      // If no DB clearance token exists, validate the client token as a server-issued
+      // verification token (from POST /api/auth/enclave-pin on successful default PIN check).
+      if (!clientClearanceToken || !clientClearanceTs) {
         return NextResponse.json({
-          error: 'PIN reset clearance required. Please use the OTP reset flow to set a new PIN.',
+          error: 'Verification required. Please verify your identity before setting a PIN.',
         }, { status: 403 });
       }
-      // Constant-time compare of client token vs DB token (prevents timing oracle)
-      try {
-        const clientBuf = Buffer.from(String(clientClearanceToken), 'hex');
-        const dbBuf     = Buffer.from(String(dbClearanceToken), 'hex');
-        if (clientBuf.length !== dbBuf.length || !crypto.timingSafeEqual(clientBuf, dbBuf)) {
+
+      // If DB has a clearance token (OTP reset flow), validate against it
+      if (dbClearanceToken && dbClearanceTs) {
+        const CLEARANCE_TTL = 15 * 60 * 1000; // 15 min
+        const tokenAge = Date.now() - new Date(dbClearanceTs).getTime();
+        if (tokenAge >= CLEARANCE_TTL) {
+          return NextResponse.json({ error: 'Clearance token expired. Please restart the reset flow.' }, { status: 403 });
+        }
+        try {
+          const clientBuf = Buffer.from(String(clientClearanceToken), 'hex');
+          const dbBuf     = Buffer.from(String(dbClearanceToken), 'hex');
+          if (clientBuf.length !== dbBuf.length || !crypto.timingSafeEqual(clientBuf, dbBuf)) {
+            return NextResponse.json({ error: 'Invalid clearance token.' }, { status: 403 });
+          }
+        } catch {
           return NextResponse.json({ error: 'Invalid clearance token.' }, { status: 403 });
         }
-      } catch {
-        return NextResponse.json({ error: 'Invalid clearance token.' }, { status: 403 });
+      } else {
+        // No DB clearance token → validate as a server-issued POST clearance token
+        // (this covers the first-time user flow via default PIN verification)
+        const clearanceSecret = (() => {
+          const s = process.env.ENCLAVE_PIN_SECRET || process.env.JWT_SECRET;
+          if (!s) throw new Error('CRITICAL: Missing ENCLAVE_PIN_SECRET');
+          return s;
+        })();
+        const expectedToken = crypto
+          .createHmac('sha256', clearanceSecret)
+          .update(`${userId}:cleared:${clientClearanceTs}`)
+          .digest('hex');
+        const CLEARANCE_TTL = 8 * 60 * 60 * 1000; // 8 hours (matches session TTL)
+        try {
+          const clientBuf   = Buffer.from(String(clientClearanceToken), 'hex');
+          const expectedBuf = Buffer.from(expectedToken, 'hex');
+          const tokenAge    = Date.now() - Number(clientClearanceTs);
+          if (
+            clientBuf.length !== expectedBuf.length ||
+            !crypto.timingSafeEqual(clientBuf, expectedBuf) ||
+            tokenAge > CLEARANCE_TTL
+          ) {
+            return NextResponse.json({ error: 'Invalid or expired clearance token. Please re-enter your PIN.' }, { status: 403 });
+          }
+        } catch {
+          return NextResponse.json({ error: 'Invalid clearance token.' }, { status: 403 });
+        }
       }
     }
 

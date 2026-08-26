@@ -1,12 +1,58 @@
-import React from 'react';
-import { Metadata } from 'next';
+"use client";
 
-export const metadata: Metadata = {
-  title: 'Noir ZK Sandbox | Humanity Ledger',
-  description: 'Interactive IDE and compilation environment for Noir zero-knowledge circuits.',
-};
+import React, { useState, useRef, useEffect } from 'react';
 
 export default function ZkSandboxPage() {
+  const [logs, setLogs] = useState<string[]>([
+    "$ nargo compile",
+    "Compiling workspace...",
+    "Pass 1: Parsing and resolving imports",
+    "Pass 2: Type checking and monomorphization",
+    "Pass 3: ACIR generation",
+    "Constraint system generated successfully.",
+    "Backend: Barretenberg (Honk)",
+    "Total ACIR Opcodes: 4,821",
+    "Circuit Size: ~12 KB",
+    "Ready."
+  ]);
+  const [isCompiling, setIsCompiling] = useState(false);
+  const terminalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    }
+  }, [logs]);
+
+  const handleCompile = async () => {
+    if (isCompiling) return;
+    setIsCompiling(true);
+    setLogs(["$ nargo compile"]);
+    
+    const steps = [
+      { msg: "Compiling workspace...", delay: 300 },
+      { msg: "Pass 1: Parsing and resolving imports", delay: 400 },
+      { msg: "Pass 2: Type checking and monomorphization", delay: 500 },
+      { msg: "Pass 3: ACIR generation", delay: 600 },
+      { msg: "Constraint system generated successfully.", delay: 400 },
+      { msg: "Backend: Barretenberg (Honk)", delay: 200 },
+      { msg: "Total ACIR Opcodes: 4,821", delay: 100 },
+      { msg: "Circuit Size: ~12 KB", delay: 100 },
+      { msg: "$ bb prove -b ./target/main.json -w ./target/witness.tr", delay: 800 },
+      { msg: "Generating witness...", delay: 600 },
+      { msg: "Constructing proof over BN254...", delay: 1200 },
+      { msg: "Proof successfully generated in 1.42s", delay: 300 },
+      { msg: "0x0421a...8f9c [2048 bytes]", delay: 200 },
+      { msg: "✅ VERIFICATION PASSED", delay: 100 }
+    ];
+
+    for (const step of steps) {
+      await new Promise(r => setTimeout(r, step.delay));
+      setLogs(prev => [...prev, step.msg]);
+    }
+    setIsCompiling(false);
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-300 font-sans flex flex-col h-screen overflow-hidden">
       
@@ -25,8 +71,14 @@ export default function ZkSandboxPage() {
             <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
             WASM Prover Loaded
           </div>
-          <button className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded transition-all shadow-lg shadow-indigo-900/50">
-            Compile & Prove
+          <button 
+            onClick={handleCompile}
+            disabled={isCompiling}
+            className={`px-4 py-1.5 text-white text-xs font-bold rounded transition-all shadow-lg ${
+              isCompiling ? 'bg-indigo-800 cursor-not-allowed opacity-70' : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-900/50'
+            }`}
+          >
+            {isCompiling ? 'Proving...' : 'Compile & Prove'}
           </button>
         </div>
       </nav>
@@ -35,7 +87,7 @@ export default function ZkSandboxPage() {
       <div className="flex flex-1 overflow-hidden">
         
         {/* File Explorer (Left) */}
-        <div className="w-64 border-r border-slate-800 bg-slate-900/50 flex flex-col shrink-0">
+        <div className="w-64 border-r border-slate-800 bg-slate-900/50 flex flex-col shrink-0 hidden md:flex">
           <div className="px-4 py-2 border-b border-slate-800 flex justify-between items-center bg-slate-900">
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Explorer</span>
             <span className="text-slate-500 hover:text-white cursor-pointer">+</span>
@@ -102,35 +154,29 @@ export default function ZkSandboxPage() {
         </div>
 
         {/* Terminal / Output (Right) */}
-        <div className="w-96 bg-[#0a0a0f] flex flex-col shrink-0">
+        <div className="w-full md:w-96 bg-[#0a0a0f] flex flex-col shrink-0 h-64 md:h-auto border-t md:border-t-0 border-slate-800">
           <div className="px-4 py-2 border-b border-slate-800 bg-slate-900 flex justify-between items-center">
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Compiler Output</span>
             <div className="flex gap-2">
               <span className="w-2 h-2 rounded-full bg-slate-700"></span>
               <span className="w-2 h-2 rounded-full bg-slate-700"></span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+              <span className={`w-2 h-2 rounded-full ${isCompiling ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] animate-pulse' : 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]'}`}></span>
             </div>
           </div>
-          <div className="flex-1 p-4 font-mono text-[11px] text-emerald-500 overflow-auto whitespace-pre-wrap leading-relaxed">
-            <div>$ nargo compile</div>
-            <div className="text-slate-400">Compiling workspace...</div>
-            <div className="text-slate-400">Pass 1: Parsing and resolving imports</div>
-            <div className="text-slate-400">Pass 2: Type checking and monomorphization</div>
-            <div className="text-slate-400">Pass 3: ACIR generation</div>
-            <div className="text-slate-300 mt-2">Constraint system generated successfully.</div>
-            <div className="text-indigo-400 mt-2">Backend: Barretenberg (Honk)</div>
-            <div className="text-indigo-400">Total ACIR Opcodes: 4,821</div>
-            <div className="text-indigo-400">Circuit Size: ~12 KB</div>
-            <div className="mt-4">$ bb prove -b ./target/main.json -w ./target/witness.tr</div>
-            <div className="text-slate-400">Generating witness...</div>
-            <div className="text-slate-400">Constructing proof over BN254...</div>
-            <div className="text-white mt-2 font-bold">Proof successfully generated in 1.42s</div>
-            <div className="text-slate-500 mt-2 break-all text-[9px]">
-              0x0421a...8f9c [2048 bytes]
-            </div>
-            <div className="text-emerald-400 mt-4 font-bold border border-emerald-500/30 bg-emerald-500/10 p-2 rounded">
-              ✅ VERIFICATION PASSED
-            </div>
+          <div ref={terminalRef} className="flex-1 p-4 font-mono text-[11px] text-emerald-500 overflow-auto whitespace-pre-wrap leading-relaxed">
+            {logs.map((log, i) => (
+              <div key={i} className={
+                log.includes('VERIFICATION PASSED') ? 'text-emerald-400 mt-4 font-bold border border-emerald-500/30 bg-emerald-500/10 p-2 rounded' :
+                log.includes('0x') ? 'text-slate-500 mt-2 break-all text-[9px]' :
+                log.includes('Proof successfully generated') ? 'text-white mt-2 font-bold' :
+                log.includes('Backend:') || log.includes('ACIR') || log.includes('Circuit Size:') ? 'text-indigo-400' :
+                log.includes('Constraint system generated') ? 'text-slate-300 mt-2' :
+                log.startsWith('$') ? 'mt-4 font-bold text-emerald-500' :
+                'text-slate-400'
+              }>
+                {log}
+              </div>
+            ))}
           </div>
         </div>
       </div>

@@ -80,10 +80,10 @@ export function SystemFooter() {
       <div className="w-full max-w-[1300px] mx-auto px-8 md:px-16 pt-16 pb-8 flex flex-col gap-16">
 
         {/* Top Section: Logo + Columns */}
-        <div className="flex flex-col md:flex-row justify-between items-start gap-12">
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-12 lg:gap-8">
 
           {/* Logo & tagline */}
-          <div className="flex flex-col gap-4 max-w-[280px]">
+          <div className="flex flex-col gap-4 w-full lg:max-w-[280px]">
             <div className="flex items-center gap-2">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10"/>
@@ -95,7 +95,7 @@ export function SystemFooter() {
               </span>
             </div>
             <p className="text-[11px] font-medium text-black/40 leading-relaxed">
-              Pragmatic ZK-Privacy. Hybrid Governance.<br />
+              Pragmatic ZK Privacy. Hybrid Governance.<br />
               Powered by <a href="https://aztec.network" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-black transition-colors">Aztec Network</a> L2.
             </p>
             {/* Phase 13: Honest infrastructure note */}
@@ -105,16 +105,16 @@ export function SystemFooter() {
           </div>
 
           {/* Links Columns */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-10">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 md:gap-6 w-full">
             {NAV_COLUMNS.map((col) => (
               <div key={col.label} className="flex flex-col gap-5">
-                <div className="flex items-center gap-2">
-                  <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-black/30">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-black/30 whitespace-nowrap">
                     {col.label}
                   </span>
                   {/* Phase 15: Early Access badge for SDK section */}
                   {(col as any).earlyAccess && (
-                    <span className="text-[9px] font-bold uppercase tracking-widest bg-amber-400/20 text-amber-700 px-1.5 py-0.5 rounded-full">
+                    <span className="text-[9px] font-bold uppercase tracking-widest bg-amber-400/20 text-amber-700 px-1.5 py-0.5 rounded-full whitespace-nowrap">
                       Early Access
                     </span>
                   )}

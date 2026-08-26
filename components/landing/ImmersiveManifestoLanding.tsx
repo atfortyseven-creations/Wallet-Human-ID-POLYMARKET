@@ -155,10 +155,10 @@ function HeroSection() {
           Privacy isn&apos;t<br /><span className="text-black/35">a feature.</span>
         </h1>
         <p className="text-[18px] md:text-[21px] text-black/60 leading-relaxed font-medium max-w-[660px] mb-12">
-          Humanity Ledger is a zero-knowledge Hybrid Execution Environment. Modular Mini-Apps shielded by cryptographic proofs — designed for enterprise compliance and absolute privacy on Aztec Network.
+          Whale Chat is a zero knowledge communication platform. Shielded by cryptographic proofs and designed for enterprise compliance and absolute privacy on Aztec Network.
         </p>
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-          <Link href="/hub" className="w-full sm:w-auto px-9 py-4 bg-black text-white rounded-full text-[15px] font-bold hover:bg-black/80 active:scale-95 transition-all shadow-[0_6px_30px_rgba(0,0,0,0.15)] hover:-translate-y-0.5">Launch App Hub →</Link>
+          <Link href="/chat" className="w-full sm:w-auto px-9 py-4 bg-black text-white rounded-full text-[15px] font-bold hover:bg-black/80 active:scale-95 transition-all shadow-[0_6px_30px_rgba(0,0,0,0.15)] hover:-translate-y-0.5">Launch Whale Chat →</Link>
           <Link href="/connect" className="w-full sm:w-auto px-9 py-4 border-2 border-black/12 text-black rounded-full text-[15px] font-bold hover:bg-zinc-50 active:scale-95 transition-all">Connect Wallet</Link>
         </div>
       </motion.div>
@@ -166,53 +166,53 @@ function HeroSection() {
   );
 }
 
-// ─── What is HL ───────────────────────────────────────────────────────────────
 function WhatIsSection() {
   return (
-    <section className="w-full bg-[#050505] text-white py-24 md:py-36 px-6">
+    <section className="w-full bg-zinc-50 text-black py-24 md:py-36 px-6 border-t border-black/[0.05]">
       <div className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.8, ease: EASE }}>
-          <span className="block text-[11px] font-mono uppercase tracking-[0.3em] text-white/40 mb-5">What We Are</span>
-          <h2 className="text-[32px] md:text-[48px] font-black leading-tight tracking-tight mb-6" style={{ fontFamily: "var(--font-aztec-serif), Georgia, serif" }}>
-            The privacy layer<br />for everything on-chain.
+          <span className="block text-[11px] font-mono uppercase tracking-[0.3em] text-black/40 mb-5">What We Are</span>
+          <h2 className="text-[32px] md:text-[48px] font-black leading-tight tracking-tight text-black mb-6" style={{ fontFamily: "var(--font-aztec-serif), Georgia, serif" }}>
+            Privacy native<br /><span className="text-black/35">infrastructure.</span>
           </h2>
-          <p className="text-[16px] text-white/60 leading-relaxed mb-8">
-            Humanity Ledger builds a suite of Mini-Apps that run zero-knowledge circuits directly in your browser. Nothing is ever sent to a server in plaintext. Your identity, your keys, and your data stay yours.
+          <p className="text-[17px] text-black/60 leading-relaxed">
+            Whale Chat runs zero knowledge circuits directly in your browser. Nothing is ever sent to a server in plaintext. Your identity, your keys, and your data stay yours.
           </p>
-          <div className="flex flex-col gap-5">
+        </motion.div>
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.8, ease: EASE, delay: 0.1 }} className="flex flex-col gap-5">
+          {[
+            { n: "01", t: "Client Side Proving", d: "Noir circuits compile and run on your device. No server ever touches your raw data." },
+            { n: "02", t: "Encrypted State on Aztec L2", d: "Balances and credentials are UTXO notes encrypted by your keys, settled on Aztec." },
+            { n: "03", t: "Hybrid Execution", d: "Bridge Ethereum liquidity with ZK privacy via Aztec, enterprise compliance out of the box." },
+          ].map((item) => (
+            <div key={item.n} className="flex gap-4 items-start p-5 bg-white rounded-2xl border border-black/[0.06]">
+              <span className="font-mono text-[10px] text-black/30 tracking-widest mt-1 shrink-0">{item.n}</span>
+              <div>
+                <p className="font-bold text-[15px] text-black mb-1">{item.t}</p>
+                <p className="text-[13px] text-black/50 leading-relaxed">{item.d}</p>
+              </div>
+            </div>
+          ))}
+          <div className="grid grid-cols-2 gap-4">
             {[
-              { n: "01", t: "Client-Side Proving", d: "Noir circuits compile and run on your device. No server ever touches your raw data." },
-              { n: "02", t: "Encrypted State on Aztec L2", d: "Balances and credentials are UTXO notes encrypted by your keys, settled on Aztec." },
-              { n: "03", t: "Hybrid Execution", d: "Bridge Ethereum liquidity with ZK privacy via Aztec — enterprise compliance out of the box." },
-            ].map((item) => (
-              <div key={item.n} className="flex gap-4 items-start">
-                <span className="font-mono text-[10px] text-white/30 tracking-widest mt-1 shrink-0">{item.n}</span>
-                <div>
-                  <p className="font-bold text-[15px] text-white mb-1">{item.t}</p>
-                  <p className="text-[13px] text-white/50 leading-relaxed">{item.d}</p>
-                </div>
+              { label: "ZK Proofs", value: "Client Side", sub: "Noir circuits" },
+              { label: "Network", value: "Aztec L2", sub: "Testnet active" },
+              { label: "Focus", value: "Whale Chat", sub: "Fully encrypted" },
+              { label: "Launch", value: "Jan 2027", sub: "Production ready" },
+            ].map((stat) => (
+              <div key={stat.label} className="rounded-2xl bg-white border border-black/[0.06] p-5 flex flex-col gap-1">
+                <p className="text-[11px] font-mono uppercase tracking-widest text-black/30">{stat.label}</p>
+                <p className="text-[22px] font-black text-black tracking-tight">{stat.value}</p>
+                <p className="text-[12px] text-black/40">{stat.sub}</p>
               </div>
             ))}
           </div>
-        </motion.div>
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.8, ease: EASE, delay: 0.1 }} className="grid grid-cols-2 gap-4">
-          {[
-            { label: "ZK Proofs", value: "Client-Side", sub: "Noir circuits" },
-            { label: "Network", value: "Aztec L2", sub: "Testnet active" },
-            { label: "Mini-Apps", value: "4+", sub: "Ecosystem launch" },
-            { label: "Launch", value: "Jan 2027", sub: "Whale Chat first" },
-          ].map((stat) => (
-            <div key={stat.label} className="rounded-2xl bg-white/5 border border-white/10 p-6 flex flex-col gap-1">
-              <p className="text-[11px] font-mono uppercase tracking-widest text-white/30">{stat.label}</p>
-              <p className="text-[22px] font-black text-white tracking-tight">{stat.value}</p>
-              <p className="text-[12px] text-white/40">{stat.sub}</p>
-            </div>
-          ))}
         </motion.div>
       </div>
     </section>
   );
 }
+
 
 // ─── Whale Chat Flagship ──────────────────────────────────────────────────────
 function WhaleChatSection() {
@@ -235,14 +235,14 @@ function WhaleChatSection() {
               Whale Chat.<br /><span className="text-black/35">Fully encrypted.</span>
             </h3>
             <p className="text-[17px] text-black/60 leading-relaxed mb-8">
-              The first Mini-App going live in January 2027 with complete production functionality. E2E encrypted messaging, peer-to-peer voice and video calls, audio messages, stickers, and file sharing — all cryptographically gated by your ZK wallet identity.
+              The first application going live in January 2027 with complete production functionality. End to end encrypted messaging, peer to peer voice and video calls, audio messages, stickers, and file sharing — all cryptographically gated by your zero knowledge wallet identity.
             </p>
             <div className="flex flex-col gap-3 mb-10">
               {[
-                "E2E encrypted messages via ECDH X25519",
-                "Wallet-to-wallet voice & video calls (WebRTC)",
+                "End to end encrypted messages via ECDH X25519",
+                "Wallet to wallet voice & video calls (WebRTC)",
                 "Encrypted audio messages & sticker packs",
-                "Identity gated by zero-knowledge credentials",
+                "Identity gated by zero knowledge credentials",
               ].map((f) => (
                 <div key={f} className="flex items-center gap-3">
                   <svg className="shrink-0 text-emerald-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -290,61 +290,19 @@ function WhaleChatSection() {
   );
 }
 
-// ─── Mini-Apps Grid ───────────────────────────────────────────────────────────
-function MiniAppsSection() {
-  const APPS = [
-    { id: "chat", tag: "Encrypted Messaging", title: "Whale Chat", desc: "P2P E2E encrypted chat, calls, audio & stickers. ZK identity gated.", href: "/chat", cta: "Open Chat", badge: "Jan 2027", badgeColor: "#1C7AFF" },
-    { id: "studio", tag: "On-Chain Registry", title: "Studio Provenance", desc: "Register and tokenize real-world assets via Aztec Network with verifiable proofs.", href: "/studio/provenance", cta: "Open Studio", badge: "Beta", badgeColor: "#7C3AED" },
-    { id: "portfolio", tag: "Shielded Analytics", title: "Portfolio Terminal", desc: "Multi-chain asset tracking processed locally. Your data never leaves your device.", href: "/portfolio", cta: "Open Portfolio", badge: "Beta", badgeColor: "#059669" },
-    { id: "identity", tag: "ZK Identity", title: "Identity Vault", desc: "Sovereign self-custody of digital credentials. Prove attributes without revealing data.", href: "/terminal?tab=gold", cta: "Open Identity", badge: "Coming Soon", badgeColor: "#D97706" },
-  ];
-  return (
-    <section className="w-full py-24 md:py-36 px-6 bg-zinc-50 border-t border-black/[0.05]">
-      <div className="w-full max-w-5xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, ease: EASE }} className="mb-14">
-          <span className="block text-[11px] font-mono uppercase tracking-[0.3em] text-black/40 mb-4">Ecosystem</span>
-          <h2 className="text-[32px] md:text-[48px] font-black tracking-tight text-black" style={{ fontFamily: "var(--font-aztec-serif), Georgia, serif" }}>
-            Four Mini-Apps.<br /><span className="text-black/35">One identity.</span>
-          </h2>
-        </motion.div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {APPS.map((app, i) => (
-            <motion.div key={app.id} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.6, ease: EASE, delay: i * 0.08 }}
-              className="bg-white rounded-3xl border border-black/[0.07] p-7 flex flex-col gap-5 hover:shadow-lg hover:border-black/10 transition-all duration-300 group">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 bg-zinc-50 border border-black/[0.07] rounded-xl flex items-center justify-center text-black/60" />
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white" style={{ backgroundColor: app.badgeColor }}>{app.badge}</span>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40">{app.tag}</span>
-                <h3 className="text-[20px] font-black text-black tracking-tight">{app.title}</h3>
-                <p className="text-[13.5px] text-black/55 leading-relaxed">{app.desc}</p>
-              </div>
-              <Link href={app.href} className="self-start flex items-center gap-1.5 text-[13px] font-bold text-black/50 hover:text-black transition-colors duration-200 group-hover:gap-2.5">
-                {app.cta}
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 // ─── Aztec Strip ──────────────────────────────────────────────────────────────
 function AztecStrip() {
   return (
-    <section className="w-full py-16 px-6 bg-black text-white border-t border-white/5">
+    <section className="w-full py-16 px-6 bg-zinc-50 border-t border-black/[0.06]">
       <div className="w-full max-w-5xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
         <div className="flex flex-col gap-2">
-          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-white/40">Powered by</span>
-          <h3 className="text-[22px] md:text-[28px] font-black text-white tracking-tight">Aztec Network L2 · Zero-Knowledge Proofs</h3>
-          <p className="text-[14px] text-white/50 leading-relaxed max-w-md">All Humanity Ledger Mini-Apps settle on Aztec Network, the leading ZK L2 on Ethereum, providing complete transaction privacy and institutional compliance from day one.</p>
+          <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-black/40">Powered by</span>
+          <h3 className="text-[22px] md:text-[28px] font-black text-black tracking-tight">Aztec Network L2 · Zero Knowledge Proofs</h3>
+          <p className="text-[14px] text-black/50 leading-relaxed max-w-md">Whale Chat settles on Aztec Network, the leading zero knowledge L2 on Ethereum, providing complete transaction privacy and institutional compliance from day one.</p>
         </div>
         <div className="flex flex-col gap-3 shrink-0 w-full md:w-auto">
-          <a href="https://aztec.network" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-6 py-3.5 border border-white/20 rounded-full text-[13px] font-bold text-white hover:bg-white/10 transition-colors whitespace-nowrap">Learn about Aztec →</a>
-          <Link href="/developers/api-docs" className="flex items-center justify-center gap-2 px-6 py-3.5 border border-white/10 rounded-full text-[13px] font-medium text-white/50 hover:text-white transition-colors">View Documentation</Link>
+          <a href="https://aztec.network" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-6 py-3.5 bg-black text-white rounded-full text-[13px] font-bold hover:bg-black/80 transition-colors whitespace-nowrap">Learn about Aztec →</a>
+          <Link href="/developers/api-docs" className="flex items-center justify-center gap-2 px-6 py-3.5 border border-black/15 rounded-full text-[13px] font-medium text-black/60 hover:text-black hover:border-black/30 transition-colors">View Documentation</Link>
         </div>
       </div>
     </section>
@@ -355,11 +313,11 @@ function AztecStrip() {
 function FAQSection() {
   const [open, setOpen] = useState<number | null>(null);
   const FAQS = [
-    { q: "What is Humanity Ledger?", a: "Humanity Ledger is a zero-knowledge Hybrid Execution Environment — a suite of privacy-first Mini-Apps (Whale Chat, Studio Provenance, Portfolio Terminal, Identity Vault) all secured by the Aztec Network L2." },
-    { q: "When does Whale Chat launch?", a: "Whale Chat launches with full production functionality in January 2027. This includes E2E encrypted messaging, wallet-to-wallet voice and video calls, audio messages, and stickers." },
-    { q: "How does it connect to Aztec Network?", a: "Aztec Network is the Layer-2 settlement protocol. Humanity Ledger acts as the application and identity layer, running Noir ZK circuits locally in your browser and settling encrypted state on Aztec for absolute privacy." },
-    { q: "Are my messages stored on any server?", a: "No. Messages are end-to-end encrypted using X25519 ECDH keys exchanged directly between wallets and transmitted peer-to-peer via WebRTC. Relay nodes are only used for peer discovery, never for message content." },
-    { q: "Do I need a crypto wallet?", a: "You can sign in with email for basic access. A self-custodial wallet (MetaMask, Coinbase Wallet, Rainbow) is required for L2 execution, ZK credential issuance, and full privacy features." },
+    { q: "What is Whale Chat?", a: "Whale Chat is a zero knowledge encrypted communication application secured by the Aztec Network L2." },
+    { q: "When does Whale Chat launch?", a: "Whale Chat launches with full production functionality in January 2027. This includes end to end encrypted messaging, wallet to wallet voice and video calls, audio messages, and stickers." },
+    { q: "How does it connect to Aztec Network?", a: "Aztec Network is the Layer 2 settlement protocol. Whale Chat acts as the application and identity layer, running Noir zero knowledge circuits locally in your browser and settling encrypted state on Aztec for absolute privacy." },
+    { q: "Are my messages stored on any server?", a: "No. Messages are end to end encrypted using X25519 ECDH keys exchanged directly between wallets and transmitted peer to peer via WebRTC. Relay nodes are only used for peer discovery, never for message content." },
+    { q: "Do I need a crypto wallet?", a: "You can sign in with email for basic access. A self custodial wallet (MetaMask, Coinbase Wallet, Rainbow) is required for L2 execution, zero knowledge credential issuance, and full privacy features." },
   ];
   return (
     <section className="w-full py-24 md:py-36 px-6 bg-white border-t border-black/[0.05]">
@@ -394,14 +352,14 @@ function FAQSection() {
 // ─── Final CTA ────────────────────────────────────────────────────────────────
 function FinalCTASection() {
   return (
-    <section className="w-full py-28 md:py-40 px-6 bg-[#050505] text-white text-center">
+    <section className="w-full py-28 md:py-40 px-6 bg-white text-black text-center border-t border-black/[0.05]">
       <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: EASE }} className="max-w-2xl mx-auto">
-        <span className="block text-[11px] font-mono uppercase tracking-[0.3em] text-white/40 mb-5">January 2027</span>
-        <h2 className="text-[36px] md:text-[60px] font-black leading-tight tracking-tight mb-6" style={{ fontFamily: "var(--font-aztec-serif), Georgia, serif" }}>Ready to enter?</h2>
-        <p className="text-[17px] text-white/50 leading-relaxed mb-12 max-w-lg mx-auto">Whale Chat goes live in January 2027. Connect your wallet now to claim your ZK identity and be first in.</p>
+        <span className="block text-[11px] font-mono uppercase tracking-[0.3em] text-black/40 mb-5">January 2027</span>
+        <h2 className="text-[36px] md:text-[60px] font-black leading-tight tracking-tight mb-6 text-black" style={{ fontFamily: "var(--font-aztec-serif), Georgia, serif" }}>Ready to enter?</h2>
+        <p className="text-[17px] text-black/50 leading-relaxed mb-12 max-w-lg mx-auto">Whale Chat goes live in January 2027. Connect your wallet now to claim your zero knowledge identity and be first in.</p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/connect" className="w-full sm:w-auto px-10 py-4 bg-white text-black rounded-full text-[15px] font-black hover:bg-zinc-100 active:scale-95 transition-all hover:-translate-y-0.5">Connect Wallet →</Link>
-          <Link href="/hub" className="w-full sm:w-auto px-10 py-4 border-2 border-white/15 text-white rounded-full text-[15px] font-bold hover:bg-white/10 active:scale-95 transition-all">Explore App Hub</Link>
+          <Link href="/connect" className="w-full sm:w-auto px-10 py-4 bg-black text-white rounded-full text-[15px] font-black hover:bg-black/80 active:scale-95 transition-all hover:-translate-y-0.5 shadow-[0_6px_30px_rgba(0,0,0,0.15)]">Connect Wallet →</Link>
+          <Link href="/chat" className="w-full sm:w-auto px-10 py-4 border-2 border-black/12 text-black rounded-full text-[15px] font-bold hover:bg-zinc-50 active:scale-95 transition-all">Launch Whale Chat</Link>
         </div>
       </motion.div>
     </section>
@@ -417,7 +375,6 @@ export function ImmersiveManifestoLanding({ onOpenScanner: _o, hideMap = false }
         <HeroSection />
         <WhatIsSection />
         <WhaleChatSection />
-        <MiniAppsSection />
         <AztecStrip />
         <FAQSection />
         <FinalCTASection />

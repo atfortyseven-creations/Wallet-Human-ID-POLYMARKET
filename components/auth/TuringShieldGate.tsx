@@ -147,10 +147,25 @@ export function TuringShieldGate({
       setCaptchaPassed(true);
     } else {
       // Check if user even has a PIN set
-      fetch('/api/auth/enclave-pin')
+      fetch('/api/auth/enclave-pin', { credentials: 'include' })
         .then(res => res.json())
-        .then(data => {
+        .then(async data => {
           if (data && data.hasPin === false) {
+            // First time user: get a clearance token via default PIN automatically
+            try {
+              const res = await fetch('/api/auth/enclave-pin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pin: '777777' }),
+              });
+              const postData = await res.json();
+              if (postData.success && postData.clearanceToken) {
+                setTempClearanceToken(postData.clearanceToken);
+                setTempClearanceTs(postData.clearanceTs);
+              }
+            } catch (err) {
+              console.error('Failed to get default clearance token', err);
+            }
             setIsFirstTime(true);
             setSettingPin(true);
             setCaptchaPassed(true); // skip captcha if setting pin
@@ -324,9 +339,12 @@ export function TuringShieldGate({
       if (onVerified) onVerified(data.clearanceToken);
 
       // If first-time user, prompt them to set their own PIN
+      // Also store the clearance token so handleSetPin can send it to the PUT endpoint
       if (data.isFirstTimeUser) {
         setIsFirstTime(true);
         setSettingPin(true);
+        setTempClearanceToken(data.clearanceToken);
+        setTempClearanceTs(data.clearanceTs);
       }
 
     } catch (err) {
@@ -345,21 +363,39 @@ export function TuringShieldGate({
     refs: React.MutableRefObject<(HTMLInputElement | null)[]>,
     onComplete?: (digits: string[]) => void,
   ) => {
-    if (!/^\d*$/.test(value)) return;
+    const val = value.replace(/\D/g, '');
+    if (!val && !pinState[index]) return;
     setPinError(null);
     setPinSetError(null);
 
+    // Handle paste
+    if (val.length > 1) {
+      const chars = val.split('').slice(0, 6);
+      const newPinState = [...pinState];
+      chars.forEach((char, idx) => {
+        if (index + idx < 6) newPinState[index + idx] = char;
+      });
+      setPinState(newPinState);
+      const nextFocus = Math.min(index + chars.length, 5);
+      setTimeout(() => refs.current[nextFocus]?.focus(), 0);
+      
+      if (newPinState.every(d => d !== '') && onComplete) {
+        onComplete(newPinState);
+      }
+      return;
+    }
+
     const newPinState = [...pinState];
-    newPinState[index] = value.slice(-1);
+    newPinState[index] = val.slice(-1);
     setPinState(newPinState);
 
-    if (value && index < 5) {
+    if (val && index < 5) {
       setTimeout(() => refs.current[index + 1]?.focus(), 0);
     }
 
-    if (index === 5 && value) {
+    if (index === 5 && val) {
       const full = [...newPinState];
-      full[5] = value.slice(-1);
+      full[5] = val.slice(-1);
       if (full.every(d => d !== '') && onComplete) {
         onComplete(full);
       }
@@ -782,6 +818,22 @@ export function TuringShieldGate({
                         onChange={e => {
                           const val = e.target.value.replace(/\D/g, '');
                           if (!val && !digit) return;
+                          
+                          // Handle paste
+                          if (val.length > 1) {
+                            const chars = val.split('').slice(0, 6);
+                            const next = [...resetOtp];
+                            chars.forEach((char, idx) => {
+                              if (i + idx < 6) next[i + idx] = char;
+                            });
+                            setResetOtp(next);
+                            setResetOtpError(null);
+                            const nextFocus = Math.min(i + chars.length, 5);
+                            resetOtpRefs.current[nextFocus]?.focus();
+                            if (next.every(d => d !== '')) handleVerifyOtp(next);
+                            return;
+                          }
+
                           const next = [...resetOtp];
                           next[i] = val.slice(-1);
                           setResetOtp(next);
