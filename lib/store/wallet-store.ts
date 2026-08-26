@@ -809,15 +809,21 @@ export const useWalletStore = create<WalletState>()(
                  isLocked: true // Force lock on fresh page load to prevent stuck "unlocked but keyless" UI states
              } as Partial<WalletState>;
         }
-        // Legacy fallback if no password is set yet
+        // [AUDIT FIX C5] Even without a password, NEVER store privateKey or mnemonic
+        // in localStorage (plaintext). Fineas Silaghi audit: Critical severity.
+        // Impact: Any XSS attack or malicious browser extension can steal user funds.
+        // Fix: Always strip all key material from localStorage. Only public safe fields persist.
+        // Users will need to re-import/re-generate their wallet on each new browser session
+        // if they haven't set a password — this is the CORRECT security behaviour.
         return { 
-          address: state.address, 
-          privateKey: state.privateKey, 
-          mnemonic: state.mnemonic,
-          accounts: state.accounts,
+          address: state.address,
+          // privateKey: NEVER — audit C5 fix
+          // mnemonic: NEVER — audit C5 fix
+          accounts: state.accounts.map(a => ({ ...a, privateKey: null, mnemonic: null })),
           isCustom: state.isCustom,
           activeNetwork: state.activeNetwork,
-          activeProtocol: state.activeProtocol
+          activeProtocol: state.activeProtocol,
+          displayCurrency: state.displayCurrency
         } as Partial<WalletState>;
       },
       onRehydrateStorage: () => (state) => {

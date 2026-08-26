@@ -33,7 +33,19 @@ export async function POST(req: NextRequest) {
       Math.min(ttl, 300)
     );
 
-    return NextResponse.json({ ok: true });
+    const response = NextResponse.json({ ok: true });
+    
+    // [AUDIT FIX A4] Bind the ephemeral QR session to the creator's browser via cookie
+    // This prevents attackers from remotely polling or hijacking the QR session
+    response.cookies.set('qr_init_session', uuid, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: Math.min(ttl, 300)
+    });
+    
+    return response;
   } catch (e: any) {
     console.error('[qr-init]', e);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });

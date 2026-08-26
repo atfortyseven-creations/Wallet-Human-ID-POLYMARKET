@@ -37,7 +37,11 @@ export function SettingsView({ onBack }: { onBack: () => void }) {
             transition={{ type: 'spring', damping: 28, stiffness: 220 }}
             className="fixed inset-y-0 right-0 z-[200] w-full md:w-[700px] bg-white border-l border-black flex flex-col font-mono text-black overflow-hidden"
         >
-            <header className="flex items-center justify-between px-8 py-6 border-b border-black bg-white shrink-0">
+            {/* [iOS FIX] Header with safe-area-inset-top so content doesn't go behind notch/status bar */}
+            <header
+                className="flex items-center justify-between px-6 border-b border-black bg-white shrink-0"
+                style={{ paddingTop: 'max(24px, env(safe-area-inset-top, 24px))', paddingBottom: '24px' }}
+            >
                 <div>
                     <h2 className="text-[14px] font-black uppercase tracking-[0.2em] text-black leading-none">System Settings</h2>
                     {address && (
@@ -45,24 +49,36 @@ export function SettingsView({ onBack }: { onBack: () => void }) {
                             {address.slice(0, 10)}...{address.slice(-8)}
                         </p>
                     )}
+                    {/* Vault status badge */}
+                    <div className="flex items-center gap-1.5 mt-2">
+                        <div className={`w-1.5 h-1.5 rounded-full ${passwordHash ? 'bg-green-500' : 'bg-red-500'}`} />
+                        <span className="text-[9px] uppercase tracking-[0.2em] font-black text-black/40">
+                            {passwordHash ? 'VAULT ENCRYPTED' : 'VAULT UNSECURED'}
+                        </span>
+                    </div>
                 </div>
                 <button
                     onClick={onBack}
-                    className="px-6 py-2 border border-black text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+                    className="px-6 py-2 border border-black text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors active:bg-black active:text-white"
                 >
                     CLOSE
                 </button>
             </header>
 
-            <div className="flex border-b border-black bg-white shrink-0 overflow-x-auto">
+            {/* [iOS FIX] Tab bar with hidden scrollbar for clean native look */}
+            <div
+                className="flex border-b border-black bg-white shrink-0 overflow-x-auto"
+                style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}
+            >
+                <style>{`.whale-tabs::-webkit-scrollbar { display: none; }`}</style>
                 {TABS.map(tab => (
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap border-r border-black last:border-r-0 ${
+                        className={`px-5 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap border-r border-black last:border-r-0 ${
                             activeTab === tab.id
                                 ? 'bg-black text-white'
-                                : 'bg-white text-black hover:bg-black/5'
+                                : 'bg-white text-black hover:bg-black/5 active:bg-black/10'
                         }`}
                     >
                         {tab.label}
@@ -70,7 +86,7 @@ export function SettingsView({ onBack }: { onBack: () => void }) {
                 ))}
             </div>
 
-            <div className="flex-1 overflow-y-auto p-8 space-y-0">
+            <div className="flex-1 overflow-y-auto p-6 space-y-0" style={{ WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={activeTab}
@@ -110,13 +126,17 @@ export function SettingsView({ onBack }: { onBack: () => void }) {
                 </AnimatePresence>
             </div>
 
-            <div className="shrink-0 px-8 py-5 border-t border-black bg-white flex items-center justify-between gap-4">
+            {/* [iOS FIX] Footer with safe-area-inset-bottom so "BACK" button isn't behind home bar */}
+            <div
+                className="shrink-0 px-6 border-t border-black bg-white flex items-center justify-between gap-4"
+                style={{ paddingTop: '20px', paddingBottom: 'max(20px, env(safe-area-inset-bottom, 20px))' }}
+            >
                 <span className="text-[10px] uppercase tracking-[0.3em] font-black text-black/40">
                     ABYSSAL CAPACITY ACTIVE
                 </span>
                 <button
                     onClick={onBack}
-                    className="px-8 py-3 border border-black text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-colors"
+                    className="px-8 py-3 border border-black text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black hover:text-white active:bg-black active:text-white transition-colors"
                 >
                     ← BACK
                 </button>

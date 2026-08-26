@@ -1426,11 +1426,16 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
     const livePeer = peerInstanceRef.current;
     if (!livePeer || livePeer.destroyed) {
-      // Peer not yet ready — try to reconnect then retry
+      // Peer not yet ready — destroy stale ref and schedule re-init via peerInitKey
       toast.error("WebRTC is not ready. Reconnecting… please try again in a moment.");
-      // Trigger re-init by nulling the state (useEffect will re-create)
-      setPeerInstance(null);
       peerInstanceRef.current = null;
+      setPeerInstance(null);
+      // [CRITICAL FIX] Incrementing peerInitKey triggers the PeerJS useEffect to re-run.
+      // Without this, the useEffect only depends on [address, peerInitKey] — nulling
+      // peerInstance state alone does NOT trigger a re-run because address hasn't changed.
+      const nextKey = peerInitKeyRef.current + 1;
+      peerInitKeyRef.current = nextKey;
+      setPeerInitKey(nextKey);
       return;
     }
 
@@ -1914,7 +1919,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   //  Voice Recording: Hold-to-Record 
   const startRecording = useCallback(async () => {
-    if (isRecording || !activePeer) return;
+    if (isRecording) return;
     try {
       let stream: MediaStream;
       try {
@@ -2000,6 +2005,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 setMessages(prev => prev.filter(m => m.id !== optimisticId));
                 setInitError('Failed to transmit secure voice message. Check your connection.');
             }
+          } else {
+            // [UX FIX] If no peer selected when stopping recording, show a helpful message
+            toast.error('Select a contact first to send the voice message.');
           }
         };
         reader.readAsDataURL(blob);
@@ -3511,7 +3519,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       <div className={`${showList ? 'flex' : 'hidden md:flex'} w-full md:w-80 lg:w-96 flex-col border-r border-black/[0.08] bg-white shrink-0 h-full overflow-hidden`}>
 
         {/* ── Sidebar Header ── */}
-        <div className="pt-4 pb-0 px-4 border-b border-black/[0.06] bg-white">
+        {/* [iOS FIX] Use env(safe-area-inset-top) so "Messages" title doesn't hide behind the notch/status bar */}
+        <div className="pb-0 px-4 border-b border-black/[0.06] bg-white" style={{ paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
           {/* Top row: title + action buttons */}
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-[22px] font-black text-[#000000] tracking-tight">Messages</h1>

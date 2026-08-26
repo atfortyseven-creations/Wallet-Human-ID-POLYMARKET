@@ -84,7 +84,7 @@ export const CustomAudioPlayer = ({ src, isMe }: { src: string, isMe: boolean })
 
   return (
     <div className={`flex items-center gap-2 min-w-[200px] max-w-[280px] p-2 rounded-2xl transition-all ${isMe ? 'bg-[#050505]' : 'bg-gray-100/50'}`}>
-      <audio ref={audioRef} src={src} preload="metadata" />
+      <audio ref={audioRef} src={src} preload="metadata" playsInline x-webkit-airplay="allow" />
       
       <button 
         onClick={togglePlay}

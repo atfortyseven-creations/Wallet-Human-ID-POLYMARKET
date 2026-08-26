@@ -2,6 +2,7 @@
 import { headers } from 'next/headers'
 import { Inter, Martel, Roboto_Mono } from 'next/font/google'
 import './globals-compiled.css'
+import './globals.css'
 import './smooth-scroll.css'
 import Providers from "@/components/Providers";
 import "@fontsource/space-grotesk/700.css";
