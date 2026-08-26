@@ -10,14 +10,14 @@ export const TermsGate = () => {
 
     useEffect(() => {
         // Check local storage for consent
-        const hasConsented = localStorage.getItem('WhaleAlert ID_terms_v1');
+        const hasConsented = localStorage.getItem('hl_terms_v1');
         if (!hasConsented) {
             setIsVisible(true);
         }
     }, []);
 
     const handleAccept = () => {
-        localStorage.setItem('WhaleAlert ID_terms_v1', 'true');
+        localStorage.setItem('hl_terms_v1', 'true');
         setIsVisible(false);
     };
 
@@ -38,7 +38,7 @@ export const TermsGate = () => {
 
                 <div className="prose prose-invert text-sm text-[#888899] font-mono mb-8 max-h-[40vh] overflow-y-auto pr-2">
                     <p>
-                        By accessing <strong>WhaleAlert ID.fi</strong> (The Protocol), you acknowledge and attest to the following:
+                        By accessing <strong>Humanity Ledger</strong> (The Protocol), you acknowledge and attest to the following:
                     </p>
                     <ul className="list-disc pl-4 space-y-2 mt-2">
                         <li>You are <strong>NOT</strong> a citizen or resident of the United States, North Korea, Iran, or any OFAC-sanctioned jurisdiction.</li>

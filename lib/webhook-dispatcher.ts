@@ -30,7 +30,7 @@ export class WebhookDispatcher {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent': 'WhaleAlertCorp-Webhook/1.0',
+          'User-Agent': 'HumanityLedgerCorp-Webhook/1.0',
           'X-WAC-Signature': signature,
           'X-WAC-Timestamp': payload.timestamp
         },

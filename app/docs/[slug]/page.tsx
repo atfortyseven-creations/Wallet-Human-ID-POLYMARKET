@@ -949,7 +949,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
 
             <DocH2>Bug Bounty Program</DocH2>
             <DocP>
-              Humanity Ledger operates a responsible disclosure bug bounty program. Critical vulnerabilities in the PXE settings engine, authentication flow, or cryptographic identity derivation are eligible for rewards up to $50,000 USDC. Medium-severity issues in the UI or API layer are eligible for rewards up to $5,000 USDC. Report vulnerabilities to security@WhaleAlert.pro with a detailed proof of concept.
+              Humanity Ledger operates a responsible disclosure bug bounty program. Critical vulnerabilities in the PXE settings engine, authentication flow, or cryptographic identity derivation are eligible for rewards up to $50,000 USDC. Medium-severity issues in the UI or API layer are eligible for rewards up to $5,000 USDC. Report vulnerabilities to security@HumanityLedger.pro with a detailed proof of concept.
             </DocP>
           </>
         );

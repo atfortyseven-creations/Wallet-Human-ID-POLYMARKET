@@ -188,7 +188,7 @@ function getDemoNews(): NewsArticle[] {
       title: 'Whale Moves 50,000 ETH to Unknown Wallet',
       body: 'Blockchain analytics reveal significant Ethereum movement from a known whale address...',
       url: '#',
-      source: 'WhaleAlert',
+      source: 'HumanityLedger',
       publishedOn: now - 7200,
       tags: ['Ethereum', 'Whales'],
       categories: ['Transaction'],

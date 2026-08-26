@@ -7,6 +7,7 @@ import { Menu, X } from 'lucide-react';
 import { SystemsUtilityHeader } from './SystemsUtilityHeader';
 import { useSystemTranslation } from '@/hooks/useSystemTranslation';
 import { usePathname } from 'next/navigation';
+import { HLLogo } from './HLLogo';
 
 // MENU_ITEMS moved inside InstitutionalHeader to use translation hook.
 
@@ -88,33 +89,13 @@ export function InstitutionalHeader({ fixed = true, theme = 'dark' }: { fixed?: 
 
                 {/* LEFT: Brand Identity */}
                 <div className="flex items-center gap-5 relative z-10 flex-shrink-0 lg:flex-1">
-                    <Link href="/" className="flex items-center gap-3.5 group">
+                    <Link href="/" className="flex items-center group">
                         <motion.div
-                            whileHover={{ scale: 1.05 }}
+                            whileHover={{ scale: 1.03 }}
                             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                            className="relative flex items-center justify-center rounded-xl border border-black/8 bg-black/[0.04] overflow-hidden w-[36px] h-[36px]"
                         >
-                            <svg
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="#0A0A0A"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                aria-hidden="true"
-                            >
-                                <circle cx="12" cy="12" r="10" />
-                                <line x1="2" y1="12" x2="22" y2="12" />
-                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                            </svg>
+                            <HLLogo variant="full" theme="dark" size={30} />
                         </motion.div>
-                        <div className="flex flex-col leading-none text-[#050505] justify-center">
-                            <span className="font-aztec-serif text-[18px] font-black uppercase tracking-tighter leading-none">
-                                Humanity Ledger
-                            </span>
-                        </div>
                     </Link>
                 </div>
 

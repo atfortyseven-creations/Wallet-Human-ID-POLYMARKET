@@ -269,7 +269,7 @@ export function SettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
             case 'about':
                 return (
                     <div className="text-center py-10 space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-                        <h1 className="text-4xl font-black text-white tracking-tighter">WhaleAlert ID.fi</h1>
+                        <h1 className="text-4xl font-black text-white tracking-tighter">Humanity Ledger</h1>
                         <p className="text-zinc-400 font-mono">v2.4.1 (Legendary System Build)</p>
                         <div className="flex justify-center gap-4 mt-8">
                             <a href="#" className="text-sm text-[#00f2ea] hover:underline">Terms of Service</a>

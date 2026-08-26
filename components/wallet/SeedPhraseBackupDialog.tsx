@@ -32,13 +32,13 @@ export default function SeedPhraseBackupDialog({ onComplete, onCancel }: SeedPhr
   };
 
   const handleDownload = () => {
-    const blob = new Blob([`WhaleAlert ID Wallet Recovery Phrase\n\n${mnemonic}\n\n️ KEEP THIS SAFE AND NEVER SHARE IT`], {
+    const blob = new Blob([`Humanity Ledger Wallet Recovery Phrase\n\n${mnemonic}\n\n️ KEEP THIS SAFE AND NEVER SHARE IT`], {
       type: 'text/plain',
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'WhaleAlert ID-recovery-phrase.txt';
+    a.download = 'Humanity Ledger-recovery-phrase.txt';
     a.click();
     URL.revokeObjectURL(url);
   };

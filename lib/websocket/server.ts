@@ -31,7 +31,7 @@ interface TransactionEvent {
     watchedAddress?: string;
 }
 
-interface WhaleAlertEvent {
+interface HumanityLedgerEvent {
     type: string;
     title: string;
     message: string;
@@ -86,7 +86,7 @@ export function initializeWebSocket(httpServer: HttpServer): Server {
             if (!io) return;
 
             try {
-                const data = JSON.parse(message) as TransactionEvent | WhaleAlertEvent;
+                const data = JSON.parse(message) as TransactionEvent | HumanityLedgerEvent;
 
                 if (channel === 'whale-alerts') {
                     // Broadcast to all connected clients (Humanity Ledgers are global)

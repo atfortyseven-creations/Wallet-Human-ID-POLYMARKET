@@ -532,7 +532,7 @@ function ChannelCard({
                     onChange={e => {
                       let val = e.target.value;
                       // Smart Parse: If URL is pasted, extract the last numeric segment
-                      // Example: https://t.me/WhaleAlert IDFi/1367 -> 1367
+                      // Example: https://t.me/Humanity LedgerFi/1367 -> 1367
                       if (val.includes('t.me/') || val.includes('telegram.org/')) {
                         const parts = val.split('/');
                         const lastPart = parts[parts.length - 1];

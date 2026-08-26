@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendTelegramMessage, formatWhaleAlertTelegram, formatPriceAlertTelegram, formatDailyDigestTelegram } from '@/lib/telegramBot';
+import { sendTelegramMessage, formatHumanityLedgerTelegram, formatPriceAlertTelegram, formatDailyDigestTelegram } from '@/lib/telegramBot';
 
 /**
  * Telegram Notification API
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     // Format message based on type
     switch (type) {
       case 'whale_alert':
-        message = formatWhaleAlertTelegram(data);
+        message = formatHumanityLedgerTelegram(data);
         break;
       
       case 'price_alert':

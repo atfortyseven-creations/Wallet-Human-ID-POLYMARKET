@@ -86,7 +86,7 @@ function analyzeSentiment(title: string): { btcBullish: number; btcBearish: numb
 async function fetchRSSFeed(url: string, sourceName: string): Promise<UINewsArticle[]> {
   try {
     const res = await fetch(url, {
-      headers: { 'Accept': 'application/rss+xml, application/xml, text/xml', 'User-Agent': 'WhaleAlertBot/2.0' },
+      headers: { 'Accept': 'application/rss+xml, application/xml, text/xml', 'User-Agent': 'HumanityLedgerBot/2.0' },
       cache: 'no-store',
       signal: AbortSignal.timeout(8000),
     });

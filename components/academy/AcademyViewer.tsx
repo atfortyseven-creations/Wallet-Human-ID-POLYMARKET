@@ -5,11 +5,12 @@ import { motion } from 'framer-motion';
 import { Clock as ClockIcon, Search, Hash, Target, ChevronRight } from 'lucide-react';
 import { ACADEMY_MODULES } from '@/lib/data/academy-data';
 import { safeHTML } from '@/hooks/useSanitizer';
+import { HLLogo } from '@/components/shared/HLLogo';
 
 //  CORPORATE MINI LOGO 
 function AcademyLogo() {
     return (
-        <img src="/logo-landingpage.png" alt="Whale" className="w-8 h-8 object-contain opacity-80 group-hover:opacity-100 transition-opacity drop-shadow-sm" />
+        <HLLogo variant="mark" theme="light" size={24} />
     );
 }
 

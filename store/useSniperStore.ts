@@ -18,7 +18,7 @@ export interface BinanceAttestPayload {
   M: boolean; // Ignore
 }
 
-export interface Web3WhaleAlert {
+export interface Web3HumanityLedger {
   id: string;
   txHash: string;
   asset: string;
@@ -50,7 +50,7 @@ export interface SniperMetrics {
 interface SniperState {
   // Real-time Data Streams (Circular Buffer)
   currentPrice: number;
-  alerts: Web3WhaleAlert[];
+  alerts: Web3HumanityLedger[];
   
   // Tactical Configuration
   filters: SniperFilters;
@@ -64,7 +64,7 @@ interface SniperState {
 
   // HFT Actions
   setPrice: (price: number, latency?: number) => void;
-  pushAlert: (alert: Web3WhaleAlert) => void;
+  pushAlert: (alert: Web3HumanityLedger) => void;
   updateFilters: (updates: Partial<SniperFilters>) => void;
   setConnectionStatus: (status: boolean) => void;
   addExecutedAttest: (hash: string, amount: number, priceAtExecution: number) => void;

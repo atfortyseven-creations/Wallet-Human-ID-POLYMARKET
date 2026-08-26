@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { WhaleLogo } from "@/components/shared/WhaleLogo";
+import { HLLogo } from "@/components/shared/HLLogo";
 import { ChevronRight, ShieldCheck, Activity, BarChart3, X } from "lucide-react";
 import { useWalletStore } from "@/lib/store/wallet-store";
 
@@ -30,7 +30,7 @@ export function WelcomeModal() {
     {
       title: "SOVEREIGN ON-CHAIN INTELLIGENCE",
       desc: "Welcome to the Humanity Ledger infrastructure. You now have direct access to real-time on-chain capital flow surveillance, large-position tracking, and cross-chain portfolio analytics at an sovereign resolution.",
-      icon: <WhaleLogo className="w-12 h-12" />,
+      icon: <HLLogo className="w-12 h-12" />,
       action: "BEGIN ORIENTATION"
     },
     {

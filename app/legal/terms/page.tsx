@@ -293,7 +293,7 @@ export default function TermsOfService() {
             <p>The Foundation processes the following categories of data: (a) Ethereum wallet addresses (pseudonymous identifiers); (b) SIWE session data (address, timestamp, domain); (c) anonymized usage analytics via privacy-preserving tools; (d) IP addresses (temporarily, for DDoS mitigation, 24-hour retention). The Foundation does not process: private keys, note contents, message contents, balance information, or identity attribute values — as these remain encrypted on-device and are never transmitted to Foundation servers.</p>
           </Clause>
           <Clause id="data-rights" title="13.3 User Rights under GDPR">
-            <p>EEA Users have the following rights regarding personal data processed by the Foundation: (a) Right of Access (Art. 15); (b) Right to Rectification (Art. 16); (c) Right to Erasure (Art. 17); (d) Right to Restriction of Processing (Art. 18); (e) Right to Data Portability (Art. 20); (f) Right to Object (Art. 21). To exercise these rights, contact: dpo@WhaleAlert.pro. Response within 30 days as required by GDPR Art. 12(3).</p>
+            <p>EEA Users have the following rights regarding personal data processed by the Foundation: (a) Right of Access (Art. 15); (b) Right to Rectification (Art. 16); (c) Right to Erasure (Art. 17); (d) Right to Restriction of Processing (Art. 18); (e) Right to Data Portability (Art. 20); (f) Right to Object (Art. 21). To exercise these rights, contact: dpo@HumanityLedger.pro. Response within 30 days as required by GDPR Art. 12(3).</p>
           </Clause>
         </Article>
 
@@ -308,7 +308,7 @@ export default function TermsOfService() {
 
         <Article number="15" title="Dispute Resolution & Arbitration">
           <Clause id="dispute-informal" title="15.1 Informal Resolution">
-            <p>Before initiating any formal legal proceedings, you agree to contact the Foundation at legal@WhaleAlert.pro and attempt to resolve the dispute informally for a period of 30 days. Many disputes can be resolved quickly through direct communication.</p>
+            <p>Before initiating any formal legal proceedings, you agree to contact the Foundation at legal@HumanityLedger.pro and attempt to resolve the dispute informally for a period of 30 days. Many disputes can be resolved quickly through direct communication.</p>
           </Clause>
           <Clause id="dispute-arbitration" title="15.2 Binding Arbitration">
             <p>If informal resolution fails, any dispute, claim, or controversy arising out of or relating to these Terms or the Protocol shall be finally settled by binding arbitration administered by the International Chamber of Commerce (ICC) under its Rules of Arbitration. The arbitration shall be: (a) conducted by a sole arbitrator mutually agreed upon, or appointed by the ICC; (b) conducted in English; (c) seated in London, England; (d) confidential. The arbitrator&apos;s award shall be final and binding and may be entered in any court of competent jurisdiction.</p>
@@ -365,7 +365,7 @@ export default function TermsOfService() {
             <p>These Terms do not create any third-party beneficiary rights. Only the parties to these Terms (you and the Foundation) have rights and obligations under this Agreement.</p>
           </Clause>
           <Clause id="entire-contact" title="20.3 Contact">
-            <p>For legal inquiries: legal@WhaleAlert.pro | For data protection: dpo@WhaleAlert.pro | For security reports: security@WhaleAlert.pro</p>
+            <p>For legal inquiries: legal@HumanityLedger.pro | For data protection: dpo@HumanityLedger.pro | For security reports: security@HumanityLedger.pro</p>
           </Clause>
         </Article>
 
@@ -384,7 +384,7 @@ export default function TermsOfService() {
               <p>Humanity Ledger Foundation</p>
               <p>Governing Law: England & Wales</p>
               <p>Arbitration: ICC Rules, London</p>
-              <p>Contact: legal@WhaleAlert.pro</p>
+              <p>Contact: legal@HumanityLedger.pro</p>
             </div>
           </div>
           <p className="text-xs text-gray-400 pt-4 border-t border-gray-200">

@@ -141,7 +141,7 @@ function PricingCard(tier: PricingTier) {
   );
 }
 
-export default function WhaleAlertProWhite() {
+export default function HumanityLedgerProWhite() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { isConnected } = useAccount();

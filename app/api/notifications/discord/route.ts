@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     // Format embed based on type
     switch (type) {
       case 'whale_alert':
-        embed = formatWhaleAlertDiscord(data);
+        embed = formatHumanityLedgerDiscord(data);
         break;
       
       case 'price_alert':
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
  * Discord Rich Embed Formatters
  */
 
-function formatWhaleAlertDiscord(data: {
+function formatHumanityLedgerDiscord(data: {
   address: string;
   type: string;
   amount: number;

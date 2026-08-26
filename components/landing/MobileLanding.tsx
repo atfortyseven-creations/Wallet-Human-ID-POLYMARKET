@@ -11,7 +11,7 @@ import { useAccount, useConnect, useSignMessage, useDisconnect, useReconnect, us
 import { reconnect as wagmiReconnect, watchAccount, getAccount, getConnectorClient } from '@wagmi/core';
 import { config as wagmiConfig } from '@/config/appkit';
 import { useAppKit } from "@reown/appkit/react";
-import { WhaleLogo } from "@/components/shared/WhaleLogo";
+import { HLLogo } from "@/components/shared/HLLogo";
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
 import { 
   Scan, MessageSquare, LogOut, MessageCircle, ScanLine, 

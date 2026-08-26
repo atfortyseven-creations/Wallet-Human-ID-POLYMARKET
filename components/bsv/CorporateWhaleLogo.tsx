@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { SplashContainer } from '@/components/shared/SplashContainer';
 
-export function CorporateWhaleLogo({ className = "" }: { className?: string }) {
+export function CorporateHLLogo({ className = "" }: { className?: string }) {
     return (
         <SplashContainer className={`${className}`}>
             <Image

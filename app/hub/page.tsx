@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { AppLauncherHub } from '@/components/hub/AppLauncherHub';
+import { HLLogo } from '@/components/shared/HLLogo';
 
 export const metadata: Metadata = {
   title: 'App Hub — Humanity Ledger',
@@ -17,15 +18,7 @@ export default function HubPage() {
         style={{ minHeight: '60px', paddingTop: 'max(12px, env(safe-area-inset-top, 12px))', paddingBottom: '12px' }}
       >
         {/* HL wordmark */}
-        <div className="flex items-center gap-2.5">
-          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-7 h-7">
-            <rect width="32" height="32" rx="8" fill="#0A0A0A" />
-            <path d="M9 9V23M23 9V23M9 16H23" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <span className="font-mono text-[13px] font-black uppercase tracking-widest text-[#0A0A0A]">
-            Humanity Ledger
-          </span>
-        </div>
+        <HLLogo variant="full" theme="dark" size={28} />
 
         <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-black/30">
           App Hub

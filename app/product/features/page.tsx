@@ -5,7 +5,7 @@ export default function FeaturesPage() {
     return (
         <DocLayout
             title="Features"
-            description="Discover WhaleAlert ID.fi's powerful features: zero knowledge identity, multi-chain wallet, professional attesting tools, and Elite-grade analytics."
+            description="Discover Humanity Ledger's powerful features: zero knowledge identity, multi-chain wallet, professional attesting tools, and Elite-grade analytics."
             lastUpdated="February 7, 2026"
             category="Product"
         >
@@ -14,7 +14,7 @@ export default function FeaturesPage() {
                 <section className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 p-8 rounded-xl border border-white/10">
                     <h2 className="text-4xl font-bold mb-4">The Future of DeFi Identity & Attesting</h2>
                     <p className="text-lg text-white/80">
-                        WhaleAlert ID.fi combines cutting-edge zero knowledge technology with professional-grade attesting tools to deliver an unparalleled DeFi experience.
+                        Humanity Ledger combines cutting-edge zero knowledge technology with professional-grade attesting tools to deliver an unparalleled DeFi experience.
                     </p>
                 </section>
 
@@ -405,7 +405,7 @@ export default function FeaturesPage() {
                 <section className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 p-8 rounded-xl border border-white/10 text-center">
                     <h2 className="text-3xl font-bold mb-4">Ready to Experience the Future?</h2>
                     <p className="text-lg text-white/80 mb-6">
-                        Join WhaleAlert ID.fi today and unlock the full power of DeFi with privacy, security, and professional-grade tools.
+                        Join Humanity Ledger today and unlock the full power of DeFi with privacy, security, and professional-grade tools.
                     </p>
                     <div className="flex flex-wrap justify-center gap-4">
                         <a href="/signup" className="px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg font-bold hover:scale-105 transition-transform">

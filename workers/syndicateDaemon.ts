@@ -37,7 +37,7 @@ export const syndicateWorker = new Worker('SyndicationQueue', async (job: Job<An
     });
 
     await publishToSocials(
-      ` #WhaleAlertNetwork Oracle Alert \n\n${signal}\nSector: ${sector.toUpperCase()}\nZ-Score: ${zScore.toFixed(3)}\n\nIntercept this flow at Whale Alert Network`
+      ` #HumanityLedgerNetwork Oracle Alert \n\n${signal}\nSector: ${sector.toUpperCase()}\nZ-Score: ${zScore.toFixed(3)}\n\nIntercept this flow at Whale Alert Network`
     );
 
     console.log(`[Syndicate Daemon] Syndication Complete.`);

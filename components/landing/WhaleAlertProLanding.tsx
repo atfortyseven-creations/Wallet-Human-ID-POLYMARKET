@@ -76,7 +76,7 @@ function ShimmerText({ text, className = "" }: { text: string; className?: strin
   );
 }
 
-export function WhaleAlertProLanding() {
+export function HumanityLedgerProLanding() {
   useSmoothScroll();
   const { scrollYProgress } = useScroll();
   const scale = useSpring(useTransform(scrollYProgress, [0, 0.2], [1, 1.2]), { stiffness: 100, damping: 30 });

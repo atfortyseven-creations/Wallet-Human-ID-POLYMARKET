@@ -67,7 +67,7 @@ export async function sendVerificationEmail(email: string, code: string): Promis
                     <tr>
                       <td style="padding: 20px 40px 40px; text-align: center; border-top: 1px solid #e5e7eb;">
                         <p style="margin: 0; font-size: 12px; color: #999999;">
-                          © ${new Date().getFullYear()} WhaleAlert ID.fi. All rights reserved.
+                          © ${new Date().getFullYear()} Humanity Ledger. All rights reserved.
                         </p>
                       </td>
                     </tr>
@@ -216,9 +216,9 @@ export async function sendSupportEmail(message: string, section: string, senderE
   try {
     const { data, error } = await resend.emails.send({
       // The 'from' address MUST be your verified domain or onboarding@resend.dev
-      from: getSender('WhaleAlert ID Support Form'),
+      from: getSender('Humanity Ledger Support Form'),
       to: adminEmail,
-      replyTo: senderEmail || 'noreply@WhaleAlert ID.fi',
+      replyTo: senderEmail || 'noreply@Humanity Ledger',
       subject: `[Support - ${section.toUpperCase()}] New Message from ${senderName || 'Anonymous'}`,
       html: `
         <!DOCTYPE html>

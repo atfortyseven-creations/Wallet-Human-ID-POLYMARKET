@@ -1,6 +1,6 @@
 import { Theme } from '@rainbow-me/rainbowkit';
 
-// WhaleAlert ID.FI // VOID GLASS THEME
+// Humanity Ledger.FI // VOID GLASS THEME
 export const voidGlassTheme: Theme = {
     blurs: {
         modalOverlay: 'blur(20px)',

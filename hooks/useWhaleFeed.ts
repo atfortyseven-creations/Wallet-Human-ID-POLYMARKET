@@ -28,7 +28,7 @@ export interface WhaleSignal {
     timestamp: number;
 }
 
-export interface WhaleAlert {
+export interface HumanityLedger {
     id: string;
     txid: string;
     btcAmount: number;
@@ -186,7 +186,7 @@ function deriveFlow(items: any[]): { nodes: FlowNode[]; links: FlowLink[] } {
 
 export function useWhaleFeed() {
     const queryClient = useQueryClient();
-    const alertsRef = useRef<WhaleAlert[]>([]);
+    const alertsRef = useRef<HumanityLedger[]>([]);
 
     const prefsQuery = useQuery({
         queryKey: ['whale', 'preferences'],
@@ -384,7 +384,7 @@ export function useWhaleFeed() {
     const bscWhales = useMemo(() => activities.filter(a => a.chain === 'BSC'), [activities]);
     const baseWhales = useMemo(() => activities.filter(a => a.chain === 'BASE'), [activities]);
 
-    const newAlerts: WhaleAlert[] = useMemo(() => {
+    const newAlerts: HumanityLedger[] = useMemo(() => {
         const thresholdSat = alertThresholdBtc * 1e8;
         const existingIds = new Set(alertsRef.current.map(a => a.txid));
         return txs.filter(t => t.value >= thresholdSat && !existingIds.has(t.txid)).map(t => ({

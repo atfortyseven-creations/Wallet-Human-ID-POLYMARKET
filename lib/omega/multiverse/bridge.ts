@@ -7,7 +7,7 @@ export const useMultiverseBridge = () => {
     /**
      * Teleports state/data to another chain via CCIP.
      * @param destinationChain - Chain Selector ID (e.g., Optimism Sepolia)
-     * @param data - The "WhaleAlert ID" state update payload
+     * @param data - The "Humanity Ledger" state update payload
      */
     const teleportState = async (signer: any, destinationChain: string, data: string) => {
         console.log(" Engaging Multiverse Bridge to chain:", destinationChain);

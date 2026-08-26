@@ -31,7 +31,7 @@ export class GhostNetworkProvider extends ethers.JsonRpcProvider {
 
 export const useGhostNetwork = () => {
     const connectPrivateRPC = async () => {
-         // Logic to prompt user to add "WhaleAlert ID Secure RPC" to MetaMask
+         // Logic to prompt user to add "Humanity Ledger Secure RPC" to MetaMask
          const params = {
             chainId: '0x1',
             chainName: 'Ethereum Mainnet (Flashbots)',

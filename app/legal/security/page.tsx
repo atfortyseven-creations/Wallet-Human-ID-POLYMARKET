@@ -238,7 +238,7 @@ export default function SecurityArchitecture() {
             </tbody>
           </table>
           <p className="text-sm text-slate-500 mt-4">
-            For out-of-scope reports or to report a vulnerability privately, email <a href="mailto:security@WhaleAlert.pro" className="text-emerald-400 hover:underline">security@WhaleAlert.pro</a> using our public PGP key.
+            For out-of-scope reports or to report a vulnerability privately, email <a href="mailto:security@HumanityLedger.pro" className="text-emerald-400 hover:underline">security@HumanityLedger.pro</a> using our public PGP key.
           </p>
         </Section>
 

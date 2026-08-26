@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { WhaleLogo } from "./WhaleLogo";
+import { HLLogo } from "./HLLogo";
 
 interface InstitutionalShellProps {
   children: React.ReactNode;
@@ -54,7 +54,7 @@ export function InstitutionalShell({
         {/* Footer band */}
         <div className="relative z-20 px-6 md:px-10 py-5 flex flex-col md:flex-row items-center justify-between gap-4 bg-white">
           <div className="flex items-center gap-3">
-            <WhaleLogo className="w-5 h-5" />
+            <HLLogo className="w-5 h-5" />
             <span className="font-mono text-[9px] uppercase tracking-widest text-black/60 font-black">
               Immutable Data · Zero-Trust Verification · Extreme Precision
             </span>

@@ -17,7 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import useSWR from "swr";
 import { useWebSocketStore, AkashicRecord } from "@/lib/store/websocket-store";
 import { AlertTriangle, Database, Shield, ChevronDown, Clock, Hash, CheckCircle2, ExternalLink, Download, LayoutTemplate } from "lucide-react";
-import { WhaleLogo } from "@/components/shared/WhaleLogo";
+import { HLLogo } from "@/components/shared/HLLogo";
 import { AkashicSkeleton } from "@/components/ui/skeleton-loader";
 import { toast } from "sonner";
 import { useSystemFormatter } from "@/hooks/useSystemFormatter";
@@ -395,7 +395,7 @@ export default function AkashicLedger() {
   if (error || !data?.ok) {
     return (
       <div className="p-8 h-full flex flex-col items-center justify-center">
-        <div className="w-16 h-16 mx-auto mb-6 opacity-10"><WhaleLogo className="w-full h-full" /></div>
+        <div className="w-16 h-16 mx-auto mb-6 opacity-10"><HLLogo className="w-full h-full" /></div>
         <p className="text-[11px] font-black text-black/20 uppercase tracking-[0.4em]">
           Registry Unavailable
         </p>

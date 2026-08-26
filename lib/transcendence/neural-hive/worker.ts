@@ -1,5 +1,5 @@
 // "God-Mode" Stub for Gensyn / DePIN AI Worker
-// Runs grid multiplications in the browser to train the "WhaleAlert ID Sybil Model".
+// Runs grid multiplications in the browser to train the "Humanity Ledger Sybil Model".
 
 // Worker Global Scope
 const ctx: Worker = self as any;

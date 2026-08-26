@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     switch (type) {
       case 'whale_alert':
         subject = ` Humanity Ledger: $${safeToLocaleString(data.amount)} Movement`;
-        html = formatWhaleAlertEmail(data);
+        html = formatHumanityLedgerEmail(data);
         break;
       
       case 'price_alert':
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
  * Email Templates
  */
 
-function formatWhaleAlertEmail(data: {
+function formatHumanityLedgerEmail(data: {
   address: string;
   type: string;
   amount: number;

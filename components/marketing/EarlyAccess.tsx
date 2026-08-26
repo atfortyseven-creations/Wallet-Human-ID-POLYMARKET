@@ -21,7 +21,7 @@ export const EarlyAccess = () => {
             setStatus('SIGNING');
 
             // 1. Prepare Message (EIP-191)
-            const message = `REQUESTING_PRIORITY_ACCESS\n\nProtocol: WhaleAlert ID.fi\nParams: Early_Adopter_Tier\nTimestamp: ${Date.now()}\n\nWallet: ${address}`;
+            const message = `REQUESTING_PRIORITY_ACCESS\n\nProtocol: Humanity Ledger\nParams: Early_Adopter_Tier\nTimestamp: ${Date.now()}\n\nWallet: ${address}`;
 
             // 2. Request Signature (Off-chain, Zero Gas)
             const signature = await signMessageAsync({ message });

@@ -3,7 +3,7 @@
 /**
  * 
  *         DARK POOL  HOURGLASS PHYSICS ENGINE  v2.0                   
- *         by WhaleAlert ID.fi · Elite Analytics Layer             
+ *         by Humanity Ledger · Elite Analytics Layer             
  * 
  *   Architecture:                                                       
  *    Dual-buffer rendering (motion blur via alpha compositing)         

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 // ============================================================================
-// WhaleAlert ID.FI - USER SETTINGS VALIDATION SCHEMA
+// Humanity Ledger.FI - USER SETTINGS VALIDATION SCHEMA
 // ============================================================================
 
 /**

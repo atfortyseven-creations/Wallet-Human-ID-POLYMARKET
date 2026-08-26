@@ -6,7 +6,7 @@ import { useSettings } from '@/src/context/SettingsContext';
 import { toast } from 'sonner';
 
 /**
- * CloudSyncManager  Real sync status connected to WhaleAlert ID system cloud.
+ * CloudSyncManager  Real sync status connected to Humanity Ledger system cloud.
  * Does NOT simulate fake cloud providers. All settings sync via /api/user/settings
  */
 export function CloudSyncManager() {
@@ -19,7 +19,7 @@ export function CloudSyncManager() {
 
     const handleLocalExport = () => {
         try {
-            const raw = localStorage.getItem('WhaleAlert ID_settings_v3');
+            const raw = localStorage.getItem('hl_settings_v3');
             if (!raw) {
                 toast.error("No local settings found.");
                 return;
@@ -28,7 +28,7 @@ export function CloudSyncManager() {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `WhaleAlert ID-settings-${new Date().toISOString().slice(0,10)}.json`;
+            a.download = `Humanity Ledger-settings-${new Date().toISOString().slice(0,10)}.json`;
             a.click();
             URL.revokeObjectURL(url);
             toast.success("Settings exported successfully.");
@@ -46,10 +46,10 @@ export function CloudSyncManager() {
                 </div>
                 <h3 className="text-xl font-bold text-white flex items-center gap-2 mb-2 relative z-10">
                     <Database className="text-[#00f2ea]" size={24} />
-                    WhaleAlert ID System Cloud
+                    Humanity Ledger System Cloud
                 </h3>
                 <p className="text-zinc-400 max-w-lg relative z-10 text-sm">
-                    All your settings are encrypted and continuously synced to the WhaleAlert ID system infrastructure.
+                    All your settings are encrypted and continuously synced to the Humanity Ledger system infrastructure.
                     No third-party cloud required. Your keys never leave your device.
                 </p>
 

@@ -35,7 +35,7 @@ const RedditIcon = ({ size = 20 }: { size?: number }) => {
 };
 
 
-export function WhaleAlertFooter() {
+export function HumanityLedgerFooter() {
     const { t } = useLanguage();
 
     const sections = [

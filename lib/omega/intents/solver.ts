@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 
 // EIP-712 Domain
 const DOMAIN = {
-    name: "WhaleAlert ID Intent Protocol",
+    name: "Humanity Ledger Intent Protocol",
     version: "1.0",
     chainId: 1, // Mainnet or L2
     verifyingContract: "0x..." // Protocol Contract

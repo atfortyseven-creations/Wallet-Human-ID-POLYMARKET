@@ -8,7 +8,7 @@ export const origin = process.env.NEXT_PUBLIC_ORIGIN || `http://${rpID}:3000`;
 
 /**
  * Dynamic RP ID detection for Server Actions / API Routes
- * Ensures the RP ID matches the actual host (e.g. WhaleAlert ID.railway.app)
+ * Ensures the RP ID matches the actual host (e.g. Humanity Ledger.railway.app)
  * preventing "Invalid RP ID" errors when env vars are missing.
  */
 export function getRpID(req: NextRequest | Request): string {

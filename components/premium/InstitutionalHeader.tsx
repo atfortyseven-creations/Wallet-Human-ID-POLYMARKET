@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Search, Bell, Clock, Eye, Settings, User, Wallet } from 'lucide-react';
 import { useNativeWallet } from '@/hooks/useNativeWallet';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
-import { WhaleLogo } from '@/components/shared/WhaleLogo';
+import { HLLogo } from '@/components/shared/HLLogo';
 
 export default function InstitutionalHeader() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -109,7 +109,7 @@ export default function InstitutionalHeader() {
         <div className="flex items-center gap-12">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">
-              <WhaleLogo className="w-7 h-7" priority />
+              <HLLogo className="w-7 h-7" priority />
               <span className="font-black text-lg tracking-tight">Humanity Ledger NETWORK</span>
             </div>
             <nav className="flex items-center gap-8 font-black">

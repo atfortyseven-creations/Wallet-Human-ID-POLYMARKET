@@ -9,13 +9,13 @@ export interface ManifestoSection {
   body: string[];
 }
 
-interface WhaleAlertLandingProps {
+interface HumanityLedgerLandingProps {
   sections?: ManifestoSection[];
 }
 
-export default function WhaleAlertLanding({
+export default function HumanityLedgerLanding({
   sections = [],
-}: WhaleAlertLandingProps) {
+}: HumanityLedgerLandingProps) {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
 

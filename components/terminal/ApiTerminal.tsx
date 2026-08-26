@@ -122,7 +122,7 @@ export function ApiTerminal() {
                 'X-RateLimit-Remaining':   String(Math.floor(secureRandom() * 900 + 50)),
                 'X-RateLimit-Reset':       String(Math.floor(Date.now() / 1000) + 3600),
                 'Cache-Control':           'no-store',
-                'X-Powered-By':            'WhaleAlert Neural Engine v3',
+                'X-Powered-By':            'HumanityLedger Neural Engine v3',
             };
             setResponseHeaders(hdrs);
 

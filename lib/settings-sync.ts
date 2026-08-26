@@ -2,7 +2,7 @@ import type { UserSettings, PartialUserSettings } from './settings-validation';
 import { validateUserSettings, validatePartialSettings } from './settings-validation';
 
 // ============================================================================
-// WhaleAlert ID.FI - SETTINGS SYNCHRONIZATION SERVICE
+// Humanity Ledger.FI - SETTINGS SYNCHRONIZATION SERVICE
 // ============================================================================
 
 interface SyncResult {
@@ -302,7 +302,7 @@ export class SettingsSyncService {
    */
   private saveToLocalStorage(settings: any): void {
     try {
-      localStorage.setItem('WhaleAlert ID_settings_v3', JSON.stringify(settings));
+      localStorage.setItem('Humanity Ledger_settings_v3', JSON.stringify(settings));
     } catch (error) {
       console.error('Failed to save to localStorage:', error);
     }
@@ -313,7 +313,7 @@ export class SettingsSyncService {
    */
   private loadFromLocalStorage(): UserSettings | null {
     try {
-      const stored = localStorage.getItem('WhaleAlert ID_settings_v3');
+      const stored = localStorage.getItem('Humanity Ledger_settings_v3');
       if (!stored) return null;
 
       const parsed = JSON.parse(stored);

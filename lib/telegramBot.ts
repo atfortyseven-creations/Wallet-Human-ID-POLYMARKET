@@ -55,7 +55,7 @@ export async function sendTelegramMessage(message: TelegramMessage): Promise<boo
 /**
  * Format Humanity Ledger for Telegram
  */
-export function formatWhaleAlertTelegram(data: {
+export function formatHumanityLedgerTelegram(data: {
   address: string;
   type: string;
   amount: number;

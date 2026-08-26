@@ -24,7 +24,7 @@ export function MetaMaskInterface({ onConnect }: { onConnect?: () => void }) {
           transition={{ delay: 0.2 }}
         >
           Welcome to <br className="sm:hidden" />
-          <span className="text-cyan-400">WhaleAlert ID.fi</span>
+          <span className="text-cyan-400">Humanity Ledger</span>
         </motion.h1>
 
         {/* Subtitle */}

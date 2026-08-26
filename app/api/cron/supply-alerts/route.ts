@@ -122,7 +122,7 @@ export async function GET(req: NextRequest) {
         // Dispatch emails parallelly (batching recommended for big lists, but okay for MVP)
         const emailPromises = subscribers.map(sub => 
             resend.emails.send({
-                from: getSender('WhaleAlert ID Vault'),
+                from: getSender('Humanity Ledger Vault'),
                 to: sub.email,
                 subject: ' Real-Time Supply Unlock Alert (Hourly Update)',
                 html: htmlContent

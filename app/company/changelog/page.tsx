@@ -5,7 +5,7 @@ export default function ChangelogPage() {
     return (
         <DocLayout
             title="Changelog"
-            description="Track new features, improvements, and bug fixes in WhaleAlert ID.fi."
+            description="Track new features, improvements, and bug fixes in Humanity Ledger."
             lastUpdated="February 7, 2026"
             category="Company"
         >
@@ -14,7 +14,7 @@ export default function ChangelogPage() {
                 <section className="bg-gradient-to-r from-green-600/20 to-blue-600/20 p-8 rounded-xl border border-white/10">
                     <h2 className="text-4xl font-bold mb-4">Changelog</h2>
                     <p className="text-lg text-black/80">
-                        Stay up-to-date with the latest features, improvements, and fixes across the WhaleAlert ID.fi platform.
+                        Stay up-to-date with the latest features, improvements, and fixes across the Humanity Ledger platform.
                     </p>
                 </section>
 
@@ -204,10 +204,10 @@ export default function ChangelogPage() {
                         We'd love to hear your ideas for new features or improvements.
                     </p>
                     <div className="flex flex-wrap justify-center gap-4">
-                        <a href="https://discord.gg/WhaleAlert ID" target="_blank" rel="noopener noreferrer" className="px-8 py-3 bg-white/10 border border-white/20 rounded-lg font-bold hover:bg-white/20 transition-colors">
+                        <a href="https://discord.gg/humanityledger" target="_blank" rel="noopener noreferrer" className="px-8 py-3 bg-white/10 border border-white/20 rounded-lg font-bold hover:bg-white/20 transition-colors">
                             Join Discord
                         </a>
-                        <a href="mailto:feedback@WhaleAlert ID.fi" className="px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg font-bold hover:scale-105 transition-transform">
+                        <a href="mailto:feedback@Humanity Ledger" className="px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg font-bold hover:scale-105 transition-transform">
                             Send Feedback
                         </a>
                     </div>

@@ -35,7 +35,7 @@ const auraVariants: Variants = {
     }
 };
 
-export function CinematicWhaleLogo({ src = "/official-whale-monochrome.png", className = "" }: { src?: string, className?: string }) {
+export function CinematicHLLogo({ src = "/official-whale-monochrome.png", className = "" }: { src?: string, className?: string }) {
     const prefersReducedMotion = useReducedMotion();
 
     return (

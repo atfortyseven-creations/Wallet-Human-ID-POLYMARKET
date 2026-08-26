@@ -4,12 +4,12 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, BellOff, BellRing, Sliders, X, ChevronRight } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import type { WhaleAlert } from '@/hooks/useWhaleFeed';
+import type { HumanityLedger } from '@/hooks/useWhaleFeed';
 import Link from 'next/link';
 import { toast } from 'sonner';
 
 interface Props {
-    alerts: WhaleAlert[];
+    alerts: HumanityLedger[];
     threshold: number;
     onThresholdChange: (v: number) => void;
 }
@@ -21,7 +21,7 @@ const SEVERITY_COLORS: Record<string, string> = {
     critical: 'text-indigo-400 border-indigo-500/20 bg-indigo-500/5',
 };
 
-export function WhaleAlerts({ alerts, threshold, onThresholdChange }: Props) {
+export function HumanityLedgers({ alerts, threshold, onThresholdChange }: Props) {
     const [showSettings, setShowSettings] = useState(false);
     const [inputVal, setInputVal] = useState(String(threshold));
 
@@ -29,7 +29,7 @@ export function WhaleAlerts({ alerts, threshold, onThresholdChange }: Props) {
     useEffect(() => {
         setInputVal(String(threshold));
     }, [threshold]);
-    const [localAlerts, setLocalAlerts] = useState<WhaleAlert[]>(alerts);
+    const [localAlerts, setLocalAlerts] = useState<HumanityLedger[]>(alerts);
     const prevAlertsRef = useRef<Set<string>>(new Set(alerts.map(a => a.id)));
     const [muted, setMuted] = useState(false);
 

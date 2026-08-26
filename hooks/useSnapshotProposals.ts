@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import { getProposals, Proposal } from '@/services/snapshot';
 
-export function useSnapshotProposals(spaceId: string = 'WhaleAlert ID.eth') { // Default space, can be changed
+export function useSnapshotProposals(spaceId: string = 'Humanity Ledger.eth') { // Default space, can be changed
     const { data, error, isLoading } = useSWR<Proposal[]>(
         ['snapshot', spaceId],
         () => getProposals(spaceId),
