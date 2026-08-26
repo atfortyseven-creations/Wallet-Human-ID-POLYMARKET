@@ -114,7 +114,7 @@ function buildSystemMessage(address: string): string {
     '',
     `Identity: ${address}`,
     `Nonce: ${Date.now()}`,
-    `Network: Humanity Ledger_IDENTITY_NETWORK`,
+    `Network: HUMANITY_LEDGER_IDENTITY_NETWORK`,
     `Connected at: ${new Date().toISOString().slice(0, 19).replace('T', ' ')}`,
     `Status: VERIFIED_IDENTITY_CLAIM`,
     'By signing you confirm that',

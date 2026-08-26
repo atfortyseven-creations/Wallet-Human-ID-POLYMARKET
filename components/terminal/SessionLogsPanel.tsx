@@ -74,7 +74,7 @@ function buildSeedEvents(): SessionEvent[] {
             timestamp: new Date(now - 65_000).toISOString(),
             action: "MIDDLEWARE_GATE_PASSED",
             category: "AUTH",
-            detail: "WhaleFortress edge middleware validated JWT. All cryptographic clearances granted.",
+            detail: "Humanity Ledger edge middleware validated JWT. All cryptographic clearances granted.",
             severity: "SECURE",
         },
         {
@@ -130,7 +130,7 @@ const LIVE_TEMPLATES: Omit<SessionEvent, "id" | "timestamp">[] = [
     { action: "PRIVACY_SCAN",         category: "PRIVACY",  detail: "IndexedDB audit complete. Zero plaintext key material detected.",    severity: "SECURE" },
     { action: "SESSION_HEARTBEAT",    category: "SYSTEM",   detail: "Session token refreshed. JWT signed. Auto-lock timer reset.",        severity: "INFO"   },
     { action: "PXE_NOTE_SYNC",        category: "ZK",       detail: "Trial decryption pass executed across 24 encrypted event logs.",     severity: "INFO"   },
-    { action: "MIDDLEWARE_VALIDATED", category: "AUTH",     detail: "WhaleFortress edge layer re-validated cryptographic clearance.",     severity: "SECURE" },
+    { action: "MIDDLEWARE_VALIDATED", category: "AUTH",     detail: "Humanity Ledger edge layer re-validated cryptographic clearance.",     severity: "SECURE" },
 ];
 
 // ─── Storage helpers ─────────────────────────────────────────────────────────

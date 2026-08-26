@@ -1,7 +1,7 @@
 /**
  * 
  *    WHALE FORTRESS WAF  OWASP Core Rule Set v3.3 (Edge Runtime)              
- *    WhaleFortress v6  Sovereign Anomaly Scoring Engine                   
+ *    Humanity Ledger v6  Sovereign Anomaly Scoring Engine                   
  *                                                                               
  *    Architecture:                                                              
  *      1. OWASP Anomaly Score accumulates across 6 detection vectors           

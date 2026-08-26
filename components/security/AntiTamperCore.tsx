@@ -106,7 +106,7 @@ export function AntiTamperCore() {
           if (current !== baselineRef.current) {
             violationsRef.current++;
             console.warn(
-              `[WhaleFortress:Integrity] DOM Merkle root changed. ` +
+              `[HumanityLedger:Integrity] DOM Merkle root changed. ` +
               `Expected=${baselineRef.current} Got=${current} ` +
               `(violation ${violationsRef.current}/${MAX_VIOLATIONS})`
             );
@@ -114,7 +114,7 @@ export function AntiTamperCore() {
             baselineRef.current = current;
 
             if (violationsRef.current >= MAX_VIOLATIONS) {
-              console.error("[WhaleFortress:Integrity] Max violations exceeded. Initiating session teardown.");
+              console.error("[HumanityLedger:Integrity] Max violations exceeded. Initiating session teardown.");
               // Clear session artifacts
               try {
                 document.cookie.split(";").forEach(c => {

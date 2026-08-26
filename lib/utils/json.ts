@@ -1,5 +1,5 @@
 /**
- * WhaleFortress JSON Security Utility
+ * Humanity Ledger JSON Security Utility
  * 
  * Proporciona un análisis de JSON ultra-seguro diseñado para entornos de alta
  * disponibilidad. Previene SyntaxErrors catastróficos causados por corrupciones

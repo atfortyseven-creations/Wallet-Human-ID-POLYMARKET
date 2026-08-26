@@ -72,4 +72,5 @@ export function HLLogo({ variant = 'full', theme = 'dark', className = '', size 
 export const HLMark = (props: Omit<HLLogoProps, 'variant'>) =>
   <HLLogo {...props} variant="mark" />;
 
-export const WhaleLogo = HLLogo;
+/** Legacy alias — keeps any old WhaleLogo imports working */
+export { HLLogo as WhaleLogo };

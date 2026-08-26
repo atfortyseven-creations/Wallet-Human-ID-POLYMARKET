@@ -228,7 +228,7 @@ export function NetworkMapPanel() {
                     <div className="p-4 bg-[#F9F9F9] border border-black/5 rounded-2xl">
                       <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-black/40 mb-2">Security</div>
                       <div className="flex flex-wrap gap-2">
-                        <Tag color="rose">WhaleFortress Edge</Tag>
+                        <Tag color="rose">Humanity Ledger Edge</Tag>
                         <Tag color="rose">SIWE Auth</Tag>
                         <Tag color="rose">Rate Limiting</Tag>
                         <Tag color="rose">Session State</Tag>
