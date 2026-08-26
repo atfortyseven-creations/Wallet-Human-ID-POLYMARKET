@@ -29,7 +29,7 @@ SELECT
     AVG(usd_value)                       AS avg_volume_usd,
     MAX(usd_value)                       AS max_single_tx_usd,
     SUM(usd_value) / 1e6                 AS total_volume_millions
-FROM dune_upload.whalealert_system_events
+FROM dune_upload.hl_system_events
 WHERE
     detected_at >= NOW() - INTERVAL '30' DAY
     AND usd_value >= 50000
@@ -54,7 +54,7 @@ SELECT
     usd_value_bucket,
     CONCAT(SUBSTRING(from_address, 1, 6), '...', RIGHT(from_address, 4)) AS from_short,
     CONCAT(SUBSTRING(to_address,   1, 6), '...', RIGHT(to_address,   4)) AS to_short
-FROM dune_upload.whalealert_system_events
+FROM dune_upload.hl_system_events
 WHERE usd_value_bucket = 'MEGA'
 ORDER BY detected_at DESC
 LIMIT 500
@@ -78,7 +78,7 @@ SELECT
         2
     )                                     AS institutional_pct,
     SUM(usd_value) / 1e6                  AS volume_millions
-FROM dune_upload.whalealert_system_events
+FROM dune_upload.hl_system_events
 WHERE detected_at >= NOW() - INTERVAL '7' DAY
 GROUP BY token
 HAVING COUNT(*) >= 3
@@ -99,7 +99,7 @@ SELECT
     COUNT(*)                              AS event_count,
     SUM(usd_value)                        AS total_usd,
     AVG(usd_value)                        AS avg_usd
-FROM dune_upload.whalealert_system_events
+FROM dune_upload.hl_system_events
 WHERE detected_at >= NOW() - INTERVAL '30' DAY
 GROUP BY utc_hour
 ORDER BY utc_hour ASC
@@ -121,7 +121,7 @@ SELECT
     MAX(detected_at)                      AS last_seen,
     ARRAY_AGG(DISTINCT token)             AS tokens_attestd,
     ARRAY_AGG(DISTINCT chain)             AS chains_used
-FROM dune_upload.whalealert_system_events
+FROM dune_upload.hl_system_events
 WHERE
     from_address NOT IN ('UNKNOWN', 'Contract')
     AND usd_value >= 100000
@@ -145,7 +145,7 @@ WITH daily_stats AS (
         DATE_TRUNC('day', detected_at)    AS day,
         SUM(usd_value)                    AS daily_volume,
         COUNT(*)                          AS daily_count
-    FROM dune_upload.whalealert_system_events
+    FROM dune_upload.hl_system_events
     WHERE detected_at >= NOW() - INTERVAL '90' DAY
     GROUP BY token, day
 ),
@@ -185,13 +185,13 @@ export async function GET() {
     return NextResponse.json({
         version:       '2026.1',
         total:         Private_QUERIES.length,
-        dataset_table: 'dune_upload.whalealert_system_events',
+        dataset_table: 'dune_upload.hl_system_events',
         export_url:    '/api/analytics/dune/export?format=csv&days=30',
         queries:       Private_QUERIES,
         instructions: {
             step1: 'Download your dataset at /api/analytics/dune/export?format=csv',
             step2: 'Go to dune.com  My Uploads  Upload CSV',
-            step3: 'Name the dataset: whalealert_system_events',
+            step3: 'Name the dataset: hl_system_events',
             step4: 'Copy any query from this catalog and run it in the Dune editor',
             step5: 'Share your dashboard publicly to contribute to the System Analytics Commons',
         },

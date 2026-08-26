@@ -388,7 +388,7 @@ export default async function middleware(request: NextRequest) {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       // [PHASE 5 PURGE] google-analytics.com and googletagmanager.com removed from img-src.
       // These were used for 1x1 tracking pixels (beacon tracking). Purged under Zero-Tracker mandate.
-      "img-src 'self' blob: data: https://res.cloudinary.com https://*.walletconnect.com https://*.walletconnect.org https://*.reown.com https://*.reown.app https://whalealert.network https://*.googleusercontent.com https://*.gstatic.com",
+      "img-src 'self' blob: data: https://res.cloudinary.com https://*.walletconnect.com https://*.walletconnect.org https://*.reown.com https://*.reown.app https://humanidfi.com https://*.googleusercontent.com https://*.gstatic.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       // [IOS CHROME FIX] connect-src expanded with all Reown OAuth + social auth API endpoints.
       // accounts.reown.com is the Reown Auth service for Google/Apple/GitHub social logins.

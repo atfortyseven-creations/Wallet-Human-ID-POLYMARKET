@@ -3507,7 +3507,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       </AnimatePresence>
 
     {/* ─── WebRTC Ringtone Audio Element ────────────────────────────────────── */}
-    <audio ref={ringAudioRef} loop src="/sounds/call_ringtone.mp3" style={{ display: 'none' }} />
+    <audio ref={ringAudioRef} loop playsInline x-webkit-airplay="allow" src="/sounds/call_ringtone.mp3" style={{ display: 'none' }} />
 
     {/* Solid white container — two-panel layout: sidebar (left) + chat (right) */}
       <div className={`relative flex flex-row flex-1 min-h-0 w-full overflow-hidden shadow-sm ${(showScanner || showMyQR || showProfile) ? 'overflow-visible' : ''}`} style={{ 

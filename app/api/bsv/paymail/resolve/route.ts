@@ -48,7 +48,7 @@ export async function GET(request: Request) {
                 const resolveRes = await fetch(resolveUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ senderHandle: 'inquiry@whalealert.network', dt: new Date().toISOString(), amount: 0 }),
+                    body: JSON.stringify({ senderHandle: 'inquiry@humanidfi.com', dt: new Date().toISOString(), amount: 0 }),
                     signal: AbortSignal.timeout(5000),
                 });
                 if (resolveRes.ok) {

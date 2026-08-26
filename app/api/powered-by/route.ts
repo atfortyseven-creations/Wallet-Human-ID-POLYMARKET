@@ -26,7 +26,7 @@ const FEATURED_INTEGRATIONS = [
     {
         id:          'whale-alert-native',
         name:        'Humanity Ledger',
-        url:         'https://whalealert.network',
+        url:         'https://humanidfi.com',
         description: 'The system terminal. EVM Thermodynamics engine, ZK identity layer, sovereign analytics.',
         category:    'analytics',
         tier:        'Private',
@@ -70,12 +70,12 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({
             total:        allIntegrations.length,
             integrations: allIntegrations,
-            embedSnippet: `<script src="https://whalealert.network/sdk/powered-by.js" data-theme="dark" async></script>`,
+            embedSnippet: `<script src="https://humanidfi.com/sdk/powered-by.js" data-theme="dark" async></script>`,
             registerUrl:  '/api/powered-by',
             badgeAssets: {
-                dark:  'https://whalealert.network/badges/powered-by-dark.svg',
-                light: 'https://whalealert.network/badges/powered-by-light.svg',
-                mini:  'https://whalealert.network/badges/powered-by-mini.svg',
+                dark:  'https://humanidfi.com/badges/powered-by-dark.svg',
+                light: 'https://humanidfi.com/badges/powered-by-light.svg',
+                mini:  'https://humanidfi.com/badges/powered-by-mini.svg',
             },
         }, {
             headers: { 'Cache-Control': 'public, max-age=120' }
@@ -139,8 +139,8 @@ export async function POST(req: NextRequest) {
             embedKey,
             approved:       false,
             reviewTime:     '24-48 hours',
-            embedSnippet:   `<script src="https://whalealert.network/sdk/powered-by.js" data-key="${embedKey}" data-theme="dark" async></script>`,
-            badgeMarkdown:  `[![Powered by Humanity Ledger](https://whalealert.network/badges/powered-by-dark.svg)](https://whalealert.network?ref=${integrationId})`,
+            embedSnippet:   `<script src="https://humanidfi.com/sdk/powered-by.js" data-key="${embedKey}" data-theme="dark" async></script>`,
+            badgeMarkdown:  `[![Powered by Humanity Ledger](https://humanidfi.com/badges/powered-by-dark.svg)](https://humanidfi.com?ref=${integrationId})`,
             nextSteps: [
                 'Add the badge to your README and UI',
                 'Our team will review and approve within 48h',

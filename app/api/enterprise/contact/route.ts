@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
                 'Check your email for confirmation',
                 tier === 'Private'
                     ? 'A strategic partnership call will be scheduled within 48h'
-                    : `Schedule a call: https://cal.com/whalealert/cryptographic`,
+                    : `Schedule a call: https://cal.com/humanityledger/cryptographic`,
             ],
         });
 

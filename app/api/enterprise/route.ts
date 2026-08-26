@@ -123,7 +123,7 @@ export async function GET() {
         editions:     EDITION_MATRIX,
         contactUrl:   '/api/enterprise/contact',
         docsUrl:      '/docs/enterprise',
-        schedulingUrl: 'https://cal.com/whalealert/cryptographic',
+        schedulingUrl: 'https://cal.com/humanityledger/cryptographic',
     }, {
         headers: { 'Cache-Control': 'public, max-age=300' },
     });

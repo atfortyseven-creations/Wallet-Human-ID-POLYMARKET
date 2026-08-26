@@ -13,7 +13,7 @@ async function main() {
         update: {},
         create: {
             walletAddress: '0x1234567890abcdef1234567890abcdef12345678',
-            email: 'admin@whalealert.network',
+            email: 'admin@humanidfi.com',
             tier: 'Enterprise', // Maximum tier
         },
     })

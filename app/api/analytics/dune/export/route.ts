@@ -18,8 +18,8 @@
  * Dune Import Steps (returned in X-Dune-Import-Instructions header):
  *   1. Download the CSV output
  *   2. Go to dune.com  My Uploads  Upload CSV
- *   3. Name: whalealert_system_events
- *   4. Use query: SELECT * FROM dune_upload.whalealert_system_events
+ *   3. Name: hl_system_events
+ *   4. Use query: SELECT * FROM dune_upload.hl_system_events
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -111,8 +111,8 @@ export async function GET(req: NextRequest) {
             record_count:  normalized.length,
             total_usd:     totalUsd,
             chains:        chainMap,
-            dune_table:    'dune_upload.whalealert_system_events',
-            query_example: `SELECT chain, token, SUM(usd_value) as total_volume, COUNT(*) as tx_count FROM dune_upload.whalealert_system_events WHERE usd_value_bucket IN ('MEGA','MACRO') GROUP BY 1, 2 ORDER BY 3 DESC`,
+            dune_table:    'dune_upload.hl_system_events',
+            query_example: `SELECT chain, token, SUM(usd_value) as total_volume, COUNT(*) as tx_count FROM dune_upload.hl_system_events WHERE usd_value_bucket IN ('MEGA','MACRO') GROUP BY 1, 2 ORDER BY 3 DESC`,
         };
 
         if (format === 'csv') {
@@ -120,10 +120,10 @@ export async function GET(req: NextRequest) {
             return new Response(csv, {
                 headers: {
                     'Content-Type':              'text/csv; charset=utf-8',
-                    'Content-Disposition':       `attachment; filename="whalealert_system_${days}d_${Date.now()}.csv"`,
+                    'Content-Disposition':       `attachment; filename="hl_system_${days}d_${Date.now()}.csv"`,
                     'X-Record-Count':            String(normalized.length),
                     'X-Total-USD':               String(totalUsd.toFixed(0)),
-                    'X-Dune-Import-Instructions': 'Upload to dune.com  My Uploads  Use table: dune_upload.whalealert_system_events',
+                    'X-Dune-Import-Instructions': 'Upload to dune.com  My Uploads  Use table: dune_upload.hl_system_events',
                     'Cache-Control':             'no-store',
                 },
             });

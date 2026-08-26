@@ -1244,7 +1244,7 @@ html.forum-light-mode {
   display: none;
 }
 
-/* animate-float  gentle vertical oscillation for WhaleLogo in CTA */
+/* animate-float  gentle vertical oscillation for HLLogo in CTA */
 @keyframes float {
   0%,  100% { transform: translate3d(0,  0px, 0); }
   50%        { transform: translate3d(0, -12px, 0); }
