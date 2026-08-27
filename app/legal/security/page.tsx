@@ -1,36 +1,36 @@
 import React from 'react';
 
 const SectionDivider = () => (
-  <div className="my-16 border-t border-slate-800" />
+  <div className="my-16 border-t border-black/[0.06]" />
 );
 
 const Section = ({ title, children, id }: { title: string; children: React.ReactNode; id?: string }) => (
   <section className="mb-16" id={id}>
-    <h2 className="text-3xl font-bold text-white mb-6 border-b border-slate-800 pb-4 flex items-center gap-3">
+    <h2 className="text-3xl font-bold text-black mb-6 border-b border-black/10 pb-4 flex items-center gap-3">
       <span className="w-2 h-6 bg-emerald-500 rounded-sm"></span>
       {title}
     </h2>
-    <div className="space-y-6 text-slate-300 leading-relaxed text-lg">{children}</div>
+    <div className="space-y-6 text-black/70 leading-relaxed text-lg">{children}</div>
   </section>
 );
 
 const SecurityMetric = ({ label, value, detail }: { label: string; value: string; detail: string }) => (
-  <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 flex flex-col justify-between">
-    <div className="text-sm font-mono text-slate-500 mb-2 uppercase tracking-wider">{label}</div>
-    <div className="text-2xl font-bold text-emerald-400 mb-1">{value}</div>
-    <div className="text-sm text-slate-400">{detail}</div>
+  <div className="bg-zinc-50 border border-black/[0.06] rounded-xl p-6 flex flex-col justify-between">
+    <div className="text-sm font-mono text-black/40 mb-2 uppercase tracking-wider">{label}</div>
+    <div className="text-2xl font-bold text-emerald-600 mb-1">{value}</div>
+    <div className="text-sm text-black/50">{detail}</div>
   </div>
 );
 
 const AuditCard = ({ firm, date, scope, link }: { firm: string; date: string; scope: string; link: string }) => (
-  <div className="bg-slate-900 border border-slate-700 hover:border-emerald-500/50 transition-colors rounded-xl p-6">
+  <div className="bg-zinc-50 border border-black/[0.08] hover:border-emerald-400/50 transition-colors rounded-xl p-6">
     <div className="flex justify-between items-start mb-4">
-      <h4 className="text-xl font-bold text-white">{firm}</h4>
-      <span className="px-3 py-1 bg-slate-800 text-xs font-mono text-slate-400 rounded-full">{date}</span>
+      <h4 className="text-xl font-bold text-black">{firm}</h4>
+      <span className="px-3 py-1 bg-zinc-100 text-xs font-mono text-black/50 rounded-full">{date}</span>
     </div>
-    <p className="text-sm text-slate-400 mb-4">{scope}</p>
-    <a href={link} className="text-emerald-400 text-sm font-mono hover:text-emerald-300 flex items-center gap-1">
-      View Report <span aria-hidden="true">&rarr;</span>
+    <p className="text-sm text-black/50 mb-4">{scope}</p>
+    <a href={link} className="text-emerald-600 text-sm font-mono hover:text-emerald-700 flex items-center gap-1">
+      View Report <span aria-hidden="true">→</span>
     </a>
   </div>
 );
@@ -42,27 +42,27 @@ export const metadata = {
 
 export default function SecurityArchitecture() {
   return (
-    <div className="min-h-screen bg-slate-950 font-sans text-slate-300 overflow-x-hidden selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-white font-sans text-black overflow-x-hidden">
       {/* Hero Section */}
-      <div className="relative pt-24 pb-16 px-6 border-b border-slate-800 overflow-hidden">
+      <div className="relative pt-24 pb-16 px-6 border-b border-black/[0.06] overflow-hidden">
         <div className="absolute top-0 right-0 -mr-32 -mt-32 w-[500px] h-[500px] rounded-full bg-emerald-500/10 blur-[100px] pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 -ml-32 -mb-32 w-[500px] h-[500px] rounded-full bg-blue-500/10 blur-[100px] pointer-events-none"></div>
         
         <div className="max-w-5xl mx-auto relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-mono text-emerald-400 mb-6 tracking-widest uppercase shadow-lg shadow-emerald-500/5">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 border border-black/[0.08] text-xs font-mono text-emerald-600 mb-6 tracking-widest uppercase">
             Security Posture · v2.4.0
           </div>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white mb-6 leading-[1.1]">
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-black mb-6 leading-[1.1]">
             Cryptographic Security<br />& Threat Modeling
           </h1>
-          <p className="text-xl text-slate-400 max-w-3xl leading-relaxed">
+          <p className="text-xl text-black/50 max-w-3xl leading-relaxed">
             The Humanity Ledger is engineered under the assumption of a uniformly hostile environment. This document details our cryptographic primitive selection, formal verification methodologies, operational security (OpSec) constraints, and incident response architecture.
           </p>
         </div>
       </div>
 
       {/* Metrics Bar */}
-      <div className="bg-slate-900 border-b border-slate-800">
+      <div className="bg-zinc-50 border-b border-black/[0.06]">
         <div className="max-w-5xl mx-auto px-6 py-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <SecurityMetric label="Bug Bounty Max" value="$2,500,000" detail="Immunefi Critical P1" />

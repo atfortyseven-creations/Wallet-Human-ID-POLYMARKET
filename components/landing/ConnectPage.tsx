@@ -588,14 +588,23 @@ export default function ConnectPage() {
       </div>
 
       <div className="w-full flex flex-col flex-1 pt-8 relative z-10">
+          <p className="text-[13px] text-black/60 leading-relaxed font-medium mb-1">
+            Access the workspace using your Ethereum identity.
+          </p>
+          <p className="text-[11px] text-black/40 leading-relaxed mb-4">
+            A read-only signature will be requested to verify ownership. No gas fees are required.
+          </p>
+        </div>
+
         {mounted && !isVerified && (
-          <div className="flex items-center justify-center gap-2 mb-6">
-            {isMobile ? <Smartphone size={12} className="text-slate-400" /> : <Monitor size={12} className="text-slate-400" />}
-            <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-slate-400 font-bold">{isMobile ? "Mobile connection" : "Desktop connection"}</span>
+          <div className="absolute top-8 right-8 flex items-center gap-2 px-3 py-1 bg-zinc-50 border border-black/10 rounded-full">
+            <div className="w-1.5 h-1.5 bg-black/30 rounded-full"></div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-black/50">Disconnected</span>
           </div>
         )}
 
-        {/* STATE: Verified */}
+        <div className="flex-1 overflow-y-auto min-h-0 pr-4 mr-[-16px]">
+          <AnimatePresence mode="wait">
         {isVerified ? (
           <motion.div key="verified" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="flex flex-col items-center justify-center flex-1 relative min-h-[280px]">
             <div className="absolute inset-0 flex items-center justify-center">
@@ -716,6 +725,11 @@ export default function ConnectPage() {
             
             <div className="h-px w-full bg-black/10 my-4" />
             {renderWeb2Logins()}
+            <div className="mt-8 text-center px-4">
+              <p className="text-[10px] text-black/40 leading-relaxed uppercase tracking-widest font-mono">
+                By connecting, you agree to the <Link href="/legal/terms" className="underline hover:text-black">Terms of Service</Link> & <Link href="/legal/privacy" className="underline hover:text-black">Privacy Policy</Link>.
+              </p>
+            </div>
           </div>
         )}
       </div>

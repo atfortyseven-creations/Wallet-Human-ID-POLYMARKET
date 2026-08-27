@@ -1,19 +1,13 @@
 // System layout  No Clerk provider needed (SIWE-native auth)
 import { headers } from 'next/headers'
-import { Inter, UnifrakturMaguntia, Roboto_Mono } from 'next/font/google'
+import { IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google'
 import './globals-compiled.css'
 import './globals.css'
 import './smooth-scroll.css'
 import Providers from "@/components/Providers";
-import "@fontsource/space-grotesk/700.css";
-import "@fontsource/space-grotesk/400.css";
-import "@fontsource/roboto-mono/700.css";
-import "@fontsource/roboto-mono/400.css";
 import { ClientLayout } from "@/components/layout/ClientLayout";
 import { Toaster } from 'sonner'
 import { CookieProvider } from "@/components/privacy/CookieContext";
-// [PHASE 5] CookieConsent is now the Zero-Data Privacy Notice (not an analytics banner)
-// CookieConsent import removed per user request
 import { ErrorSuppressor } from "@/components/ui/ErrorSuppressor";
 import { ReactNode } from "react";
 import { MobileEnforcer } from '@/components/layout/MobileEnforcer';
@@ -24,21 +18,24 @@ import { WavesSpotlight } from "@/components/ui/WavesSpotlight";
 import { AntiTamperCore } from "@/components/security/AntiTamperCore";
 import { AztecProvider } from "@/context/AztecContext";
 import { AztecNativeProvider } from "@/context/AztecNativeContext";
-
 import { WalletConnectProvider } from '@/components/walletconnect/WalletConnectProvider';
 
+const plexSans = IBM_Plex_Sans({ 
+  subsets: ['latin'], 
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter' // Reusing the inter variable to override all sans usages safely
+})
 
-const inter = Inter({ subsets: ['latin'] })
-
-const aztecFont = UnifrakturMaguntia({
+const aztecFont = IBM_Plex_Sans({
   subsets: ['latin'],
-  weight: ['400'],
+  weight: ['400', '600', '700'],
   variable: '--font-aztec-serif',
   display: 'swap',
 })
 
-const robotoMono = Roboto_Mono({
+const plexMono = IBM_Plex_Mono({
   subsets: ['latin'],
+  weight: ['400', '500', '700'],
   variable: '--font-aztec-mono',
   display: 'swap',
 })
@@ -205,7 +202,7 @@ export default async function RootLayout({
   };
 
   return (
-    <html lang="en" className={`light bg-white ${aztecFont.variable} ${robotoMono.variable} ${inter.variable}`} suppressHydrationWarning data-scroll-behavior="smooth">
+    <html lang="en" className={`light bg-white ${plexSans.variable} ${aztecFont.variable} ${plexMono.variable}`} suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         {/* Proper viewport already handled by Next.js `viewport` export above */}
         <meta name="apple-mobile-web-app-capable" content="yes" />

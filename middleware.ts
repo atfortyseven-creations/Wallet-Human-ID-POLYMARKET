@@ -178,22 +178,6 @@ async function extractSessionAddress(req: NextRequest): Promise<string | null> {
 export async function middleware(req: NextRequest): Promise<NextResponse> {
   const { pathname } = req.nextUrl;
 
-  // ── [FASE 18: OFAC / Restricted Jurisdiction Geofencing] ─────────────────
-  // Blocks IP addresses from the US and OFAC-sanctioned countries at the edge.
-  // This is a hard requirement for App Store / Play Store compliance for crypto apps.
-  const country = req.headers.get('x-vercel-ip-country') || req.headers.get('cf-ipcountry') || '';
-  const RESTRICTED_COUNTRIES = ['US', 'CU', 'IR', 'KP', 'SY', 'RU', 'BY'];
-  
-  if (country && RESTRICTED_COUNTRIES.includes(country.toUpperCase())) {
-    return new NextResponse(
-      `<!DOCTYPE html><html><head><title>Unavailable</title></head><body style="font-family: monospace; padding: 40px; background: #000; color: #fff;">
-       <h2>Error 451: Unavailable For Legal Reasons</h2>
-       <p>The Humanity Ledger services are not available in your jurisdiction (${country}) due to regulatory restrictions.</p>
-       </body></html>`,
-      { status: 451, headers: { 'content-type': 'text/html' } }
-    );
-  }
-
   // 1. Edge Rate Limiting for ALL API Routes
   if (pathname.startsWith('/api/')) {
     const ip = req.headers.get('x-forwarded-for') || (req as any).ip || '127.0.0.1';
@@ -207,7 +191,34 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
     return NextResponse.next();
   }
 
-  // 2. Check for a valid session JWT
+  // [FASE 18: OFAC / Restricted Jurisdiction Geofencing]
+  // Blocks IP addresses from the US and OFAC-sanctioned countries at the edge for PROTECTED app routes.
+  const country = req.headers.get('x-vercel-ip-country') || req.headers.get('cf-ipcountry') || '';
+  const RESTRICTED_COUNTRIES = ['US', 'CU', 'IR', 'KP', 'SY', 'RU', 'BY'];
+  
+  if (country && RESTRICTED_COUNTRIES.includes(country.toUpperCase())) {
+    return new NextResponse(
+      `<!DOCTYPE html><html><head><title>Service Restricted</title>
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+       <style>
+         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #fafafa; color: #111; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; padding: 20px; text-align: center; }
+         .card { max-w: 500px; padding: 40px; background: #fff; border: 1px solid #eaeaea; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+         h2 { margin-top: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+         p { color: #666; line-height: 1.6; margin-bottom: 24px; }
+         a { display: inline-block; padding: 10px 20px; background: #111; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; }
+       </style>
+       </head><body>
+       <div class="card">
+         <h2>Unavailable in ${country}</h2>
+         <p>Humanity Ledger application services are currently unavailable in your jurisdiction due to regulatory restrictions.</p>
+         <a href="/">Return to Home</a>
+       </div>
+       </body></html>`,
+      { status: 451, headers: { 'content-type': 'text/html' } }
+    );
+  }
+
+  // 3. Check for a valid session JWT
   const sessionAddress = await extractSessionAddress(req);
 
   if (!sessionAddress) {

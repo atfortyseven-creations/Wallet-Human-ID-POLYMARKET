@@ -36,18 +36,18 @@ export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 overflow-x-hidden">
       {/* Header */}
-      <div className="bg-slate-900 text-white py-20 px-6">
+      <div className="bg-white text-black py-20 px-6 border-b border-black/[0.06]">
         <div className="max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-mono text-slate-300 mb-6 tracking-widest uppercase">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 text-xs font-mono text-black/40 mb-6 tracking-widest uppercase">
             Legal Document · v4.1.0
           </div>
-          <h1 className="text-5xl md:text-6xl font-black tracking-tight mb-6 leading-none">
-            Privacy Policy &<br />Zero-Knowledge Architecture
+          <h1 className="text-5xl md:text-6xl font-black tracking-tight mb-6 leading-none text-black">
+            Privacy Policy &<br />Zero Knowledge Architecture
           </h1>
-          <p className="text-slate-300 text-lg max-w-2xl leading-relaxed">
+          <p className="text-black/50 text-lg max-w-2xl leading-relaxed">
             This document outlines how Humanity Ledger implements advanced cryptographic techniques to protect your data while strictly complying with global regulatory frameworks, including the GDPR (EU) and CCPA/CPRA (California). Privacy is not a feature; it is an architectural invariant.
           </p>
-          <div className="mt-8 flex flex-wrap gap-6 text-sm text-slate-400 font-mono">
+          <div className="mt-8 flex flex-wrap gap-6 text-sm text-black/40 font-mono">
             <span>Effective Date: 18 August 2026</span>
             <span>Data Controller: Humanity Ledger Foundation</span>
             <span>DPO Contact: dpo@humanityledger.com</span>

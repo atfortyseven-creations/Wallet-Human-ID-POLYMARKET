@@ -476,7 +476,7 @@ const FAQs = () => {
 //  MAIN PAGE COMPONENT 
 export default function DevelopersPage() {
   return (
-    <div className="min-h-screen bg-transparent text-[#0A0A0A] dark:text-[#FFFFFF] overflow-x-hidden font-sans selection:bg-black/10 selection:text-[#0A0A0A]">
+    <div className="min-h-screen bg-white text-[#0A0A0A] dark:text-[#FFFFFF] overflow-x-hidden font-sans selection:bg-black/10 selection:text-[#0A0A0A]">
       
       {/*  TOP NAV SPACER  */}
       <div className="fixed top-0 left-0 right-0 z-50 px-8 py-6 pointer-events-none flex justify-center backdrop-blur-md bg-white/20 dark:bg-black/20 border-b border-black/5 dark:border-white/5">

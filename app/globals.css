@@ -65,7 +65,7 @@ body {
   -webkit-text-size-adjust: 100%;     /* Prevent iOS auto text-size increase */
   text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent; /* Remove tap flash on iOS */
-  touch-action: pan-x pan-y;          /* Optimal for Lenis / Pan movements */
+  touch-action: pan-y;          /* Optimal for Lenis / Pan movements */
   
   /* Safe Area / Notch Support */
   padding-left:   env(safe-area-inset-left, 0px);
@@ -233,7 +233,7 @@ html, body {
   html {
     /* Lenis (SmoothScroll.tsx) manages the smoothing. */
     -webkit-tap-highlight-color: transparent;
-    touch-action: pan-x pan-y;
+    touch-action: pan-y;
 
     /* === STRATOSPHERIC GPU RENDERING === */
     text-rendering: optimizeLegibility;
@@ -1748,3 +1748,6 @@ img, a, canvas, svg {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
+*   {   h y p h e n s :   n o n e   ! i m p o r t a n t ;   } 
+ 
+ 

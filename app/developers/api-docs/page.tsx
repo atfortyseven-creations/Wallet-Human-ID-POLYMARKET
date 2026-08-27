@@ -43,7 +43,7 @@ export default function UnifiedDocsPage() {
   }, []);
 
   return (
-    <div className="w-full min-h-screen bg-white text-[#050505] font-sans flex flex-col md:flex-row">
+    <div className="w-full min-h-screen bg-white text-[#050505] font-sans flex flex-col md:flex-row overflow-x-hidden">
       {/* LEFT SIDEBAR */}
       <aside className="w-full md:w-[280px] shrink-0 border-r border-[#E8E8E8] md:h-screen md:sticky top-0 overflow-y-auto bg-[#FAFAFA] pt-12 md:pt-20 pb-10">
         <div className="px-6 mb-6 flex flex-col gap-4">

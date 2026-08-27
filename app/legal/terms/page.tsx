@@ -43,18 +43,18 @@ export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 overflow-x-hidden">
       {/* Header */}
-      <div className="bg-gray-950 text-white py-20 px-6">
+      <div className="bg-white text-black py-20 px-6 border-b border-black/[0.06]">
         <div className="max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-mono text-gray-300 mb-6 tracking-widest uppercase">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 text-xs font-mono text-black/40 mb-6 tracking-widest uppercase">
             Legal Document · v3.2.0
           </div>
-          <h1 className="text-5xl md:text-6xl font-black tracking-tight mb-6 leading-none">
+          <h1 className="text-5xl md:text-6xl font-black tracking-tight mb-6 leading-none text-black">
             Terms of Service<br />& Network Governance
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl leading-relaxed">
+          <p className="text-black/50 text-lg max-w-2xl leading-relaxed">
             This Agreement governs your access to and use of the Humanity Ledger protocol, associated front-end interfaces, API services, and all related infrastructure. Please read this document in its entirety before interacting with the protocol.
           </p>
-          <div className="mt-8 flex flex-wrap gap-6 text-sm text-gray-500 font-mono">
+          <div className="mt-8 flex flex-wrap gap-6 text-sm text-black/40 font-mono">
             <span>Effective Date: 18 August 2026</span>
             <span>Last Revised: 18 August 2026</span>
             <span>Jurisdiction: International</span>
