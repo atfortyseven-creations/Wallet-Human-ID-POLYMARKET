@@ -363,7 +363,7 @@ function ConnectedScreen({
   const fmtDate   = (d: Date) => d.toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 
   return (
-    <div className="relative w-full h-full overflow-x-hidden overflow-y-auto font-sans flex flex-col bg-white selection:bg-black/10 selection:text-black" style={{ color: '#000000', minHeight: '100dvh' }}>
+    <div className="relative w-full h-full overflow-x-hidden overflow-y-auto font-sans flex flex-col bg-white selection:bg-black/10 selection:text-black" style={{ color: '#000000' }}>
       {/* Background soft ambient noise/gradient */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-black/[0.01] via-white to-white" />
       
@@ -457,14 +457,12 @@ function ConnectedScreen({
           className="w-full grid grid-cols-2 gap-4 mb-14"
         >
           {[
-            { label: 'Dashboard', href: '/terminal', icon: <LayoutDashboard size={22} strokeWidth={1.5} />, color: 'bg-[#1C1C1E] text-white', border: 'border-transparent' },
+            { label: 'App Hub', href: '/hub', icon: <LayoutDashboard size={22} strokeWidth={1.5} />, color: 'bg-[#1C1C1E] text-white', border: 'border-transparent' },
             { label: 'Link Session', action: onScan, icon: <ScanLine size={22} strokeWidth={1.5} />, color: 'bg-white text-black', border: 'border-black/10' },
-            { label: 'ZK Sandbox', href: '/sandbox', icon: <Fingerprint size={22} strokeWidth={1.5} />, color: 'bg-black text-white', border: 'border-transparent' },
+            { label: 'Ledger Chat', href: '/chat', icon: <MessageSquare size={22} strokeWidth={1.5} />, color: 'bg-[#1c7aff] text-white', border: 'border-transparent' },
             { label: 'Portfolio', href: '/portfolio', icon: <PieChart size={22} strokeWidth={1.5} />, color: 'bg-[#f5f5f7] text-black', border: 'border-transparent' },
-            { label: 'Markets', href: '/markets', icon: <TrendingUp size={22} strokeWidth={1.5} />, color: 'bg-[#f5f5f7] text-black', border: 'border-transparent' },
-            { label: 'Explorer', href: '/explorer', icon: <Activity size={22} strokeWidth={1.5} />, color: 'bg-[#f5f5f7] text-black', border: 'border-transparent' },
-            { label: 'LedgerChat', href: '/chat', icon: <MessageSquare size={22} strokeWidth={1.5} />, color: 'bg-[#1c7aff] text-white', border: 'border-transparent' },
-            { label: 'Studio Beta', href: '/studio/provenance', icon: <Package size={22} strokeWidth={1.5} />, color: 'bg-gradient-to-tr from-purple-500 to-indigo-600 text-white', border: 'border-transparent' },
+            { label: 'Studio', href: '/studio/provenance', icon: <Package size={22} strokeWidth={1.5} />, color: 'bg-gradient-to-tr from-purple-500 to-indigo-600 text-white', border: 'border-transparent' },
+            { label: 'ZK Sandbox', href: '/sandbox', icon: <Fingerprint size={22} strokeWidth={1.5} />, color: 'bg-black text-white', border: 'border-transparent' },
           ].map((app, i) => {
             const InnerContent = (
               <div className={`flex flex-col justify-between p-4 h-[120px] rounded-[24px] border ${app.border} ${app.color} shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer`}>

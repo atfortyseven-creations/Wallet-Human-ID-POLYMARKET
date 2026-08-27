@@ -199,6 +199,12 @@ export function MobileEnforcer({ children }: { children: React.ReactNode }) {
             '/passport',
             '/scan',
             '/studio',
+
+            // App hub + docs: same experience on mobile and desktop
+            '/hub',
+            '/docs',
+            '/settings',
+            '/whitepaper',
         ];
 
         // [Cryptographic-GATE] Always allow dashboard/chat/portfolio so they can reach the ZK-Gate and connect from there
