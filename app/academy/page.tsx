@@ -4,7 +4,7 @@ import { getAcademyData } from "@/app/actions/academy-actions";
 import { AcademyInteractiveEngine } from "@/components/academy/AcademyInteractiveEngine";
 import { TOPIC_CATEGORIES } from "@/lib/data/academy-curriculum";
 import { SystemFooter } from "@/components/landing/SystemFooter";
-import { WhaleChatLink } from "@/components/shared/WhaleChatLink";
+import { LedgerChatLink } from "@/components/shared/LedgerChatLink";
 import { TuringAcademicShield } from "@/components/academy/TuringAcademicShield";
 
 export const revalidate = 60;
@@ -58,7 +58,7 @@ export default async function AcademyPage() {
                    <TuringAcademicShield />
                 </div>
                 
-                <WhaleChatLink />
+                <LedgerChatLink />
               </div>
               <SystemFooter />
             </div>

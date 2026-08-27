@@ -227,12 +227,12 @@ const TapbackPicker = React.memo(({ isMe, onReact, onClose }: {
 ));
 TapbackPicker.displayName = 'TapbackPicker';
 
-// ─── Sticker Picker (exported for use in WhaleChat) ──────────────────────────────
+// ─── Sticker Picker (exported for use in LedgerChat) ──────────────────────────────
 export const StickerPicker = React.memo(({ onSend, onClose }: {
   onSend: (s: string) => void; onClose: () => void;
 }) => (
   // [FIX] Use position: absolute so it floats above the input bar.
-  // The parent container in WhaleChat must have position: relative.
+  // The parent container in Ledger Chat must have position: relative.
   <motion.div
     initial={{ opacity: 0, y: 12 }}
     animate={{ opacity: 1, y: 0 }}

@@ -32,12 +32,12 @@ function getUpstashRedis(): any | null {
 
 //  Shared in-memory fallback store (global so it's shared with the SSE stream route) 
 declare global {
-  var __whaleChatMemStore: Map<string, Array<{ id: string; sender: string; content: string; sentAt: string; _score: number }>>;
+  var __LedgerChatMemStore: Map<string, Array<{ id: string; sender: string; content: string; sentAt: string; _score: number }>>;
 }
-if (!global.__whaleChatMemStore) {
-  global.__whaleChatMemStore = new Map();
+if (!global.__LedgerChatMemStore) {
+  global.__LedgerChatMemStore = new Map();
 }
-const memoryStore = global.__whaleChatMemStore;
+const memoryStore = global.__LedgerChatMemStore;
 
 export async function POST(req: NextRequest) {
   try {
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
         // Publish to channel for SSE subscribers
         await redis.publish(`whale_chat:channel:${channelId}`, JSON.stringify(message));
       } catch (redisErr) {
-        console.warn('[Whale Chat] Redis write failed, falling back to memory:', redisErr);
+        console.warn('[Ledger Chat] Redis write failed, falling back to memory:', redisErr);
       }
     }
 
@@ -100,12 +100,12 @@ export async function POST(req: NextRequest) {
         data: { sender: message.sender, recipient: channelId, content: message.content }
       });
     } catch (dbErr) {
-      console.warn('[Whale Chat] Prisma DB write failed:', dbErr);
+      console.warn('[Ledger Chat] Prisma DB write failed:', dbErr);
     }
 
     return NextResponse.json({ ok: true, message });
   } catch (err) {
-    console.error('[Whale Chat] Send error:', err);
+    console.error('[Ledger Chat] Send error:', err);
     return NextResponse.json({ error: 'Failed to send message' }, { status: 500 });
   }
 }
@@ -137,7 +137,7 @@ export async function GET(req: NextRequest) {
         }).filter(Boolean);
         return NextResponse.json({ messages });
       } catch (redisErr) {
-        console.warn('[Whale Chat] Redis read failed, falling back to memory:', redisErr);
+        console.warn('[Ledger Chat] Redis read failed, falling back to memory:', redisErr);
       }
     }
 
@@ -149,7 +149,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ messages: filtered });
 
   } catch (err) {
-    console.error('[Whale Chat] Fetch error:', err);
+    console.error('[Ledger Chat] Fetch error:', err);
     return NextResponse.json({ messages: [] });
   }
 }

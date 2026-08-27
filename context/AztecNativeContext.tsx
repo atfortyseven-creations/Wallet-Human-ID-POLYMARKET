@@ -64,7 +64,7 @@ export interface TxRecord {
   id: string;
   type: "send" | "receive";
   txType?: string;  // TRANSFER | SPEND | AIRDROP
-  reason?: string;  // e.g. 'Whale Chat message', 'Encrypted Video Call', 'Noir ZK Proof Generation'
+  reason?: string;  // e.g. 'Ledger Chat message', 'Encrypted Video Call', 'Noir ZK Proof Generation'
   amount: number;
   address: string; // counterparty
   date: string;    // ISO timestamp
@@ -766,7 +766,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
         setBalance(prev => Math.round((prev + amount) * 1_000_000) / 1_000_000);
         const errData = await res.json().catch(() => ({}));
         // [FIX] Surface identity gate errors once (not double-toast)
-        // and return false without throwing so callers (WhaleChat) can continue.
+        // and return false without throwing so callers (LedgerChat) can continue.
         if (errData?.code === 'NOT_VERIFIED_IDENTITY') {
           toast.info("Claim your Aztec Identity to earn QDs", { 
             description: "Messages send for free until you claim. Aztec Identity tab → Claim.",
@@ -790,7 +790,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       console.error("[Aztec Spend] Failed:", err);
       // Revert optimistic update on network error
       setBalance(prev => Math.round((prev + amount) * 1_000_000) / 1_000_000);
-      // Don't toast on every network blip — WhaleChat fire-and-forgets this
+      // Don't toast on every network blip — Ledger Chat fire-and-forgets this
       return false;
     } finally {
       setIsBusy(false);

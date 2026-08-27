@@ -7,7 +7,7 @@
 ---
 
 ## 1. MACRO-ARCHITECTURE OVERVIEW
-Humanity Ledger is no longer just a portal; it is a **Hub & Spoke System Execution Environment**. It acts as a unified OS hosting sovereign Mini-Apps (Whale Chat, Portfolio, Markets, Studio Provenance). The central Hub provides Zero-Knowledge identity verification, while each Mini-App executes in its own isolated context.
+Humanity Ledger is no longer just a portal; it is a **Hub & Spoke System Execution Environment**. It acts as a unified OS hosting sovereign Mini-Apps (LedgerChat, Portfolio, Markets, Studio Provenance). The central Hub provides Zero-Knowledge identity verification, while each Mini-App executes in its own isolated context.
 
 ### Topology Grid
 ```mermaid

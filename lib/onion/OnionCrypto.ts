@@ -2,7 +2,7 @@
  * OnionCrypto.ts — Quantum Onion Routing Cryptographic Primitives
  * ══════════════════════════════════════════════════════════════════
  *
- * Implements the cryptographic building blocks for the Whale Chat
+ * Implements the cryptographic building blocks for the Ledger Chat
  * Onion Router. Every function uses ONLY the browser-native
  * `crypto.subtle` WebCrypto API — no external libraries, no eval(),
  * no serialised private keys, no security exploits of any kind.
@@ -32,7 +32,7 @@ const AES_KEY_BITS    = 256;
 const IV_BYTES        = 12;
 const PAD_BLOCK_SIZE  = 256;
 const HKDF_HASH       = 'SHA-256';
-const ONION_KDF_INFO  = 'WhaleChatOnionRouterV1';
+const ONION_KDF_INFO  = 'Ledger ChatOnionRouterV1';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 

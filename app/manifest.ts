@@ -33,7 +33,7 @@ export default function manifest(): MetadataRoute.Manifest {
         url: '/portfolio',
       },
       {
-        name: 'Whale Chat',
+        name: 'LedgerChat',
         short_name: 'Chat',
         description: 'Open encrypted P2P communications',
         url: '/terminal',

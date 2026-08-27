@@ -53,7 +53,7 @@ export default function DocLayout({ children, title, description, lastUpdated, c
 
             <div className="border-t border-[var(--aztec-ink)]/5 mt-0 py-8">
                 <div className="max-w-4xl mx-auto px-6 text-center text-[10px] font-aztec-mono uppercase tracking-[0.3em] text-[var(--aztec-ink)]/40">
-                    <p>For inquiries, contact <a href="mailto:legal@humanityledger.com" className="text-[var(--aztec-ink)] hover:underline">legal@humanityledger.com</a></p>
+                    <p>For inquiries, contact <a href="mailto:humanityledger@icloud.com" className="text-[var(--aztec-ink)] hover:underline">humanityledger@icloud.com</a></p>
                 </div>
             </div>
         </div>

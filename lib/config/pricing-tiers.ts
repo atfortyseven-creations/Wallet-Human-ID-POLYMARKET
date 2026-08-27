@@ -64,7 +64,7 @@ export const SECTION_FEATURES: SectionFeatureGroup[] = [
   },
   {
     section: 'chat',
-    label: 'Whale Chat',
+    label: 'LedgerChat',
     icon: '',
     freeFeatures: [
       'Access to the public community chat',

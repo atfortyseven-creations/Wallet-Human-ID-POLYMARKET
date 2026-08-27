@@ -210,7 +210,7 @@ const applyDOMClasses = (state: Partial<SystemSettings>) => {
             'fira-code':   '"Fira Code", monospace',
             'satoshi':     '"Satoshi", sans-serif',
         };
-        html.style.setProperty('--whale-chat-font', fontMap[state.chatFont] || '"Inter", sans-serif');
+        html.style.setProperty('--ledger-chat-font', fontMap[state.chatFont] || '"Inter", sans-serif');
     }
 
     // Accent color via CSS var

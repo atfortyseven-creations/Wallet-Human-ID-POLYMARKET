@@ -5,7 +5,7 @@ import { headers } from 'next/headers';
 /**
  * POST /api/moderation/report
  * ───────────────────────────────────────────────────────────────
- * [FASE 6 + FASE 10] Receives user abuse reports from WhaleChat.
+ * [FASE 6 + FASE 10] Receives user abuse reports from LedgerChat.
  *
  * Enhancements in Fase 10:
  * - Auto-shadow-ban after 3+ distinct reports from different users

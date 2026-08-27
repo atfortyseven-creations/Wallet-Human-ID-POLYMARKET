@@ -132,7 +132,7 @@ export function DropdownNav() {
                     <div className="hidden lg:flex items-center gap-1">
                         <NavLink href="/terminal" label="Dashboard" icon={LayoutDashboard} isActive={pathname === '/terminal'} />
                         <NavLink href="/portfolio" label="Portfolio" icon={TrendingUp} isActive={pathname === '/portfolio'} />
-                        <NavLink href="/chat" label="Whale Chat" icon={MessageCircle} isActive={pathname === '/chat'} />
+                        <NavLink href="/chat" label="LedgerChat" icon={MessageCircle} isActive={pathname === '/chat'} />
                         <NavLink href="/registry" label="Registry" icon={Map} isActive={pathname === '/registry'} badge="LIVE" />
                     </div>
 
@@ -348,7 +348,7 @@ export function DropdownNav() {
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     <MessageCircle size={20} className="text-indigo-500" />
-                                    Whale Chat
+                                    Ledger Chat
                                 </Link>
                                 <Link 
                                     href="/registry" 

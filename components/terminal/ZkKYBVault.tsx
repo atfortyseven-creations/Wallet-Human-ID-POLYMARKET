@@ -70,7 +70,7 @@ export function ZkKYBVault() {
           }
       }
 
-      // Save seed to prevent double-signing in Whale Chat
+      // Save seed to prevent double-signing in Ledger Chat
       const existingSeed = localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`);
       if (!existingSeed) {
         const { keccak256 } = await import('viem');

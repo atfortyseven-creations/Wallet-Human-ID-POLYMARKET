@@ -487,7 +487,7 @@ const EVENT_TYPE_META: Record<string, { label: string; color: string; icon: stri
   MINT_IDENTITY:  { label: "Identity Minted",     color: "#10b981", icon: "⬡" },
   IDENTITY_PROOF: { label: "Identity Proof",      color: "#6366f1", icon: "🔐" },
   FORUM_POST:     { label: "Forum Post / Reply",  color: "#f59e0b", icon: "📝" },
-  WHALE_CHAT_SYNC:{ label: "Whale Chat Activated",color: "#3b82f6", icon: "💬" },
+  WHALE_CHAT_SYNC:{ label: "Ledger Chat Activated",color: "#3b82f6", icon: "💬" },
   PORTFOLIO_ACCESS:{ label: "Portfolio Accessed", color: "#8b5cf6", icon: "📊" },
   STUDIO_ACCESS:  { label: "Studio Provenance",   color: "#ec4899", icon: "🎨" },
   ANCHOR:         { label: "Passport Anchored",   color: "#14b8a6", icon: "⚓" },

@@ -9,7 +9,7 @@ Humanity Ledger is currently in active development as a **Web2 Prototype**.
 - **Authentication**: Currently uses standard SIWE (Sign-In with Ethereum) over Web2 infrastructure. Zero-knowledge authentication is currently simulated (HMAC-SHA256).
 - **Storage**: State is currently persisted in PostgreSQL.
 - **Aztec L2 / Noir**: True on-chain private state execution via Aztec Network and Noir circuits is on our immediate roadmap, but is **not yet connected** in this repository. 
-- **Whale Chat**: Our encrypted messaging application utilizes XMTP and WebRTC for peer-to-peer communication.
+- **LedgerChat**: Our encrypted messaging application utilizes XMTP and WebRTC for peer-to-peer communication.
 
 Please see `docs/STATUS.md` for a complete breakdown of what is live and what is simulated.
 

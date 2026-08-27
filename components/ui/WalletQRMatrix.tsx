@@ -6,7 +6,7 @@
  * Generates the REAL cryptographic QR matrix from the wallet address and
  * exposes it in two modes:
  *
- *   mode="static"  → Renders a clean, scannable QR code (for WhaleChat, portfolio, contacts...)
+ *   mode="static"  → Renders a clean, scannable QR code (for LedgerChat, portfolio, contacts...)
  *   mode="animate" → Renders the pixel illumination animation for the fingerprint scanner
  *
  * The QR matrix is always the same binary grid derived from the wallet address,

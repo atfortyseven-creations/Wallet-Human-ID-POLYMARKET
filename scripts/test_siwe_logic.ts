@@ -1,8 +1,8 @@
 import { SiweMessage } from 'siwe';
 
 async function runTests() {
-  const expectedDomain = 'humanityledger.com';
-  const expectedUri = 'https://humanityledger.com';
+  const expectedDomain = 'humanidfi.com';
+  const expectedUri = 'https://humanidfi.com';
   const validAddress = '0x1111111111111111111111111111111111111111';
   const nonce = '12345678901234567';
 

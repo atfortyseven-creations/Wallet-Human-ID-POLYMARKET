@@ -78,7 +78,7 @@ const NODES: RoadmapNode[] = [
     title: 'Whale Tier Access',
     status: 'live',
     quarter: 'Completed',
-    description: 'Tiered membership system (Whale, Orca, Shark, Initiate). Each tier unlocks progressively deeper access: Whale Chat, Studio Provenance creation, sovereign circuit library, and advanced terminal modules. Tiers are verified cryptographically via wallet signature.',
+    description: 'Tiered membership system (Whale, Orca, Shark, Initiate). Each tier unlocks progressively deeper access: LedgerChat, Studio Provenance creation, sovereign circuit library, and advanced terminal modules. Tiers are verified cryptographically via wallet signature.',
     x: C2, y: 200,
   },
   {
@@ -86,12 +86,12 @@ const NODES: RoadmapNode[] = [
     title: 'Whale Terminal',
     status: 'live',
     quarter: 'Completed',
-    description: 'Sovereign-grade multi-tab terminal: Portfolio Dashboard, Markets, Roadmap, Governance, Whale Chat, Studio Provenance, Alerts, Session Logs, and ZK Developer Sandbox — all in one shell.',
+    description: 'Sovereign-grade multi-tab terminal: Portfolio Dashboard, Markets, Roadmap, Governance, LedgerChat, Studio Provenance, Alerts, Session Logs, and ZK Developer Sandbox — all in one shell.',
     x: C2, y: 340,
   },
   {
-    id: 'whalechat',
-    title: 'Whale Chat + QD Economy',
+    id: 'LedgerChat',
+    title: 'Ledger Chat + QD Economy',
     status: 'live',
     quarter: 'Completed',
     description: 'End-to-end encrypted P2P messaging. Integrated QD micro-payment economy: messages cost QDs, senders earn daily rewards. Email login via OTP + Google OAuth fully operational.',
@@ -196,7 +196,7 @@ const NODES: RoadmapNode[] = [
     title: 'Native Mobile App',
     status: 'planned',
     quarter: 'Nov 2026',
-    description: 'Native iOS and Android app wrapping the Whale terminal. Biometric wallet signing, push notifications for whale alerts, Whale Chat, and Studio Provenance QR scanning from the camera.',
+    description: 'Native iOS and Android app wrapping the Whale terminal. Biometric wallet signing, push notifications for whale alerts, LedgerChat, and Studio Provenance QR scanning from the camera.',
     x: C5, y: 480,
   },
 
@@ -232,12 +232,12 @@ const EDGES: RoadmapEdge[] = [
   { from: 'frontend',    to: 'siwe' },
   { from: 'db',          to: 'vip' },
   { from: 'evm',         to: 'terminal' },
-  { from: 'railway',     to: 'whalechat' },
+  { from: 'railway',     to: 'LedgerChat' },
   // P2 → P3
   { from: 'siwe',        to: 'zksandbox' },
   { from: 'vip',         to: 'enclave' },
   { from: 'terminal',    to: 'enclave' },
-  { from: 'whalechat',   to: 'circuits' },
+  { from: 'LedgerChat',   to: 'circuits' },
   { from: 'terminal',    to: 'passportqr' },
   // P3 → P4
   { from: 'zksandbox',   to: 'aztectestnet' },

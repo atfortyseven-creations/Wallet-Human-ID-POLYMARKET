@@ -31,12 +31,12 @@ function getUpstashRedis(): any | null {
 //  In-memory fallback store (same instance shared with chat/send/route.ts
 //    only when both run in the same Node.js process  fine for dev/single instance) 
 declare global {
-  var __whaleChatMemStore: Map<string, Array<{ id: string; sender: string; content: string; sentAt: string; _score: number }>>;
+  var __LedgerChatMemStore: Map<string, Array<{ id: string; sender: string; content: string; sentAt: string; _score: number }>>;
 }
-if (!global.__whaleChatMemStore) {
-  global.__whaleChatMemStore = new Map();
+if (!global.__LedgerChatMemStore) {
+  global.__LedgerChatMemStore = new Map();
 }
-const memoryStore = global.__whaleChatMemStore;
+const memoryStore = global.__LedgerChatMemStore;
 
 
 export async function GET(

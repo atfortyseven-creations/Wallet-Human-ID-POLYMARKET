@@ -55,7 +55,7 @@
 2. **NPM Audit:**
    - GitHub reports **176 vulnerabilities (3 critical, 76 high)**. The `security.yml` action should be blocking on these, suggesting `main` is either bypassing CI or ignoring the audit step.
 3. **Mock Cryptography:**
-   - As stated above, the ZK proofs are HMAC simulations. If a user relies on this for privacy (e.g., in Whale Chat), the server can actually read the metadata.
+   - As stated above, the ZK proofs are HMAC simulations. If a user relies on this for privacy (e.g., in LedgerChat), the server can actually read the metadata.
 4. **No Database Reorg Handling:**
    - The indexers (`humanity-indexer.ts`) push directly to PostgreSQL without handling blockchain reorganizations. If a reorg occurs, the local database is permanently corrupted relative to the chain.
 

@@ -36,7 +36,7 @@ const APPS: {
   },
   {
     id: 'chat',
-    label: 'Whale Chat',
+    label: 'LedgerChat',
     desc: 'E2E encrypted messaging',
     href: '/chat',
     icon: MessageSquare,

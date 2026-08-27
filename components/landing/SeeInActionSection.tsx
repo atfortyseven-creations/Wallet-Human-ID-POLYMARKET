@@ -8,12 +8,12 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 const PRODUCTS = [
   {
-    id: "whale-chat",
-    label: "Whale Chat",
+    id: "ledger-chat",
+    label: "LedgerChat",
     tag: "Encrypted Messaging",
     tagColor: "bg-violet-100 text-violet-700",
     href: "/developer",
-    cta: "Open Whale Chat",
+    cta: "Open LedgerChat",
     description:
       "End-to-end encrypted P2P messaging gated by your Humanity Ledger ZK identity. No phone number, no IP, no metadata — just a cryptographic handshake.",
     mobileSteps: [
@@ -40,7 +40,7 @@ const PRODUCTS = [
       },
     ],
     pcDemo: {
-      title: "Whale Chat — Encrypted Session",
+      title: "Ledger Chat — Encrypted Session",
       subtitle: "Humanity Ledger identity Verified · No IP Logged",
       messages: [
         { side: "left", text: "Your ZK identity has been verified.", time: "14:32", system: true },

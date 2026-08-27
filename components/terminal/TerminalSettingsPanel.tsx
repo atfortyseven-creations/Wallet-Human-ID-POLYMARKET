@@ -29,7 +29,7 @@ export function TerminalSettingsPanel() {
     { href: '/legal/privacy',   icon: FileText, label: 'Privacy Policy (GDPR)',  desc: 'Data processing, right of erasure and ZKP anonymization protocol.' },
     { href: '/legal/terms',     icon: FileText, label: 'Terms & Conditions',      desc: 'Platform terms and utility token classification.' },
     { href: '/legal/security',  icon: Globe,    label: 'Security Architecture',   desc: 'Noir circuit audit status, key management and incident response policy.' },
-    { href: 'https://github.com/humanityledger/Humanity-Ledger', icon: Lock, label: 'GitHub Repository', desc: 'Open source code — WhaleChat P2P protocol on Aztec V5.' },
+    { href: 'https://github.com/humanityledger/Humanity-Ledger', icon: Lock, label: 'GitHub Repository', desc: 'Open source code — Ledger Chat P2P protocol on Aztec V5.' },
   ];
 
   const handleTotalDisconnect = async () => {

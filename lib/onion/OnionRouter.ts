@@ -1,5 +1,5 @@
 /**
- * OnionRouter.ts — Whale Chat Quantum Onion Routing Engine
+ * OnionRouter.ts — Ledger Chat Quantum Onion Routing Engine
  * ═══════════════════════════════════════════════════════════
  *
  * Orchestrates the construction of an onion circuit for end to end
@@ -229,7 +229,7 @@ export function applyJitter(): Promise<void> {
  *   'onion'  — Successfully routed through the onion circuit
  *   'direct' — Fell back to direct delivery (insufficient relay nodes)
  *
- * The caller (WhaleChat) handles the direct fallback case.
+ * The caller (LedgerChat) handles the direct fallback case.
  */
 export async function sendViaOnion(
   content:     string,

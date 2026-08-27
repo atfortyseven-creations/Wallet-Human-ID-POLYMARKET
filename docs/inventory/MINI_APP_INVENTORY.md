@@ -46,14 +46,14 @@ A route is **Marketing** if it has no user functionality.
 
 ---
 
-### MA-02: Whale Chat
+### MA-02: Ledger Chat
 | Field | Value |
 |---|---|
 | ID | MA-02 |
-| Name | Whale Chat |
+| Name | Ledger Chat |
 | Route | `/chat` |
 | Status | **BETA** |
-| Frontend | `components/terminal/WhaleChat.tsx`, `WhaleProShell.tsx`, `WhaleChatSettings.tsx` |
+| Frontend | `components/terminal/LedgerChat.tsx`, `WhaleProShell.tsx`, `LedgerChatSettings.tsx` |
 | Backend | `app/api/chat/` (12 routes), `app/api/auth/qr-*` |
 | Services | XMTP browser SDK, Socket.IO, WebRTC (PeerJS) |
 | Workers | None dedicated |
@@ -266,5 +266,5 @@ A route is **Marketing** if it has no user functionality.
 The Hub is **a single-page shell, not a routing system**.
 All Hub "apps" are rendered as components within one page — they are Dashboard Tabs, not routed Mini-Apps.
 
-Hub currently shows: Dashboard, Whale Chat, Markets, Studio, Governance, Identity, Network, Academy, Registry, QDS Token.
+Hub currently shows: Dashboard, LedgerChat, Markets, Studio, Governance, Identity, Network, Academy, Registry, QDS Token.
 

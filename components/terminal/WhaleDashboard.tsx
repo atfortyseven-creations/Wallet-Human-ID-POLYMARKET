@@ -36,7 +36,7 @@ const Registry = {
   HumanityLedger: dynamic(() => import('@/components/terminal/HumanityLedger'), { ssr: false, loading: LoadingPanel }),
   PortfolioDashboard: dynamic(() => import('@/components/terminal/PortfolioDashboard'), { ssr: false, loading: LoadingPanel }),
   InstitutionalMarkets: dynamic(() => import('@/components/terminal/InstitutionalMarkets').then(m => ({ default: m.InstitutionalMarkets })), { ssr: false, loading: LoadingPanel }),
-  WhaleChat: dynamic(() => import('@/components/terminal/WhaleChat').then(m => ({ default: m.WhaleChat })), { ssr: false, loading: LoadingPanel }),
+  LedgerChat: dynamic(() => import('@/components/terminal/LedgerChat').then(m => ({ default: m.LedgerChat })), { ssr: false, loading: LoadingPanel }),
   ProvenanceStudioContent: dynamic(() => import('@/components/provenance/ProvenanceStudioContent').then(m => ({ default: m.ProvenanceStudioContent })), { ssr: false, loading: LoadingPanel }),
   WhaleTrackerDashboard: dynamic(() => import('@/components/network/whale/WhaleTrackerDashboard').then(m => ({ default: m.WhaleTrackerDashboard })), { ssr: false, loading: LoadingPanel }),
   SubscriptionDashboard: dynamic(() => import('@/components/terminal/SubscriptionDashboard').then(m => ({ default: m.SubscriptionDashboard })), { ssr: false, loading: LoadingPanel }),
@@ -59,7 +59,7 @@ const RouteRenderer = React.memo(({ route, reconciliationKey, mutateRoute }: Rou
     const ComponentMap: Record<string, JSX.Element> = {
         'gold': <GoldTicketPanel />,
         'zk-identity': <GoldTicketPanel />,
-        'chat': <Registry.WhaleChat />,
+        'chat': <Registry.LedgerChat />,
         'portfolio': <Registry.PortfolioDashboard />,
         'humanity-ledger': <Registry.HumanityLedger />,
         'markets': <Registry.InstitutionalMarkets />,

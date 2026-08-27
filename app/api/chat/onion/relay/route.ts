@@ -8,7 +8,7 @@ import { safeRedisGet, safeRedisSet } from '@/lib/redis/client';
 /**
  * POST /api/chat/onion/relay
  *
- * The Onion Relay Node — one hop in the Whale Chat privacy circuit.
+ * The Onion Relay Node — one hop in the Ledger Chat privacy circuit.
  *
  * This endpoint acts as a relay in the onion routing circuit.
  * It receives an encrypted onion envelope, decrypts ONE layer

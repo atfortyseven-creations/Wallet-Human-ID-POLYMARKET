@@ -463,7 +463,7 @@ function ConnectedScreen({
             { label: 'Portfolio', href: '/portfolio', icon: <PieChart size={22} strokeWidth={1.5} />, color: 'bg-[#f5f5f7] text-black', border: 'border-transparent' },
             { label: 'Markets', href: '/markets', icon: <TrendingUp size={22} strokeWidth={1.5} />, color: 'bg-[#f5f5f7] text-black', border: 'border-transparent' },
             { label: 'Explorer', href: '/explorer', icon: <Activity size={22} strokeWidth={1.5} />, color: 'bg-[#f5f5f7] text-black', border: 'border-transparent' },
-            { label: 'Whale Chat', href: '/chat', icon: <MessageSquare size={22} strokeWidth={1.5} />, color: 'bg-[#1c7aff] text-white', border: 'border-transparent' },
+            { label: 'LedgerChat', href: '/chat', icon: <MessageSquare size={22} strokeWidth={1.5} />, color: 'bg-[#1c7aff] text-white', border: 'border-transparent' },
             { label: 'Studio Beta', href: '/studio/provenance', icon: <Package size={22} strokeWidth={1.5} />, color: 'bg-gradient-to-tr from-purple-500 to-indigo-600 text-white', border: 'border-transparent' },
           ].map((app, i) => {
             const InnerContent = (

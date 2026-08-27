@@ -29,7 +29,7 @@ export function moderateContent(text: string): string | null {
   // Check for each violation category marker
   for (const category of VIOLATION_CATEGORIES) {
     if (lower.includes(category)) {
-      return 'This content violates WhaleChat community guidelines and has been blocked.';
+      return 'This content violates Ledger Chat community guidelines and has been blocked.';
     }
   }
 

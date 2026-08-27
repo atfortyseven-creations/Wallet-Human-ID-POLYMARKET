@@ -50,7 +50,7 @@ export default function PrivacyPolicy() {
           <div className="mt-8 flex flex-wrap gap-6 text-sm text-black/40 font-mono">
             <span>Effective Date: 18 August 2026</span>
             <span>Data Controller: Humanity Ledger Foundation</span>
-            <span>DPO Contact: dpo@humanityledger.com</span>
+            <span>DPO Contact: humanityledger@icloud.com</span>
           </div>
         </div>
       </div>
@@ -110,7 +110,7 @@ export default function PrivacyPolicy() {
 
         <Article number="2" title="Data Controller Identity">
           <Clause id="controller-identity" title="2.1 Identity and Contact Details">
-            <p>For the purposes of the GDPR, the UK GDPR, and other applicable data protection laws, the Data Controller is the Humanity Ledger Foundation. You may contact our Data Protection Officer (DPO) at <strong>dpo@humanityledger.com</strong>.</p>
+            <p>For the purposes of the GDPR, the UK GDPR, and other applicable data protection laws, the Data Controller is the Humanity Ledger Foundation. You may contact our Data Protection Officer (DPO) at <strong>humanityledger@icloud.com</strong>.</p>
           </Clause>
         </Article>
 
@@ -128,7 +128,7 @@ export default function PrivacyPolicy() {
             <p>Due to our client-side encryption and Zero-Knowledge architecture, we <strong>do not and cannot</strong> process or access:</p>
             <ul className="list-disc pl-5 space-y-2 mt-2 text-slate-600">
               <li>Your Aztec private keys, nullifier keys, or viewing keys.</li>
-              <li>The contents of your Whale Chat messages.</li>
+              <li>The contents of your Ledger Chat messages.</li>
               <li>Your financial balances, token holdings, or transaction amounts.</li>
               <li>The specific recipients or senders of your transactions (protected by encrypted UTXO notes and nullifiers).</li>
               <li>Your real-world identity documents or personal attributes (unless explicitly provided via an opt-in compliance module).</li>
@@ -170,7 +170,7 @@ export default function PrivacyPolicy() {
             <p>Because your on-chain data consists entirely of encrypted ciphertexts, you can exercise your Right to be Forgotten by simply deleting your private keys. The French Data Protection Authority (CNIL) and the European Data Protection Board (EDPB) have recognized that destroying the decryption keys renders the ciphertext completely unrecoverable and anonymized. Once your keys are destroyed, the remaining on-chain data ceases to be "personal data" under the GDPR definition.</p>
           </Clause>
           <Clause id="erasure-offchain" title="7.3 Off-Chain Erasure">
-            <p>For any off-chain data held directly by the Foundation (e.g., support tickets, opt-in email subscriptions, SIWE session logs), you may request immediate deletion by emailing dpo@humanityledger.com. We will execute the deletion within 72 hours.</p>
+            <p>For any off-chain data held directly by the Foundation (e.g., support tickets, opt-in email subscriptions, SIWE session logs), you may request immediate deletion by emailing humanityledger@icloud.com. We will execute the deletion within 72 hours.</p>
           </Clause>
         </Article>
 
@@ -207,7 +207,7 @@ export default function PrivacyPolicy() {
               <li><strong>Right to Opt-Out of Sale/Sharing:</strong> We do not sell or share personal information for cross-context behavioral advertising. You do not need to opt-out because we do not engage in these practices.</li>
               <li><strong>Right to Non-Discrimination:</strong> We will not deny you services or provide a different level of quality if you exercise your privacy rights.</li>
             </ul>
-            <p className="mt-2">To submit a CCPA request, contact dpo@humanityledger.com with the subject line "CCPA Request".</p>
+            <p className="mt-2">To submit a CCPA request, contact humanityledger@icloud.com with the subject line "CCPA Request".</p>
           </Clause>
         </Article>
 
@@ -228,7 +228,7 @@ export default function PrivacyPolicy() {
 
         <Article number="13" title="Data Subject Access Requests (DSAR)">
           <Clause id="dsar" title="13.1 Exercising Your Rights">
-            <p>You have the right to request a copy of all personal data we hold about you. To execute a DSAR, email dpo@humanityledger.com. Because we do not link Ethereum addresses to real-world identities, you must cryptographically sign a message with your Ethereum wallet to prove ownership of the address before we can release any session data associated with it. We will respond within 30 days free of charge.</p>
+            <p>You have the right to request a copy of all personal data we hold about you. To execute a DSAR, email humanityledger@icloud.com. Because we do not link Ethereum addresses to real-world identities, you must cryptographically sign a message with your Ethereum wallet to prove ownership of the address before we can release any session data associated with it. We will respond within 30 days free of charge.</p>
           </Clause>
         </Article>
 
@@ -266,7 +266,7 @@ export default function PrivacyPolicy() {
           <Clause id="contact" title="18.1 Direct Inquiries">
             <p>For any questions, concerns, or legal inquiries regarding this Privacy Policy or our data practices, please contact our Data Protection Officer:</p>
             <p className="mt-2 font-mono bg-slate-100 p-3 rounded text-slate-800">
-              Email: dpo@humanityledger.com<br/>
+              Email: humanityledger@icloud.com<br/>
               PGP Fingerprint: 4F92 B7A1 99E0 D3C2 11A8 55F4 C7B3 89D1<br/>
               Entity: Humanity Ledger Foundation
             </p>

@@ -3,7 +3,7 @@
 /**
  * WalletQRDisplay — Drop-in static QR code for the wallet address.
  *
- * Use anywhere in the system (Portfolio, WhaleChat, Settings, Profile, etc.)
+ * Use anywhere in the system (Portfolio, LedgerChat, Settings, Profile, etc.)
  * by simply importing and passing the wallet address:
  *
  *   <WalletQRDisplay address="0x..." size={240} />

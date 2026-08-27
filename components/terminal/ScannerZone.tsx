@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Camera, MessageCircle, QrCode } from 'lucide-react';
 import { QrScanner } from '@/components/terminal/QrScanner';
-import { WhaleChat } from '@/components/terminal/WhaleChat';
+import { LedgerChat } from '@/components/terminal/LedgerChat';
 
 export function ScannerZone() {
     const [mode, setMode] = useState<'chat' | 'project'>('chat');
@@ -20,7 +20,7 @@ export function ScannerZone() {
                             : 'text-black/50 hover:text-black'
                     }`}
                 >
-                    <MessageCircle size={14} /> Whale Chat Encrypted
+                    <MessageCircle size={14} /> Ledger Chat Encrypted
                 </button>
                 <button
                     onClick={() => setMode('project')}
@@ -38,13 +38,13 @@ export function ScannerZone() {
             <div className="flex-1 min-h-0 w-full flex justify-center pb-safe">
                 {mode === 'chat' ? (
                     <div className="w-full h-full flex flex-col relative">
-                        <WhaleChat />
+                        <LedgerChat />
                     </div>
                 ) : (
                     <div className="w-full max-w-sm pt-8 flex flex-col items-center">
                         <div className="mb-6 text-center">
                             <h3 className="text-sm font-black uppercase tracking-widest text-[#050505]">Desktop Session QR</h3>
-                            <p className="text-[11px] text-black/50 mt-1 font-mono">Scan this QR with your mobile device from the Whale Chat Encrypted tab to link your secure session.</p>
+                            <p className="text-[11px] text-black/50 mt-1 font-mono">Scan this QR with your mobile device from the Ledger Chat Encrypted tab to link your secure session.</p>
                         </div>
                         <QrScanner mode="project" />
                     </div>

@@ -38,7 +38,7 @@ const dictionaries = {
         
         // Navigation
         'NAV_DASHBOARD': 'Dashboard',
-        'NAV_WHALE_CHAT': 'Whale Chat',
+        'NAV_WHALE_CHAT': 'LedgerChat',
         'NAV_PORTFOLIO': 'Portfolio',
         'NAV_COMMUNITY': 'Community',
         'NAV_NEWS': 'News',

@@ -27,7 +27,7 @@ export const DOC_SECTIONS = [
     group: "Products",
     items: [
       { slug: "studio-provenance", label: "Studio Provenance" },
-      { slug: "whale-chat", label: "Whale Chat" },
+      { slug: "ledger-chat", label: "LedgerChat" },
       { slug: "portfolio-terminal", label: "Portfolio Terminal" },
     ],
   },

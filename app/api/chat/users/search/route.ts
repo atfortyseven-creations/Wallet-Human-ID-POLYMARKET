@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 /**
  * GET /api/chat/users/search?q=@nickname_or_0xaddress
  * Searches registered users by walletAddress, chatName, or displayName.
- * Used by WhaleChatUserSearch to show real results.
+ * Used by LedgerChatUserSearch to show real results.
  */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);

@@ -6,11 +6,12 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin/', '/api/'],
+        disallow: ['/admin/', '/api/', '/chat/', '/portfolio/', '/terminal/', '/forum/'],
       },
       {
         userAgent: ['GPTBot', 'ChatGPT-User', 'Google-Extended', 'Anthropic-ai', 'PerplexityBot', 'CCBot', 'grok', 'Grok'],
-        allow: ['/llms.txt', '/humans.txt', '/.well-known/security.txt', '/'],
+        allow: ['/llms.txt', '/'],
+        disallow: ['/admin/', '/api/', '/chat/', '/portfolio/', '/terminal/', '/forum/'],
       }
     ],
     sitemap: 'https://humanidfi.com/sitemap.xml',

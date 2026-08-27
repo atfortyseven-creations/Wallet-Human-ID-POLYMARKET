@@ -104,7 +104,7 @@ export function WhalePinLockScreen({ onVerify, lockError, isSetupMode = false, o
       >
         <div className="text-5xl">🐋</div>
         <h1 className="text-[22px] font-black text-white tracking-tight">
-          {isSetupMode ? (setupStep === 'confirm' ? 'Confirm PIN' : 'Set PIN') : 'WhaleChat Locked'}
+          {isSetupMode ? (setupStep === 'confirm' ? 'Confirm PIN' : 'Set PIN') : 'Ledger Chat Locked'}
         </h1>
         <p className="text-[13px] text-white/40 font-medium">
           {isSetupMode

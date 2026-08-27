@@ -29,7 +29,7 @@ export const dynamic = 'force-dynamic';
 
 const limiter = rateLimit({ interval: 60 * 1000, uniqueTokenPerInterval: 200 });
 
-// QD packages — must mirror WhaleChatSettings.tsx
+// QD packages — must mirror LedgerChatSettings.tsx
 const QD_PACKAGES = [
   { qd: 100,   azt: 0.43  },
   { qd: 250,   azt: 1.08  },

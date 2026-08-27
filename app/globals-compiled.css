@@ -18073,7 +18073,7 @@ body.is-mobile-device .mobile-bottom-nav {
 }
 
 /* ============================================================
-   WHALE CHAT  ARTICULATED THEME ENGINE
+   Ledger Chat  ARTICULATED THEME ENGINE
    Each data-chat-theme value maps directly to a palette.
    Settings modal  data-chat-theme attribute  CSS variables.
    ============================================================ */
@@ -18715,7 +18715,7 @@ html.forum-light-mode {
   will-change: transform;
 }
 
-/* WhaleChat sticker entrance — iOS-safe (no nested framer scale) */
+/* Ledger Chat sticker entrance — iOS-safe (no nested framer scale) */
 @keyframes stickerPop {
   0%   { opacity: 0; transform: scale(0.3) rotate(-12deg); }
   60%  { opacity: 1; transform: scale(1.12) rotate(4deg); }
@@ -19292,13 +19292,13 @@ html.dark .doc-content .callout {
 
 /* 2. Chat input container — never hidden behind iOS home bar */
 
-.whale-chat-input-bar {
+.ledger-chat-input-bar {
   padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
 }
 
 /* 3. Full-height chat container using dynamic viewport */
 
-.whale-chat-container {
+.ledger-chat-container {
   height: 100dvh;
   max-height: 100dvh;
 }

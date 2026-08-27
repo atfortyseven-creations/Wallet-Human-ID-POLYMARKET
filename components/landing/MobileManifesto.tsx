@@ -174,7 +174,7 @@ export function MobileManifesto() {
       </section>
 
       {/* 
-          3. WHALE CHAT ÔÇö dark section
+          3. Ledger Chat ÔÇö dark section
           All text must be visible on the #0A0A0A background.
           Minimum: white/80 for body, white for headers.
        */}
@@ -182,7 +182,7 @@ export function MobileManifesto() {
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={FADE_UP}>
           <div className="flex items-center gap-3 mb-12">
             <div className="flex-1 h-px bg-white/20" />
-            <span className="font-mono text-[8px] font-black uppercase tracking-[0.3em] text-white/60">Whale Chat</span>
+            <span className="font-mono text-[8px] font-black uppercase tracking-[0.3em] text-white/60">LedgerChat</span>
             <div className="flex-1 h-px bg-white/20" />
           </div>
 
@@ -192,7 +192,7 @@ export function MobileManifesto() {
 
           <div className="space-y-6 font-serif text-[16px] text-white/80 leading-[1.7] text-center max-w-[340px] mx-auto mb-10 px-2">
             <p>
-              Centralised messaging platforms are liabilities for sovereign operations. Whale Chat is built on XMTP ÔÇö encrypted directly with authorized personnel keys.
+              Centralised messaging platforms are liabilities for sovereign operations. Ledger Chat is built on XMTP ÔÇö encrypted directly with authorized personnel keys.
             </p>
             
             <AnimatePresence>

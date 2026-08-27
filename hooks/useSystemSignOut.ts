@@ -125,7 +125,7 @@ export function useSystemSignOut() {
                             const lower = db.name.toLowerCase();
                             if (
                                 lower.includes('xmtp') ||
-                                lower.includes('whalechatsecurestore') ||
+                                lower.includes('Ledger Chatsecurestore') ||
                                 lower.includes('whale_chat_history') ||
                                 // CRITICAL: Preserve the hardware-bound Revolut-style persistence key.
                                 // Deleting this would destroy the non-extractable AES-GCM CryptoKey

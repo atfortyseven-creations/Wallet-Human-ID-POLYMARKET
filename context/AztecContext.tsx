@@ -81,7 +81,7 @@ export const AztecProvider: React.FC<{ children: React.ReactNode }> = ({ childre
      *  2. Creates a PXE client pointing to the local Aztec Sandbox (port 8080).
      *  3. Waits up to 10 seconds for the Sandbox to respond.
      *  4. Fetches registered accounts and node metadata.
-     *  5. Populates context state for downstream consumers (WhaleChat, HumanityLedger, etc.).
+     *  5. Populates context state for downstream consumers (LedgerChat, HumanityLedger, etc.).
      */
     const initAztec = async () => {
       try {
@@ -140,7 +140,7 @@ export const AztecProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       } catch (err: any) {
         // Graceful degradation: the app works normally without a local Sandbox.
-        // Only ZK-specific features (WhaleChat ZK mode, HumanityLedger proofs) are gated.
+        // Only ZK-specific features (Ledger Chat ZK mode, HumanityLedger proofs) are gated.
         const msg = err?.message ?? 'Failed to initialize Aztec PXE';
         console.warn('🔴 [Aztec] PXE init failed (Sandbox not running?)', msg);
         setError(msg);
@@ -173,7 +173,7 @@ export const AztecProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // 🛡️ [SECURITY: Aztec Audit Framework Point 6 & 7]
   // Generates a strict, memory-isolated PXE proxy that forces all queries and decryption 
   // attempts to be hard-bound to a specific contract address. This mathematically prevents 
-  // one frontend module (e.g., Whale Chat) from reading the notes of another (e.g., Humanity Ledger).
+  // one frontend module (e.g., LedgerChat) from reading the notes of another (e.g., Humanity Ledger).
   const getSiloedPXE = (contractAddress: AztecAddress): PXE | null => {
     if (!pxe) return null;
     

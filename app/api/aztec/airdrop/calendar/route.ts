@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
 
     if (spendCount === 0 && !debugOverride) {
       return NextResponse.json({ 
-        error: 'Sybil Protection: You must spend QDs (e.g. use Whale Chat or Noir ZK) before you can claim ecosystem rewards.' 
+        error: 'Sybil Protection: You must spend QDs (e.g. use Ledger Chat or Noir ZK) before you can claim ecosystem rewards.' 
       }, { status: 403 });
     }
 

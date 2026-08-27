@@ -1,6 +1,6 @@
 import { IDBPDatabase, openDB } from 'idb';
 
-const DB_NAME = 'WhaleChatEngineDB';
+const DB_NAME = 'Ledger ChatEngineDB';
 const DB_VERSION = 1;
 
 export interface OutboxMessage {

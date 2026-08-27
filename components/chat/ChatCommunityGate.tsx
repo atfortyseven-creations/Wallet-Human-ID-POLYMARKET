@@ -15,9 +15,9 @@ export function ChatCommunityGate({ onAccept, onDecline }: ChatCommunityGateProp
                     <h2 className="text-2xl font-black">Community Guidelines</h2>
                 </div>
                 <div className="h-48 overflow-y-auto text-sm text-gray-600 space-y-4 pr-2 mb-6 border border-gray-200 p-4 rounded-xl">
-                    <p>By using WhaleChat, you agree to the following terms required for compliance:</p>
+                    <p>By using LedgerChat, you agree to the following terms required for compliance:</p>
                     <p><strong>1. Zero Tolerance for Objectionable Content:</strong> You will not post, transmit, or share any content that is abusive, harassing, threatening, defamatory, offensive, or otherwise objectionable.</p>
-                    <p><strong>2. User Moderation:</strong> You understand that other users may report your messages. If your account is reported multiple times for violating these guidelines, your access to WhaleChat may be permanently revoked.</p>
+                    <p><strong>2. User Moderation:</strong> You understand that other users may report your messages. If your account is reported multiple times for violating these guidelines, your access to Ledger Chat may be permanently revoked.</p>
                     <p><strong>3. Blocking:</strong> You have the ability to block any user. Blocked users will not be able to contact you.</p>
                     <p>By clicking "I Agree", you acknowledge that you have read and agree to these terms, and understand that violations will result in loss of access.</p>
                 </div>

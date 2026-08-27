@@ -4,7 +4,7 @@
 
 If you discover a potential security vulnerability in Humanity Ledger, please do NOT report it on the public issue tracker.
 
-Instead, please email us directly at **security@humanityledger.com**. 
+Instead, please email us directly at **humanityledger@icloud.com**. 
 *(Note: As we are currently in beta, response times may vary, but we will make every effort to review reports promptly).*
 
 ## Current Scope

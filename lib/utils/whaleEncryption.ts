@@ -25,7 +25,7 @@ export async function deriveSharedKey(sharedSecret: string): Promise<CryptoKey> 
   return crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt: encoder.encode('whale-chat-v1-salt'),
+      salt: encoder.encode('ledger-chat-v1-salt'),
       iterations: 100_000,
       hash: 'SHA-256',
     },

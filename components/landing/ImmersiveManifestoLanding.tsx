@@ -155,10 +155,10 @@ function HeroSection() {
           Privacy isn&apos;t<br /><span className="text-black/35">a feature.</span>
         </h1>
         <p className="text-[18px] md:text-[21px] text-black/60 leading-relaxed font-medium max-w-[660px] mb-12">
-          Humanity Ledger is currently in early access. Enter the workspace with a wallet signature, and communicate via Whale Chat — our encrypted messaging protocol powered by device keys and XMTP, with true zero knowledge execution on the Aztec roadmap.
+          Humanity Ledger is currently in early access. Enter the workspace with a wallet signature, and communicate via Ledger Chat — our encrypted messaging protocol powered by device keys and XMTP, with true zero knowledge execution on the Aztec roadmap.
         </p>
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-          <Link href="/chat" className="w-full sm:w-auto px-9 py-4 bg-black text-white rounded-full text-[15px] font-bold hover:bg-black/80 active:scale-95 transition-all shadow-[0_6px_30px_rgba(0,0,0,0.15)] hover:-translate-y-0.5">Launch Whale Chat →</Link>
+          <Link href="/chat" className="w-full sm:w-auto px-9 py-4 bg-black text-white rounded-full text-[15px] font-bold hover:bg-black/80 active:scale-95 transition-all shadow-[0_6px_30px_rgba(0,0,0,0.15)] hover:-translate-y-0.5">Launch Ledger Chat →</Link>
           <Link href="/connect" className="w-full sm:w-auto px-9 py-4 border-2 border-black/12 text-black rounded-full text-[15px] font-bold hover:bg-zinc-50 active:scale-95 transition-all">Connect Wallet</Link>
         </div>
       </motion.div>
@@ -176,13 +176,13 @@ function WhatIsSection() {
             Early Access<br /><span className="text-black/35">Prototype.</span>
           </h2>
           <p className="text-[17px] text-black/60 leading-relaxed">
-            We are building towards a fully decentralized Aztec privacy architecture. Today, you can explore the interface and test Whale Chat utilizing simulated authentication and Web2 relays.
+            We are building towards a fully decentralized Aztec privacy architecture. Today, you can explore the interface and test Ledger Chat utilizing simulated authentication and Web2 relays.
           </p>
         </motion.div>
         <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.8, ease: EASE, delay: 0.1 }} className="flex flex-col gap-5">
           {[
             { n: "01", t: "Wallet Authentication", d: "Secure workspace login using standard SIWE signatures (Zero Knowledge auth planned)." },
-            { n: "02", t: "Encrypted Messaging", d: "Whale Chat utilizes XMTP and local device keys to protect your communications." },
+            { n: "02", t: "Encrypted Messaging", d: "Ledger Chat utilizes XMTP and local device keys to protect your communications." },
             { n: "03", t: "Aztec Roadmap", d: "Noir circuits and private UTXO states are actively being developed for future releases." },
           ].map((item) => (
             <div key={item.n} className="flex gap-4 items-start p-5 bg-white rounded-2xl border border-black/[0.06]">
@@ -197,7 +197,7 @@ function WhatIsSection() {
             {[
               { label: "Auth", value: "SIWE", sub: "Web2 Fallback" },
               { label: "Network", value: "Prototype", sub: "Aztec Planned" },
-              { label: "Focus", value: "Whale Chat", sub: "E2E Encrypted" },
+              { label: "Focus", value: "LedgerChat", sub: "E2E Encrypted" },
               { label: "Launch", value: "Jan 2027", sub: "Beta Release" },
             ].map((stat) => (
               <div key={stat.label} className="rounded-2xl bg-white border border-black/[0.06] p-5 flex flex-col gap-1">
@@ -214,8 +214,8 @@ function WhatIsSection() {
 }
 
 
-// ─── Whale Chat Flagship ──────────────────────────────────────────────────────
-function WhaleChatSection() {
+// ─── Ledger Chat Flagship ──────────────────────────────────────────────────────
+function LedgerChatSection() {
   return (
     <section className="w-full py-24 md:py-36 px-6 bg-white border-t border-black/[0.05]">
       <div className="w-full max-w-5xl mx-auto">
@@ -232,7 +232,7 @@ function WhaleChatSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, ease: EASE }}>
             <h3 className="text-[40px] md:text-[56px] font-black leading-[0.95] tracking-tight text-black mb-6" style={{ fontFamily: "var(--font-aztec-serif), Georgia, serif" }}>
-              Whale Chat.<br /><span className="text-black/35">Fully encrypted.</span>
+              LedgerChat.<br /><span className="text-black/35">Fully encrypted.</span>
             </h3>
             <p className="text-[17px] text-black/60 leading-relaxed mb-8">
               The first application launching in January 2027. Experience end to end encrypted messaging, peer to peer voice and video calls, audio messages, and file sharing — all gated by your wallet identity.
@@ -251,7 +251,7 @@ function WhaleChatSection() {
               ))}
             </div>
             <Link href="/chat" className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#1C7AFF] text-white rounded-full text-[14px] font-bold hover:bg-blue-600 active:scale-95 transition-all">
-              Open Whale Chat
+              Open Ledger Chat
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </Link>
           </motion.div>
@@ -260,7 +260,7 @@ function WhaleChatSection() {
             <div className="flex items-center gap-3 px-5 py-4 bg-white border-b border-black/[0.06]">
               <div className="w-9 h-9 rounded-full bg-[#1C7AFF] flex items-center justify-center text-white font-bold text-[13px]">W</div>
               <div>
-                <p className="text-[14px] font-bold text-black">Whale Chat</p>
+                <p className="text-[14px] font-bold text-black">LedgerChat</p>
                 <p className="text-[11px] text-black/40">End-to-end encrypted</p>
               </div>
             </div>
@@ -298,7 +298,7 @@ function AztecStrip() {
         <div className="flex flex-col gap-2">
           <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-black/40">Powered by</span>
           <h3 className="text-[22px] md:text-[28px] font-black text-black tracking-tight">Aztec Network L2 · Zero Knowledge Proofs</h3>
-          <p className="text-[14px] text-black/50 leading-relaxed max-w-md">Whale Chat settles on Aztec Network, the leading zero knowledge L2 on Ethereum, providing complete transaction privacy and institutional compliance from day one.</p>
+          <p className="text-[14px] text-black/50 leading-relaxed max-w-md">Ledger Chat settles on Aztec Network, the leading zero knowledge L2 on Ethereum, providing complete transaction privacy and institutional compliance from day one.</p>
         </div>
         <div className="flex flex-col gap-3 shrink-0 w-full md:w-auto">
           <a href="https://aztec.network" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-6 py-3.5 bg-black text-white rounded-full text-[13px] font-bold hover:bg-black/80 transition-colors whitespace-nowrap">Learn about Aztec →</a>
@@ -313,9 +313,9 @@ function AztecStrip() {
 function FAQSection() {
   const [open, setOpen] = useState<number | null>(null);
   const FAQS = [
-    { q: "What is Whale Chat?", a: "Whale Chat is a zero knowledge encrypted communication application secured by the Aztec Network L2." },
-    { q: "When does Whale Chat launch?", a: "Whale Chat launches with full production functionality in January 2027. This includes end to end encrypted messaging, wallet to wallet voice and video calls, audio messages, and stickers." },
-    { q: "How does it connect to Aztec Network?", a: "Aztec Network is the Layer 2 settlement protocol. Whale Chat acts as the application and identity layer, running Noir zero knowledge circuits locally in your browser and settling encrypted state on Aztec for absolute privacy." },
+    { q: "What is Ledger Chat?", a: "Ledger Chat is a zero knowledge encrypted communication application secured by the Aztec Network L2." },
+    { q: "When does Ledger Chat launch?", a: "Ledger Chat launches with full production functionality in January 2027. This includes end to end encrypted messaging, wallet to wallet voice and video calls, audio messages, and stickers." },
+    { q: "How does it connect to Aztec Network?", a: "Aztec Network is the Layer 2 settlement protocol. Ledger Chat acts as the application and identity layer, running Noir zero knowledge circuits locally in your browser and settling encrypted state on Aztec for absolute privacy." },
     { q: "Are my messages stored on any server?", a: "No. Messages are end to end encrypted using X25519 ECDH keys exchanged directly between wallets and transmitted peer to peer via WebRTC. Relay nodes are only used for peer discovery, never for message content." },
     { q: "Do I need a crypto wallet?", a: "You can sign in with email for basic access. A self custodial wallet (MetaMask, Coinbase Wallet, Rainbow) is required for L2 execution, zero knowledge credential issuance, and full privacy features." },
   ];
@@ -356,10 +356,10 @@ function FinalCTASection() {
       <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: EASE }} className="max-w-2xl mx-auto">
         <span className="block text-[11px] font-mono uppercase tracking-[0.3em] text-black/40 mb-5">January 2027</span>
         <h2 className="text-[36px] md:text-[60px] font-black leading-tight tracking-tight mb-6 text-black" style={{ fontFamily: "var(--font-aztec-serif), Georgia, serif" }}>Ready to enter?</h2>
-        <p className="text-[17px] text-black/50 leading-relaxed mb-12 max-w-lg mx-auto">Whale Chat goes live in January 2027. Connect your wallet now to claim your zero knowledge identity and be first in.</p>
+        <p className="text-[17px] text-black/50 leading-relaxed mb-12 max-w-lg mx-auto">Ledger Chat goes live in January 2027. Connect your wallet now to claim your zero knowledge identity and be first in.</p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link href="/connect" className="w-full sm:w-auto px-10 py-4 bg-black text-white rounded-full text-[15px] font-black hover:bg-black/80 active:scale-95 transition-all hover:-translate-y-0.5 shadow-[0_6px_30px_rgba(0,0,0,0.15)]">Connect Wallet →</Link>
-          <Link href="/chat" className="w-full sm:w-auto px-10 py-4 border-2 border-black/12 text-black rounded-full text-[15px] font-bold hover:bg-zinc-50 active:scale-95 transition-all">Launch Whale Chat</Link>
+          <Link href="/chat" className="w-full sm:w-auto px-10 py-4 border-2 border-black/12 text-black rounded-full text-[15px] font-bold hover:bg-zinc-50 active:scale-95 transition-all">Launch LedgerChat</Link>
         </div>
       </motion.div>
     </section>
@@ -374,7 +374,7 @@ export function ImmersiveManifestoLanding({ onOpenScanner: _o, hideMap = false }
       <main id="main-content" className="flex-1">
         <HeroSection />
         <WhatIsSection />
-        <WhaleChatSection />
+        <LedgerChatSection />
         <AztecStrip />
         <FAQSection />
         <FinalCTASection />

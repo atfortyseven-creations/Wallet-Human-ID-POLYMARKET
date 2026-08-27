@@ -36,7 +36,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
               Humanity Ledger is a privacy-first decentralized ecosystem engineered from first principles on the Aztec Network Layer 2. Rather than retrofitting privacy onto an existing public chain, Humanity Ledger treats confidentiality as a non-negotiable protocol invariant — every byte of user data is encrypted before it ever leaves the device, and mathematical proofs replace data disclosure at every interaction boundary.
             </DocP>
             <DocP>
-              The protocol provides three integrated product layers: <strong>Whale Chat</strong> (end-to-end encrypted communications), <strong>Studio Provenance</strong> (privacy-preserving real-world asset registration), and the <strong>Portfolio Terminal</strong> (local-first cross-chain portfolio tracking). Each layer shares the same cryptographic identity substrate — your Aztec private keypair — eliminating the fragmented identity model that plagues conventional Web3 applications.
+              The protocol provides three integrated product layers: <strong>LedgerChat</strong> (end-to-end encrypted communications), <strong>Studio Provenance</strong> (privacy-preserving real-world asset registration), and the <strong>Portfolio Terminal</strong> (local-first cross-chain portfolio tracking). Each layer shares the same cryptographic identity substrate — your Aztec private keypair — eliminating the fragmented identity model that plagues conventional Web3 applications.
             </DocP>
 
             <DocH2>The Privacy-Native Computing Model</DocH2>
@@ -69,7 +69,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
             <DocOrderedList
               items={[
                 {
-                  title: "Whale Chat — Encrypted Communication Layer",
+                  title: "Ledger Chat — Encrypted Communication Layer",
                   desc: "A full-featured encrypted messaging system where cryptographic identities replace phone numbers and IP addresses. Messages are encrypted locally using AES-256-GCM derived from an ECDH handshake, routed through the XMTP peer-to-peer network as opaque ciphertexts. The relay network sees only encrypted blobs — never plaintext, never metadata. Ghost Mode enables a ZK-backed auto-responder that preserves liveness without revealing activity.",
                 },
                 {
@@ -183,7 +183,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
 
             <DocH2>Step 3 — Explore the Protocol</DocH2>
             <DocP>
-              With your identity initialized, you have access to the full protocol surface: Whale Chat (navigate to /chat), Studio Provenance (/studio), and the Portfolio Terminal (/portfolio). Each module reads your encrypted state from the Aztec network and decrypts it locally using your derived keys — no server ever sees plaintext.
+              With your identity initialized, you have access to the full protocol surface: Ledger Chat (navigate to /chat), Studio Provenance (/studio), and the Portfolio Terminal (/portfolio). Each module reads your encrypted state from the Aztec network and decrypts it locally using your derived keys — no server ever sees plaintext.
             </DocP>
           </>
         );
@@ -532,20 +532,20 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
         );
 
       // ─────────────────────────────────────────────────────────────────────────
-      // WHALE CHAT
+      // Ledger Chat
       // ─────────────────────────────────────────────────────────────────────────
-      case "whale-chat":
+      case "ledger-chat":
         return (
           <>
             <DocTag>Products</DocTag>
-            <DocH1>Whale Chat</DocH1>
+            <DocH1>LedgerChat</DocH1>
             <DocP>
-              Whale Chat is a full-featured, end-to-end encrypted communications system built natively on top of Aztec identities. It replaces the conventional paradigm of phone number or email-based messaging with cryptographic keys, providing metadata-resistant, surveillance-proof communication for high-value interactions.
+              Ledger Chat is a full-featured, end-to-end encrypted communications system built natively on top of Aztec identities. It replaces the conventional paradigm of phone number or email-based messaging with cryptographic keys, providing metadata-resistant, surveillance-proof communication for high-value interactions.
             </DocP>
 
             <DocH2>Cryptographic Architecture</DocH2>
             <DocP>
-              Whale Chat uses a layered encryption model. At the transport layer, messages are routed through the XMTP (Extensible Message Transport Protocol) network — a decentralized peer-to-peer relay network for Ethereum-addressed messaging. At the application layer, messages are encrypted using AES-256-GCM before submission to XMTP, using keys derived from an ECDH handshake over the Grumpkin curve.
+              Ledger Chat uses a layered encryption model. At the transport layer, messages are routed through the XMTP (Extensible Message Transport Protocol) network — a decentralized peer-to-peer relay network for Ethereum-addressed messaging. At the application layer, messages are encrypted using AES-256-GCM before submission to XMTP, using keys derived from an ECDH handshake over the Grumpkin curve.
             </DocP>
             <DocTable
               headers={["Layer", "Protocol", "What Network Sees"]}
@@ -565,7 +565,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
 
             <DocH2>Burn-on-Read & Auto-Delete Timers</DocH2>
             <DocP>
-              Whale Chat supports ephemeral message modes backed by the PXE Settings Engine. Burn-on-Read messages are flagged with a cryptographic marker that instructs the recipient&apos;s PXE to nullify the note immediately upon decryption. Auto-Delete Timers schedule nullification of notes after a configurable time window (1 hour to 7 days), enforced by the local PXE timer subsystem.
+              Ledger Chat supports ephemeral message modes backed by the PXE Settings Engine. Burn-on-Read messages are flagged with a cryptographic marker that instructs the recipient&apos;s PXE to nullify the note immediately upon decryption. Auto-Delete Timers schedule nullification of notes after a configurable time window (1 hour to 7 days), enforced by the local PXE timer subsystem.
             </DocP>
 
             <DocH2>Privacy Engine Settings</DocH2>
@@ -824,7 +824,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
 
             <DocH2>Design Implications</DocH2>
             <DocP>
-              For consumer applications like Whale Chat and the Portfolio Terminal, L2 block finality (12s) is sufficient — these are low-value, low-risk interactions where sequencer-level finality provides adequate assurance. For high-value Studio Provenance transfers (six-figure asset transfers), applications should wait for L1 settlement finality (~30 minutes) before presenting the transfer as complete to users.
+              For consumer applications like Ledger Chat and the Portfolio Terminal, L2 block finality (12s) is sufficient — these are low-value, low-risk interactions where sequencer-level finality provides adequate assurance. For high-value Studio Provenance transfers (six-figure asset transfers), applications should wait for L1 settlement finality (~30 minutes) before presenting the transfer as complete to users.
             </DocP>
           </>
         );

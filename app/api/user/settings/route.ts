@@ -44,7 +44,7 @@ const STORE_TO_DB: Record<string, string> = {
     requireSignForExports:  'requireSignForExports',
     allowAnalytics:         'allowAnalytics',
 
-    // Whale Chat
+    // Ledger Chat
     chatName:               'chatName',
     chatBio:                'chatBio',
     qrLabel:                'qrLabel',

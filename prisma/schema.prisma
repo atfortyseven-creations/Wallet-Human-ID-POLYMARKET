@@ -143,7 +143,7 @@ model User {
   whaleAlertThreshold Float   @default(1000000)
   soundEffects        Boolean @default(true)
 
-  //  Whale Chat 
+  //  Ledger Chat 
   chatName    String  @default("Whale User")
   chatBio     String  @default("")
   qrLabel     String  @default("Scan My Wallet")

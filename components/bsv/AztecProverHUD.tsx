@@ -98,7 +98,7 @@ export const AztecProverHUD: React.FC<AztecProverHUDProps> = ({ isVisible, onCom
 
           <div className="mt-3 pt-2 border-t border-white/10 flex justify-between items-center text-[8px] font-aztec-mono text-white/40">
             <span>Encrypted Privacy Protocol</span>
-            <span>Circuit: WhaleChat</span>
+            <span>Circuit: LedgerChat</span>
           </div>
         </motion.div>
       )}

@@ -442,10 +442,10 @@ export function NetworkMapPanel() {
                   </div>
                 </motion.div>
 
-                {/* Whale Chat */}
+                {/* Ledger Chat */}
                 <NodeCard
                   label="P2P Encrypted Messaging"
-                  title="Whale Chat"
+                  title="LedgerChat"
                   subtitle="XMTP Protocol · E2EE · On-chain Identity"
                   tags={[
                     { text: "XMTP SDK", color: "blue" },

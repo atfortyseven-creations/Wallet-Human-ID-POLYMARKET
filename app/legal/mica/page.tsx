@@ -57,8 +57,8 @@ export default function MicaPage() {
             <h2 className="text-[20px] font-black text-black mb-3">5. Contact</h2>
             <p>
               For regulatory enquiries:{' '}
-              <a href="mailto:legal@humanidfi.com" className="underline underline-offset-2 hover:text-black transition-colors">
-                legal@humanidfi.com
+              <a href="mailto:humanityledger@icloud.com" className="underline underline-offset-2 hover:text-black transition-colors">
+                humanityledger@icloud.com
               </a>
             </p>
           </section>

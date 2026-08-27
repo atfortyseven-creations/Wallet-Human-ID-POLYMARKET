@@ -588,13 +588,12 @@ export default function ConnectPage() {
       </div>
 
       <div className="w-full flex flex-col flex-1 pt-8 relative z-10">
-          <p className="text-[13px] text-black/60 leading-relaxed font-medium mb-1">
-            Access the workspace using your Ethereum identity.
-          </p>
-          <p className="text-[11px] text-black/40 leading-relaxed mb-4">
-            A read-only signature will be requested to verify ownership. No gas fees are required.
-          </p>
-        </div>
+        <p className="text-[13px] text-black/60 leading-relaxed font-medium mb-1">
+          Access the workspace using your Ethereum identity.
+        </p>
+        <p className="text-[11px] text-black/40 leading-relaxed mb-4">
+          A read-only signature will be requested to verify ownership. No gas fees are required.
+        </p>
 
         {mounted && !isVerified && (
           <div className="absolute top-8 right-8 flex items-center gap-2 px-3 py-1 bg-zinc-50 border border-black/10 rounded-full">
@@ -605,7 +604,7 @@ export default function ConnectPage() {
 
         <div className="flex-1 overflow-y-auto min-h-0 pr-4 mr-[-16px]">
           <AnimatePresence mode="wait">
-        {isVerified ? (
+            {isVerified ? (
           <motion.div key="verified" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="flex flex-col items-center justify-center flex-1 relative min-h-[280px]">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-[260px] h-[260px] opacity-80 mix-blend-multiply">
@@ -727,11 +726,13 @@ export default function ConnectPage() {
             {renderWeb2Logins()}
             <div className="mt-8 text-center px-4">
               <p className="text-[10px] text-black/40 leading-relaxed uppercase tracking-widest font-mono">
-                By connecting, you agree to the <Link href="/legal/terms" className="underline hover:text-black">Terms of Service</Link> & <Link href="/legal/privacy" className="underline hover:text-black">Privacy Policy</Link>.
+                By connecting, you agree to the <Link href="/legal/terms" className="underline hover:text-black">Terms of Service</Link> &amp; <Link href="/legal/privacy" className="underline hover:text-black">Privacy Policy</Link>.
               </p>
             </div>
           </div>
         )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

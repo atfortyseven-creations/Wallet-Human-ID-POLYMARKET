@@ -531,7 +531,7 @@ export async function getMessages(client: Client, peerAddress: string): Promise<
 
 /**
  * Discover all DMs from the network and return new peer addresses
- * not yet present in the known set. Used by WhaleChat global sync loop.
+ * not yet present in the known set. Used by Ledger Chat global sync loop.
  */
 export async function discoverNewPeers(
   client: Client,

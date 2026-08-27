@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
         try {
           const raw = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
           // Normalize: strip trailing slash, parse origin
-          return new URL(raw).origin; // e.g. "https://humanityledger.com" (no trailing slash)
+          return new URL(raw).origin; // e.g. "https://humanidfi.com" (no trailing slash)
         } catch {
           return 'http://localhost:3000';
         }

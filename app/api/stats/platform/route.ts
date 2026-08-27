@@ -10,8 +10,8 @@ export const revalidate = 0;
  * Metrics returned:
  *  totalUsers          – total registered Humanity Ledger accounts
  *  newUsersLast30d     – accounts created in the last 30 days
- *  whaleChatUsers      – unique wallets that have initiated at least one chat contact
- *  whaleChatConversations – total unique chat contact pairs (cross-user)
+ *  Ledger ChatUsers      – unique wallets that have initiated at least one chat contact
+ *  Ledger ChatConversations – total unique chat contact pairs (cross-user)
  *  registryTotal       – total registered users (same as totalUsers, from registry)
  *  growthByMonth       – array of { month, count } for the last 6 months, sorted ascending
  */
@@ -52,20 +52,20 @@ export async function GET() {
       });
     } catch {}
 
-    // ── 3. Whale Chat — unique wallet owners who have saved at least one contact
-    let whaleChatUsers = 0;
+    // ── 3. Ledger Chat — unique wallet owners who have saved at least one contact
+    let LedgerChatUsers = 0;
     try {
       const distinctOwners = await (prisma as any).chatContact.findMany({
         select: { owner: true },
         distinct: ['owner'],
       });
-      whaleChatUsers = distinctOwners?.length ?? 0;
+      LedgerChatUsers = distinctOwners?.length ?? 0;
     } catch {}
 
-    // ── 4. Whale Chat — total conversation pairs ─────────────────────────────
-    let whaleChatConversations = 0;
+    // ── 4. Ledger Chat — total conversation pairs ─────────────────────────────
+    let LedgerChatConversations = 0;
     try {
-      whaleChatConversations = await (prisma as any).chatContact.count();
+      LedgerChatConversations = await (prisma as any).chatContact.count();
     } catch {}
 
     // ── 5. Monthly growth (last 6 calendar months) ───────────────────────────
@@ -172,7 +172,7 @@ export async function GET() {
       
       combinedTotal = uniqueSet.size;
     } catch {
-      combinedTotal = totalUsers + whaleChatUsers; // Fallback
+      combinedTotal = totalUsers + LedgerChatUsers; // Fallback
     }
 
     // Exactly 13998 starting point on June 10 2026.
@@ -182,8 +182,8 @@ export async function GET() {
     return NextResponse.json({
       totalUsers: totalUsers + BASE_OFFSET,
       newUsersLast30d,
-      whaleChatUsers,
-      whaleChatConversations,
+      LedgerChatUsers,
+      LedgerChatConversations,
       registryTotal: combinedTotal + BASE_OFFSET,
       growthByMonth,
     }, {
@@ -197,8 +197,8 @@ export async function GET() {
     return NextResponse.json({
       totalUsers: 0,
       newUsersLast30d: 0,
-      whaleChatUsers: 0,
-      whaleChatConversations: 0,
+      LedgerChatUsers: 0,
+      LedgerChatConversations: 0,
       registryTotal: 0,
       growthByMonth: [],
     });

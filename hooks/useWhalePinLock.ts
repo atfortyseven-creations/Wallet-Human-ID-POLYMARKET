@@ -1,5 +1,5 @@
 // hooks/useWhalePinLock.ts
-// Biometric/PIN-based screen lock for WhaleChat sessions
+// Biometric/PIN-based screen lock for Ledger Chat sessions
 // Complies with App Store Guideline 5.1.1 (Local Authentication)
 
 import { useState, useEffect, useCallback, useRef } from 'react';

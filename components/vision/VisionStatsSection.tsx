@@ -15,7 +15,7 @@ const FAQ_DATA = [
   },
   {
     question: "Are my chat conversations fully encrypted?",
-    answer: "Yes. Whale Chat utilizes end to end encryption (E2EE) built directly into the protocol. Your messages are encrypted client-side using your wallet's keys before they even leave your device. We cannot read your messages, and neither can anyone else."
+    answer: "Yes. Ledger Chat utilizes end to end encryption (E2EE) built directly into the protocol. Your messages are encrypted client-side using your wallet's keys before they even leave your device. We cannot read your messages, and neither can anyone else."
   },
   {
     question: "How does the Stripe integration interact with my node?",

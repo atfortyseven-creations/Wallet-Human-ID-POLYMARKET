@@ -70,7 +70,7 @@ export default function AboutPage() {
               A specialised group of passionate software engineers, financial analysts, and user experience designers came together to bridge this growing gap. We set out to build a holistic platform that strips away the daunting complexity of blockchain technology, presenting users with a clean, intuitive, and highly professional interface that rivals the best consumer applications in the world.
             </p>
             <p>
-              The result is a comprehensive Web3 dashboard that seamlessly integrates nine core modules — including the Humanity Ledger (a real-time on-chain scanner and private portfolio tracker) and Whale Chat (end to end encrypted wallet-to-wallet messaging) — accessible across devices via a frictionless, cryptographically secure QR-code session synchronisation.
+              The result is a comprehensive Web3 dashboard that seamlessly integrates nine core modules — including the Humanity Ledger (a real-time on-chain scanner and private portfolio tracker) and Ledger Chat (end to end encrypted wallet-to-wallet messaging) — accessible across devices via a frictionless, cryptographically secure QR-code session synchronisation.
             </p>
             <p>
               From our early days developing simple portfolio trackers, we have rapidly evolved into a comprehensive global ecosystem. Today, we offer real-time market analysis, secure end to end encrypted communication channels, advanced asset management tools, and sovereign-grade charting — all packaged into an accessible web application. Our fundamental commitment to never compromising on user privacy has guided every architectural decision we have made since day one.
@@ -222,7 +222,7 @@ export default function AboutPage() {
             <ul className="space-y-2 pl-5">
               <li className="flex items-start gap-3">
                 <span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" />
-                <span><strong>Whale Chat:</strong> Utilises Aztec’s encrypted logs and private state variables to ensure wallet-to-wallet messages remain absolutely confidential on-chain.</span>
+                <span><strong>Ledger Chat:</strong> Utilises Aztec’s encrypted logs and private state variables to ensure wallet-to-wallet messages remain absolutely confidential on-chain.</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" />

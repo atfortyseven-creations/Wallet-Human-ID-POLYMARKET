@@ -58,7 +58,7 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
     title: 'Aztec Network — Private State and ZK Proofs',
     paragraphs: [
       'QD balances and provenance records are not stored on a public blockchain where anyone can read them. They exist as private, encrypted Notes inside the Aztec Network — a Zero Knowledge Layer 2 rollup anchored to Ethereum.',
-      'When you perform an action that changes your balance (e.g., claim an airdrop, pay for a signal in Whale Chat), the application encodes the transaction parameters using Noir ABI encoding in the browser. This produces a structured witness that is sent to the Aztec V5 testnet RPC. The Aztec sequencer proves the state transition and anchors the resulting state root to Ethereum — without revealing your balance to anyone.',
+      'When you perform an action that changes your balance (e.g., claim an airdrop, pay for a signal in LedgerChat), the application encodes the transaction parameters using Noir ABI encoding in the browser. This produces a structured witness that is sent to the Aztec V5 testnet RPC. The Aztec sequencer proves the state transition and anchors the resulting state root to Ethereum — without revealing your balance to anyone.',
       'What this means in practice: the Aztec Network knows a valid ZK proof was submitted and that a state transition occurred. It does NOT know your identity, your balance, who you sent tokens to, or how much. The cryptographic commitment scheme (Pedersen hashing over the Grumpkin curve) makes the private inputs mathematically opaque.',
       'Current testnet status: We are operating on the Aztec V5 testnet (v5.testnet.rpc.aztec-labs.com). Tokens are testnet only. No real monetary value. The architecture is production ready in design but not yet deployed to mainnet.',
     ],
@@ -77,12 +77,12 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
     },
   },
 
-  // ===== 4. WHALE CHAT ENCRYPTION =====
+  // ===== 4. Ledger Chat ENCRYPTION =====
   {
-    id: 'whale-chat-encryption',
-    title: 'Whale Chat — Peer to Peer Encrypted Messaging',
+    id: 'ledger-chat-encryption',
+    title: 'Ledger Chat — Peer to Peer Encrypted Messaging',
     paragraphs: [
-      'Whale Chat enables encrypted, real time communication between Humanity Ledger participants. Messages are routed peer to peer and never stored in plaintext on any server we operate.',
+      'Ledger Chat enables encrypted, real time communication between Humanity Ledger participants. Messages are routed peer to peer and never stored in plaintext on any server we operate.',
       'Text messages: Encrypted end to end using the recipient\'s wallet-derived public key. Our backend acts only as a signaling relay — it sees encrypted ciphertext, not message content.',
       'Audio and Video Calls: Implemented via WebRTC with PeerJS for NAT traversal. The media stream (audio/video) travels directly between browsers using DTLS-SRTP encryption — our servers never touch the call audio or video. Only the signaling data (call initiation, answer, hang-up events) passes through our backend momentarily during connection setup.',
       'Paid Signals: Users can send encrypted signal attachments that require a QD payment to decrypt. The payment triggers a private Aztec state transition; upon confirmation, the decryption key is released locally on the recipient\'s device. Our servers never hold the decryption key.',

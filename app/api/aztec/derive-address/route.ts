@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    // Accept both { seed } and { evmAddress } — evmAddress is used by WhaleChat
+    // Accept both { seed } and { evmAddress } — evmAddress is used by Ledger Chat
     const raw = body.seed || body.evmAddress || body.address || '';
 
     if (!raw || typeof raw !== 'string' || raw.trim().length < 3) {

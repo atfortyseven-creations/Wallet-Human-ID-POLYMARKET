@@ -12,8 +12,8 @@ import { encrypt, decrypt } from '@/lib/wallet/encryption';
  *    3. pxeEngine             — Singleton instance (import this into React components)
  *
  *  Every field in WhaleProtocolSettings maps to:
- *    a) A UI toggle/selector in WhaleChatSettings.tsx
- *    b) A runtime behaviour gate in WhaleChat.tsx
+ *    a) A UI toggle/selector in LedgerChatSettings.tsx
+ *    b) A runtime behaviour gate in LedgerChat.tsx
  *    c) An encrypted quantum blob in the PXE vault (key: pxe_settings_<address>)
  *
  *  Data flow:

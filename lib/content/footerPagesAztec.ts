@@ -328,13 +328,13 @@ export const SECURITY_SECTIONS: AztecDocSection[] = [
     title: 'Vulnerability Disclosure and Bug Bounty',
     paragraphs: [
       'We maintain an active bug bounty program covering all components of the protocol. Scope includes Noir circuit soundness, Ethereum contract vulnerabilities, API authentication bypasses, and client-side proving pipeline integrity.',
-      'Critical vulnerabilities, those that could result in loss of user funds or deanonymization of users, are eligible for significant rewards. Specific bounty amounts are defined at the time of the formal bug bounty program launch, which occurs alongside our first public testnet deployment. Researchers are asked to submit findings to security@humanityledger.com with a clear proof-of-concept demonstrating the vulnerability. We commit to acknowledging receipt within 24 hours and providing an initial assessment within 72 hours.',
-      'Researchers are asked to submit findings to security@humanityledger.com with a clear proof-of-concept demonstrating the vulnerability. We commit to acknowledging receipt within 24 hours and providing an initial assessment within 72 hours. We adhere to a responsible disclosure timeline of 90 days, after which findings are disclosed publicly regardless of remediation status.',
+      'Critical vulnerabilities, those that could result in loss of user funds or deanonymization of users, are eligible for significant rewards. Specific bounty amounts are defined at the time of the formal bug bounty program launch, which occurs alongside our first public testnet deployment. Researchers are asked to submit findings to humanityledger@icloud.com with a clear proof-of-concept demonstrating the vulnerability. We commit to acknowledging receipt within 24 hours and providing an initial assessment within 72 hours.',
+      'Researchers are asked to submit findings to humanityledger@icloud.com with a clear proof-of-concept demonstrating the vulnerability. We commit to acknowledging receipt within 24 hours and providing an initial assessment within 72 hours. We adhere to a responsible disclosure timeline of 90 days, after which findings are disclosed publicly regardless of remediation status.',
     ],
     callout: {
       title: 'Responsible Disclosure',
       body: 'Do not attempt to exploit vulnerabilities against the production network or against any user\'s funds. Submit findings to our security team with a proof-of-concept in a controlled environment. We will work with you on coordinated disclosure.',
-      href: 'mailto:security@humanityledger.com',
+      href: 'mailto:humanityledger@icloud.com',
       hrefLabel: 'Contact the security team',
     },
   },
@@ -366,7 +366,7 @@ export const ROADMAP_SECTIONS: AztecDocSection[] = [
     ],
     bullets: [
       'Native Aztec v5 Integration: Standardized all Noir state-transition circuits to utilize the `0.67.0` Aztec toolchain, executing flawlessly on `v5.0.0-rc.2` alongside permissionless sequencers.',
-      'Sovereign Messaging Layer (Whale Chat): Deployed XMTP-powered End to End Encrypted messaging protocol, guaranteeing offshore persistence, cryptographic deniability, and cross-platform synchronization.',
+      'Sovereign Messaging Layer (LedgerChat): Deployed XMTP-powered End to End Encrypted messaging protocol, guaranteeing offshore persistence, cryptographic deniability, and cross-platform synchronization.',
       'Zero Knowledge Identity Portfolio: The Identity interface strictly polls verified state from the `AztecNativeContext`. A resilient, sybil-resistant 200 Beta Supply Indexed Wallet Signature is fully implemented and audited.',
       'Omni-Platform Terminal: Full iOS, Android, and Web responsiveness across the sovereign dashboard, featuring our proprietary "Zero-Mock" live data and cryptographic attestation architecture.'
     ],
@@ -378,7 +378,7 @@ export const ROADMAP_SECTIONS: AztecDocSection[] = [
       'The focus shifts to rigorous auditing and mathematical proofs.'
     ],
     bullets: [
-      'Security Audits: Comprehensive third-party audits of Whale Chat encryption bridges and the Aztec Identity logic.',
+      'Security Audits: Comprehensive third-party audits of Ledger Chat encryption bridges and the Aztec Identity logic.',
       'Formal Verification: Mathematical proofs of the `mint_private_license` Noir circuit to guarantee sound constraint execution.',
       'Private Portfolio Integration: Connecting the frontend Identity interface with live on-chain private state transitions.'
     ]

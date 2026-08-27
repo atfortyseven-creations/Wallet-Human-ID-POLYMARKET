@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 /**
  * /chat route layout
- * Full-viewport layout for the mobile-optimised Whale Chat page.
+ * Full-viewport layout for the mobile-optimised Ledger Chat page.
  * Uses 100dvh so it fills correctly on iOS Safari without address-bar overlap.
  */
 export default function ChatLayout({ children }: { children: ReactNode }) {

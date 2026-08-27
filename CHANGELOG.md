@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Landing Page — Complete Immersive Redesign
 - `feat(landing/desktop)`: Full immersive manifesto landing page (`ImmersiveManifestoLanding.tsx`) with Framer Motion scroll animations, hero section, value proposition, how-it-works, integration cards, global registry map, FAQ, and final CTA — all in a clean, minimalist white-on-white aesthetic
-- `feat(landing/mobile)`: Premium mobile landing page (`MobileManifesto.tsx`) with iOS/Android safe-area insets, `100dvh` dynamic viewport, hero section with appkit-button native wallet connection, Whale Chat dark section, and Aztec partnership section
+- `feat(landing/mobile)`: Premium mobile landing page (`MobileManifesto.tsx`) with iOS/Android safe-area insets, `100dvh` dynamic viewport, hero section with appkit-button native wallet connection, LedgerChat dark section, and Aztec partnership section
 - `feat(landing/router)`: `SmartLandingRouter` SSR-aware device detection — UA-based routing to mobile/desktop versions, eliminates 3s blank white screen flash on mobile
 - `feat(landing/nav)`: `ClientRootRouter` desktop landing with `ImmersiveManifestoLanding` + `SystemFooter` composition
 - `feat(landing/appkit)`: Replaced all `/connect` redirect links on both desktop and mobile landing with native `<appkit-button />` — wallet connection works directly on landing page without page change, for iOS, Android, and desktop browsers

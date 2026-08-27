@@ -26,7 +26,7 @@ const PAGES = [
   { id: "zk",            label: "Aztec Network",   group: "Network State",  icon: null },
 
   //  Communications 
-  { id: "chat",          label: "Whale Chat",      group: "Communications", icon: null },
+  { id: "chat",          label: "LedgerChat",      group: "Communications", icon: null },
 
   //  System 
   { id: "logs",          label: "Session Logs",    group: "System",         icon: null },

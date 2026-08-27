@@ -1,6 +1,6 @@
-# SYSTEM CAPABILITIES COLLECTION (WHALECHAT)
+# SYSTEM CAPABILITIES COLLECTION (LedgerChat)
 
-Below are the detailed architecture and current capabilities of the WhaleChat system to date. The system operates as an elite P2P communication protocol native to Aztec V5, with a strong emphasis on cryptographic privacy and minimal metadata leakage.
+Below are the detailed architecture and current capabilities of the Ledger Chat system to date. The system operates as an elite P2P communication protocol native to Aztec V5, with a strong emphasis on cryptographic privacy and minimal metadata leakage.
 
 ## 1. AUTHENTICATION AND SECURITY SYSTEM
 *   **Identity Provisioning:** Users authenticate by generating a Schnorr signature on the Grumpkin curve via the Aztec PXE.

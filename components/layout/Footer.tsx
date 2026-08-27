@@ -97,7 +97,7 @@ export const Footer = () => {
                     {/* Technical Disclaimer */}
                     <div className="max-w-4xl mx-auto text-center border border-black/5 bg-black/5 p-4 rounded-lg">
                         <p className="text-[10px] text-black/60 font-sans leading-relaxed text-left">
-                            <strong className="text-black/80">⚠️ Alpha Testnet:</strong> WhaleChat operates on the Aztec Alpha V5 Testnet. This is experimental software. Do not use with real funds. The protocol is in active development.
+                            <strong className="text-black/80">⚠️ Alpha Testnet:</strong> Ledger Chat operates on the Aztec Alpha V5 Testnet. This is experimental software. Do not use with real funds. The protocol is in active development.
                         </p>
                     </div>
 

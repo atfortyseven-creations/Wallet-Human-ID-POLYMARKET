@@ -626,7 +626,7 @@ export function AztecIdentityCard() {
 
 
   // ── Auto-Migration: Fix existing users whose QDs landed on the wrong address ──
-  // Users who connected via WhaleChat before the fix have QDs at their raw EVM
+  // Users who connected via Ledger Chat before the fix have QDs at their raw EVM
   // address instead of the derived Aztec address. We silently migrate them.
   useEffect(() => {
     if (!evmAddress || !isConnected) return;

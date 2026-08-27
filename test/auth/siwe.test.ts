@@ -5,8 +5,8 @@ import { Wallet } from 'ethers';
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
 const wallet = Wallet.createRandom();
-const domain = 'humanityledger.com';
-const baseUri = 'https://humanityledger.com/login';
+const domain = 'humanidfi.com';
+const baseUri = 'https://humanidfi.com/login';
 const version = '1';
 const chainId = 137;
 const nonce = '12345678901234567';
@@ -86,30 +86,30 @@ describe('SIWE Signature Validation', () => {
 // ─── Tests: URI Origin Comparison (server-side logic) ─────────────────────
 
 describe('SIWE URI Origin Validation', () => {
-  const appUrl = 'https://humanityledger.com';
+  const appUrl = 'https://humanidfi.com';
 
   it('accepts matching origin (exact)', () => {
-    expect(isOriginValid('https://humanityledger.com/login', appUrl)).toBe(true);
+    expect(isOriginValid('https://humanidfi.com/login', appUrl)).toBe(true);
   });
 
   it('accepts matching origin with path variation', () => {
-    expect(isOriginValid('https://humanityledger.com/registry', appUrl)).toBe(true);
+    expect(isOriginValid('https://humanidfi.com/registry', appUrl)).toBe(true);
   });
 
   it('accepts trailing slash on URI (origin is identical)', () => {
-    expect(isOriginValid('https://humanityledger.com/', appUrl)).toBe(true);
+    expect(isOriginValid('https://humanidfi.com/', appUrl)).toBe(true);
   });
 
   it('rejects wrong scheme (http vs https)', () => {
-    expect(isOriginValid('http://humanityledger.com/login', appUrl)).toBe(false);
+    expect(isOriginValid('http://humanidfi.com/login', appUrl)).toBe(false);
   });
 
-  it('rejects subdomain (evil.humanityledger.com)', () => {
-    expect(isOriginValid('https://evil.humanityledger.com/login', appUrl)).toBe(false);
+  it('rejects subdomain (evil.humanidfi.com)', () => {
+    expect(isOriginValid('https://evil.humanidfi.com/login', appUrl)).toBe(false);
   });
 
-  it('rejects lookalike domain (humanityledger.com.evil.com)', () => {
-    expect(isOriginValid('https://humanityledger.com.evil.com/login', appUrl)).toBe(false);
+  it('rejects lookalike domain (humanidfi.com.evil.com)', () => {
+    expect(isOriginValid('https://humanidfi.com.evil.com/login', appUrl)).toBe(false);
   });
 
   it('rejects completely different domain', () => {
@@ -117,7 +117,7 @@ describe('SIWE URI Origin Validation', () => {
   });
 
   it('rejects wrong port (443 vs 8443)', () => {
-    expect(isOriginValid('https://humanityledger.com:8443/login', appUrl)).toBe(false);
+    expect(isOriginValid('https://humanidfi.com:8443/login', appUrl)).toBe(false);
   });
 
   it('rejects unparseable URI', () => {

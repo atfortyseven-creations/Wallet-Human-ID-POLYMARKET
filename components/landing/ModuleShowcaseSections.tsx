@@ -256,9 +256,9 @@ function RegistryShowcase() {
   );
 }
 
-function WhaleChatShowcase() {
+function LedgerChatShowcase() {
   return (
-    <section id="module-whale-chat" className="w-full bg-[#000000] border-t border-white/10 py-24 md:py-32 relative overflow-hidden">
+    <section id="module-ledger-chat" className="w-full bg-[#000000] border-t border-white/10 py-24 md:py-32 relative overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-900/5 blur-[200px] rounded-full pointer-events-none" />
       <div className="w-full max-w-[1200px] mx-auto px-6 relative z-10">
         <InViewSection>
@@ -270,16 +270,16 @@ function WhaleChatShowcase() {
                 <span className="text-white/40">a trace.</span>
               </SectionTitle>
               <SectionBody>
-                Whale Chat is the first messaging protocol built natively on the Humanity Ledger Private Execution Environment. Messages are encrypted, anchored to your cryptographic identity, and verified without any metadata ever touching a central server. No phone number. No IP logging. No third-party key custody.
+                Ledger Chat is the first messaging protocol built natively on the Humanity Ledger Private Execution Environment. Messages are encrypted, anchored to your cryptographic identity, and verified without any metadata ever touching a central server. No phone number. No IP logging. No third-party key custody.
               </SectionBody>
               <motion.div variants={FADE_UP} className="mb-10 p-5 border border-white/10 bg-[#0A0A0A] border-l-2 border-l-emerald-500">
                 <p className="text-[14px] font-light text-white/70 leading-relaxed">
                   <strong className="text-white font-bold block mb-1">Turing-Shield Compliance:</strong>
-                  Whale Chat enforces hardware-gated identity verification. Every participant is Sybil-resistant, making it structurally impossible to operate anonymously for malicious purposes — unlike traditional messengers where anonymous onboarding allows abuse.
+                  Ledger Chat enforces hardware-gated identity verification. Every participant is Sybil-resistant, making it structurally impossible to operate anonymously for malicious purposes — unlike traditional messengers where anonymous onboarding allows abuse.
                 </p>
               </motion.div>
               <motion.div variants={FADE_UP} className="flex flex-wrap items-center gap-4">
-                <NavButton href="/chat" label="Open Whale Chat" />
+                <NavButton href="/chat" label="Open LedgerChat" />
                 <NavButton href="/connect" label="Connect Wallet First" variant="outline" />
               </motion.div>
             </div>
@@ -653,7 +653,7 @@ export function ModuleShowcaseSections() {
       <ForumShowcase />
       <DevelopersShowcase />
       <RegistryShowcase />
-      <WhaleChatShowcase />
+      <LedgerChatShowcase />
       <PortfolioShowcase />
       <StudioProvenanceShowcase />
       <QDSShowcase />

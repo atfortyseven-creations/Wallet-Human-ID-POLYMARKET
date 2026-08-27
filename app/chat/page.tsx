@@ -1,15 +1,15 @@
-import { WhaleChat } from '@/components/terminal/WhaleChat';
+"use client";
+import dynamic from 'next/dynamic';
 
-export const metadata = {
-  title: 'Whale Chat · Sovereign Network',
-  description: 'Zero-knowledge end to end encrypted messaging with hardware binding.',
-};
+const LedgerChat = dynamic(
+  () => import('@/components/terminal/LedgerChat').then(m => ({ default: m.LedgerChat })),
+  { ssr: false }
+);
 
 export default function ChatPage() {
   return (
     <div className="flex flex-col w-full h-[100dvh] bg-white overflow-hidden">
-      <WhaleChat forceAutoInit={true} />
+      <LedgerChat forceAutoInit={true} />
     </div>
   );
 }
-

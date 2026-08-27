@@ -45,9 +45,9 @@ export const metadata = {
     default: 'Humanity Ledger | Privacy Infrastructure on Aztec',
     template: '%s | Humanity Ledger'
   },
-  description: 'Humanity Ledger is the premier privacy layer on the Aztec Network. Claim your decentralised identity, access Studio Provenance, and communicate securely via Whale Chat using zero knowledge proofs.',
+  description: 'Humanity Ledger is the premier privacy layer on the Aztec Network. Claim your decentralised identity, access Studio Provenance, and communicate securely via Ledger Chat using zero knowledge proofs.',
   keywords: [
-    'humanity ledger', 'aztec identity', 'studio provenance', 'whale chat', 'decentralised identity',
+    'humanity ledger', 'aztec identity', 'studio provenance', 'LedgerChat', 'decentralised identity',
     'zero knowledge proofs', 'privacy', 'noir language', 'verifiable credentials'
   ],
   authors: [{ name: 'Humanity Ledger' }],
@@ -77,7 +77,7 @@ export const metadata = {
   },
   openGraph: {
     title: 'Humanity Ledger | Privacy Infrastructure on Aztec',
-    description: 'Claim your decentralised identity, access Studio Provenance, and communicate securely via Whale Chat using zero knowledge proofs.',
+    description: 'Claim your decentralised identity, access Studio Provenance, and communicate securely via Ledger Chat using zero knowledge proofs.',
     url: 'https://humanidfi.com',
     siteName: 'Humanity Ledger',
     images: [
@@ -94,7 +94,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Humanity Ledger | Privacy Infrastructure on Aztec',
-    description: 'Claim your decentralised identity, access Studio Provenance, and communicate securely via Whale Chat using zero knowledge proofs.',
+    description: 'Claim your decentralised identity, access Studio Provenance, and communicate securely via Ledger Chat using zero knowledge proofs.',
     images: ['/humanid_protocol_logo_1778714491433.png'],
     site: '@humanityledger',
     creator: '@humanityledger',

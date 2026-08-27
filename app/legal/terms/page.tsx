@@ -165,7 +165,7 @@ export default function TermsOfService() {
 
         <Article number="4" title="Acceptable Use Policy">
           <Clause id="aup-permitted" title="4.1 Permitted Uses">
-            <p>Subject to these Terms, you may use the Protocol for: (a) sending and receiving encrypted messages via Whale Chat; (b) registering and transferring Studio Provenance records; (c) viewing and managing your Portfolio Terminal; (d) generating zero-knowledge proofs of identity, ownership, or computation; (e) participating in Protocol governance through the Governance DAO; (f) developing applications on top of the Protocol using the published SDK; and (g) any other use consistent with the Protocol&apos;s intended purpose as described in the technical documentation.</p>
+            <p>Subject to these Terms, you may use the Protocol for: (a) sending and receiving encrypted messages via LedgerChat; (b) registering and transferring Studio Provenance records; (c) viewing and managing your Portfolio Terminal; (d) generating zero-knowledge proofs of identity, ownership, or computation; (e) participating in Protocol governance through the Governance DAO; (f) developing applications on top of the Protocol using the published SDK; and (g) any other use consistent with the Protocol&apos;s intended purpose as described in the technical documentation.</p>
           </Clause>
           <Clause id="aup-responsible" title="4.2 Responsible Use">
             <p>You agree to use the Protocol in a responsible manner that does not interfere with other Users&apos; access or enjoyment, compromise the Protocol&apos;s security, or create liability for the Foundation. You are responsible for maintaining the security of your private keys, seed phrases, and device access credentials. The Foundation is not responsible for losses arising from your failure to maintain key security.</p>
@@ -226,7 +226,7 @@ export default function TermsOfService() {
             <p>The Protocol&apos;s core software — including Noir circuit code, smart contracts, SDK, and PXE implementation — is published under the MIT License. Your use of open-source components is governed by the applicable open-source license terms, which take precedence over these Terms with respect to such components. The MIT License text is included in each open-source repository.</p>
           </Clause>
           <Clause id="ip-user-content" title="8.3 User-Generated Content">
-            <p>Content you create using the Protocol (Whale Chat messages, Studio Provenance records, Forum posts) is encrypted and controlled by your private keys. The Foundation claims no intellectual property rights over your encrypted private content. For any public content you post (e.g., public Forum posts), you grant the Foundation a non-exclusive, royalty-free license to display, distribute, and store such content as necessary to operate the Interface.</p>
+            <p>Content you create using the Protocol (Ledger Chat messages, Studio Provenance records, Forum posts) is encrypted and controlled by your private keys. The Foundation claims no intellectual property rights over your encrypted private content. For any public content you post (e.g., public Forum posts), you grant the Foundation a non-exclusive, royalty-free license to display, distribute, and store such content as necessary to operate the Interface.</p>
           </Clause>
         </Article>
 

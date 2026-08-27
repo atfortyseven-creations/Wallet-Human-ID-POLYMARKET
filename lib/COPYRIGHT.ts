@@ -5,7 +5,7 @@
  *   PROPRIETARY & CONFIDENTIAL  ATTEST SECRET                              
  *   Unauthorized copying, modification, distribution, or deployment of     
  *   this file, via any medium, is strictly prohibited.                     
- *   See LICENSE file for full terms. Contact: legal@humanidfi.com          
+ *   See LICENSE file for full terms. Contact: humanityledger@icloud.com          
  * 
  *
  * @file      COPYRIGHT.ts
@@ -20,7 +20,7 @@ export const COPYRIGHT = {
   product:     'Humanity Ledger',
   description: 'Sovereign On-Chain Analytics Terminal',
   years:       '20242026',
-  contact:     'legal@humanidfi.com',
+  contact:     'humanityledger@icloud.com',
   repo:        'https://github.com/humanityledger/whalecosystem',
   platform:    'https://www.humanidfi.com',
   license:     'Proprietary  All Rights Reserved',

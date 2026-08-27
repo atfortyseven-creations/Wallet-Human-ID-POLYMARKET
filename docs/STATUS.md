@@ -6,7 +6,7 @@ This document provides a transparent overview of the Humanity Ledger architectur
 
 | Component | Status | Implementation Details |
 |-----------|--------|------------------------|
-| **Whale Chat** | **LIVE (BETA)** | End-to-end encrypted messaging via XMTP & WebRTC. |
+| **Ledger Chat** | **LIVE (BETA)** | End-to-end encrypted messaging via XMTP & WebRTC. |
 | **Authentication** | **SIMULATED** | Currently uses SIWE via standard NextAuth/Web2 flow. True ZK authentication is planned. |
 | **ZK Proving** | **SIMULATED** | Routes like `/api/zk/prove` currently use HMAC-SHA256 mock proofs. |
 | **State Storage** | **WEB2** | Currently stored in a centralized PostgreSQL database. |

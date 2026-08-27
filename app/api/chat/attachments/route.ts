@@ -54,7 +54,7 @@ export async function POST(req: Request) {
     // Generate base64 data URL
     const base64Data = buffer.toString('base64');
     
-    // Format required by WhaleChat message parser: __IMAGE__data:... or __VIDEO__data:...
+    // Format required by Ledger Chat message parser: __IMAGE__data:... or __VIDEO__data:...
     const dataUrl = `data:${safeMimeType};base64,${base64Data}`;
     
     const originalName = file.name || 'attachment';

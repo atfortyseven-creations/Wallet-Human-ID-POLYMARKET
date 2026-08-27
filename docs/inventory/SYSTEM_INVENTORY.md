@@ -295,7 +295,7 @@ The platform has **multiple parallel identity systems**:
 | `test/portfolio-onchain.test.ts` | Integration | Portfolio | EXISTS |
 | `test/qd-economy.security.test.ts` | Security | QD token economy | EXISTS |
 | `test/qd-stress.test.ts` | Load | QD token | EXISTS |
-| `test/whale_chat_audit.test.ts` | Audit | WhaleChat | EXISTS |
+| `test/whale_chat_audit.test.ts` | Audit | Ledger Chat | EXISTS |
 | `test/WhaleDeadmanSwitch.test.ts` | Unit | Dead Man's Switch | EXISTS |
 | `test/unit/crypto/eip191-verify.test.ts` | Unit | EIP-191 signing | EXISTS |
 | `test/unit/resilience/circuit-breaker.test.ts` | Unit | Circuit breaker | EXISTS |
@@ -353,7 +353,7 @@ Categories identified:
 | `README.md` | "L2 ZK-rollup ecosystem settled on Aztec" | No Aztec mainnet deployment exists | CONTRADICTORY |
 | `MASTER_ARCHITECTURE.md` | "Full system blueprint" | Dated 14/08/2026 — already partially stale | CONTRADICTORY |
 | `PRODUCTION_READINESS.md` | Lists contracts as NOT deployed | Matches reality | ACCURATE |
-| `WHALE_NETWORK_WHITEPAPER.md` | Describes WhaleChat + Aztec PXE signaling | No confirmed PXE connection | PARTIALLY CONTRADICTORY |
+| `WHALE_NETWORK_WHITEPAPER.md` | Describes Ledger Chat + Aztec PXE signaling | No confirmed PXE connection | PARTIALLY CONTRADICTORY |
 | `DEPLOYMENT.md` | Railway deployment | Matches reality | ACCURATE |
 | `SECURITY.md` | Security policy | Needs review | UNKNOWN |
 | `system_capabilities.md` | Lists capabilities | Not verified against code | UNVERIFIED |

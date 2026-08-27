@@ -7,7 +7,7 @@ This phase is **not implemented** in the current app build. It documents the int
 - **Noir circuit v2** — extend `circuits/src/main.nr` to prove a field exists in a passport payload without revealing the full JSON (e.g. supplier list).
 - **Compile + CI** — `nargo compile`, commit ACIR artifact, client-side prove via `@aztec/bb.js`.
 - **Viewing keys** — replace demo logic in `lib/blockchain/StealthAddressService.ts` with Aztec viewing-key patterns from Aztec Network docs.
-- **Share via Whale Chat** — encrypted message type `VIEWING_KEY:{passportId}:{exp}` in `SystemChat.tsx`.
+- **Share via Ledger Chat** — encrypted message type `VIEWING_KEY:{passportId}:{exp}` in `SystemChat.tsx`.
 
 ## Explicit non-goals for Phase 3 MVP wiring
 

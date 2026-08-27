@@ -7,7 +7,7 @@ import { prisma } from '@/lib/prisma';
  * [FASE 10] Checks whether a given wallet address has been shadow-banned
  * (i.e., their messages have been escalated 3+ times from 3+ distinct reporters).
  *
- * Used by WhaleChat to silently filter messages from banned senders.
+ * Used by Ledger Chat to silently filter messages from banned senders.
  * 200 { banned: false } = normal
  * 200 { banned: true }  = suppress messages from this address in UI
  */

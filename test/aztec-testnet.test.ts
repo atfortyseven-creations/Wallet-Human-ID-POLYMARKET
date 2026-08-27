@@ -17,7 +17,7 @@
  *  5. API /api/aztec/airdrop  — validation guard-rails
  *  6. API /api/aztec/transfer — validation guard-rails
  *  7. QDs math helpers (rawToQds / qdsToRaw)
- *  8. Whale Chat message persistence (no-erase regression)
+ *  8. Ledger Chat message persistence (no-erase regression)
  *  9. Landing page visibility (mobile/desktop viewport CSS)
  * 10. Explorer URL formatting
  */
@@ -342,9 +342,9 @@ describe('Suite 7 — /api/test-aztec Connection Endpoint', () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SUITE 8: Whale Chat Message Persistence (regression: messages deleted on send)
+// SUITE 8: Ledger Chat Message Persistence (regression: messages deleted on send)
 // ─────────────────────────────────────────────────────────────────────────────
-describe('Suite 8 — Whale Chat Message Persistence Regression', () => {
+describe('Suite 8 — Ledger Chat Message Persistence Regression', () => {
   // Use a tighter timeout since these endpoints should respond quickly
   const CHAT_TIMEOUT = 15_000;
 
@@ -384,11 +384,11 @@ describe('Suite 8 — Whale Chat Message Persistence Regression', () => {
     }
   });
 
-  it('Dashboard whale-chat endpoint does not return 500', { timeout: CHAT_TIMEOUT }, async () => {
+  it('Dashboard ledger-chat endpoint does not return 500', { timeout: CHAT_TIMEOUT }, async () => {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 12_000);
     try {
-      const res = await fetch(`${DEV_URL}/api/whale-chat/messages?channelId=general`, { signal: controller.signal });
+      const res = await fetch(`${DEV_URL}/api/ledger-chat/messages?channelId=general`, { signal: controller.signal });
       expect(res.status).not.toBe(500);
     } catch (e: any) {
       if (e.name === 'AbortError') {

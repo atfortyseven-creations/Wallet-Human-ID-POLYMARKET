@@ -10,7 +10,7 @@
 |---|---|---|---|---|---|
 | "Zero-Knowledge by Default... settled on Aztec" | `README.md` | `app/api/zk/prove/route.ts` uses HMAC-SHA256 to simulate proofs. No Aztec L2 deployment exists. | System claims cryptographic privacy but uses symmetric server signatures. | **CRITICAL** | Remove false claims from UI. Disable HMAC mock. Wait for actual Aztec v5 deployment. |
 | "Decentralized Registry... on-chain" | `Studio Provenance` | `ProductPassport` stored exclusively in PostgreSQL. | Assets are completely centralized in the SQL database. | **HIGH** | Update UI to state "Indexed/Local" until `WhaleKnowledgeGraph.sol` is deployed. |
-| "E2E Encrypted P2P Chat" | `Whale Chat` | Uses XMTP (which is E2E), but identity binding relies on a mocked ZK proof. | Identity is not verifiable via ZK as claimed. | **HIGH** | Use standard SIWE for XMTP identity until ZK circuits are compiled and verified. |
+| "E2E Encrypted P2P Chat" | `LedgerChat` | Uses XMTP (which is E2E), but identity binding relies on a mocked ZK proof. | Identity is not verifiable via ZK as claimed. | **HIGH** | Use standard SIWE for XMTP identity until ZK circuits are compiled and verified. |
 | "Neo4j Graph Database" | Architecture Map | Only `schema.cypher` exists. No live data flows to Neo4j. | Claiming a knowledge graph that isn't running. | **MEDIUM** | Remove Neo4j claims or implement the sync worker. |
 
 ---

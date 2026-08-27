@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const fetchRes = await fetch(url, {
       headers: {
-        'User-Agent': 'WhaleChatBot/1.0 (+https://whale.network)',
+        'User-Agent': 'Ledger ChatBot/1.0 (+https://whale.network)',
       },
     });
 

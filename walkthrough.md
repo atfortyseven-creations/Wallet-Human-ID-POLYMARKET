@@ -1,11 +1,11 @@
-# WhaleChat Protocol Architecture Walkthrough
+# Ledger Chat Protocol Architecture Walkthrough
 
 ## What Was Accomplished
 
 The entire WebRTC signaling and identity flow has been built, implemented, and verified, integrating perfectly with the **Aztec Network** Alpha V5 vision.
 
 ### 1. PeerJS + XMTP Hybrid Signaling
-- Implemented `WhaleChat.tsx` which handles the complex WebRTC handshake.
+- Implemented `LedgerChat.tsx` which handles the complex WebRTC handshake.
 - Instead of a central server, call offers are broadcasted via XMTP.
 - Solved the mobile constraint issues causing `NotAllowedError` on Android WebViews.
 

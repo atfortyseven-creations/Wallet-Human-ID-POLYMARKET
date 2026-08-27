@@ -4,7 +4,7 @@
  * Relay Peer Discovery Registry
  *
  * Maintains a live list of browser sessions that have volunteered
- * to act as onion relay nodes in the Whale Chat privacy network.
+ * to act as onion relay nodes in the Ledger Chat privacy network.
  *
  * GET  — Returns the list of currently active relay nodes (with public keys)
  * POST — Registers or refreshes a relay node's heartbeat

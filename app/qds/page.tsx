@@ -88,18 +88,18 @@ const SECTIONS: Section[] = [
     ],
     bullets: [
       'Whale Terminal Pro Access: Spending QDs unlocks advanced analytical tiers (Tier 2 Pro, Tier 3 Whale). These tiers provide real-time whale alert filtering, anomaly detection dashboards, and cross-chain capital flow monitoring beyond what the free tier offers.',
-      'Whale Chat Encrypted Signals: When a participant sends a paid signal in Whale Chat, the recipient must spend QDs to decrypt and view it. The payment is a private ZK transaction — Aztec confirms the balance change, then the signal decrypts locally on the recipient\'s device.',
+      'Ledger Chat Encrypted Signals: When a participant sends a paid signal in LedgerChat, the recipient must spend QDs to decrypt and view it. The payment is a private ZK transaction — Aztec confirms the balance change, then the signal decrypts locally on the recipient\'s device.',
       'On-Chain Governance Voting: Submitting or voting on a Market Proposal requires locking a small amount of QDs. This prevents sybil attacks (creating many fake accounts to spam votes) by requiring economic commitment. Votes are cryptographically anchored to the ledger.',
       'Studio Provenance — ZK Product Passports: Minting an immutable cryptographic QR passport for a physical product costs QDs. The provenance record is anchored to the Aztec state, making it tamper-proof and verifiable by any third party scanning the QR code.',
     ],
   },
   {
     num: '05',
-    title: 'Spending QDs in Whale Chat — step by step',
+    title: 'Spending QDs in Ledger Chat — step by step',
     tag: 'How-To',
     paragraphs: [
       'This is the most direct example of QDs working as a real cryptographic payment layer today.',
-      'Step 1: Open Whale Chat from the terminal. Select a conversation with a peer you have already connected with via QR scan or wallet address.',
+      'Step 1: Open Ledger Chat from the terminal. Select a conversation with a peer you have already connected with via QR scan or wallet address.',
       'Step 2: Locate a message with a paid signal attached (indicated by a lock icon and QD cost).',
       'Step 3: Click "Pay & Decrypt". The application encodes your payment using Noir ABI encoding locally in your browser — the private inputs (your balance commitment, the recipient\'s Aztec address) never leave your device.',
       'Step 4: The encoded transaction is submitted to the Aztec V5 testnet RPC. The sequencer validates your ZK proof and updates both balances atomically — your balance decreases, the sender\'s increases.',
@@ -202,7 +202,7 @@ const SECTIONS: Section[] = [
     title: 'Current Status — Aztec Testnet (July 2026)',
     tag: 'Status',
     paragraphs: [
-      'QDs are currently live on the Aztec V5 testnet (endpoint: v5.testnet.rpc.aztec-labs.com). All functionality described in this document is operational on testnet: airdrops, Whale Chat payments, governance votes, and Studio Provenance records.',
+      'QDs are currently live on the Aztec V5 testnet (endpoint: v5.testnet.rpc.aztec-labs.com). All functionality described in this document is operational on testnet: airdrops, Ledger Chat payments, governance votes, and Studio Provenance records.',
       'Testnet tokens have zero monetary value. They exist for the purpose of protocol validation, security testing, and infrastructure preparation before mainnet deployment. Do not purchase, sell, or treat testnet QDs as financial instruments. Any marketplace offering to sell testnet QDs is operating outside the canonical protocol.',
       'The transition from testnet to mainnet will happen only when: (1) a Tier-1 ZK security audit of the Noir circuit is complete and all findings are publicly disclosed, (2) the Barretenberg proving system reaches the performance benchmarks required for mainnet throughput, and (3) Aztec Network\'s L1 settlement contracts are formally verified and deployed.',
     ],
@@ -220,7 +220,7 @@ const SECTIONS: Section[] = [
     paragraphs: [
       'On mainnet, QDs become the core economic layer of a private-by-default financial intelligence network. The vision is not a speculative token — it is a functional unit of exchange for a specific, operational ecosystem.',
       'Private Wealth Intelligence: On mainnet, Whale Terminal Pro access paid in QDs grants participants private real-time intelligence on capital movements across Ethereum, Aztec, and bridged L2 networks. The competitive advantage is significant: most participants use public data. Whale Terminal users operate on private analytics that no one else can see or intercept.',
-      'Sovereign P2P Economy: Whale Chat on mainnet becomes a fully operational peer-to-peer marketplace for financial intelligence. Analysts, researchers, and whale-level investors will be able to sell encrypted insights directly to each other, denominated in QDs, with no intermediary, no platform fee beyond the ZK transaction cost, and no record of who paid whom.',
+      'Sovereign P2P Economy: Ledger Chat on mainnet becomes a fully operational peer-to-peer marketplace for financial intelligence. Analysts, researchers, and whale-level investors will be able to sell encrypted insights directly to each other, denominated in QDs, with no intermediary, no platform fee beyond the ZK transaction cost, and no record of who paid whom.',
       'Verifiable Provenance at Scale: Studio Provenance on mainnet allows manufacturers, artists, and institutions to anchor physical-world ownership records to the Aztec state permanently. A QD-denominated fee mints an immutable, cryptographically verifiable passport for any asset — from luxury goods to medical devices to art.',
       'Protocol Governance: On mainnet, every significant parameter change to the Humanity Ledger protocol (alert thresholds, new asset integrations, fee structures) goes through ZK-based on-chain governance. QD holders vote. QDs locked in proposals cannot be double-voted. The protocol evolves only through demonstrated economic consensus.',
     ],
@@ -232,7 +232,7 @@ const SECTIONS: Section[] = [
     paragraphs: [
       'Phase 1 — Testnet Validation (Current): All four QD use cases operational on Aztec V5 testnet. Security audit of Noir circuits in preparation. Barretenberg WASM proving performance benchmarking underway. Community participation through airdrops building initial network effects.',
       'Phase 2 — ZK Audit and Pre-Mainnet: Independent Tier-1 ZK security audit of the QD token circuit and all Humanity Ledger Noir contracts. All findings published publicly in full. No mainnet deployment before 100% audit completion and resolution of all critical findings.',
-      'Phase 3 — Mainnet Launch: Deployment of the canonical QD genesis state on Aztec mainnet. Initial distribution via the Proof of Contribution mechanism begins. Studio Provenance mainnet records activated. Whale Chat P2P payments operational with real economic value.',
+      'Phase 3 — Mainnet Launch: Deployment of the canonical QD genesis state on Aztec mainnet. Initial distribution via the Proof of Contribution mechanism begins. Studio Provenance mainnet records activated. Ledger Chat P2P payments operational with real economic value.',
       'Phase 4 — Ecosystem Expansion: Integration with external Aztec-native applications and DeFi protocols. Cross-chain capital bridges (Ethereum ↔ Aztec) for shielding/unshielding. QD-denominated fee markets for new terminal data sources. Full on-chain governance activation for protocol parameter changes.',
       'Phase 5 — Autonomous Protocol: Network reaches sufficient decentralization that no single participant, including the Humanity Ledger team, can alter the protocol unilaterally. The emission schedule completes. The network operates on pure fee economics. QDs exist as a sovereign, immutable unit of account — exactly as designed from genesis.',
     ],

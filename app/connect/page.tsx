@@ -10,7 +10,7 @@ const ConnectPage = dynamic(() => import('@/components/landing/ConnectPage'), {
   loading: () => null
 });
 
-/**
+
 function ConnectLoading() {
   return (
     <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center gap-6 p-6">
