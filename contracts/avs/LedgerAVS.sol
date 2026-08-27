@@ -119,6 +119,21 @@ contract LedgerAVS is Ownable2Step, ReentrancyGuard, Pausable {
     }
 
     /**
+     * @dev Operators can unregister and withdraw their stake if they are not slashed.
+     */
+    function unregisterOperator() external nonReentrant whenNotPaused {
+        Operator storage op = operators[msg.sender];
+        require(op.isRegistered, "Not an operator");
+        
+        uint256 amountToReturn = op.stakedAmount;
+        op.isRegistered = false;
+        op.stakedAmount = 0;
+
+        stakingToken.safeTransfer(msg.sender, amountToReturn);
+    }
+
+
+    /**
      * @dev Slashes a Byzantine operator who certified a mathematically invalid state.
      * Controlled by System Governance.
      */
