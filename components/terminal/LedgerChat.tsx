@@ -955,8 +955,9 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     let destroyed = false; // guard for async import cleanup
     const thisKey = peerInitKey; // capture for closure
 
-    import('peerjs').then(({ default: Peer }) => {
+    import('peerjs').then((peerjsModule) => {
       if (destroyed) return; // component unmounted before import resolved
+      const Peer = peerjsModule.default?.Peer || peerjsModule.Peer || (peerjsModule.default as any);
 
       // ─── DETERMINISTIC PEERID — CRITICAL FOR REVERSE-DIAL ARCHITECTURE ───
       // Both peers derive each other's ID from the wallet address alone.

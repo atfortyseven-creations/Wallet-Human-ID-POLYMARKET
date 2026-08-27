@@ -14,122 +14,185 @@ import {
 
 // ─── App definitions ─────────────────────────────────────────────────────────
 
+export const PUBLIC_APP_MODULES = new Set(['chat']);
+export const VISIBLE_LOCKED_MODULES = [
+  'dashboard', 'markets', 'studio', 'governance', 'network', 'academy', 'qds', 'identity', 'registry', 'token'
+] as const;
+
 const APPS: {
   id: string;
   label: string;
   desc: string;
   href: string;
-  icon: LucideIcon;
+  icon: any;
   bg: string;
   fg: string;
   colSpan: string;
+  locked: boolean;
 }[] = [
   {
-    id: 'terminal',
-    label: 'Dashboard',
-    desc: 'Portfolio, Markets & Identity',
-    href: '/terminal',
-    icon: LayoutDashboard,
-    bg: '#0A0A0A',
-    fg: '#FFFFFF',
-    colSpan: 'col-span-1 sm:col-span-2',
-  },
-  {
     id: 'chat',
-    label: 'LedgerChat',
-    desc: 'E2E encrypted messaging',
+    label: 'Ledger Chat',
+    desc: 'Encrypted communication',
     href: '/chat',
     icon: MessageSquare,
     bg: '#1C7AFF',
     fg: '#FFFFFF',
+    colSpan: 'col-span-2 sm:col-span-2 lg:col-span-2',
+    locked: false,
+  },
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    desc: 'Portfolio intelligence',
+    href: '#',
+    icon: LayoutDashboard,
+    bg: '#F5F5F7',
+    fg: '#0A0A0A',
     colSpan: 'col-span-1',
+    locked: true,
   },
   {
     id: 'markets',
     label: 'Markets',
-    desc: 'Live DeFi intelligence',
-    href: '/terminal?tab=markets',
+    desc: 'Global block analytics',
+    href: '#',
     icon: TrendingUp,
     bg: '#F5F5F7',
     fg: '#0A0A0A',
     colSpan: 'col-span-1',
+    locked: true,
   },
   {
     id: 'studio',
     label: 'Studio',
-    desc: 'Asset provenance & NFTs',
-    href: '/studio/provenance',
+    desc: 'Provenance registry. Not open while the module is under repair.',
+    href: '#',
     icon: Package,
     bg: '#7C3AED',
     fg: '#FFFFFF',
     colSpan: 'col-span-1',
+    locked: true,
   },
   {
     id: 'governance',
     label: 'Governance',
     desc: 'Vote on proposals',
-    href: '/terminal?tab=governance',
+    href: '#',
     icon: Vote,
     bg: '#F5F5F7',
     fg: '#0A0A0A',
     colSpan: 'col-span-1',
+    locked: true,
   },
   {
     id: 'identity',
     label: 'Identity',
     desc: 'ZK sovereign credential',
-    href: '/terminal?tab=gold',
+    href: '#',
     icon: Fingerprint,
     bg: '#0A0A0A',
     fg: '#FFFFFF',
     colSpan: 'col-span-1',
+    locked: true,
   },
   {
     id: 'network',
     label: 'Network',
     desc: 'Global node map',
-    href: '/terminal?tab=map',
+    href: '#',
     icon: Globe,
     bg: '#F5F5F7',
     fg: '#0A0A0A',
     colSpan: 'col-span-1',
+    locked: true,
   },
   {
     id: 'academy',
     label: 'Academy',
     desc: 'Learn cryptography',
-    href: '/academy',
+    href: '#',
     icon: BookOpen,
     bg: '#F5F5F7',
     fg: '#0A0A0A',
     colSpan: 'col-span-1',
+    locked: true,
   },
   {
     id: 'registry',
     label: 'Registry',
     desc: 'Asset passport explorer',
-    href: '/registry',
+    href: '#',
     icon: ShieldCheck,
     bg: '#F5F5F7',
     fg: '#0A0A0A',
     colSpan: 'col-span-1',
+    locked: true,
   },
   {
     id: 'token',
     label: 'QDS Token',
-    desc: 'Stake · Vote · Earn',
-    href: '/qds',
+    desc: 'Stake & Vote',
+    href: '#',
     icon: Coins,
     bg: '#F59E0B',
     fg: '#FFFFFF',
-    colSpan: 'col-span-1 sm:col-span-2',
+    colSpan: 'col-span-1 sm:col-span-2 lg:col-span-1',
+    locked: true,
   },
 ];
 
 // ─── App Card ────────────────────────────────────────────────────────────────
 
 function AppCard({ app, index }: { app: typeof APPS[0]; index: number }) {
-  const Icon: LucideIcon = app.icon;
+  const Icon = app.icon;
+  const CardContent = (
+    <div
+      className={`relative h-full rounded-[24px] p-5 flex flex-col justify-between overflow-hidden select-none transition-all duration-200 ${
+        app.locked
+          ? 'opacity-60 grayscale-[50%] cursor-not-allowed'
+          : 'cursor-pointer hover:scale-[1.025] active:scale-[0.97] hover:shadow-xl shadow-sm'
+      }`}
+      style={{ backgroundColor: app.bg, minHeight: '120px' }}
+    >
+      {app.locked && (
+        <div className="absolute top-4 right-4 px-2.5 py-1 bg-black/10 rounded-full text-[10px] font-bold uppercase tracking-wider text-black/60">
+          In development
+        </div>
+      )}
+      {/* Icon bubble */}
+      <div
+        className="w-10 h-10 rounded-2xl flex items-center justify-center"
+        style={{ background: app.fg === '#FFFFFF' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.06)' }}
+      >
+        <Icon size={20} strokeWidth={1.8} color={app.fg} />
+      </div>
+
+      {/* Label */}
+      <div className="mt-auto pt-5 pr-8">
+        <p className="font-semibold text-[15px] leading-tight" style={{ color: app.fg }}>
+          {app.label}
+        </p>
+        <p className="text-[12px] mt-0.5 font-medium leading-snug" style={{ color: app.fg, opacity: 0.55 }}>
+          {app.desc}
+        </p>
+      </div>
+
+      {/* Action Indicator */}
+      {app.locked ? (
+        <span className="absolute bottom-5 right-5 text-[11px] font-bold uppercase" style={{ color: app.fg, opacity: 0.4 }}>
+          Unavailable
+        </span>
+      ) : (
+        <ChevronRight
+          size={14}
+          className="absolute bottom-5 right-5"
+          style={{ color: app.fg, opacity: 0.25 }}
+        />
+      )}
+    </div>
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -137,39 +200,15 @@ function AppCard({ app, index }: { app: typeof APPS[0]; index: number }) {
       transition={{ delay: index * 0.04, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className={app.colSpan}
     >
-      <Link href={app.href} className="block h-full">
-        <div
-          className="relative h-full rounded-[24px] p-5 flex flex-col justify-between overflow-hidden
-            cursor-pointer select-none transition-all duration-200
-            hover:scale-[1.025] active:scale-[0.97] hover:shadow-xl shadow-sm"
-          style={{ backgroundColor: app.bg, minHeight: '120px' }}
-        >
-          {/* Icon bubble */}
-          <div
-            className="w-10 h-10 rounded-2xl flex items-center justify-center"
-            style={{ background: app.fg === '#FFFFFF' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.06)' }}
-          >
-            <Icon size={20} strokeWidth={1.8} color={app.fg} />
-          </div>
-
-          {/* Label */}
-          <div className="mt-auto pt-5">
-            <p className="font-semibold text-[15px] leading-tight" style={{ color: app.fg }}>
-              {app.label}
-            </p>
-            <p className="text-[12px] mt-0.5 font-medium" style={{ color: app.fg, opacity: 0.55 }}>
-              {app.desc}
-            </p>
-          </div>
-
-          {/* Arrow */}
-          <ChevronRight
-            size={14}
-            className="absolute bottom-5 right-5"
-            style={{ color: app.fg, opacity: 0.25 }}
-          />
+      {app.locked ? (
+        <div className="block h-full" onClick={(e) => e.preventDefault()}>
+          {CardContent}
         </div>
-      </Link>
+      ) : (
+        <Link href={app.href} className="block h-full">
+          {CardContent}
+        </Link>
+      )}
     </motion.div>
   );
 }
@@ -232,13 +271,12 @@ function IdentityPanel() {
 
       {/* Actions */}
       <div className="mt-5 pt-4 border-t border-black/[0.05] flex items-center gap-2.5">
-        <Link
-          href="/terminal"
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-black text-white text-[12px] font-bold tracking-wide hover:bg-black/80 transition-all active:scale-95"
+        <div
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-black/10 text-black/40 text-[12px] font-bold tracking-wide cursor-not-allowed"
         >
           <LayoutDashboard size={13} />
-          Open Dashboard
-        </Link>
+          Dashboard Unavailable
+        </div>
         <button
           onClick={() => {
             disconnect();

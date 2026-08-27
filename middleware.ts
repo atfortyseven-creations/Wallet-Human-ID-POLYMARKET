@@ -50,28 +50,29 @@ const PUBLIC_PATHS = new Set([
 ]);
 
 const PUBLIC_PREFIXES = [
-  '/api/auth/',           // All SIWE/session auth endpoints
-  '/api/aztec/airdrop',   // The claim endpoint itself must remain public
+  '/api/auth/',
+  '/api/aztec/airdrop',
   '/api/aztec/balance',
   '/api/aztec/transactions',
   '/api/aztec/derive-address',
   '/api/aztec/identity-status',
-  '/api/aztec/restore-session',  // Session restore for returning users (pre-auth)
-  '/api/payments/checkout',      // Stripe checkout session creation
-  '/api/webhooks/stripe',        // Stripe webhook (must be unauthenticated)
-  '/api/webhooks/',              // All webhooks from external services
-  '/api/dev/deploy',             // Temporary public route for deploying contracts
-  '/api/aztec/deploy-token',     // Admin deploy endpoint — has own DEPLOY_SECRET auth inside
+  '/api/aztec/restore-session',
+  '/api/payments/checkout',
+  '/api/webhooks/stripe',
+  '/api/webhooks/',
+  '/api/dev/deploy',
+  '/api/aztec/deploy-token',
   '/api/health',
   '/api/status',
-  '/api/registry/',              // Registry public API
-  '/api/humanidfi/',             // HumanIDFi public API
+  '/api/registry/',
+  '/api/humanidfi/',
   '/_next/',
   '/connect',
+  '/legal/',
+  '/docs/',
   '/terminal',
   '/portfolio',
-  '/studio',                     // Studio Provenance public page
-  '/registry',                   // Registry page
+  '/registry',
   '/fonts/',
   '/images/',
   '/icons/',
@@ -189,6 +190,30 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
   // 2. Allow all public paths through immediately
   if (isPublicPath(pathname)) {
     return NextResponse.next();
+  }
+
+  // [FASE 3: App Hub Lock]
+  const LOCKED_ROUTES = ['/dashboard', '/markets', '/studio', '/governance', '/network', '/academy', '/qds'];
+  if (LOCKED_ROUTES.some(r => pathname.startsWith(r))) {
+    return new NextResponse(
+      `<!DOCTYPE html><html><head><title>Module Unavailable</title>
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+       <style>
+         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #fafafa; color: #111; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; padding: 20px; text-align: center; }
+         .card { max-w: 500px; padding: 40px; background: #fff; border: 1px solid #eaeaea; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+         h2 { margin-top: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+         p { color: #666; line-height: 1.6; margin-bottom: 24px; }
+         a { display: inline-block; padding: 10px 20px; background: #111; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; }
+       </style>
+       </head><body>
+       <div class="card">
+         <h2>Module Unavailable</h2>
+         <p>This module is in development or under repair.</p>
+         <a href="/hub">Return to App Hub</a>
+       </div>
+       </body></html>`,
+      { status: 200, headers: { 'content-type': 'text/html' } }
+    );
   }
 
   // [FASE 18: OFAC / Restricted Jurisdiction Geofencing]
