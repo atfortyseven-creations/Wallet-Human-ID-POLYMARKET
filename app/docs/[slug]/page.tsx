@@ -23,7 +23,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
   if (!docInfo) notFound();
 
   return (
-    <DocsShell activeSlug={slug} breadcrumb={[{ label: docInfo.group }, { label: docInfo.label }]}>
+    <DocsShell currentSlug={slug}>
       {slug === 'index' && (
         <>
           <DocH1>Documentation Index</DocH1>

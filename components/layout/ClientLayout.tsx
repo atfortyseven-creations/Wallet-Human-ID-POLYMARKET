@@ -71,6 +71,7 @@ const BOUNDED_PREFIXES = [
   '/admin', '/clearance',
   '/api-marketplace', '/directory', '/company', '/infrastructure',
   '/forum', '/chat', '/hub', '/whitepaper', '/manifesto',
+  '/docs', // Added to prevent infinite scroll bugs
   '/', // Landing page — prevents white zone below footer
 ];
 

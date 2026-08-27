@@ -70,7 +70,6 @@ const PUBLIC_PREFIXES = [
   '/connect',
   '/legal/',
   '/docs/',
-  '/terminal',
   '/portfolio',
   '/registry',
   '/fonts/',
@@ -192,6 +191,11 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
     return NextResponse.next();
   }
 
+
+  // Redirect old /terminal to /hub
+  if (pathname === '/terminal' || pathname.startsWith('/terminal/')) {
+    return NextResponse.redirect(new URL('/hub', req.url));
+  }
   // [FASE 3: App Hub Lock]
   const LOCKED_ROUTES = ['/dashboard', '/markets', '/studio', '/governance', '/network', '/academy', '/qds'];
   if (LOCKED_ROUTES.some(r => pathname.startsWith(r))) {

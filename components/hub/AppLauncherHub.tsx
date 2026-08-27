@@ -150,44 +150,44 @@ function AppCard({ app, index }: { app: typeof APPS[0]; index: number }) {
     <div
       className={`relative h-full rounded-[24px] p-5 flex flex-col justify-between overflow-hidden select-none transition-all duration-200 ${
         app.locked
-          ? 'opacity-60 grayscale-[50%] cursor-not-allowed'
+          ? 'opacity-70 grayscale-[50%] cursor-not-allowed'
           : 'cursor-pointer hover:scale-[1.025] active:scale-[0.97] hover:shadow-xl shadow-sm'
       }`}
-      style={{ backgroundColor: app.bg, minHeight: '120px' }}
+      style={{ backgroundColor: app.bg, minHeight: '130px' }}
     >
-      {app.locked && (
-        <div className="absolute top-4 right-4 px-2.5 py-1 bg-black/10 rounded-full text-[10px] font-bold uppercase tracking-wider text-black/60">
-          In development
+      <div className="flex justify-between items-start">
+        {/* Icon bubble */}
+        <div
+          className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
+          style={{ background: app.fg === '#FFFFFF' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.06)' }}
+        >
+          <Icon size={20} strokeWidth={1.8} color={app.fg} />
         </div>
-      )}
-      {/* Icon bubble */}
-      <div
-        className="w-10 h-10 rounded-2xl flex items-center justify-center"
-        style={{ background: app.fg === '#FFFFFF' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.06)' }}
-      >
-        <Icon size={20} strokeWidth={1.8} color={app.fg} />
       </div>
 
-      {/* Label */}
-      <div className="mt-auto pt-5 pr-8">
-        <p className="font-semibold text-[15px] leading-tight" style={{ color: app.fg }}>
-          {app.label}
-        </p>
-        <p className="text-[12px] mt-0.5 font-medium leading-snug" style={{ color: app.fg, opacity: 0.55 }}>
+      {/* Label & Description */}
+      <div className="mt-auto pt-6 flex flex-col gap-1 relative z-10">
+        <div className="flex items-center gap-2">
+          <p className="font-semibold text-[15px] leading-tight" style={{ color: app.fg }}>
+            {app.label}
+          </p>
+          {app.locked && (
+            <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(0,0,0,0.1)', color: app.fg }}>
+              Locked
+            </span>
+          )}
+        </div>
+        <p className="text-[12px] font-medium leading-snug pr-4" style={{ color: app.fg, opacity: 0.7 }}>
           {app.desc}
         </p>
       </div>
 
       {/* Action Indicator */}
-      {app.locked ? (
-        <span className="absolute bottom-5 right-5 text-[11px] font-bold uppercase" style={{ color: app.fg, opacity: 0.4 }}>
-          Unavailable
-        </span>
-      ) : (
+      {!app.locked && (
         <ChevronRight
-          size={14}
+          size={16}
           className="absolute bottom-5 right-5"
-          style={{ color: app.fg, opacity: 0.25 }}
+          style={{ color: app.fg, opacity: 0.3 }}
         />
       )}
     </div>
@@ -247,24 +247,24 @@ function IdentityPanel() {
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className="mb-6 bg-white rounded-[24px] border border-black/[0.06] p-6 shadow-sm"
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4">
         {/* Clock */}
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-black/30 mb-1">Session Active</p>
-          <p className="font-mono text-[28px] font-bold text-black tracking-tight tabular-nums leading-none">{time}</p>
-          <p className="font-mono text-[11px] text-black/30 mt-1">{date}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-black/40 mb-1">Session Active</p>
+          <p className="font-mono text-[24px] sm:text-[28px] font-bold text-black tracking-tight tabular-nums leading-none">{time}</p>
+          <p className="font-mono text-[11px] text-black/40 mt-1.5">{date}</p>
         </div>
 
         {/* Wallet info */}
-        <div className="text-right flex-shrink-0">
-          <div className="inline-flex items-center gap-2 bg-black/[0.04] rounded-full px-4 py-2 mb-2">
+        <div className="flex flex-col sm:items-end">
+          <div className="inline-flex items-center gap-2 bg-black/[0.04] rounded-full px-4 py-2 mb-2 w-fit">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             <span className="font-mono text-[12px] font-bold text-black">{short}</span>
           </div>
           {ens && <p className="font-mono text-[11px] text-black/40 mb-1">{ens}</p>}
-          {bal && <p className="font-mono text-[11px] text-black/35">{bal}</p>}
+          {bal && <p className="font-mono text-[11px] text-black/40">{bal}</p>}
           {connector?.name && (
-            <p className="font-mono text-[10px] text-black/25 mt-1">{connector.name}</p>
+            <p className="font-mono text-[10px] text-black/30 mt-1">{connector.name}</p>
           )}
         </div>
       </div>
