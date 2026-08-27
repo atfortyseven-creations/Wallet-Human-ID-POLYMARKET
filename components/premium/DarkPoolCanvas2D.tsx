@@ -10,7 +10,7 @@
  *    Per-grain Verlet physics: gravity, wall normals, friction         
  *    Signed-distance-field hourglass boundary  sub-pixel accurate     
  *    Bloom pass: additive layered radial gradients per grain           
- *    Chromatic aberration simulation for whale-class transactions      
+ *    Chromatic aberration simulation for ledger-class transactions      
  *    Heat-map pool: accumulating glow at settling zone                 
  *    Spatial hash grid for O(n) collision broad-phase                  
  *    60fps locked via rAF + delta-time clamping                        
@@ -26,7 +26,7 @@ import React, {
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap } from "lucide-react";
-import { useVIPStore, WhaleEvent } from "@/lib/vip-store";
+import { useVIPStore, LedgerEvent } from "@/lib/vip-store";
 import { usePerformanceMode, shouldRenderFrame } from "@/hooks/usePerformanceMode";
 
 // 
@@ -55,8 +55,8 @@ type Phase = "falling" | "necking" | "pooling" | "settling" | "dissolving";
 interface Grain {
   // identity
   id: number;
-  isWhale: boolean;
-  heat: number;           // 0 cold  1 whale-red
+  isLedger: boolean;
+  heat: number;           // 0 cold  1 ledger-red
   // physics (Verlet)
   x: number; y: number;
   px: number; py: number; // previous position
@@ -81,7 +81,7 @@ let _uid = 0;
 
 // 
 // COLOR SYSTEM  perceptually uniform palette
-// cold(navy)  mid(violet)  hot(crimson)  supra(gold for mega-whale)
+// cold(navy)  mid(violet)  hot(crimson)  supra(gold for mega-ledger)
 // 
 function heatRGB(t: number): [number, number, number] {
   t = clamp(t, 0, 1);
@@ -95,7 +95,7 @@ function heatRGB(t: number): [number, number, number] {
     const s = (t - 0.66) / 0.22;
     return [lerp(140, 200, s), lerp(40, 60, s), lerp(200, 100, s)]; // Soft crimson/pink
   } else {
-    // mega-whale  soft gold
+    // mega-ledger  soft gold
     const s = (t - 0.88) / 0.12;
     return [lerp(200, 230, s), lerp(60, 180, s), lerp(100, 40, s)];
   }
@@ -132,7 +132,7 @@ function hourglassMaxHalfWidth(
 // 
 // GRAIN FACTORY
 // 
-function makeGrain(W: number, H: number, neckX: number, chamberHW: number, isWhale = false, label?: string): Grain {
+function makeGrain(W: number, H: number, neckX: number, chamberHW: number, isLedger = false, label?: string): Grain {
   // Deterministic seeds based on label or fallback
   const s = label ? label.charCodeAt(0) + label.length : 42;
   const s1 = (s * 13.1) % 1;
@@ -140,10 +140,10 @@ function makeGrain(W: number, H: number, neckX: number, chamberHW: number, isWha
   const s3 = (s * 7.5) % 1;
   const s4 = (s * 11.2) % 1;
 
-  const heat = isWhale
+  const heat = isLedger
     ? 0.78 + s1 * 0.22
     : Math.pow(s2, 1.8) * 0.7;
-  const r = isWhale
+  const r = isLedger
     ? 4.5 + s3 * 2.5 
     : 1.0 + s3 * 2.0;
   const spreadX = chamberHW * 0.9;
@@ -152,7 +152,7 @@ function makeGrain(W: number, H: number, neckX: number, chamberHW: number, isWha
 
   return {
     id: _uid++,
-    isWhale,
+    isLedger,
     heat,
     x, y,
     px: x + (s2 - 0.5) * 0.2,
@@ -162,7 +162,7 @@ function makeGrain(W: number, H: number, neckX: number, chamberHW: number, isWha
     phase: "falling",
     age: 0,
     label: label,
-    labelAlpha: isWhale ? 1 : 0,
+    labelAlpha: isLedger ? 1 : 0,
     depth: s3,
     glowPulse: s4 * Math.PI * 2,
   };
@@ -303,11 +303,11 @@ function runFrame(
     const pulse = 0.5 + 0.5 * Math.sin(t * 2.2 + g.glowPulse);
 
     //  Bloom rings (additive glow) 
-    if (!skipBloom && (g.r > 2 || g.isWhale)) {
-      const bloomCount = g.isWhale ? CFG.BLOOM_LAYERS + 2 : CFG.BLOOM_LAYERS;
+    if (!skipBloom && (g.r > 2 || g.isLedger)) {
+      const bloomCount = g.isLedger ? CFG.BLOOM_LAYERS + 2 : CFG.BLOOM_LAYERS;
       for (let b = bloomCount; b >= 1; b--) {
-        const br = g.r + b * (g.isWhale ? 5 : 2.5) * (1 + pulse * 0.3);
-        const ba = effAlpha * (0.06 - b * 0.008) * (g.isWhale ? 2.5 : 1);
+        const br = g.r + b * (g.isLedger ? 5 : 2.5) * (1 + pulse * 0.3);
+        const ba = effAlpha * (0.06 - b * 0.008) * (g.isLedger ? 2.5 : 1);
         if (ba < 0.004) continue;
         ctx.beginPath();
         ctx.arc(g.x, g.y, br, 0, Math.PI * 2);
@@ -316,8 +316,8 @@ function runFrame(
       }
     }
 
-    //  Chromatic aberration for whales (HIGH mode only) 
-    if (!skipBloom && g.isWhale) {
+    //  Chromatic aberration for ledgers (HIGH mode only) 
+    if (!skipBloom && g.isLedger) {
       const aberr = 2.5 + pulse * 1.5;
       ctx.beginPath();
       ctx.arc(g.x - aberr, g.y, g.r * 0.9, 0, Math.PI * 2);
@@ -349,7 +349,7 @@ function runFrame(
     ctx.fillStyle = `rgba(255,255,255,${effAlpha * 0.18})`;
     ctx.fill();
 
-    //  Whale labels 
+    //  Ledger labels 
     if (g.label && g.labelAlpha > 0.03) {
       ctx.save();
       ctx.font = `bold 8px 'SF Mono', 'Fira Code', monospace`;
@@ -466,7 +466,7 @@ export function DarkPoolCanvas2D() {
   const lastRenderRef = useRef<number>(0);
   const tRef = useRef(0);
 
-  const { whaleEvents, lastWhaleUpdate } = useVIPStore();
+  const { ledgerEvents, lastLedgerUpdate } = useVIPStore();
   const { targetFps, isVisible, particleScale, skipBloom } = usePerformanceMode();
   const perfRef = useRef({ targetFps, isVisible, particleScale, skipBloom });
   useEffect(() => {
@@ -474,34 +474,34 @@ export function DarkPoolCanvas2D() {
   }, [targetFps, isVisible, particleScale, skipBloom]);
 
   const [txCount, setTxCount] = useState(0);
-  const [whaleEventsList, setWhaleEventsList] = useState<{ label: string; amount: string; id: number }[]>([]);
+  const [ledgerEventsList, setLedgerEventsList] = useState<{ label: string; amount: string; id: number }[]>([]);
   const flowBucketRef = useRef<number[]>([]);
   const lastUpdateRef = useRef(0);
 
   //  Sync with Global Store 
   useEffect(() => {
-    if (lastWhaleUpdate === lastUpdateRef.current) return;
-    lastUpdateRef.current = lastWhaleUpdate;
+    if (lastLedgerUpdate === lastUpdateRef.current) return;
+    lastUpdateRef.current = lastLedgerUpdate;
 
     const W = canvasRef.current?.width || 800;
     const H = canvasRef.current?.height || 600;
     const neckX = W / 2;
     const chamberHW = W * 0.34;
 
-    const freshEvents = whaleEvents.slice(0, 10);
+    const freshEvents = ledgerEvents.slice(0, 10);
     
-    freshEvents.forEach((ev: WhaleEvent) => {
-      const isWhale = (ev.usdNum || 0) > 100000;
-      const g = makeGrain(W, H, neckX, chamberHW, isWhale, `${ev.token} ${ev.action}`);
+    freshEvents.forEach((ev: LedgerEvent) => {
+      const isLedger = (ev.usdNum || 0) > 100000;
+      const g = makeGrain(W, H, neckX, chamberHW, isLedger, `${ev.token} ${ev.action}`);
       grainsRef.current.push(g);
       
-      if (isWhale) {
-        setWhaleEventsList(prev => [{ label: `${ev.token} ${ev.action}`, amount: ev.usdValue, id: g.id }, ...prev].slice(0, 3));
+      if (isLedger) {
+        setLedgerEventsList(prev => [{ label: `${ev.token} ${ev.action}`, amount: ev.usdValue, id: g.id }, ...prev].slice(0, 3));
       }
       setTxCount(c => c + 1);
       flowBucketRef.current.push(performance.now());
     });
-  }, [lastWhaleUpdate, whaleEvents]);
+  }, [lastLedgerUpdate, ledgerEvents]);
 
   //  Render loop 
   const draw = useCallback(() => {
@@ -579,7 +579,7 @@ export function DarkPoolCanvas2D() {
 
       <div className="absolute left-8 bottom-8 flex flex-col gap-4 max-w-xs pointer-events-none">
           <AnimatePresence>
-              {whaleEventsList.map((ev, i) => (
+              {ledgerEventsList.map((ev, i) => (
                   <motion.div key={ev.id} initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 20, opacity: 0 }}
                       className="p-4 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/5 flex items-center gap-4">
                       <div className="p-2 bg-indigo-500/20 rounded-lg">

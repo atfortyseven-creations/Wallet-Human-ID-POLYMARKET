@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
 
     // Format embed based on type
     switch (type) {
-      case 'whale_alert':
+      case 'ledger_alert':
         embed = formatHumanityLedgerDiscord(data);
         break;
       
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         username: 'Humanity Ledger VIP',
-        avatar_url: 'https://sovereign.pro/official-whale-legendary.png', // Optional
+        avatar_url: 'https://sovereign.pro/official-ledger-legendary.png', // Optional
         embeds: [embed],
       }),
     });
@@ -123,7 +123,7 @@ function formatHumanityLedgerDiscord(data: {
       },
     ],
     footer: {
-      text: 'Humanity Ledger VIP - Whale Tracker',
+      text: 'Humanity Ledger VIP - Ledger Tracker',
     },
     timestamp: new Date().toISOString(),
     ...(data.txHash && {

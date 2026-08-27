@@ -10,8 +10,8 @@ const prisma = new PrismaClient();
 
 const PROPOSALS = [
   {
-    question: 'Should Whale Network integrate Hyperliquid perpetuals directly into the terminal?',
-    description: 'A proposal to add a native Hyperliquid perpetuals panel to the Whale Terminal. This would allow Whale members to place, modify, and cancel perpetual orders directly from the app without leaving the ZK-verified environment.',
+    question: 'Should Ledger Network integrate Hyperliquid perpetuals directly into the terminal?',
+    description: 'A proposal to add a native Hyperliquid perpetuals panel to the Ledger Terminal. This would allow Ledger members to place, modify, and cancel perpetual orders directly from the app without leaving the ZK-verified environment.',
     outcomes: ['FOR', 'AGAINST', 'ABSTAIN'],
     category: 'PRODUCT',
     status: 'VOTING',
@@ -23,7 +23,7 @@ const PROPOSALS = [
   },
   {
     question: 'Should 5% of all QD transaction fees be allocated to a community treasury?',
-    description: 'This proposal would redirect 5% of all QD network fees into a multi-sig community treasury governed by Whale token holders. Funds would be used for grants, audits, and protocol development.',
+    description: 'This proposal would redirect 5% of all QD network fees into a multi-sig community treasury governed by Ledger token holders. Funds would be used for grants, audits, and protocol development.',
     outcomes: ['FOR', 'AGAINST', 'ABSTAIN'],
     category: 'TOKENOMICS',
     status: 'VOTING',

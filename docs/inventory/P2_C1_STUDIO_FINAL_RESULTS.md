@@ -12,7 +12,7 @@ En el entorno QA con la bandera `NEXT_PUBLIC_IDENTITY_SIWE_STUDIO_ENABLED="PILOT
 
 | Endpoint | Resultado PILOT | Comportamiento |
 |---|---|---|
-| `POST /api/passport` | HTTP 201 | Creado correctamente validando ambas sesiones (humanity_session / whale_session) |
+| `POST /api/passport` | HTTP 201 | Creado correctamente validando ambas sesiones (humanity_session / ledger_session) |
 | `POST /api/premium/prover` | HTTP 403 | Bloqueo por Tier (funcionamiento idéntico y correcto) |
 | `POST /api/aztec/transfer` | HTTP 403 | Verificación fallida de saldo/claims (funcionamiento correcto) |
 | `POST /api/provenance/log` | HTTP 200 | Log insertado correctamente. |

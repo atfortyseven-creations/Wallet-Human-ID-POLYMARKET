@@ -33,7 +33,7 @@ export async function GET(request: Request) {
         const momentumScore = Math.min(100, Math.max(0, 50 + (priceChange24h * 5))); 
         const isAccumulation = priceChange24h >= 0;
 
-        // "Whale Vector" logically translated to buy/sell dominance (approximated here by price change strength)
+        // "Ledger Vector" logically translated to buy/sell dominance (approximated here by price change strength)
         const vigorPercent = 50 + Math.min(50, Math.max(-50, priceChange24h * 3));
 
         return NextResponse.json({

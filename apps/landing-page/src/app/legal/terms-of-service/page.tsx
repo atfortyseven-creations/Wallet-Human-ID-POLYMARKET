@@ -25,7 +25,7 @@ export default function TermsOfService() {
 
           <h2 className="text-2xl font-bold text-ink mt-8 mb-4">4. Limitation of Liability</h2>
           <p className="mb-4">
-            In no event shall Whale Network, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages resulting from your use of the Service or any regulatory non-compliance on your part.
+            In no event shall Ledger Network, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages resulting from your use of the Service or any regulatory non-compliance on your part.
           </p>
 
           <h2 className="text-2xl font-bold text-ink mt-8 mb-4">5. Governing Law</h2>

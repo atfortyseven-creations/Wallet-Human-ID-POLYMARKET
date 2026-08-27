@@ -16,7 +16,7 @@ class NotificationEngine {
     }
 
     try {
-      this.registration = await navigator.serviceWorker.register('/whale-sw.js');
+      this.registration = await navigator.serviceWorker.register('/ledger-sw.js');
       console.log('[NotificationEngine] Service Worker registered successfully.');
       
       // Request background sync for outbox if supported

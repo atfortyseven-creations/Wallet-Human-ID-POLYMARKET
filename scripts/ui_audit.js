@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const filePath = path.join(__dirname, 'components', 'terminal', 'WhaleChat.tsx');
+const filePath = path.join(__dirname, 'components', 'terminal', 'LedgerChat.tsx');
 let content = fs.readFileSync(filePath, 'utf8');
 
 // 1. Replace sent chat bubbles
@@ -83,4 +83,4 @@ content = content.replace(/bg-gray-50 hover:bg-gray-100 text-gray-800/g, 'bg-[#f
 content = content.replace(/text-white\/50/g, 'text-white/70');
 
 fs.writeFileSync(filePath, content, 'utf8');
-console.log('WhaleChat UI Minimalist Audit Complete');
+console.log('LedgerChat UI Minimalist Audit Complete');

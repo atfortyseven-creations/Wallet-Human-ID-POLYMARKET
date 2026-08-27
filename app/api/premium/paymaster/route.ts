@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
       success: true,
       sponsoredTransaction: {
         ...transactionPayload,
-        paymasterData: '0xWhaleNetworkGasSponsorSignature' + Date.now(),
+        paymasterData: '0xLedgerNetworkGasSponsorSignature' + Date.now(),
         gasSubsidized: true
       }
     }, { status: 200 });

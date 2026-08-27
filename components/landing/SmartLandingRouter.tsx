@@ -17,7 +17,7 @@ function MobileSkeleton() {
     >
       <div className="flex flex-col items-center gap-5">
         <h1 className="font-serif text-[13.5vw] font-normal tracking-[-0.02em] text-[#0A0A0A] leading-none select-none text-center">
-          WHALE
+          LEDGER
           <br />
           NETWORK
         </h1>

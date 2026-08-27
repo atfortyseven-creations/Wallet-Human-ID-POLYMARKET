@@ -42,10 +42,10 @@
 ### Current Auth Model Per Mutation
 | Mutation | Auth Source | Identity Source | DB Authority | Revocability |
 |---|---|---|---|---|
-| POST /api/passport | whale_session JWT | payload.address | NONE | NONE — JWT-only |
-| POST /api/premium/prover | whale_session JWT | payload.address | NONE | NONE — JWT-only |
+| POST /api/passport | ledger_session JWT | payload.address | NONE | NONE — JWT-only |
+| POST /api/premium/prover | ledger_session JWT | payload.address | NONE | NONE — JWT-only |
 | POST /api/aztec/transfer | x-web3-address header | header value | NONE | NONE — JWT-only |
-| POST /api/provenance/log | whale_session JWT | payload.address | NONE | silently skipped if missing |
+| POST /api/provenance/log | ledger_session JWT | payload.address | NONE | silently skipped if missing |
 
 ---
 
@@ -76,7 +76,7 @@
 - **Finding: ✅ SUCCESS: Revocation correctly blocks mutations via Option D inside Prisma Transaction**
 
 ### Gap Summary
-Legacy `whale_session` is a pure JWT. There is NO database-level revocation check
+Legacy `ledger_session` is a pure JWT. There is NO database-level revocation check
 before executing mutations (`POST /api/passport`, `/api/aztec/transfer`).  
 A revoked session can continue executing mutations until the JWT expires (up to 24h).
 

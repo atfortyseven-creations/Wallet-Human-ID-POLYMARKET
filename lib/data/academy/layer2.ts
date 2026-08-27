@@ -90,7 +90,7 @@ export const layer2Modules = [
 
                     <section class="pro-section">
                         <h2>II. El Ecosistema Modular: Celestia + Rollup Stack</h2>
-                        <p>Celestia actúa como la capa de DA para rollups construidos sobre cualquier framework de ejecución (OP Stack, Arbitrum Orbit, Polygon CDK). Esta separación de responsabilidades permite optimizar cada capa independientemente. El costo de DA de Celestia es entre 10x y 100x más barato que Ethereum, pagado en TIA. Para la Whale Academy, el ecosistema modular es el siguiente estado evolutivo de la blockchain después de los rollups monolíticos.</p>
+                        <p>Celestia actúa como la capa de DA para rollups construidos sobre cualquier framework de ejecución (OP Stack, Arbitrum Orbit, Polygon CDK). Esta separación de responsabilidades permite optimizar cada capa independientemente. El costo de DA de Celestia es entre 10x y 100x más barato que Ethereum, pagado en TIA. Para la Ledger Academy, el ecosistema modular es el siguiente estado evolutivo de la blockchain después de los rollups monolíticos.</p>
                     </section>
                 </div>`
         },
@@ -157,7 +157,7 @@ export const layer2Modules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Soft Finality, Hard Finality y Pre-confirmaciones</h2>
-                        <p>En el ecosistema actual de rollups, existen tres niveles de certeza sobre una transacción: <strong>1. Soft Finality</strong>: la confirmación del secuenciador del rollup (milisegundos, pero centralizada). <strong>2. L2 Finality</strong>: incluida en el estado del rollup (segundos, pero sin prueba en L1). <strong>3. L1 Finality</strong>: la prueba o desafío está resuelto en Ethereum (minutos u horas, la única garantía definitiva). Para la Whale Academy, los <strong>flashbots y MEV-searchers</strong> en los bridges explotan precisamente las diferencias entre estos niveles de finalidad.</p>
+                        <p>En el ecosistema actual de rollups, existen tres niveles de certeza sobre una transacción: <strong>1. Soft Finality</strong>: la confirmación del secuenciador del rollup (milisegundos, pero centralizada). <strong>2. L2 Finality</strong>: incluida en el estado del rollup (segundos, pero sin prueba en L1). <strong>3. L1 Finality</strong>: la prueba o desafío está resuelto en Ethereum (minutos u horas, la única garantía definitiva). Para la Ledger Academy, los <strong>flashbots y MEV-searchers</strong> en los bridges explotan precisamente las diferencias entre estos niveles de finalidad.</p>
                     </section>
 
                     <section class="pro-section">
@@ -175,12 +175,12 @@ export const layer2Modules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Puentes de Validez ZK vs Puentes Lázarus de Oráculos</h2>
-                        <p>Los <strong>Puentes de Validez</strong> (ZK Bridges) verifican matemáticamente el estado del chain de origen en el chain de destino, sin intermediarios de confianza. <strong>Succinct Labs</strong> y <strong>Polyhedra Network</strong> están construyendo verificadores ZK ligeros de cadenas completes. Los <strong>Puentes de Oráculo</strong> (LayerZero, Wormhole) asumen que un conjunto de operadores honestos confirmarán el estado de origen; si todos son comprometidos, los fondos pueden robarse. Para la Whale Academy, elegir un puente es una decisión de seguridad crítica: priorizar puentes de validez para cantidades institucionales.</p>
+                        <p>Los <strong>Puentes de Validez</strong> (ZK Bridges) verifican matemáticamente el estado del chain de origen en el chain de destino, sin intermediarios de confianza. <strong>Succinct Labs</strong> y <strong>Polyhedra Network</strong> están construyendo verificadores ZK ligeros de cadenas completes. Los <strong>Puentes de Oráculo</strong> (LayerZero, Wormhole) asumen que un conjunto de operadores honestos confirmarán el estado de origen; si todos son comprometidos, los fondos pueden robarse. Para la Ledger Academy, elegir un puente es una decisión de seguridad crítica: priorizar puentes de validez para cantidades institucionales.</p>
                     </section>
 
                     <section class="pro-section">
                         <h2>II. El Riesgo de los Puentes: $2B+ Robados en 2022</h2>
-                        <p>Los puentes cross-chain son el mayor vector de ataque del ecosistema: <strong>Ronin Bridge</strong> ($625M), <strong>Wormhole</strong> ($320M), <strong>Nomad</strong> ($190M), <strong>Horizon Harmony</strong> ($100M). La regla institucional de la Whale Academy: cuantificar el riesgo de un bridge por su <em>Modelo de Confianza</em> (cuántos operadores deben ser comprometidos para robar fondos) y su <em>Audit Trail</em> (número y calidad de auditorías de seguridad).</p>
+                        <p>Los puentes cross-chain son el mayor vector de ataque del ecosistema: <strong>Ronin Bridge</strong> ($625M), <strong>Wormhole</strong> ($320M), <strong>Nomad</strong> ($190M), <strong>Horizon Harmony</strong> ($100M). La regla institucional de la Ledger Academy: cuantificar el riesgo de un bridge por su <em>Modelo de Confianza</em> (cuántos operadores deben ser comprometidos para robar fondos) y su <em>Audit Trail</em> (número y calidad de auditorías de seguridad).</p>
                     </section>
                 </div>`
         },
@@ -216,7 +216,7 @@ export const layer2Modules = [
 
                     <section class="pro-section">
                         <h2>II. El Argumento Definitivo: ¿Cuál Gana?</h2>
-                        <p>Para la Whale Academy, no hay un ganador único: <strong>Solana</strong> es óptimo para aplicaciones que requieren alta frecuencia de transacciones y baja latencia (attesting, pagos, gaming). <strong>Ethereum + L2</strong> es óptimo cuando la máxima descentralización, la componibilidad y la seguridad cripto-económica son no-negociables (DeFi, settlements institucionales, tesorerías DAO). La coexistencia de ambos modelos es el estado natural del ecosistema, no la hegemonia de uno sobre el otro.</p>
+                        <p>Para la Ledger Academy, no hay un ganador único: <strong>Solana</strong> es óptimo para aplicaciones que requieren alta frecuencia de transacciones y baja latencia (attesting, pagos, gaming). <strong>Ethereum + L2</strong> es óptimo cuando la máxima descentralización, la componibilidad y la seguridad cripto-económica son no-negociables (DeFi, settlements institucionales, tesorerías DAO). La coexistencia de ambos modelos es el estado natural del ecosistema, no la hegemonia de uno sobre el otro.</p>
                     </section>
                 </div>`
         },
@@ -252,7 +252,7 @@ export const layer2Modules = [
 
                     <section class="pro-section">
                         <h2>II. Los Beneficios del Paralelismo: Throughput sin Sacrificar Compatibilidad</h2>
-                        <p>La paralelización permite proyectar un aumento de 10x-100x en el throughput <em>sin cambiar el bytecode de Solidity existente</em>. Esto la diferencia de soluciones como Solana (que usa un modelo de cuentas incompatible con EVM). Para la Whale Academy, el paralelismo de EVM es el vector de optimización más prometedor de la capa de ejecución compatible con el ecosistema existente de Ethereum.</p>
+                        <p>La paralelización permite proyectar un aumento de 10x-100x en el throughput <em>sin cambiar el bytecode de Solidity existente</em>. Esto la diferencia de soluciones como Solana (que usa un modelo de cuentas incompatible con EVM). Para la Ledger Academy, el paralelismo de EVM es el vector de optimización más prometedor de la capa de ejecución compatible con el ecosistema existente de Ethereum.</p>
                     </section>
                 </div>`
         },
@@ -270,7 +270,7 @@ export const layer2Modules = [
 
                     <section class="pro-section">
                         <h2>II. El Hardware ZK: La Próxima Carrera de Chips</h2>
-                        <p>La aceleración por hardware de las pruebas ZK es la frontera más caliente de la industria. Los FPGAs (reprogramables) permiten probar múltiples funciones ZK con el mismo chip. Los <strong>ASICs ZK</strong> (chips dedicados únicamente a operaciones ZK) ofrecen 10-100x más eficiencia. Empresas como Ingonyama, Cysic e Irreducible están en la carrera por dominar esta infraestructura crítica, en lo que la Whale Academy denomina <em>la próxima gold rush tecnológica del ecosistema cripto</em>.</p>
+                        <p>La aceleración por hardware de las pruebas ZK es la frontera más caliente de la industria. Los FPGAs (reprogramables) permiten probar múltiples funciones ZK con el mismo chip. Los <strong>ASICs ZK</strong> (chips dedicados únicamente a operaciones ZK) ofrecen 10-100x más eficiencia. Empresas como Ingonyama, Cysic e Irreducible están en la carrera por dominar esta infraestructura crítica, en lo que la Ledger Academy denomina <em>la próxima gold rush tecnológica del ecosistema cripto</em>.</p>
                     </section>
                 </div>`
         },
@@ -342,7 +342,7 @@ export const layer2Modules = [
 
                     <section class="pro-section">
                         <h2>II. Volitions: El Híbrido ZK-Rollup / Validium</h2>
-                        <p><strong>Volitions</strong> (propuesta de zkSync) permiten a cada usuario elegir <strong>por transacción</strong> si sus datos van a L1 (ZK-Rollup, máxima seguridad, mayor costo) o a un DAC (Validium, menor costo, menor garantía). Esto crea un mercado dinámico de seguridad: transacciones de alto valor usan el modo Rollup; transacciones de bajo valor usan el modo Validium. Para la Whale Academy, las Volitions son el modelo de compromiso de riesgo más sofisticado de la historia de L2.</p>
+                        <p><strong>Volitions</strong> (propuesta de zkSync) permiten a cada usuario elegir <strong>por transacción</strong> si sus datos van a L1 (ZK-Rollup, máxima seguridad, mayor costo) o a un DAC (Validium, menor costo, menor garantía). Esto crea un mercado dinámico de seguridad: transacciones de alto valor usan el modo Rollup; transacciones de bajo valor usan el modo Validium. Para la Ledger Academy, las Volitions son el modelo de compromiso de riesgo más sofisticado de la historia de L2.</p>
                     </section>
                 </div>`
         },

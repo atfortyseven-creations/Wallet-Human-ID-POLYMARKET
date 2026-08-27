@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
         blockchainRank: intel.rank,
         pnl24h: intel.pnl24h,
         change24h: intel.change24h,
-        whaleEvidence: intel.whaleEvidence || [],
+        ledgerEvidence: intel.ledgerEvidence || [],
         influenceScore: intel.influenceScore || 0,
         identityTier: intel.identityTier || 'GHOST',
         transactionHeatmap: intel.transactionHeatmap || generateHeatmapFromActivity(intel),
@@ -84,7 +84,7 @@ export async function GET(req: NextRequest) {
             { token: 'Portfolio Delta', realized: 0, unrealized: intel.pnl24h, total: intel.pnl24h }
         ],
         
-        whaleMovements: intel.flowAnalysis.recentTransfers.map((t: any) => ({
+        ledgerMovements: intel.flowAnalysis.recentTransfers.map((t: any) => ({
             timestamp: new Date(t.timestamp),
             type: t.type,
             token: t.token || 'TOKEN', 

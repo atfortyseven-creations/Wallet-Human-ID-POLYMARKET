@@ -135,7 +135,7 @@ export default function AztecMempoolSpace() {
                         const merged = [...mappedTxs, ...prev];
                         // Deduplicate
                         const unique = Array.from(new Map(merged.map(item => [item.hash, item])).values());
-                        return unique.slice(0, 20); // keep last 20 whale txs
+                        return unique.slice(0, 20); // keep last 20 ledger txs
                     });
                 }
 
@@ -261,13 +261,13 @@ export default function AztecMempoolSpace() {
                 <div className="w-1/3 p-8 flex flex-col bg-white ">
                     <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#E5E5E5] ">
                         <div className="flex items-center gap-3">
-                            <span className="text-[11px] font-black text-[#050505]  uppercase tracking-widest">WHALE TRANSACTIONS</span>
+                            <span className="text-[11px] font-black text-[#050505]  uppercase tracking-widest">LEDGER TRANSACTIONS</span>
                         </div>
                     </div>
 
                     <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-3">
                         {transactions.length === 0 && (
-                            <div className="p-12 text-center text-[10px] font-mono font-bold text-[#888888]  uppercase tracking-[0.2em] animate-pulse">Awaiting Whale Transfers...</div>
+                            <div className="p-12 text-center text-[10px] font-mono font-bold text-[#888888]  uppercase tracking-[0.2em] animate-pulse">Awaiting Ledger Transfers...</div>
                         )}
                         <AnimatePresence>
                             {transactions.map(tx => {

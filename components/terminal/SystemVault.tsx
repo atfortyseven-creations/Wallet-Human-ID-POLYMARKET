@@ -61,7 +61,7 @@ function OnChainStatusPanel({ address }: { address?: string }) {
                 {/* DeadMan Switch on-chain */}
                 <div className="bg-[#FFFFFF] border border-[#E5E5E5] p-4 rounded-xl">
                     <div className="text-[9px] text-[#888888] uppercase tracking-widest mb-3 flex items-center gap-2">
-                        <Activity size={10} /> WhaleDeadmanSwitch
+                        <Activity size={10} /> LedgerDeadmanSwitch
                     </div>
                     {!dm ? (
                         <div className="text-[9px] text-[#444444] uppercase">No contract address configured</div>

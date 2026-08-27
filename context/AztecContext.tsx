@@ -3,7 +3,7 @@
 /**
  * AztecContext.tsx
  * ─────────────────────────────────────────────────────────────────────────────
- * Private eXecution Environment (PXE) integration layer for Whale Network.
+ * Private eXecution Environment (PXE) integration layer for Ledger Network.
  *
  * ARCHITECTURE NOTE:
  * @aztec/aztec.js is a browser-only SDK that communicates with a locally

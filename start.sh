@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "[start.sh] Booting Whale Network — humanidfi.com"
+echo "[start.sh] Booting Ledger Network — humanidfi.com"
 echo "[start.sh] NODE_ENV=${NODE_ENV}"
 echo "[start.sh] PORT=${PORT:-3000}"
 

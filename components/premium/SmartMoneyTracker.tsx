@@ -32,7 +32,7 @@ interface TokenCluster {
 }
 
 // `generateEvent` and old mock constants removed since we use real backend data now.
-// Real data fetched from `/api/network/whale/alpha-events`.
+// Real data fetched from `/api/network/ledger/alpha-events`.
 
 function computeClusters(events: WalletEvent[]): TokenCluster[] {
   const map: Record<string, { buyers: number; sellers: number; usd: number }> = {};
@@ -66,7 +66,7 @@ export function SmartMoneyTracker() {
 
   // 1. WebSocket Listener for Real-Time "Pushes"
   useEffect(() => {
-    const handleNewWhale = (data: any) => {
+    const handleNewLedger = (data: any) => {
       console.log(" [WS] New Humanity Ledger Received:", data);
       
       // Map BullMQ format to WalletEvent UI format
@@ -75,7 +75,7 @@ export function SmartMoneyTracker() {
         wallet: data.from.slice(0, 10),
         label: `${data.from.slice(0, 6)}...${data.from.slice(-4)}`,
         tier: data.usdValue > 1000000 ? "institucional" : "experto",
-        action: "COMPRA", // Default for whale moves for now
+        action: "COMPRA", // Default for ledger moves for now
         token: data.asset,
         amount: data.amount.toLocaleString(),
         usdValue: `$${(data.usdValue / 1000).toFixed(1)}K`,
@@ -96,8 +96,8 @@ export function SmartMoneyTracker() {
       setTotalVolume(v => v + data.usdValue);
     };
 
-    on('new-whale-alert', handleNewWhale);
-    return () => off('new-whale-alert', handleNewWhale);
+    on('new-ledger-alert', handleNewLedger);
+    return () => off('new-ledger-alert', handleNewLedger);
   }, [on, off]);
 
   // 2. Initial Sync with database (via hook)

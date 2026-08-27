@@ -8,7 +8,7 @@
 
 import { verifyTypedData } from 'viem';
 
-export const WHALE_NETWORK_DOMAIN = {
+export const LEDGER_NETWORK_DOMAIN = {
   name: 'Humanity Ledger Fortress',
   version: '1.0.0',
   chainId: 1, // Enforced Mainnet
@@ -43,7 +43,7 @@ export async function verifyQuantumSignature(
   try {
     const isValid = await verifyTypedData({
       address: walletAddress,
-      domain: WHALE_NETWORK_DOMAIN,
+      domain: LEDGER_NETWORK_DOMAIN,
       types: SECURE_ACTION_TYPES,
       primaryType: 'SecureAction',
       message: {

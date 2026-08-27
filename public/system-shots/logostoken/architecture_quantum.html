@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Whale Alert Portal - Master Hybrid Architecture</title>
+    <title>Ledger Alert Portal - Master Hybrid Architecture</title>
     <!-- CSS para configurar exactamente 7860x4320 sobre FONDO BLANCO, perfectamente centrado -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
@@ -84,7 +84,7 @@
             classDef evm fill:#fffde7,stroke:#fbc02d,stroke-width:8px,color:#f57f17,font-size:55px;
             classDef gateway fill:#eceff1,stroke:#455a64,stroke-width:10px,color:#263238,font-size:70px,font-weight:bold;
 
-            Title[/"🌌 WHALE ALERT PORTAL & HUMANITY LEDGER <br/> MASTER QUANTUM ARCHITECTURE <br/> DOUBLE HYBRID FUNCTIONING (PC & MOBILE) 🌌"/] :::title
+            Title[/"🌌 LEDGER ALERT PORTAL & HUMANITY LEDGER <br/> MASTER QUANTUM ARCHITECTURE <br/> DOUBLE HYBRID FUNCTIONING (PC & MOBILE) 🌌"/] :::title
 
             %% ================= 1. EVM BASE =================
             subgraph L_EVM [1. EVM BASE & PROTOCOL LAYER]
@@ -101,10 +101,10 @@
                 Moralis -.-> Blk
             end
 
-            %% ================= 2. WHALE ENGINE =================
-            subgraph L_ENGINE [2. BACKGROUND WHALE ENGINE]
+            %% ================= 2. LEDGER ENGINE =================
+            subgraph L_ENGINE [2. BACKGROUND LEDGER ENGINE]
                 direction TB
-                EVMScan[EVM Whale Scanner] :::engine
+                EVMScan[EVM Ledger Scanner] :::engine
                 BTCScan[BTC Mempool Scanner] :::engine
                 TGAlert[Telegram Alert Bot] :::engine
                 AlchMon[Alchemy Monitor<br/>Elite Addresses] :::engine
@@ -115,7 +115,7 @@
                 direction LR
                 Prisma[(PostgreSQL<br/>Prisma ORM)] :::data
                 Mongo[(MongoDB<br/>Polymarket Indices)] :::data
-                Neo[(Neo4j Graph<br/>Whale Relations)] :::data
+                Neo[(Neo4j Graph<br/>Ledger Relations)] :::data
                 Redis[(Redis / Upstash<br/>PubSub & Cache)] :::data
             end
 
@@ -154,7 +154,7 @@
                 direction TB
                 subgraph Zone_PC [ZONA PC (DESKTOP VAULT)]
                     Daemon[SystemVault_RUN.bat<br/>Local Daemon] :::hybridPC
-                    Wrk[Whale Worker Nodes<br/>Data Crunching] :::hybridPC
+                    Wrk[Ledger Worker Nodes<br/>Data Crunching] :::hybridPC
                     Nxt[Next.js 15 Web/Desktop<br/>LiquidPrism UI] :::hybridPC
                     Daemon <--> Wrk
                     Nxt <--> Daemon

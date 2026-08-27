@@ -42,19 +42,19 @@ export async function POST(request: NextRequest) {
         payload: {
           genericObjects: [
             {
-              id: `${ISSUER_ID}.WhaleCard_${card.id}`,
-              classId: `${ISSUER_ID}.WhaleCardClass`,
+              id: `${ISSUER_ID}.LedgerCard_${card.id}`,
+              classId: `${ISSUER_ID}.LedgerCardClass`,
               genericType: 'GENERIC_TYPE_UNSPECIFIED',
               hexBackgroundColor: '#1F1F1F',
               logo: {
                 sourceUri: {
-                  uri: 'https://sovereign.pro/official-whale-legendary.png',
+                  uri: 'https://sovereign.pro/official-ledger-legendary.png',
                 },
               },
               cardTitle: {
                 defaultValue: {
                   language: 'en',
-                  value: 'Whale Card',
+                  value: 'Ledger Card',
                 },
               },
               subheader: {

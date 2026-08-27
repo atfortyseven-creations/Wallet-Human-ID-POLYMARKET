@@ -51,9 +51,9 @@ for (const file of filesToFix) {
   // Other specific fixes
   let newContent = content;
 
-  // fix PRO -> whale in api-marketplace
+  // fix PRO -> ledger in api-marketplace
   if (file.includes('app/api-marketplace/keys/page.tsx')) {
-    newContent = newContent.replace(/"PRO"/g, '"whale"');
+    newContent = newContent.replace(/"PRO"/g, '"ledger"');
     newContent = newContent.replace(/"FREE"/g, '"plankton"');
   }
 
@@ -99,7 +99,7 @@ for (const file of filesToFix) {
   }
   
   if (file.includes('lib/redis/rate-limiter.ts')) {
-      newContent = newContent.replace(/const planConfig = NODE_TIERS\[tier\];/g, 'const planConfig = NODE_TIERS[tier as PlanTier] || NODE_TIERS["whale"];');
+      newContent = newContent.replace(/const planConfig = NODE_TIERS\[tier\];/g, 'const planConfig = NODE_TIERS[tier as PlanTier] || NODE_TIERS["ledger"];');
   }
 
   if (file.includes('lib/services/DilutionService.ts')) {

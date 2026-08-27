@@ -10,9 +10,9 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSystemAccount as useAccount } from '@/hooks/useSystemAccount';
-import { useWhaleStream } from '@/context/WhaleStreamContext';
+import { useLedgerStream } from '@/context/LedgerStreamContext';
 
-type AlertType = 'PRICE_ABOVE' | 'PRICE_BELOW' | 'VOLUME_SPIKE' | 'WHALE_MOVE' | 'PERCENT_CHANGE';
+type AlertType = 'PRICE_ABOVE' | 'PRICE_BELOW' | 'VOLUME_SPIKE' | 'LEDGER_MOVE' | 'PERCENT_CHANGE';
 type AlertStatus = 'ACTIVE' | 'TRIGGERED' | 'PAUSED';
 
 interface AlertRule {
@@ -34,7 +34,7 @@ const TYPE_CONFIG: Record<AlertType, { label: string; icon: React.ReactNode; col
     PRICE_ABOVE:    { label: 'PRICE_ABOVE',     icon: <TrendingUp size={12}/>,   color: '#050505' },
     PRICE_BELOW:    { label: 'PRICE_BELOW',     icon: <TrendingDown size={12}/>, color: '#050505' },
     VOLUME_SPIKE:   { label: 'VOLUME_SPIKE',    icon: <Volume2 size={12}/>,      color: '#050505' },
-    WHALE_MOVE:     { label: 'WHALE_MOVEMENT',  icon: <Activity size={12}/>,     color: '#050505' },
+    LEDGER_MOVE:     { label: 'LEDGER_MOVEMENT',  icon: <Activity size={12}/>,     color: '#050505' },
     PERCENT_CHANGE: { label: 'PERCENT_DELTA',   icon: <Zap size={12}/>,          color: '#050505' },
 };
 
@@ -130,7 +130,7 @@ export function AlertsPanel() {
     const [showCreate, setShowCreate] = useState(false);
     const [filter, setFilter] = useState<'ALL' | AlertStatus>('ALL');
     const [loading, setLoading] = useState(true);
-    const { events: sseEvents, isConnected: sseConnected } = useWhaleStream();
+    const { events: sseEvents, isConnected: sseConnected } = useLedgerStream();
     const seenSSEIds = useRef<Set<string>>(new Set());
 
     const refresh = async () => {

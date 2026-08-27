@@ -2,11 +2,11 @@ const fs = require('fs');
 const path = require('path');
 
 const files = [
-  'WHALE_ALERT_NETWORK_PRESENTATION.md',
+  'LEDGER_ALERT_NETWORK_PRESENTATION.md',
   'SOVEREIGN_WHITEPAPER.md',
   'MASTER_ARCHITECTURE.md',
   'MANUAL_OPERATIVO_INTEGRAL.md',
-  'STATE_OF_WHALE_INTELLIGENCE_2026.md',
+  'STATE_OF_LEDGER_INTELLIGENCE_2026.md',
   'PROJECT_COMPILATION.md',
   'SECURITY.md',
   'DEPLOYMENT.md',
@@ -39,14 +39,14 @@ const paths = [
   { k: 'overview', t: 'Overview', c: 'Getting Started' },
   { k: 'quickstart', t: 'Quickstart', c: 'Getting Started' },
   { k: 'core-concepts', t: 'Core Concepts', c: 'Getting Started' },
-  { k: 'whale-code', t: 'Whale Code', c: 'Getting Started' },
+  { k: 'ledger-code', t: 'Ledger Code', c: 'Getting Started' },
   { k: 'platform/architecture', t: 'Architecture', c: 'Platform' },
   { k: 'platform/auth', t: 'Authentication (SIWE)', c: 'Platform' },
   { k: 'platform/neo4j', t: 'Neo4j Akashic Ledger', c: 'Platform' },
   { k: 'platform/smart-contracts', t: 'Smart Contracts', c: 'Platform' },
   { k: 'platform/node-deployment', t: 'Node Deployment', c: 'Platform' },
   { k: 'platform/websocket-streams', t: 'WebSocket Streams', c: 'Platform' },
-  { k: 'platform/whale-chat', t: 'Whale Chat Forum', c: 'Platform' },
+  { k: 'platform/ledger-chat', t: 'Ledger Chat Forum', c: 'Platform' },
   { k: 'integrations/walletconnect', t: 'WalletConnect v2', c: 'Integrations' },
   { k: 'integrations/tron', t: 'Tron / TRC-20', c: 'Integrations' },
   { k: 'integrations/getblock', t: 'GetBlock RPC', c: 'Integrations' },
@@ -57,7 +57,7 @@ const paths = [
   { k: 'developer/api-keys', t: 'API Keys', c: 'Getting Started' },
   { k: 'developer/rate-limits', t: 'Rate Limits', c: 'Getting Started' },
   { k: 'developer/rest/overview', t: 'REST Overview', c: 'REST API' },
-  { k: 'developer/rest/whale-alerts', t: 'Whale Alerts', c: 'REST API' },
+  { k: 'developer/rest/ledger-alerts', t: 'Ledger Alerts', c: 'REST API' },
   { k: 'developer/rest/market-data', t: 'Market Data', c: 'REST API' },
   { k: 'developer/rest/wallets', t: 'Wallets & Entities', c: 'REST API' },
   { k: 'developer/rest/forum', t: 'Forum Posts', c: 'REST API' },
@@ -89,7 +89,7 @@ const paths = [
   { k: 'legal/privacy-policy', t: 'Privacy Policy', c: 'Legal' },
   { k: 'legal/cookie-policy', t: 'Cookie Policy', c: 'Legal' },
   { k: 'legal/risk-disclosure', t: 'Risk Disclosure', c: 'Legal' },
-  { k: 'legal/whale-code', t: 'Whale Code', c: 'Legal' },
+  { k: 'legal/ledger-code', t: 'Ledger Code', c: 'Legal' },
   { k: 'legal/whitepaper', t: 'Whitepaper', c: 'Legal' }
 ];
 

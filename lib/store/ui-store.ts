@@ -46,7 +46,7 @@ export const useUIStore = create<UIState>()(
       setActivePanel: (panel) => set({ activePanel: panel }),
     }),
     {
-      name: 'whale-ui-storage',
+      name: 'ledger-ui-storage',
       // Explicitly whitelist only the keys that should persist.
       // isLinked and isConnectModalOpen are excluded.
       partialize: (state): PersistedUIState => ({

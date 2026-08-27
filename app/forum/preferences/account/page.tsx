@@ -35,7 +35,7 @@ export default function AccountPreferencesPage() {
           <h3 className="text-sm font-bold text-black dark:text-white mb-3">Profile Picture</h3>
           <div className="flex items-start gap-4">
             <div className="w-24 h-24 rounded-full border border-black/10 dark:border-white/10 overflow-hidden relative group">
-              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Whale" alt="Avatar" className="w-full h-full object-cover" />
+              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ledger" alt="Avatar" className="w-full h-full object-cover" />
               <button className="absolute bottom-1 right-1 w-6 h-6 bg-white dark:bg-black border border-black/10 dark:border-white/10 rounded-full flex items-center justify-center text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white opacity-0 group-hover:opacity-100 transition-opacity">
                 <Edit2 size={12} />
               </button>

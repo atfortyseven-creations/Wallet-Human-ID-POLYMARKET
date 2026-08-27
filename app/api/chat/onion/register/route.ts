@@ -80,7 +80,7 @@ function getUpstash(): any | null {
   }
 }
 
-const REDIS_RELAY_KEY = 'whale_onion_relay_registry';
+const REDIS_RELAY_KEY = 'ledger_onion_relay_registry';
 
 async function getRelaysFromRedis(): Promise<RelayEntry[]> {
   try {
@@ -113,10 +113,10 @@ async function upsertRelayToRedis(entry: RelayEntry): Promise<void> {
 
 async function verifyAuth(req: NextRequest): Promise<string | null> {
   // Check JWT from cookie or Authorization header
-  const whaleCookie = req.cookies.get('whale_session')?.value ??
+  const ledgerCookie = req.cookies.get('ledger_session')?.value ??
                       req.cookies.get('human_session')?.value;
   const bearerToken = req.headers.get('Authorization')?.replace('Bearer ', '');
-  const token = whaleCookie ?? bearerToken;
+  const token = ledgerCookie ?? bearerToken;
 
   if (!token) return null;
   

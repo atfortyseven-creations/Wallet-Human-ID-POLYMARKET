@@ -7,7 +7,7 @@ import { RpcRelayerManager } from '@/lib/blockchain/rpc-relayer';
  * 
  * System Capital Ledger  Real-time multi-chain mass transfer scanner.
  * Scans ETH, BSC, and BASE chains for native + ERC-20 transfers,
- * normalizes to the WhaleEvent schema, and returns { events, transfers }.
+ * normalizes to the LedgerEvent schema, and returns { events, transfers }.
  */
 
 export const runtime  = 'nodejs';

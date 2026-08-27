@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useVIPStore, WhaleEvent } from "@/lib/vip-store";
+import { useVIPStore, LedgerEvent } from "@/lib/vip-store";
 import {
   TrendingUp, TrendingDown, ArrowRightLeft, Zap, Shield,
   ChevronDown, ChevronRight, ExternalLink, Copy, CheckCheck,
@@ -48,7 +48,7 @@ function classifyDirection(action: string): "BUY" | "SELL" | "TRANSFER" {
 
 //  Elite Sound Engine 
 const useSoundEngine = () => {
-    const playWhaleDiscovery = useCallback(() => {
+    const playLedgerDiscovery = useCallback(() => {
         try {
             const context = new (window.AudioContext || (window as any).webkitAudioContext)();
             const oscillator = context.createOscillator();
@@ -70,11 +70,11 @@ const useSoundEngine = () => {
             console.warn("Audio Context blocked or failed", e);
         }
     }, []);
-    return { playWhaleDiscovery };
+    return { playLedgerDiscovery };
 };
 
-//  SINGLE WHALE TRANSACTION ROW 
-function WhaleRow({ ev }: { ev: WhaleEvent }) {
+//  SINGLE LEDGER TRANSACTION ROW 
+function LedgerRow({ ev }: { ev: LedgerEvent }) {
   const direction = classifyDirection(ev.action);
   const isOmega = ev.tier === "OMEGA";
   
@@ -158,20 +158,20 @@ function WhaleRow({ ev }: { ev: WhaleEvent }) {
 }
 
 //  Main Component 
-export function EliteFlowGrid({ events }: { events: WhaleEvent[] }) {
-  const { playWhaleDiscovery } = useSoundEngine();
+export function EliteFlowGrid({ events }: { events: LedgerEvent[] }) {
+  const { playLedgerDiscovery } = useSoundEngine();
   const prevEventsLength = useRef(events.length);
   const [flash, setFlash] = useState(false);
-  const [activeAlert, setActiveAlert] = useState<WhaleEvent | null>(null);
+  const [activeAlert, setActiveAlert] = useState<LedgerEvent | null>(null);
 
   // Sound & Animation Trigger
   useEffect(() => {
     if (events.length > prevEventsLength.current) {
-        playWhaleDiscovery();
+        playLedgerDiscovery();
         setFlash(true);
         setTimeout(() => setFlash(false), 1500);
 
-        // Spot the biggest newest whale
+        // Spot the biggest newest ledger
         const newest = events[0];
         if (newest && newest.tier === 'OMEGA') {
             setActiveAlert(newest);
@@ -179,7 +179,7 @@ export function EliteFlowGrid({ events }: { events: WhaleEvent[] }) {
         }
     }
     prevEventsLength.current = events.length;
-  }, [events, playWhaleDiscovery]);
+  }, [events, playLedgerDiscovery]);
 
   // Filter for WETH, USDC, WBTC, USDT
   const filteredEvents = events.filter(e => 
@@ -187,7 +187,7 @@ export function EliteFlowGrid({ events }: { events: WhaleEvent[] }) {
   );
 
   // Grouped by tokens
-  const grouped = filteredEvents.reduce<Record<string, WhaleEvent[]>>((acc, ev) => {
+  const grouped = filteredEvents.reduce<Record<string, LedgerEvent[]>>((acc, ev) => {
     const t = ev.token!.toUpperCase();
     if (!acc[t]) acc[t] = [];
     acc[t].push(ev);
@@ -228,7 +228,7 @@ export function EliteFlowGrid({ events }: { events: WhaleEvent[] }) {
             <div>
                <div className="text-[10px] font-black text-[#00ff9d] uppercase tracking-[0.3em] mb-1">MOVIMIENTO OMEGA DETECTADO</div>
                <div className="text-xl font-black text-white uppercase tracking-tighter">
-                 {activeAlert.label || "Elite Whale"}  {formatUSD(activeAlert.usdNum)}
+                 {activeAlert.label || "Elite Ledger"}  {formatUSD(activeAlert.usdNum)}
                </div>
             </div>
           </motion.div>
@@ -239,7 +239,7 @@ export function EliteFlowGrid({ events }: { events: WhaleEvent[] }) {
       <div className="flex flex-wrap items-end gap-12 mb-12 pb-12 border-b border-white/[0.08]">
         <div className="flex-1">
           <h1 className="text-6xl font-black text-white tracking-tighter leading-none uppercase">
-            Whale <span className="text-[#00ff9d]">Alert</span>
+            Ledger <span className="text-[#00ff9d]">Alert</span>
           </h1>
         </div>
         
@@ -274,7 +274,7 @@ export function EliteFlowGrid({ events }: { events: WhaleEvent[] }) {
                    {tokenEvents.length > 0 ? (
                       <div className="divide-y divide-white/[0.04]">
                          {tokenEvents.map((ev, i) => (
-                           <WhaleRow key={ev.id + i} ev={ev} />
+                           <LedgerRow key={ev.id + i} ev={ev} />
                          ))}
                       </div>
                    ) : (

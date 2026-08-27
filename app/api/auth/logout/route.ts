@@ -5,20 +5,20 @@ export async function POST(request: NextRequest) {
   // [QUANTUM HARDENING] Cryptographically revoke the active JWTs at logout.
   // Clearing cookies alone is insufficient — a captured token can still be replayed.
   // We blacklist both session tokens so the middleware rejects them instantly.
-  const whaleSession = request.cookies.get("whale_session")?.value;
+  const ledgerSession = request.cookies.get("ledger_session")?.value;
   const humanSession = request.cookies.get("human_session")?.value;
-  if (whaleSession) revokeToken(whaleSession);
-  if (humanSession && humanSession !== whaleSession) revokeToken(humanSession);
+  if (ledgerSession) revokeToken(ledgerSession);
+  if (humanSession && humanSession !== ledgerSession) revokeToken(humanSession);
 
   const response = NextResponse.json({ success: true, message: "Logged out successfully" });
 
-  // [FIX] The middleware (middleware.ts:367) adds SameSite=Strict to whale_session cookies
+  // [FIX] The middleware (middleware.ts:367) adds SameSite=Strict to ledger_session cookies
   // when they are SET. To DELETE a cookie, the browser requires the deletion attributes
   // to match the original attributes EXACTLY. Using SameSite=Lax to delete a
   // SameSite=Strict cookie results in the browser treating them as different cookies,
   // so the original cookie is never cleared — users stay authenticated after Disconnect.
   //
-  // Rule: delete whale_session with Strict, everything else with Lax.
+  // Rule: delete ledger_session with Strict, everything else with Lax.
   const host = request.headers.get("host") || "";
   const cookieDomain = (process.env.NODE_ENV === "production" && host.includes("humanidfi.com")) ? "humanidfi.com" : undefined;
   const strictBase = {
@@ -51,10 +51,10 @@ export async function POST(request: NextRequest) {
     domain: cookieDomain,
   };
 
-  // whale_session: created with SameSite=Strict by middleware — MUST delete with Strict
-  response.cookies.set("whale_session", "", strictBase);
+  // ledger_session: created with SameSite=Strict by middleware — MUST delete with Strict
+  response.cookies.set("ledger_session", "", strictBase);
   // Also attempt Lax variant in case older sessions were created before the middleware fix
-  response.cookies.set("whale_session", "", laxBase);
+  response.cookies.set("ledger_session", "", laxBase);
 
   // human_session: standard Lax session cookie
   response.cookies.set("human_session", "", laxBase);
@@ -86,8 +86,8 @@ export async function POST(request: NextRequest) {
   const explicitDomain = (process.env.NODE_ENV === "production" && host.includes("humanidfi.com")) ? "; Domain=humanidfi.com" : "";
 
   const permutations = [
-    { name: "whale_session", opts: `Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Strict` },
-    { name: "whale_session", opts: `Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax` },
+    { name: "ledger_session", opts: `Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Strict` },
+    { name: "ledger_session", opts: `Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax` },
     { name: "human_session", opts: `Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax` },
     { name: "system_handshake", opts: `Path=/; Expires=${expiredDate}${secure}; SameSite=Lax` },
     { name: "wallet-auth", opts: `Path=/; Expires=${expiredDate}${secure}; SameSite=Lax` }

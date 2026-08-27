@@ -17,13 +17,13 @@ export default function ActivityFeedPanel() {
   const fetchActivities = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/whale/activities');
+      const res = await fetch('/api/ledger/activities');
       if(res.ok) {
         const data = await res.json();
         setActivities(data.activities || []);
       }
     } catch (e) {
-      console.error('Failed to fetch whale activities', e);
+      console.error('Failed to fetch ledger activities', e);
     } finally {
       setLoading(false);
     }

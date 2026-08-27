@@ -5,20 +5,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Waves, Bell, Activity, ShieldCheck, Zap } from 'lucide-react';
 import useSWR from 'swr';
 import { useAuth } from '@/hooks/useAuth';
-import { useVIPStore, WhaleEvent } from '@/lib/vip-store';
-import { whaleAudio } from '@/lib/utils/WhaleAudio';
+import { useVIPStore, LedgerEvent } from '@/lib/vip-store';
+import { ledgerAudio } from '@/lib/utils/LedgerAudio';
 
 const fetcher = (url: string) => fetch(url).then(r => r.json());
 
 export function MinimalDarkPool() {
     const { isAuthenticated } = useAuth();
-    const { mergeWhaleEvents, whaleEvents } = useVIPStore();
+    const { mergeLedgerEvents, ledgerEvents } = useVIPStore();
     const [audioInitialized, setAudioInitialized] = useState(false);
     const lastEventId = useRef<string | null>(null);
 
-    // Fetch the latest global whale events
-    // Polling every 5 seconds to get the newest whales
-    const { data } = useSWR('/api/network/whale/alpha-events', fetcher, {
+    // Fetch the latest global ledger events
+    // Polling every 5 seconds to get the newest ledgers
+    const { data } = useSWR('/api/network/ledger/alpha-events', fetcher, {
         refreshInterval: 5000,
         revalidateOnFocus: true,
     });
@@ -26,30 +26,30 @@ export function MinimalDarkPool() {
     // Handle new incoming events and audio triggers
     useEffect(() => {
         if (data && data.events && data.events.length > 0) {
-            mergeWhaleEvents(data.events);
+            mergeLedgerEvents(data.events);
 
             // Audio Logic: Determine if there is a NEW event we haven't seen yet
             const newestEvent = data.events[0];
             
             if (audioInitialized && lastEventId.current && newestEvent.id !== lastEventId.current) {
-                // We have a new event! Check if it's a MEGA whale for the deep sonar
+                // We have a new event! Check if it's a MEGA ledger for the deep sonar
                 if (newestEvent.rawUsd >= 5_000_000) {
-                    whaleAudio?.playWhaleSonar(1.5); // Deep loud pulse
+                    ledgerAudio?.playLedgerSonar(1.5); // Deep loud pulse
                 } else if (newestEvent.rawUsd >= 1_000_000) {
-                    whaleAudio?.playWhaleSonar(0.8); // Standard pulse
+                    ledgerAudio?.playLedgerSonar(0.8); // Standard pulse
                 } else {
-                    whaleAudio?.playSubtleBlip(); // Elite transfer
+                    ledgerAudio?.playSubtleBlip(); // Elite transfer
                 }
             }
             
             lastEventId.current = newestEvent.id;
         }
-    }, [data, mergeWhaleEvents, audioInitialized]);
+    }, [data, mergeLedgerEvents, audioInitialized]);
 
     // Browser Autoplay Policy requires first interaction to enable AudioContext
     const handleInitializeAudio = () => {
         if (!audioInitialized) {
-            whaleAudio?.playSubtleBlip();
+            ledgerAudio?.playSubtleBlip();
             setAudioInitialized(true);
         }
     };
@@ -94,7 +94,7 @@ export function MinimalDarkPool() {
 
             {/* List */}
             <div className="relative z-10 flex-1 overflow-y-auto pr-4 space-y-3 custom-scrollbar">
-                {whaleEvents.length === 0 ? (
+                {ledgerEvents.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center text-blue-500/50 space-y-6">
                         <div className="relative">
                             <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full animate-pulse" />
@@ -105,8 +105,8 @@ export function MinimalDarkPool() {
                     </div>
                 ) : (
                     <AnimatePresence>
-                        {whaleEvents.map((event, index) => (
-                            <MinimalWhaleRow key={event.id} event={event} isNew={index === 0} />
+                        {ledgerEvents.map((event, index) => (
+                            <MinimalLedgerRow key={event.id} event={event} isNew={index === 0} />
                         ))}
                     </AnimatePresence>
                 )}
@@ -120,7 +120,7 @@ export function MinimalDarkPool() {
     );
 }
 
-function MinimalWhaleRow({ event, isNew }: { event: WhaleEvent, isNew: boolean }) {
+function MinimalLedgerRow({ event, isNew }: { event: LedgerEvent, isNew: boolean }) {
     const eventAny = event as any;
     return (
         <motion.div
@@ -135,7 +135,7 @@ function MinimalWhaleRow({ event, isNew }: { event: WhaleEvent, isNew: boolean }
                 <div>
                     <div className="text-white font-bold flex items-center gap-2">
                         {event.wallet}
-                        {event.tier === 'MEGA WHALE' && <Zap size={12} className="text-purple-400 fill-purple-400" />}
+                        {event.tier === 'MEGA LEDGER' && <Zap size={12} className="text-purple-400 fill-purple-400" />}
                     </div>
                     <div className="text-white/40 text-[10px] uppercase tracking-widest mt-1">Entity {event.hash?.slice(0,6)}</div>
                 </div>

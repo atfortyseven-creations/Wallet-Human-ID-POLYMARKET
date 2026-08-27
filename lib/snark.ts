@@ -6,7 +6,7 @@ interface ZKStatement {
   institution: string;
   jurisdiction: 'Singapore' | 'EU' | 'MAS';
   AUM_threshold: bigint;
-  whale_score: number;
+  ledger_score: number;
   last_seen_zk: number;
 }
 
@@ -18,7 +18,7 @@ export async function generateUniversalAttestation(wallet: `0x${string}`): Promi
     institution: 'Humanity Ledger',
     jurisdiction: 'Singapore',
     AUM_threshold: BigInt(500000000),
-    whale_score: 0.97,
+    ledger_score: 0.97,
     last_seen_zk: Date.now()
   };
 

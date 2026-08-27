@@ -7,13 +7,13 @@
 export const VISUAL_ASSETS = {
     WALLPAPER: '/patron-cosmico-4k.png',
     WAVES: '/olas-hokusai-4k.png',
-    LOGO_MONOCHROME: '/official-whale-monochrome.png',
-    LOGO_LEGENDARY: '/official-whale-legendary.png',
+    LOGO_MONOCHROME: '/official-ledger-monochrome.png',
+    LOGO_LEGENDARY: '/official-ledger-legendary.png',
     WALLETS: {
         METAMASK: '/wallets/metamask.svg',
         COINBASE: '/wallets/coinbase.png',
         RAINBOW: '/wallets/rainbow.png',
-        GENERIC: '/official-whale-monochrome.png', // Fallback
+        GENERIC: '/official-ledger-monochrome.png', // Fallback
     }
 };
 

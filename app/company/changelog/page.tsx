@@ -34,7 +34,7 @@ export default function ChangelogPage() {
                                     New Features
                                 </h4>
                                 <ul className="list-disc pl-6 space-y-1 text-sm text-black/70">
-                                    <li><strong>Whale Tracker Premium Analytics:</strong> Advanced insights including P&L breakdown, smart contract interactions, and liquidity pool tracking</li>
+                                    <li><strong>Ledger Tracker Premium Analytics:</strong> Advanced insights including P&L breakdown, smart contract interactions, and liquidity pool tracking</li>
                                     <li><strong>Multi-Chain Portfolio Dashboard:</strong> Real-time balance tracking across Ethereum, Base, Polygon, Arbitrum, and Optimism</li>
                                     <li><strong>Enhanced Authentication:</strong> Passkeys (WebAuthn) support for biometric login</li>
                                     <li><strong>NFT Gallery:</strong> View and manage your NFT collection across all supported chains</li>
@@ -120,8 +120,8 @@ export default function ChangelogPage() {
                                         New Features
                                     </h4>
                                     <ul className="list-disc pl-6 space-y-1 text-sm text-black/70">
-                                        <li><strong>Whale Tracker (Basic):</strong> Monitor and analyze high-value wallets</li>
-                                        <li><strong>Real-Time Alerts:</strong> Browser notifications for whale movements and price targets</li>
+                                        <li><strong>Ledger Tracker (Basic):</strong> Monitor and analyze high-value wallets</li>
+                                        <li><strong>Real-Time Alerts:</strong> Browser notifications for ledger movements and price targets</li>
                                         <li><strong>Cross-Chain Bridge:</strong> Move assets between L1s and L2s seamlessly</li>
                                     </ul>
                                 </div>

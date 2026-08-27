@@ -6,7 +6,7 @@ import { checkRedisHealth, redisClient } from '@/lib/redis/client';
 // GET /api/health
 // Public operational status endpoint. Proves the system is live, not conceptual.
 // Returns verifiable metrics: DB latency, Redis status, worker heartbeats,
-// live whale event count, and system throughput. Zero sensitive data exposed.
+// live ledger event count, and system throughput. Zero sensitive data exposed.
 // 
 export async function GET() {
     const replicaId = process.env.RAILWAY_REPLICA_ID || 'local';
@@ -18,9 +18,9 @@ export async function GET() {
         const dbLatency = Date.now() - start;
 
         // [2] Active data counts  proves real ingestion, not mock
-        const [totalWhaleEvents, last24hEvents, totalTickets] = await Promise.all([
-            prisma.whaleActivity.count(),
-            prisma.whaleActivity.count({
+        const [totalLedgerEvents, last24hEvents, totalTickets] = await Promise.all([
+            prisma.ledgerActivity.count(),
+            prisma.ledgerActivity.count({
                 where: { timestamp: { gte: new Date(Date.now() - 86_400_000) } }
             }),
             prisma.goldenTicket.count(),
@@ -80,8 +80,8 @@ export async function GET() {
 
             //  Active data proof  verifiable evidence of real ingestion 
             liveData: {
-                totalWhaleEventsIndexed: totalWhaleEvents,
-                whaleEventsLast24h: last24hEvents,
+                totalLedgerEventsIndexed: totalLedgerEvents,
+                ledgerEventsLast24h: last24hEvents,
                 verifiedLedgerEntries: totalTickets,
                 dataSource: 'LIVE_POSTGRESQL',
                 zeroMockCompliant: true,
@@ -104,7 +104,7 @@ export async function GET() {
             headers: {
                 'Cache-Control': 'no-store',
                 'X-System-Status': overallOk ? 'operational' : 'degraded',
-                'X-Whale-Events-Total': String(totalWhaleEvents),
+                'X-Ledger-Events-Total': String(totalLedgerEvents),
             }
         });
 

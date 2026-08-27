@@ -118,7 +118,7 @@ export function ZKProofGrid() {
   const canAfford = aztecAddress && balance >= QD_COST;
 
   const [score,     setScore]     = useState(72);
-  const [secret,    setSecret]    = useState("whale_secret_2025");
+  const [secret,    setSecret]    = useState("ledger_secret_2025");
   const [threshold]               = useState(50);
   const [showSec,   setShowSec]   = useState(false);
   const [phase,     setPhase]     = useState<ProofPhase>("idle");

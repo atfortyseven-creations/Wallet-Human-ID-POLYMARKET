@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 // Natural names & handles
 const firstNames = ['Alex', 'Sam', 'Jordan', 'Taylor', 'Morgan', 'Casey', 'Riley', 'Jamie', 'Charlie', 'Drew', 'Avery', 'Devin', 'Skyler', 'Cameron', 'Peyton', 'Quinn', 'Reese', 'Rowan', 'Hayden', 'Spencer', 'Elliott', 'Finley', 'Harley', 'Emerson', 'Kendall', 'Ryan', 'Dylan', 'Parker', 'Logan', 'Blake', 'Dakota', 'Micah', 'Jesse', 'River', 'Sage', 'Frank', 'John', 'Alice', 'Bob', 'Eve', 'Mike', 'Sarah', 'David', 'Emma', 'Tom', 'Lucy', 'Chris', 'Anna', 'Dan', 'Nina', 'Zack', 'Maya', 'Leo', 'Zoe', 'Max', 'Mia', 'Ian', 'Lily', 'Eli', 'Ava'];
 const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin', 'Lee', 'Perez', 'Thompson', 'White', 'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson', 'Walker', 'Young', 'Allen', 'King', 'Wright', 'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores', 'Green', 'Adams', 'Nelson', 'Baker', 'Hall', 'Rivera', 'Campbell', 'Mitchell', 'Carter', 'Roberts', 'Gomez', 'Phillips', 'Evans', 'Turner', 'Diaz', 'Parker', 'Cruz', 'Edwards', 'Collins', 'Reyes', 'Stewart', 'Morris', 'Morales', 'Murphy', 'Cook', 'Rogers', 'Gutierrez', 'Ortiz', 'Morgan', 'Cooper', 'Peterson', 'Bailey', 'Reed', 'Kelly', 'Howard', 'Ramos', 'Kim', 'Cox', 'Ward', 'Richardson', 'Watson', 'Brooks', 'Chavez', 'Wood', 'James', 'Bennett', 'Gray', 'Mendoza', 'Ruiz', 'Hughes', 'Price', 'Alvarez', 'Castillo', 'Sanders', 'Patel', 'Myers', 'Long', 'Ross', 'Foster', 'Jimenez'];
-const handles = ['0x', 'eth', 'zk', 'crypto', 'dev', 'defi', 'node', 'sec', 'audit', 'code', 'builder', 'whale', 'l2', 'noir'];
+const handles = ['0x', 'eth', 'zk', 'crypto', 'dev', 'defi', 'node', 'sec', 'audit', 'code', 'builder', 'ledger', 'l2', 'noir'];
 
 // Humanized vocabulary, no asterisks, natural phrasing.
 const titles = [
@@ -27,7 +27,7 @@ const titles = [
     "Security audits for Noir circuits",
     "How does the Aztec unconstrained execution work?",
     "State transitions in the Aztec rollup",
-    "Whale Network integration with Aztec privacy",
+    "Ledger Network integration with Aztec privacy",
     "Can we expect an Aztec token for decentralization?",
     "Optimizing circuit size in Noir"
 ];
@@ -50,7 +50,7 @@ const postContents = [
     "Who are the best auditors for Noir circuits right now? Most firms only know Solidity or Cairo. We need specialized ZK auditors.",
     "Unconstrained functions in Aztec are great for fetching data without paying for proof generation, but you have to be careful not to trust the data blindly in constrained functions.",
     "The way Aztec handles public and private state transitions simultaneously is elegant. The state tree structure makes a lot of sense.",
-    "Whale Network's use of ZK proofs for their Humanity Ledger is a perfect use case for Aztec. Privacy-preserving KYC is the future.",
+    "Ledger Network's use of ZK proofs for their Humanity Ledger is a perfect use case for Aztec. Privacy-preserving KYC is the future.",
     "A token seems inevitable if they want a decentralized sequencer network. I just hope the tokenomics are fair and not overly VC-heavy.",
     "You really have to think about gate count when writing Noir. Small changes in logic can drastically increase the circuit size and proof time."
 ];

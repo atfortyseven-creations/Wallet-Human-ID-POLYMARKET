@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { getParsedMarkets, RAW_NETWORKS } from '@/lib/data/markets-data';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TokenLogo } from '@/components/ui/TokenLogo';
-import { useWhaleFeed } from '@/hooks/useWhaleFeed';
+import { useLedgerFeed } from '@/hooks/useLedgerFeed';
 import {
     Activity, ArrowRightLeft, Database, Fingerprint, ChevronDown, ChevronUp, Search,
     Zap, Scale, Shield, Lock, Unlock, Eye, Terminal, FileCode2, Network
@@ -186,7 +186,7 @@ function TransactionRow({ item }: { item: any }) {
         dateObj.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) +
         ' ' + dateObj.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' UTC';
 
-    // No mock data. Values pulled exclusively from the tactical-intel enrichment in useWhaleFeed.ts
+    // No mock data. Values pulled exclusively from the tactical-intel enrichment in useLedgerFeed.ts
     const realWalletProfile = item.walletProfile || 'Unknown Entity';
     const realMarketImpact = item.marketImpact || 'Standard Volume';
     const realSentiment = item.sentiment || 'NEUTRAL';
@@ -414,13 +414,13 @@ function TransactionRow({ item }: { item: any }) {
     );
 }
 
-function WhaleTransactionExplorer() {
-    const { unifiedWhaleFeed, isLoading } = useWhaleFeed();
+function LedgerTransactionExplorer() {
+    const { unifiedLedgerFeed, isLoading } = useLedgerFeed();
     const [txSearch, setTxSearch] = useState('');
     const [txTab, setTxTab] = useState('ALL');
 
     const filtered = useMemo(() => {
-        let result = unifiedWhaleFeed;
+        let result = unifiedLedgerFeed;
         if (txTab === 'TOKENS') result = result.filter(tx => tx.chain !== 'BITCOIN');
         if (txTab === 'BTC')    result = result.filter(tx => tx.chain === 'BITCOIN');
         if (txSearch) {
@@ -433,7 +433,7 @@ function WhaleTransactionExplorer() {
             );
         }
         return result;
-    }, [unifiedWhaleFeed, txSearch, txTab]);
+    }, [unifiedLedgerFeed, txSearch, txTab]);
 
     return (
         <div className="relative bg-white text-[#050505] font-sans overflow-x-hidden min-h-full">
@@ -446,7 +446,7 @@ function WhaleTransactionExplorer() {
                         className="w-40 h-40 flex items-center justify-center mx-auto relative group"
                     >
                         <SplashContainer className="w-full h-full transition-transform duration-700 scale-110 group-hover:scale-125 relative z-10 flex items-center justify-center">
-                            <img src="/official-whale-monochrome.png" className="w-full h-full object-contain brightness-0 opacity-90" alt="Humanity Ledger" />
+                            <img src="/official-ledger-monochrome.png" className="w-full h-full object-contain brightness-0 opacity-90" alt="Humanity Ledger" />
                         </SplashContainer>
                     </motion.div>
 
@@ -787,7 +787,7 @@ export function InstitutionalMarkets() {
                         transition={{ duration: 0.2 }}
                         className="flex-1 min-h-0 overflow-y-auto"
                     >
-                        <WhaleTransactionExplorer />
+                        <LedgerTransactionExplorer />
                     </motion.div>
                 )}
             </AnimatePresence>

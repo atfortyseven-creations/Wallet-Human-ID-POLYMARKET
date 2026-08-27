@@ -42,10 +42,7 @@
 }
 
 /* NO HYPHENS GLOBALLY */
-* {
-  hyphens: none !important;
-  -webkit-hyphens: none !important;
-}
+
 
 /* 
    IOS 15 / SAFARI WEBKIT UNIVERSAL COMPATIBILITY LAYER
@@ -1748,6 +1745,12 @@ img, a, canvas, svg {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
-*   {   h y p h e n s :   n o n e   ! i m p o r t a n t ;   } 
- 
- 
+
+
+
+* {
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}

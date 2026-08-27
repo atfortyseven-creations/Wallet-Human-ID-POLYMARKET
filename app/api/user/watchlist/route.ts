@@ -33,7 +33,7 @@ function enrichToken(token: any, pricesMap: Map<string, any>) {
             mcap,
             vol24h,
             roi,
-            whaleConcentration: 0, // Will be populated by the WhaleScanner worker
+            ledgerConcentration: 0, // Will be populated by the LedgerScanner worker
             high24h: live ? parseFloat(live.highPrice) : 0,
             low24h:  live ? parseFloat(live.lowPrice) : 0,
         },

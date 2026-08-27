@@ -72,7 +72,7 @@ export function formatHumanityLedgerTelegram(data: {
     return `${millions} Million Euros`;
   };
 
-  const emoji = ''; // Always whale, never mermaid
+  const emoji = ''; // Always ledger, never mermaid
   const typeTranslated = data.type === 'CONTRACT' ? 'Interaction' : 'Transfer';
 
   return `

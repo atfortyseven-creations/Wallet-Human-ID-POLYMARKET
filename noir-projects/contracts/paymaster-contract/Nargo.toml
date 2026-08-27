@@ -2,7 +2,7 @@
 name = "native_paymaster"
 type = "contract"
 version = "0.1.0"
-authors = ["Whale Network / Studio Provenance"]
+authors = ["Ledger Network / Studio Provenance"]
 
 # Uses aztec-nr — the official Noir library for Aztec contracts.
 # Tag matches the installed aztec CLI version (4.4.0).

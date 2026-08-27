@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
  * Token IDs:
  *   0  Observer     (joined the platform)
  *   1  Analyst      (30 days active, 10 forum posts)
- *   2  Whale Watcher(90 days active, Pro subscription, 50 forum posts)
+ *   2  Ledger Watcher(90 days active, Pro subscription, 50 forum posts)
  *   3  System    (365 days active, Genesis Ticket holder, 200 forum posts)
  */
 contract SystemReputationSBT is ERC1155, Ownable {

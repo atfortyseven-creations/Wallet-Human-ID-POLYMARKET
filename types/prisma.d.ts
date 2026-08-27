@@ -4,7 +4,7 @@ import type {
 } from '@prisma/client'
 
 /**
- *  WHALE ALERT NETWORK  PRISMA TYPE AUGMENTATION
+ *  LEDGER ALERT NETWORK  PRISMA TYPE AUGMENTATION
  * This file formally extends the Prisma namespace to include the NewsArticle model.
  * This is the expert-grade solution for handling schema drift before client regeneration.
  */

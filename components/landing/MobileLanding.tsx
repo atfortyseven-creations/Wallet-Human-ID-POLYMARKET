@@ -22,7 +22,7 @@ import {
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import { SafeErrorBoundary } from '@/components/ui/SafeErrorBoundary';
 import { ImmersiveManifestoLanding } from "./ImmersiveManifestoLanding";
-import { WhalecosystemTweetFeed } from "./WhalecosystemTweetFeed";
+import { HumanityLedgerTweetFeed } from "./HumanityLedgerTweetFeed";
 import { EmailLoginModal } from "@/components/auth/EmailLoginModal";
 
 
@@ -949,7 +949,7 @@ export function MobileLanding() {
       // [MOBILE UX] Session is established. If a ?next= param was provided navigate there;
       // otherwise we are already on '/' (MobileLanding renders on '/') so simply close the
       // connect overlay. The component re-renders with isLinked=true and shows the
-      // connected header (Whale Hub + address badge + disconnect).
+      // connected header (Ledger Hub + address badge + disconnect).
       const params = new URLSearchParams(window.location.search);
       const next = params.get('next');
       if (next && next !== '/connect' && next !== window.location.pathname) {
@@ -1293,7 +1293,7 @@ export function MobileLanding() {
 
   // [MOBILE UX] When isLinked is true the session is fully established.
   // We fall through to the normal landing page render below (no ConnectedScreen).
-  // The header shows Whale Hub + account controls. The user chooses where to go.
+  // The header shows Ledger Hub + account controls. The user chooses where to go.
 
   // [iOS FIX] App Hub was completely inaccessible because showHub was never set to true.
   // Fix: show ConnectedScreen whenever the session is established — no intermediate showHub state needed.
@@ -1468,7 +1468,7 @@ export function MobileLanding() {
             className="group w-full flex items-center gap-4 p-4 rounded-2xl border-2 border-[#5200FF]/30 bg-gradient-to-r from-[#5200FF]/5 to-[#5200FF]/10 hover:from-[#5200FF]/10 hover:to-[#5200FF]/15 hover:border-[#5200FF]/50 active:scale-[0.97] transition-all duration-150 shadow-sm"
           >
             <div className="w-11 h-11 rounded-xl bg-[#5200FF] flex items-center justify-center p-2.5 shrink-0 shadow-lg">
-              <img src="/official-whale-monochrome.png" alt="Connect" className="w-full h-full object-contain invert" />
+              <img src="/official-ledger-monochrome.png" alt="Connect" className="w-full h-full object-contain invert" />
             </div>
             <div className="flex-1 text-left">
               <p className="text-[14px] font-black uppercase tracking-tight text-[#050505]">Connect Wallet</p>

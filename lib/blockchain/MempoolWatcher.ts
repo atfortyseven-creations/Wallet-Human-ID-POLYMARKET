@@ -45,7 +45,7 @@ class SystemMempoolStreamer {
 
           const valueEth = parseFloat(formatEther(tx.value || 0n));
           const gasPriceGwei = parseFloat(formatEther(tx.gasPrice || 0n)) * 1e9;
-          const type = valueEth > 5 ? 'whale' : 'dust';
+          const type = valueEth > 5 ? 'ledger' : 'dust';
 
           // Only index events with actual economic transfer
           if (valueEth > 0.05 || (tx.input && tx.input !== '0x')) {

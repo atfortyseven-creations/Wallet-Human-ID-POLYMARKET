@@ -342,7 +342,7 @@ function getDistributedLimiter(tier: RateLimitTier): any | null {
       redis,
       limiter: Ratelimit.slidingWindow(config.requests, config.window),
       analytics: true,
-      prefix: `@whale-fortress/rate-limit`,
+      prefix: `@ledger-fortress/rate-limit`,
     });
     _limiters.set(tier, limiter);
     return limiter;

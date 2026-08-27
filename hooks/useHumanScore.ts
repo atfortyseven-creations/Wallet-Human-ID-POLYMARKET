@@ -3,7 +3,7 @@ import { useAccount, useBalance, useEnsName, usePublicClient } from 'wagmi';
 
 export interface HumanScore {
     totalScore: number;
-    rank: 'Novice' | 'Citizen' | 'Veteran' | 'Whale' | 'Titan';
+    rank: 'Novice' | 'Citizen' | 'Veteran' | 'Ledger' | 'Titan';
     breakdown: {
         age: number;
         activity: number;
@@ -64,7 +64,7 @@ export function useHumanScore() {
             // Rank Determination
             let rank: HumanScore['rank'] = 'Novice';
             if (total > 80) rank = 'Titan';
-            else if (total > 60) rank = 'Whale';
+            else if (total > 60) rank = 'Ledger';
             else if (total > 40) rank = 'Veteran';
             else if (total > 20) rank = 'Citizen';
 

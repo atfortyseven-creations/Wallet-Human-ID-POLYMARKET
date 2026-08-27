@@ -9,8 +9,8 @@ export class ForgeService {
   /**
    * Calculate SHA-256 hash to act as the Cosmic Seed
    */
-  static generateSeedHash(whaleEventId: string, amountUSD: number, timestamp: number): string {
-    const payload = `${whaleEventId}-${amountUSD}-${timestamp}-Enterprise-FORGE`;
+  static generateSeedHash(ledgerEventId: string, amountUSD: number, timestamp: number): string {
+    const payload = `${ledgerEventId}-${amountUSD}-${timestamp}-Enterprise-FORGE`;
     return crypto.createHash('sha256').update(payload).digest('hex');
   }
 
@@ -38,9 +38,9 @@ export class ForgeService {
   }
 
   /**
-   * Core pipeline: Take raw whale event, generate seed, create entity
+   * Core pipeline: Take raw ledger event, generate seed, create entity
    */
-  static async processWhaleSeed(seed: CosmicSeed): Promise<CosmicEntityBase | null> {
+  static async processLedgerSeed(seed: CosmicSeed): Promise<CosmicEntityBase | null> {
     if (!FORGE_ENABLED) return null;
 
     // Zero-mock mandate: verify it hasn't been created
@@ -70,7 +70,7 @@ export class ForgeService {
       const entity = await prisma.cosmicEntity.create({
         data: {
           seedHash: seed.seedHash,
-          whaleEventId: seed.eventId,
+          ledgerEventId: seed.eventId,
           tier: seed.tier,
           amountUSD: seed.amountUSD,
           chain: seed.chain,

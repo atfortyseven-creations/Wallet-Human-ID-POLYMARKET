@@ -10,7 +10,7 @@ const OWNER_ADDRESS = '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a'; // normalize
 const AMOUNT = 21_000_000;
 
 async function main() {
-  console.log(`[Whale Network] Crediting ${AMOUNT.toLocaleString()} QDs to ${OWNER_ADDRESS}...`);
+  console.log(`[Ledger Network] Crediting ${AMOUNT.toLocaleString()} QDs to ${OWNER_ADDRESS}...`);
 
   // Check current balance first
   const [earnedAgg, spentAgg, receivedAgg, sentAgg] = await Promise.all([

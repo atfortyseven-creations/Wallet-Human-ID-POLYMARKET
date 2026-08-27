@@ -19,7 +19,7 @@ graph TD
 
     subgraph System Desktop Vault
         Daemon[SystemVault_RUN.bat]
-        Wrk[Whale Worker Nodes]
+        Wrk[Ledger Worker Nodes]
         Prisma[(PostgreSQL State)]
         Neo[(Neo4j Graph)]
         Redis[(Upstash PubSub)]
@@ -79,8 +79,8 @@ graph TD
 - **Moralis Deep Indexing**: High-speed retrieval of historical cross-chain transaction data.
 - **Private Aztec Network**: The primary shielded execution layer (Aztec-native), utilizing private notes for anti-double-spend and zero-knowledge privacy out-of-the-box (private-by-default logic for chat, alerts, and portfolio balance).
 
-###  Background Engine / Scanners (The Whale Engine)
-- **EVM Whale Scanner**: Dedicated long-running process scanning mempools and new blocks for high-value movement.
+###  Background Engine / Scanners (The Ledger Engine)
+- **EVM Ledger Scanner**: Dedicated long-running process scanning mempools and new blocks for high-value movement.
 - **BTC Mempool Scanner**: Real-time monitoring of Bitcoin unconfirmed transactions.
 - **Telegram Alert Bot**: Automated notification delivery via dedicated worker.
 - **Alchemy Monitoring**: Subscribes to `alchemy_pendingTransactions` for elite addresses (e.g., vitalik.eth).

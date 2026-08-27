@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
  * and maps them to the MempoolTx interface for the BTC Mempool dashboard.
  *
  * We use Blockchain.info because mempool.space's /api/mempool/recent does NOT
- * include transaction values, which are required for whale-size detection.
+ * include transaction values, which are required for ledger-size detection.
  */
 export async function GET() {
     try {
@@ -48,39 +48,39 @@ export async function GET() {
             };
         });
 
-        //  [Private PERSISTENCE] Save mega-whale BTC movements to DB 
+        //  [Private PERSISTENCE] Save mega-ledger BTC movements to DB 
         // Threshold: 50 BTC+ (5,000,000,000 satoshis)  only true giants are indexed.
         // FIRE AND FORGET: DB write never blocks the response.
-        const giantWhales = mappedTxs.filter((tx: any) => tx.value >= 5_000_000_000);
+        const giantLedgers = mappedTxs.filter((tx: any) => tx.value >= 5_000_000_000);
 
-        if (giantWhales.length > 0) {
+        if (giantLedgers.length > 0) {
             (async () => {
-                for (const whale of giantWhales) {
+                for (const ledger of giantLedgers) {
                     try {
-                        const btcAmount = whale.value / 1e8;
+                        const btcAmount = ledger.value / 1e8;
                         const usdEstimate = Math.round(btcAmount * 60000);
 
-                        await prisma.whaleActivity.upsert({
-                            where: { transactionHash: whale.txid },
+                        await prisma.ledgerActivity.upsert({
+                            where: { transactionHash: ledger.txid },
                             update: {}, // preserve existing record  write-once semantics
                             create: {
-                                walletAddress: whale.vin?.[0]?.prevout?.scriptpubkey_address || 'Unknown',
+                                walletAddress: ledger.vin?.[0]?.prevout?.scriptpubkey_address || 'Unknown',
                                 type: 'BTC Transfer',
                                 token: 'BTC',
                                 amount: String(btcAmount),          // schema: String
                                 usdValue: String(usdEstimate),      // schema: String
-                                fromAddress: whale.vin?.[0]?.prevout?.scriptpubkey_address || 'Unknown',
-                                toAddress: whale.vout?.[0]?.scriptpubkey_address || 'Multiple',
-                                transactionHash: whale.txid,
+                                fromAddress: ledger.vin?.[0]?.prevout?.scriptpubkey_address || 'Unknown',
+                                toAddress: ledger.vout?.[0]?.scriptpubkey_address || 'Multiple',
+                                transactionHash: ledger.txid,
                                 blockNumber: BigInt(0),
                                 chain: 'BITCOIN',
                                 confirmed: false,
                                 metadata: {
-                                    satPerVbyte: whale.vsize > 0 ? (whale.fee / whale.vsize).toFixed(1) : '0',
+                                    satPerVbyte: ledger.vsize > 0 ? (ledger.fee / ledger.vsize).toFixed(1) : '0',
                                     method: 'BTC Transfer',
                                     confirmations: 0
                                 },
-                                timestamp: new Date(whale.time * 1000),
+                                timestamp: new Date(ledger.time * 1000),
                             }
                         });
                     } catch {

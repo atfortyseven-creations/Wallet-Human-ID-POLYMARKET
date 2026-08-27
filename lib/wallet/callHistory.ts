@@ -11,7 +11,7 @@ export interface CallRecord {
   timestamp: number;
 }
 
-const getStorageKey = (walletAddress: string) => `whale_calls_${walletAddress.toLowerCase()}`;
+const getStorageKey = (walletAddress: string) => `ledger_calls_${walletAddress.toLowerCase()}`;
 
 export const getCallHistory = (walletAddress: string): CallRecord[] => {
   if (typeof window === 'undefined') return [];
@@ -43,7 +43,7 @@ export const saveCallRecord = (walletAddress: string, call: Omit<CallRecord, 'id
   localStorage.setItem(getStorageKey(walletAddress), JSON.stringify(history));
   
   if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('whale_calls_updated', { detail: { walletAddress, history } }));
+    window.dispatchEvent(new CustomEvent('ledger_calls_updated', { detail: { walletAddress, history } }));
   }
   
   return newCall;
@@ -52,6 +52,6 @@ export const saveCallRecord = (walletAddress: string, call: Omit<CallRecord, 'id
 export const clearCallHistory = (walletAddress: string): void => {
   localStorage.removeItem(getStorageKey(walletAddress));
   if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('whale_calls_updated', { detail: { walletAddress, history: [] } }));
+    window.dispatchEvent(new CustomEvent('ledger_calls_updated', { detail: { walletAddress, history: [] } }));
   }
 };

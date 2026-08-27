@@ -22,7 +22,7 @@ export class AgentRuntimeService {
     }
 
     /**
-     * Feeds the current Grid state (flows, whales, sentiment) into the Agent's decision engine.
+     * Feeds the current Grid state (flows, ledgers, sentiment) into the Agent's decision engine.
      * This is the bridge between real-time data and autonomous execution.
      */
     public async feedGridState(agentId: string, state: any): Promise<void> {

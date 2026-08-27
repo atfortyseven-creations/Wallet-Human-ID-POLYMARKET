@@ -5,9 +5,9 @@ const directories = ['app', 'components', 'lib'];
 const extensions = ['.tsx', '.ts', '.js', '.md'];
 
 const replacements = [
-    { search: /Whale Alert Network CORP/g, replace: 'HUMANITY LEDGER S.L.' },
-    { search: /Whale Network INC/g, replace: 'HUMANITY LEDGER S.L.' },
-    { search: /Whale Network LLC/g, replace: 'HUMANITY LEDGER S.L.' }
+    { search: /Ledger Alert Network CORP/g, replace: 'HUMANITY LEDGER S.L.' },
+    { search: /Ledger Network INC/g, replace: 'HUMANITY LEDGER S.L.' },
+    { search: /Ledger Network LLC/g, replace: 'HUMANITY LEDGER S.L.' }
 ];
 
 function processDirectory(dirPath) {

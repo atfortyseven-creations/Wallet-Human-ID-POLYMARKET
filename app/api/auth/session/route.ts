@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     // It is NOT a cryptographic proof of identity. Trusting it alone is equivalent to
     // allowing anyone who can forge a cookie to impersonate any wallet.
     // Removed: this block was the last remaining "blind trust" IDOR pattern.
-    // The user must have a valid signed JWT (human_session / whale_session) to be authenticated.
+    // The user must have a valid signed JWT (human_session / ledger_session) to be authenticated.
 
     return NextResponse.json({ authenticated: false, user: null });
   } catch (error) {

@@ -186,7 +186,7 @@ export async function getXMTPClient(
 
   //  Retrieve or Generate Local DB Encryption Key 
   // Passing this key prevents XMTP from prompting a signature on every reload
-  const storageKey = `whale_xmtp_db_key_${address}`;
+  const storageKey = `ledger_xmtp_db_key_${address}`;
   let dbKeyHex: string | null = null;
   try {
     dbKeyHex = localStorage.getItem(storageKey);
@@ -213,7 +213,7 @@ export async function getXMTPClient(
     client = await Client.create(signer, { 
       env: XMTP_ENV, 
       dbEncryptionKey,
-      appVersion: "WhaleNetwork-Privacy-Node/1.0.0-obfuscated", // Mixnet-style anonymity tag
+      appVersion: "LedgerNetwork-Privacy-Node/1.0.0-obfuscated", // Mixnet-style anonymity tag
     });
   } catch (err: any) {
     const errorMsg = err?.message || '';

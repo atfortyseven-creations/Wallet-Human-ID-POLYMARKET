@@ -34,7 +34,7 @@ const STORE_TO_DB: Record<string, string> = {
     emailAlerts:            'emailAlerts',
     telegramAlerts:         'telegramAlerts',
     audioAlerts:            'soundEffects',   // maps to soundEffects in DB
-    whaleAlertThreshold:    'whaleAlertThreshold',
+    ledgerAlertThreshold:    'ledgerAlertThreshold',
     email:                  'email',
 
     // Privacy & Security
@@ -91,7 +91,7 @@ const FULL_SELECT = {
     mevProtection: true,
     emailAlerts: true,
     telegramAlerts: true,
-    whaleAlertThreshold: true,
+    ledgerAlertThreshold: true,
     email: true,
     inactivityLockMinutes: true,
     autoDisconnectTimer: true,

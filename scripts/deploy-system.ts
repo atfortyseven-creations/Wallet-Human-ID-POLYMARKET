@@ -1,8 +1,8 @@
 /**
  * deploy-system.ts
  *
- * Sovereign-grade deployment script for Whale Alert system contracts:
- *   - WhaleDeadmanSwitch (security/WhaleDeadmanSwitch.sol)
+ * Sovereign-grade deployment script for Ledger Alert system contracts:
+ *   - LedgerDeadmanSwitch (security/LedgerDeadmanSwitch.sol)
  *   - HumanTimeLock (civilization/HumanTimeLock.sol)
  *
  * Features:
@@ -86,7 +86,7 @@ async function main() {
     const balance    = await provider.getBalance(deployer.address);
 
     separator("");
-    log("", "WHALE ALERT  System Contract Deployment");
+    log("", "LEDGER ALERT  System Contract Deployment");
     separator("");
     log("", `Network:  ${network.name}  (Chain ID: ${net.chainId})`);
     log("", `Deployer: ${deployer.address}`);
@@ -100,9 +100,9 @@ async function main() {
     const ownerAddress  = deployer.address;
     const backupAddress = BACKUP_WALLET;
 
-    //  1. WhaleDeadmanSwitch 
-    log("", "Deploying WhaleDeadmanSwitch...");
-    const DeadmanFactory  = await ethers.getContractFactory("WhaleDeadmanSwitch");
+    //  1. LedgerDeadmanSwitch 
+    log("", "Deploying LedgerDeadmanSwitch...");
+    const DeadmanFactory  = await ethers.getContractFactory("LedgerDeadmanSwitch");
     const deadmanArgs     = [ownerAddress, backupAddress, TIMEOUT_DAYS] as const;
     const deadmanContract = await DeadmanFactory.deploy(...deadmanArgs);
 
@@ -113,7 +113,7 @@ async function main() {
 
     // Confirm on-chain event was emitted
     const filter = deadmanContract.filters["Ping(address,uint256)"]?.();
-    log("", `WhaleDeadmanSwitch @ ${deadmanAddress}`);
+    log("", `LedgerDeadmanSwitch @ ${deadmanAddress}`);
 
     //  2. HumanTimeLock 
     log("", "Deploying HumanTimeLock...");
@@ -151,7 +151,7 @@ async function main() {
         deployer:    deployer.address,
         timestamp:   new Date().toISOString(),
         contracts: {
-            WhaleDeadmanSwitch: {
+            LedgerDeadmanSwitch: {
                 address:          deadmanAddress,
                 deployTxHash:     deadmanContract.deploymentTransaction()?.hash,
                 constructorArgs:  deadmanArgs,
@@ -179,7 +179,7 @@ async function main() {
     separator("");
     log("", "Private DEPLOYMENT COMPLETE");
     separator("");
-    log("", `WhaleDeadmanSwitch: ${deadmanAddress}`);
+    log("", `LedgerDeadmanSwitch: ${deadmanAddress}`);
     log("", `HumanTimeLock:      ${timelockAddress}`);
     separator();
     log("", "Add to .env.production:");

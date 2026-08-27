@@ -53,7 +53,7 @@ A route is **Marketing** if it has no user functionality.
 | Name | Ledger Chat |
 | Route | `/chat` |
 | Status | **BETA** |
-| Frontend | `components/terminal/LedgerChat.tsx`, `WhaleProShell.tsx`, `LedgerChatSettings.tsx` |
+| Frontend | `components/terminal/LedgerChat.tsx`, `LedgerProShell.tsx`, `LedgerChatSettings.tsx` |
 | Backend | `app/api/chat/` (12 routes), `app/api/auth/qr-*` |
 | Services | XMTP browser SDK, Socket.IO, WebRTC (PeerJS) |
 | Workers | None dedicated |
@@ -64,11 +64,11 @@ A route is **Marketing** if it has no user functionality.
 | External deps | `@xmtp/browser-sdk`, `peerjs`, `socket.io` |
 | Permissions | Wallet, signing, messaging |
 | Identity | SIWE |
-| Tests | `test/whale_chat_audit.test.ts`, `test/onion/OnionChat.test.ts` |
+| Tests | `test/ledger_chat_audit.test.ts`, `test/onion/OnionChat.test.ts` |
 | Deployment | LIVE |
 | Production evidence | API routes exist, XMTP SDK installed |
 | Known gaps | Aztec PXE identity claimed but not verified connected. Onion routing exists in test but status unclear. |
-| Documentation | Whitepaper (`WHALE_NETWORK_WHITEPAPER.md`) |
+| Documentation | Whitepaper (`LEDGER_NETWORK_WHITEPAPER.md`) |
 
 ---
 
@@ -124,18 +124,18 @@ A route is **Marketing** if it has no user functionality.
 
 ---
 
-### MA-05: Whale Intelligence / Network
+### MA-05: Ledger Intelligence / Network
 | Field | Value |
 |---|---|
 | ID | MA-05 |
-| Name | Whale Intelligence |
+| Name | Ledger Intelligence |
 | Route | `/terminal`, `/sovereign-intel`, `/vip` |
 | Status | **LIVE** |
-| Frontend | `components/terminal/GalacticDashboard.tsx`, `components/network/whale/` |
-| Backend | `app/api/whale/`, `app/api/v1/whale/`, `app/api/whale-events/`, `app/api/whales/` |
+| Frontend | `components/terminal/GalacticDashboard.tsx`, `components/network/ledger/` |
+| Backend | `app/api/ledger/`, `app/api/v1/ledger/`, `app/api/ledger-events/`, `app/api/ledgers/` |
 | Services | `lib/smartMoneyAnalyzer.ts`, `lib/vossAnalyticsEngine.ts`, `lib/neural-segregator.ts` |
 | Workers | `workers/indexer.ts`, `workers/sentimentEngine.ts`, `workers/syndicateDaemon.ts` |
-| Database | Prisma: `WhaleActivity`, `GlobalWhaleEvent`, `OnChainEntity`, `IntelItem`, `AlertRule` |
+| Database | Prisma: `LedgerActivity`, `GlobalLedgerEvent`, `OnChainEntity`, `IntelItem`, `AlertRule` |
 | Blockchain | Ethereum Mainnet (read), Base (read) |
 | Contracts | None — read-only indexing |
 | ZK | None |
@@ -146,7 +146,7 @@ A route is **Marketing** if it has no user functionality.
 | Deployment | LIVE |
 | Production evidence | Workers exist. API routes exist. Z-Score engine referenced. Grok integration active. |
 | Known gaps | No reorg handling in indexers. GetBlock credentials hardcoded in worker (security risk). |
-| Documentation | `STATE_OF_WHALE_NETWORK_2026.md` |
+| Documentation | `STATE_OF_LEDGER_NETWORK_2026.md` |
 
 ---
 
@@ -202,12 +202,12 @@ A route is **Marketing** if it has no user functionality.
 
 ---
 
-### MA-08: Forum (Whale Post)
+### MA-08: Forum (Ledger Post)
 | Field | Value |
 |---|---|
 | ID | MA-08 |
-| Name | Forum / Whale Post |
-| Route | `/forum`, `/whalepost` |
+| Name | Forum / Ledger Post |
+| Route | `/forum`, `/ledgerpost` |
 | Status | **LIVE** |
 | Frontend | Forum components |
 | Backend | `app/api/forum/` (20+ routes) |

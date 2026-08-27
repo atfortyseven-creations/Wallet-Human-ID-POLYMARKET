@@ -72,7 +72,7 @@ try {
             console.warn(`[LOTTIE SYNC] Missing source file for mapping: ${srcName}`);
         }
     };
-    copyLottie('Connected world.json', 'Whale Mission.json');
+    copyLottie('Connected world.json', 'Ledger Mission.json');
     copyLottie('Abstract Isometric Loader #1.json', 'block abstract.json');
     copyLottie('Payment Success.json', 'Transaction Complete.json');
 } catch (e) {
@@ -391,7 +391,7 @@ const nextConfig = {
             },
             //  API routes: never cache sensitive data endpoints 
             {
-                source: '/api/(health|akashic|golden-ticket|whale-events|signals|institutional)(.*)',
+                source: '/api/(health|akashic|golden-ticket|ledger-events|signals|institutional)(.*)',
                 headers: [
                     { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate' },
                     { key: 'Pragma',        value: 'no-cache' },

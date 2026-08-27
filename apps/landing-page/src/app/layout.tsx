@@ -10,7 +10,7 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Whale Network | Powered by Aztec",
+  title: "Ledger Network | Powered by Aztec",
   description: "The Private Plaza for Ethereum. Build and transact with total confidentiality using Noir and Zero-Knowledge proofs.",
 };
 

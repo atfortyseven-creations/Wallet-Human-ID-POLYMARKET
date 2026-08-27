@@ -16,7 +16,7 @@ cd /d "%~dp0"
 :BANNER
 cls
 echo =================================================================================
-echo   WHALE ALERT NETWORK: SOVEREIGN VAULT DAEMON (V1.1 - ELITE)
+echo   LEDGER ALERT NETWORK: SOVEREIGN VAULT DAEMON (V1.1 - ELITE)
 echo =================================================================================
 echo.
 

@@ -27,7 +27,7 @@ export default function PreferencesLayout({ children }: { children: React.ReactN
       {/* Top Banner (User Info) */}
       <div className="flex items-start gap-6 mb-8 border-b border-black/5 dark:border-white/10 pb-6">
         <div className="w-24 h-24 rounded-full overflow-hidden border border-black/10 dark:border-white/10 shrink-0">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Whale" alt="Avatar" className="w-full h-full object-cover" />
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ledger" alt="Avatar" className="w-full h-full object-cover" />
         </div>
         <div>
           <h1 className="text-2xl font-black text-black dark:text-white mb-1">humanityledger</h1>

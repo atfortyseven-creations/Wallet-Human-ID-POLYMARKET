@@ -156,7 +156,7 @@ export function NewsOfToday() {
                 <div className="shrink-0 px-8 pt-8 pb-6 border-b border-black/[0.04]  flex flex-col md:flex-row md:items-end justify-between bg-gradient-to-b from-white/80  to-transparent relative z-10 gap-6">
                     <div className="flex flex-col gap-2">
                         <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-[#050505]  flex items-center gap-3">
-                            The Whale Post
+                            The Ledger Post
                             <span className="px-2 py-0.5 rounded border border-black/10  text-[9px] font-bold tracking-widest bg-black/5  text-[#888888]  align-middle mt-1">LIVE FEED</span>
                         </h1>
                         <p className="text-[10px] text-[#050505]/50  font-bold uppercase tracking-[0.2em] leading-tight max-w-md">

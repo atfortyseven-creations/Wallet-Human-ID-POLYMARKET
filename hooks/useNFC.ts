@@ -43,7 +43,7 @@ export function useNFC() {
                 const serialNumber = event.serialNumber;
                 setSerialNumber(serialNumber);
                 setStatus('success');
-                toast.success("Whale Card Detected!", {
+                toast.success("Ledger Card Detected!", {
                     description: `ID: ${serialNumber}`
                 });
             };
@@ -58,10 +58,10 @@ export function useNFC() {
     const simulateScan = useCallback(() => {
         setStatus('scanning');
         setTimeout(() => {
-            setSerialNumber('SIM-Whale-NFC-777');
+            setSerialNumber('SIM-Ledger-NFC-777');
             setStatus('success');
-            toast.success("Whale Card Detected (SIMULATED)!", {
-                description: `ID: SIM-Whale-NFC-777`
+            toast.success("Ledger Card Detected (SIMULATED)!", {
+                description: `ID: SIM-Ledger-NFC-777`
             });
         }, 1500);
     }, []);

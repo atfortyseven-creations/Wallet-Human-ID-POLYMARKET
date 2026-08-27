@@ -11,7 +11,7 @@ const ALCHEMY_KEY = "p2MK6Y8eQyHPbS5gQZ7TU"; // Hardcoded from .env for immediat
 const BOT_TOKEN = "8400528150:AAGtzfSpSvD6HgauHwg7Nw3sGElQx1Ug4rg";
 const CHAT_ID = "7247569356";
 
-console.log(" Starting Manual Whale Alert Script...");
+console.log(" Starting Manual Ledger Alert Script...");
 
 const config = {
   apiKey: ALCHEMY_KEY,
@@ -68,7 +68,7 @@ async function run() {
     const all = [...ethTransfers.transfers, ...tokenTransfers.transfers];
 
     // 3. Filter & Sort by Value
-    const whaleMovements = all
+    const ledgerMovements = all
       .map(tx => {
         let usdValue = 0;
         const val = tx.value || 0;
@@ -82,7 +82,7 @@ async function run() {
       .sort((a, b) => b.usdValue - a.usdValue)
       .slice(0, 20); // Top 20
 
-    console.log(`Found ${whaleMovements.length} whale transactions.`);
+    console.log(`Found ${ledgerMovements.length} ledger transactions.`);
 
     // 4. Formatting Helpers
     const formatMoney = (val: number) => {
@@ -93,16 +93,16 @@ async function run() {
     };
 
     // 5. Send Alerts
-    for (const [i, tx] of whaleMovements.entries()) {
+    for (const [i, tx] of ledgerMovements.entries()) {
       const shortFrom = `${tx.from.slice(0, 4)}...${tx.from.slice(-4)}`;
       const shortTo = tx.to && tx.to !== 'Contract' ? `${tx.to.slice(0, 4)}...${tx.to.slice(-4)}` : 'Contract ';
       
-      const emoji = ''; // Always whale, never mermaid
+      const emoji = ''; // Always ledger, never mermaid
       const type = tx.to === 'Contract' ? 'Interaction' : 'Transfer';
       
       // Minimalist Premium Design (Personalized + Euros)
         const msg = `
-${emoji} <b>WHALE ALERT</b> | Base
+${emoji} <b>LEDGER ALERT</b> | Base
 
  <b>${formatMoney(tx.usdValue)}</b>
 ${type} of <b>${parseFloat(tx.value?.toFixed(2) || '0').toLocaleString()} ${tx.asset || 'Token'}</b> successfully transferred
@@ -112,7 +112,7 @@ ${type} of <b>${parseFloat(tx.value?.toFixed(2) || '0').toLocaleString()} ${tx.a
  <a href="https://basescan.org/tx/${tx.hash}">View Transaction</a>
 `.trim();
 
-      console.log(`Sending alert ${i+1}/${whaleMovements.length}...`);
+      console.log(`Sending alert ${i+1}/${ledgerMovements.length}...`);
       await sendTelegram(msg);
       
       // Delay to avoid rate limits

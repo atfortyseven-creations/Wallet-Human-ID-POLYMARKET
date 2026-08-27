@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
                     "walletAddress",
                     SUM(CAST("usdValue" AS FLOAT)) AS "totalUsd",
                     COUNT(*) AS "txCount"
-                FROM "WhaleActivity"
+                FROM "LedgerActivity"
                 GROUP BY "walletAddress"
                 ORDER BY "totalUsd" DESC
                 LIMIT ${limit}

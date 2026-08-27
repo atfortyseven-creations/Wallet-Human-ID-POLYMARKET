@@ -1,7 +1,7 @@
 // lib/wallet/blocklist.ts
 // Local blocklist enforcement for App Store / Google Play compliance
 
-const BLOCKLIST_KEY = 'whale_blocklist';
+const BLOCKLIST_KEY = 'ledger_blocklist';
 
 export function getBlocklist(myAddress: string): string[] {
   if (typeof window === 'undefined') return [];
@@ -41,7 +41,7 @@ export function isBlocked(myAddress: string, peerAddress: string): boolean {
 
 // ─── Reporting ──────────────────────────────────────────────────────────
 
-const REPORT_KEY = 'whale_reports';
+const REPORT_KEY = 'ledger_reports';
 
 export interface UserReport {
   id: string;

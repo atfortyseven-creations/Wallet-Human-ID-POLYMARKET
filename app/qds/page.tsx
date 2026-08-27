@@ -68,7 +68,7 @@ const SECTIONS: Section[] = [
     paragraphs: [
       'Currently (Aztec Testnet phase, July 2026), QDs are distributed exclusively through the network\'s Proof of Contribution airdrop mechanism. There is no purchase, no presale, and no ICO. Acquiring QDs requires participation.',
       'Step 1 — Authenticate: Connect to the Humanity Ledger at humanidfi.com/connect using your Web3 wallet (MetaMask, Coinbase Wallet, WalletConnect) or via Turing Shield (email + 6-digit PIN for mobile users).',
-      'Step 2 — Open the Terminal: Once authenticated, press Cmd+K (Mac) or Ctrl+K (Windows) to open the Whale Terminal from anywhere on the platform.',
+      'Step 2 — Open the Terminal: Once authenticated, press Cmd+K (Mac) or Ctrl+K (Windows) to open the Ledger Terminal from anywhere on the platform.',
       'Step 3 — Navigate to Identity: In the terminal sidebar, find the "Identity / Airdrop" tab. This section shows your current ZK identity status, your Aztec account address, and your current QD balance.',
       'Step 4 — Claim Airdrop: Click "Claim Airdrop". The system verifies your identity via a ZK proof — confirming you are a unique, active participant — and deposits 50 testnet QDs directly into your private Aztec balance. The balance update happens on-chain and is visible only to you.',
     ],
@@ -87,7 +87,7 @@ const SECTIONS: Section[] = [
       'QDs are not a speculative asset waiting for utility. They have concrete, working utility inside the Humanity Ledger ecosystem today on testnet. Here is an honest description of each use case as it exists right now.',
     ],
     bullets: [
-      'Whale Terminal Pro Access: Spending QDs unlocks advanced analytical tiers (Tier 2 Pro, Tier 3 Whale). These tiers provide real-time whale alert filtering, anomaly detection dashboards, and cross-chain capital flow monitoring beyond what the free tier offers.',
+      'Ledger Terminal Pro Access: Spending QDs unlocks advanced analytical tiers (Tier 2 Pro, Tier 3 Ledger). These tiers provide real-time ledger alert filtering, anomaly detection dashboards, and cross-chain capital flow monitoring beyond what the free tier offers.',
       'Ledger Chat Encrypted Signals: When a participant sends a paid signal in LedgerChat, the recipient must spend QDs to decrypt and view it. The payment is a private ZK transaction — Aztec confirms the balance change, then the signal decrypts locally on the recipient\'s device.',
       'On-Chain Governance Voting: Submitting or voting on a Market Proposal requires locking a small amount of QDs. This prevents sybil attacks (creating many fake accounts to spam votes) by requiring economic commitment. Votes are cryptographically anchored to the ledger.',
       'Studio Provenance — ZK Product Passports: Minting an immutable cryptographic QR passport for a physical product costs QDs. The provenance record is anchored to the Aztec state, making it tamper-proof and verifiable by any third party scanning the QR code.',
@@ -219,8 +219,8 @@ const SECTIONS: Section[] = [
     tag: 'Roadmap',
     paragraphs: [
       'On mainnet, QDs become the core economic layer of a private-by-default financial intelligence network. The vision is not a speculative token — it is a functional unit of exchange for a specific, operational ecosystem.',
-      'Private Wealth Intelligence: On mainnet, Whale Terminal Pro access paid in QDs grants participants private real-time intelligence on capital movements across Ethereum, Aztec, and bridged L2 networks. The competitive advantage is significant: most participants use public data. Whale Terminal users operate on private analytics that no one else can see or intercept.',
-      'Sovereign P2P Economy: Ledger Chat on mainnet becomes a fully operational peer-to-peer marketplace for financial intelligence. Analysts, researchers, and whale-level investors will be able to sell encrypted insights directly to each other, denominated in QDs, with no intermediary, no platform fee beyond the ZK transaction cost, and no record of who paid whom.',
+      'Private Wealth Intelligence: On mainnet, Ledger Terminal Pro access paid in QDs grants participants private real-time intelligence on capital movements across Ethereum, Aztec, and bridged L2 networks. The competitive advantage is significant: most participants use public data. Ledger Terminal users operate on private analytics that no one else can see or intercept.',
+      'Sovereign P2P Economy: Ledger Chat on mainnet becomes a fully operational peer-to-peer marketplace for financial intelligence. Analysts, researchers, and ledger-level investors will be able to sell encrypted insights directly to each other, denominated in QDs, with no intermediary, no platform fee beyond the ZK transaction cost, and no record of who paid whom.',
       'Verifiable Provenance at Scale: Studio Provenance on mainnet allows manufacturers, artists, and institutions to anchor physical-world ownership records to the Aztec state permanently. A QD-denominated fee mints an immutable, cryptographically verifiable passport for any asset — from luxury goods to medical devices to art.',
       'Protocol Governance: On mainnet, every significant parameter change to the Humanity Ledger protocol (alert thresholds, new asset integrations, fee structures) goes through ZK-based on-chain governance. QD holders vote. QDs locked in proposals cannot be double-voted. The protocol evolves only through demonstrated economic consensus.',
     ],

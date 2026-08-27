@@ -3,7 +3,7 @@ export default function Footer() {
     <footer className="bg-parchment pt-24 pb-12 px-4">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center md:items-start gap-8 border-t-2 border-ink/10 pt-12">
         <div className="text-center md:text-left">
-          <h2 className="text-3xl font-serif font-bold text-ink mb-2">Whale Network</h2>
+          <h2 className="text-3xl font-serif font-bold text-ink mb-2">Ledger Network</h2>
           <p className="text-ink/60 max-w-sm">
             The privacy layer for Ethereum. Build, transact, and interact with the world, on your terms.
           </p>
@@ -37,7 +37,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="max-w-6xl mx-auto mt-16 text-center text-ink/40 text-sm">
-        © {new Date().getFullYear()} Whale Network. All rights reserved.
+        © {new Date().getFullYear()} Ledger Network. All rights reserved.
       </div>
     </footer>
   );

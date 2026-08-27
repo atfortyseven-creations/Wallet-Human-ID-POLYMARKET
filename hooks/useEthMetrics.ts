@@ -6,7 +6,7 @@
  *
  * Used by:
  *   - components/landing/ImmersiveManifestoLanding.tsx  (hero stats bar)
- *   - components/dashboard/WhaleProShell.tsx            (top master bar)
+ *   - components/dashboard/LedgerProShell.tsx            (top master bar)
  *
  * Design decisions:
  *   - Single `watchBlocks` subscription per mount  no polling.

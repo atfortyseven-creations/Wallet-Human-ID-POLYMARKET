@@ -18,8 +18,8 @@ import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
 //  Z-Score Engine (extracted for testability) 
-// This is the core formula used in entity-graph-miner and whale-worker
-// to classify whale activity conviction level.
+// This is the core formula used in entity-graph-miner and ledger-worker
+// to classify ledger activity conviction level.
 
 function computeZScore(value: number, mean: number, stdDev: number): number {
   if (!isFinite(value) || !isFinite(mean) || !isFinite(stdDev)) return 0;
@@ -37,7 +37,7 @@ function computeConvictionTier(zScore: number): 'LOW' | 'MEDIUM' | 'HIGH' | 'EXT
   return 'EXTREME';
 }
 
-function computeWhaleZScore(params: {
+function computeLedgerZScore(params: {
   volumeUSD: number;
   historicalMeanUSD: number;
   historicalStdDevUSD: number;
@@ -169,7 +169,7 @@ describe('Z-Score Engine  Property-Based Tests (fast-check)', () => {
     );
   });
 
-  // PROPERTY 8: Whale Z-Score with sovereign flag always >= base Z-Score
+  // PROPERTY 8: Ledger Z-Score with sovereign flag always >= base Z-Score
   it('P8: Sovereign flag always increases or maintains Z-Score', () => {
     fc.assert(
       fc.property(
@@ -178,8 +178,8 @@ describe('Z-Score Engine  Property-Based Tests (fast-check)', () => {
         fc.double({ noNaN: true, noDefaultInfinity: true, min: 1, max: 1e7 }),
         fc.double({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1 }),
         (volume, mean, stdDev, velocity) => {
-          const base = computeWhaleZScore({ volumeUSD: volume, historicalMeanUSD: mean, historicalStdDevUSD: stdDev, velocityFactor: velocity, institutionalFlag: false });
-          const sovereign = computeWhaleZScore({ volumeUSD: volume, historicalMeanUSD: mean, historicalStdDevUSD: stdDev, velocityFactor: velocity, institutionalFlag: true });
+          const base = computeLedgerZScore({ volumeUSD: volume, historicalMeanUSD: mean, historicalStdDevUSD: stdDev, velocityFactor: velocity, institutionalFlag: false });
+          const sovereign = computeLedgerZScore({ volumeUSD: volume, historicalMeanUSD: mean, historicalStdDevUSD: stdDev, velocityFactor: velocity, institutionalFlag: true });
           // Sovereign Z should be >= base (clamped at 10)
           return sovereign >= base || (base >= 10 && sovereign >= 10);
         }

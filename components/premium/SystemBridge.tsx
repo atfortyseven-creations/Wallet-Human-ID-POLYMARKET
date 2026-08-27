@@ -8,10 +8,10 @@ import { QrCode, RefreshCw, Loader, Smartphone } from 'lucide-react';
 // Stable browser session ID  persisted in sessionStorage
 function getSessionId(): string {
     if (typeof window === 'undefined') return 'ssr';
-    let id = sessionStorage.getItem('_whale_sid');
+    let id = sessionStorage.getItem('_ledger_sid');
     if (!id) {
         id = `sess-${Math.random().toString(36).slice(2)}-${Date.now().toString(36)}`;
-        sessionStorage.setItem('_whale_sid', id);
+        sessionStorage.setItem('_ledger_sid', id);
     }
     return id;
 }

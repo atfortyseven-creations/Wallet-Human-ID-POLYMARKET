@@ -7,7 +7,7 @@ import * as THREE from 'three';
 // Colores según el modo del Feed
 const MODE_COLORS = {
     LIVE: '#00f2ea',   // Cyan (Normal)
-    WHALES: '#8b5cf6', // Violeta (Misterio)
+    LEDGERS: '#8b5cf6', // Violeta (Misterio)
     GAS: '#ef4444',    // Rojo (Alerta/Calor)
     GOV: '#f59e0b',    // Dorado (Poder)
     YIELD: '#10b981'   // Verde (Dinero)

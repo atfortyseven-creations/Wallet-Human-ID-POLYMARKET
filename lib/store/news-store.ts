@@ -57,7 +57,7 @@ export const useNewsStore = create<NewsState>()(
         Object.keys(get().archive).sort((a, b) => (a > b ? -1 : 1)),
     }),
     {
-      name: 'whale-news-archive-v2', // nueva clave para no colisionar con la anterior
+      name: 'ledger-news-archive-v2', // nueva clave para no colisionar con la anterior
       storage: createJSONStorage(() => safeStorage), // localStorage (safe) para persistencia permanente por mes
     }
   )

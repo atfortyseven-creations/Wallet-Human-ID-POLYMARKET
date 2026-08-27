@@ -1,23 +1,23 @@
 import { NextResponse } from 'next/server';
 import { mainnetClient, bscClient } from '@/lib/blockchain/rpc-engine';
 import { formatUnits } from 'viem';
-import { whaleService } from '@/lib/services/whale-data';
+import { ledgerService } from '@/lib/services/ledger-data';
 
 export const revalidate = 0;
 
 export async function GET() {
     try {
-        const [ethGas, bscGas, latestWhales] = await Promise.all([
+        const [ethGas, bscGas, latestLedgers] = await Promise.all([
             mainnetClient.getGasPrice(),
             bscClient.getGasPrice(),
-            whaleService.getLatestWhaleActivity(5)
+            ledgerService.getLatestLedgerActivity(5)
         ]);
 
         const ethGwei = parseFloat(formatUnits(ethGas, 9));
         
-        const sonarAlerts: { id: number; text: string; type: 'threat' | 'opportunity' }[] = latestWhales.map((w, i) => ({
+        const sonarAlerts: { id: number; text: string; type: 'threat' | 'opportunity' }[] = latestLedgers.map((w, i) => ({
             id: i,
-            text: ` WHALE detected on ${w.chain}: ${w.amount} ${w.token} movement`,
+            text: ` LEDGER detected on ${w.chain}: ${w.amount} ${w.token} movement`,
             type: 'opportunity' as const
         }));
 

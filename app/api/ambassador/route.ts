@@ -15,7 +15,7 @@
  *   - Unique referral code  (ref=ABC123)
  *   - Dashboard access      (/ambassador/terminal)
  *   - Commission tracking   (Prisma referral model)
- *   - System badge       (NFT-mintable via WhalePass contract)
+ *   - System badge       (NFT-mintable via LedgerPass contract)
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -41,7 +41,7 @@ const PROGRAM_INFO = {
             name:         'SENTINEL',
             minReferrals:  5,
             commission:    5,
-            perks:        ['5% commission on referral subscriptions', 'Monthly whale analytics briefing', 'Co-create Hall of Fame nominations'],
+            perks:        ['5% commission on referral subscriptions', 'Monthly ledger analytics briefing', 'Co-create Hall of Fame nominations'],
         },
         {
             name:         'GUARDIAN',
@@ -53,7 +53,7 @@ const PROGRAM_INFO = {
             name:         'Private',
             minReferrals: 50,
             commission:   20,
-            perks:        ['20% lifetime commission', 'SOVEREIGN API access free', 'Private alpha channel', 'System NFT badge', '"State of Whale Analytics" co-authorship'],
+            perks:        ['20% lifetime commission', 'SOVEREIGN API access free', 'Private alpha channel', 'System NFT badge', '"State of Ledger Analytics" co-authorship'],
         },
     ],
     requirements: [

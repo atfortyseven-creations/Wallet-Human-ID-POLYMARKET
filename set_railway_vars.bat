@@ -1,6 +1,6 @@
 @echo off
 REM ================================================================
-REM WHALE NETWORK - CONFIGURAR VARIABLES EN RAILWAY
+REM LEDGER NETWORK - CONFIGURAR VARIABLES EN RAILWAY
 REM Ejecutar DESPUES de: railway login
 REM ================================================================
 

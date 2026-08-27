@@ -2,23 +2,23 @@
 "use client";
 
 import React, { useEffect } from 'react';
-import { useWhaleFeed } from '@/hooks/useWhaleFeed';
+import { useLedgerFeed } from '@/hooks/useLedgerFeed';
 import { useSniperStore } from '@/store/useSniperStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useWhaleStream } from '@/context/WhaleStreamContext';
+import { useLedgerStream } from '@/context/LedgerStreamContext';
 import { Clock, Hash, Zap, Landmark, Activity } from 'lucide-react';
 
 export default function RadarFeed() {
-  const { unifiedWhaleFeed } = useWhaleFeed();
+  const { unifiedLedgerFeed } = useLedgerFeed();
   const pushAlert = useSniperStore((state) => state.pushAlert);
   const alerts = useSniperStore((state) => state.alerts);
   const filters = useSniperStore((state) => state.filters);
 
-  const { events: sseEvents, isConnected: sseConnected } = useWhaleStream();
+  const { events: sseEvents, isConnected: sseConnected } = useLedgerStream();
 
   useEffect(() => {
-    if (!unifiedWhaleFeed.length) return;
-    const latest = unifiedWhaleFeed[0];
+    if (!unifiedLedgerFeed.length) return;
+    const latest = unifiedLedgerFeed[0];
     pushAlert({
       id: latest.id || latest.hash,
       txHash: latest.hash,
@@ -31,7 +31,7 @@ export default function RadarFeed() {
       action: (latest.action === 'COMPRA' || latest.action === 'BUY') ? 'BUY' : latest.action === 'SELL' ? 'SELL' : 'TRANSFER',
       timestamp: latest.timestamp,
     } as any);
-  }, [unifiedWhaleFeed, pushAlert]);
+  }, [unifiedLedgerFeed, pushAlert]);
 
   useEffect(() => {
     if (!sseEvents.length) return;

@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Activity, Droplets, TrendingUp, TrendingDown, ShieldCheck } from 'lucide-react';
-import { WhaleMomentumChart } from '@/components/network/whale/WhaleMomentumChart';
+import { LedgerMomentumChart } from '@/components/network/ledger/LedgerMomentumChart';
 import { useVIPStore, EMPTY_ARRAY } from '@/lib/vip-store';
 
 interface OverlayProps {
@@ -101,7 +101,7 @@ export const TokenChartOverlay = ({ symbol, onClose }: OverlayProps) => {
                     {/* Chart */}
                     <div className="flex flex-col overflow-hidden border-r border-white/5">
                         <div className="flex-1 p-6">
-                            <WhaleMomentumChart symbol={s} showAxes={true} />
+                            <LedgerMomentumChart symbol={s} showAxes={true} />
                         </div>
                     </div>
 
@@ -134,7 +134,7 @@ export const TokenChartOverlay = ({ symbol, onClose }: OverlayProps) => {
                         <div className="px-5 py-3 border-b border-white/5 flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Droplets className="w-3.5 h-3.5 text-[var(--aztec-orchid)] animate-pulse" />
-                                <span className="font-aztec-h2 text-[9px] uppercase tracking-[0.35em] text-white/50">Whale Flow</span>
+                                <span className="font-aztec-h2 text-[9px] uppercase tracking-[0.35em] text-white/50">Ledger Flow</span>
                             </div>
                             <ShieldCheck className="w-3.5 h-3.5 text-emerald-500/60" />
                         </div>

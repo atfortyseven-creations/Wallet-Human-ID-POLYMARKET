@@ -12,7 +12,7 @@
  *  - 800 particles simulated entirely on the main canvas
  *  - Zustand store polled imperatively inside rAF  zero React re-renders
  *  - Particles form constellations: proximity edges drawn between nodes < threshold
- *  - Intensity from whale event count modulates speed + brightness in real time
+ *  - Intensity from ledger event count modulates speed + brightness in real time
  *  - GPU composite: willChange + translateZ to push canvas to own compositor layer
  * 
  */
@@ -123,11 +123,11 @@ export function OmniGridCanvas() {
       const cw = canvas!.width  / (window.devicePixelRatio || 1);
       const ch = canvas!.height / (window.devicePixelRatio || 1);
 
-      //  Read whale store imperatively (zero React re-render) 
+      //  Read ledger store imperatively (zero React re-render) 
       //  Genesis vs System Theme 
       const MAIN_HUB_COLOR = isConnected ? { r: 212, g: 175, b: 55 } : { r: 0, g: 195, b: 255 }; // Gold vs Cyan
       const MESH_COLOR     = isConnected ? { r: 30,  g: 40,  b: 60  } : { r: 10, g: 20, b: 40  };
-      const events         = useVIPStore.getState().whaleEvents ?? [];
+      const events         = useVIPStore.getState().ledgerEvents ?? [];
       const intensity      = Math.min(events.length / 400, 1.0);
       const speedMult      = (isConnected ? 1.0 : 0.6) + intensity * 1.8;
 

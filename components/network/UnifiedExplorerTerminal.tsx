@@ -9,7 +9,7 @@ import { NetworkStats } from "@/components/network/NetworkStats";
 import { UniversalChainDistribution } from "@/components/network/UniversalChainDistribution";
 import { LatestBlocks } from "@/components/network/LatestBlocks";
 import { MempoolVisualizer } from "@/components/network/MempoolVisualizer";
-import { WhaleWatch } from "@/components/network/WhaleWatch";
+import { LedgerWatch } from "@/components/network/LedgerWatch";
 import { MultiversePortfolio } from "@/components/network/MultiversePortfolio";
 import { LightningStats } from "@/components/network/LightningStats";
 import { TopLightningNodes } from "@/components/network/TopLightningNodes";
@@ -70,10 +70,10 @@ export function UnifiedExplorerTerminal() {
                     <section className="space-y-6">
                         <div className="flex items-center gap-4 px-4">
                             <Activity size={18} className="text-slate-400" />
-                            <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400">Whale Analytics & Flow</h2>
+                            <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400">Ledger Analytics & Flow</h2>
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
-                            <WhaleWatch theme="arctic" />
+                            <LedgerWatch theme="arctic" />
                             <MultiversePortfolio theme="arctic" />
                         </div>
                     </section>

@@ -12,7 +12,7 @@ import { GovernanceProposals } from '@/components/terminal/GovernanceProposals';
 
 import { ZapButton } from '@/components/defi/ZapButton'; // [NEW] Phase 3
 
-type FeedMode = 'LIVE' | 'WHALES' | 'GOV' | 'YIELD';
+type FeedMode = 'LIVE' | 'LEDGERS' | 'GOV' | 'YIELD';
 
 export function IntelFeed() {
     const searchParams = useSearchParams();
@@ -54,17 +54,17 @@ export function IntelFeed() {
 
 
 
-                        {/* --- TAB: WHALES (Placeholder/Future) --- */}
-                        {mode === 'WHALES' && (
+                        {/* --- TAB: LEDGERS (Placeholder/Future) --- */}
+                        {mode === 'LEDGERS' && (
                             <motion.div
-                                key="whales"
+                                key="ledgers"
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
                                 className="flex flex-col items-center justify-center h-full text-zinc-500 space-y-2 p-8"
                             >
                                 <Fish size={32} className="text-violet-500 opacity-50" />
-                                <p className="text-xs font-mono">WHALE TRACKING SYSTEM</p>
+                                <p className="text-xs font-mono">LEDGER TRACKING SYSTEM</p>
                                 <p className="text-[10px] text-zinc-600 text-center">Monitoring large scale movements across the chain. <br />(Module Initializing...)</p>
                             </motion.div>
                         )}

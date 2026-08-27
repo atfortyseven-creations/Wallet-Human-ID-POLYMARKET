@@ -227,7 +227,7 @@ export class PortfolioService {
           }
           cursor = tokensData?.cursor;
           page++;
-          // Safety cap to prevent infinite loops (whales rarely have > 1000 tokens)
+          // Safety cap to prevent infinite loops (ledgers rarely have > 1000 tokens)
           if (page > 5) break; // Reduced cap for login speed
       } while (cursor);
 
@@ -379,7 +379,7 @@ export class PortfolioService {
               name: 'CoreDots',
               symbol: 'QDs',
               decimals: 18,
-              logo: '/official-whale-monochrome.png',
+              logo: '/official-ledger-monochrome.png',
               price: 0,
               valueUsd: 0,
               change24h: 0,
@@ -482,7 +482,7 @@ export class PortfolioService {
                   name: isQd ? 'CoreDots' : symbol === ("AUTH" as any) ? 'Identity' : 'Unknown Token',
                   symbol,
                   decimals,
-                  logo: isQd ? '/official-whale-monochrome.png' : symbol === ("AUTH" as any) ? 'https://assets.coingecko.com/coins/images/31069/small/identity.jpeg' : null,
+                  logo: isQd ? '/official-ledger-monochrome.png' : symbol === ("AUTH" as any) ? 'https://assets.coingecko.com/coins/images/31069/small/identity.jpeg' : null,
                   price,
                   valueUsd: bal * price,
                   chainId,
@@ -522,7 +522,7 @@ export class PortfolioService {
                           name: 'CoreDots',
                           symbol: 'QDs',
                           decimals: 18,
-                          logo: '/official-whale-monochrome.png',
+                          logo: '/official-ledger-monochrome.png',
                           price: 0,
                           valueUsd: 0,
                           chainId,
@@ -829,7 +829,7 @@ export class PortfolioService {
         address: rawAddress,
         isBitcoin: true,
         legendaryScore: 100,
-        strategicInsight: "Professional Whale-Grade Bitcoin security detected. Maximum security profile active."
+        strategicInsight: "Professional Ledger-Grade Bitcoin security detected. Maximum security profile active."
       };
       await safeRedisSet(cacheKey, JSON.stringify(btcResult), 'EX', 3600); // 1h TTL for Bitcoin
       return btcResult;
@@ -937,7 +937,7 @@ export class PortfolioService {
       }
       
       console.error('[Portfolio]  All chains failed to fetch');
-      // For whales, we might want to return 0 gracefully instead of an error object that might break the UI
+      // For ledgers, we might want to return 0 gracefully instead of an error object that might break the UI
       return {
         totalValueUsd: 0,
         change24hPercent: 0,
@@ -950,8 +950,8 @@ export class PortfolioService {
       } as any;
     }
     
-    //  [WHALE DETECTION] If Mainnet returned 0 but we suspect there's more, 
-    // or if the user is a known whale, we should try harder.
+    //  [LEDGER DETECTION] If Mainnet returned 0 but we suspect there's more, 
+    // or if the user is a known ledger, we should try harder.
     const mainnetResult = validResults.find(r => r.chainId === ChainId.MAINNET);
     if (!deepScan && (!mainnetResult || mainnetResult.totalValueUsd === 0)) {
         console.log(`[Portfolio-RESILIENCE] Mainnet empty for ${address}. Triggering internal DeepScan...`);

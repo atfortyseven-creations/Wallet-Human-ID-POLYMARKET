@@ -6,7 +6,7 @@ export const maxDuration = 300; // 5 min — proof generation can be slow
 /**
  * POST /api/aztec/deploy-token
  *
- * One-time admin endpoint to deploy the WhaleToken (QDs) contract
+ * One-time admin endpoint to deploy the LedgerToken (QDs) contract
  * on Aztec Testnet v5 directly from the Railway Linux runtime.
  *
  * Security: Protected by DEPLOY_SECRET env var.
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log('[Deploy] Starting WhaleToken deployment on Aztec Testnet v5...');
+    console.log('[Deploy] Starting LedgerToken deployment on Aztec Testnet v5...');
     console.log('[Deploy] PXE URL:', pxeUrl);
 
     // ── Bypass SDK Deploy due to Aztec v5.0.1 RPC incompatibility ──────────
@@ -71,12 +71,12 @@ export async function POST(req: NextRequest) {
     
     // Generate deterministic virtual token address
     const crypto = require('crypto');
-    const hash = crypto.createHash('sha256').update(`WhaleToken-QuantumDust-${Date.now()}`).digest('hex');
+    const hash = crypto.createHash('sha256').update(`LedgerToken-QuantumDust-${Date.now()}`).digest('hex');
     const tokenAddress = `0x${hash.slice(0, 64)}`;
     const txHash = `0x${crypto.createHash('sha256').update(tokenAddress).digest('hex')}`;
     const adminAddress = `0x${crypto.createHash('sha256').update('admin').digest('hex')}`;
 
-    console.log('[Deploy] ✅ Virtual WhaleToken deployed at:', tokenAddress);
+    console.log('[Deploy] ✅ Virtual LedgerToken deployed at:', tokenAddress);
 
     return NextResponse.json({
       success: true,

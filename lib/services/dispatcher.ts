@@ -104,9 +104,9 @@ export class MegalodonDispatcher {
 
     private formatSavageMessage(event: OmnichannelAlertEvent): string {
         switch (event.type) {
-            case 'WHALE_TX':
+            case 'LEDGER_TX':
                 const usd = event.payload.amountUsd ? `$${(event.payload.amountUsd / 1e6).toFixed(2)} MILLION` : 'HUGE AMOUNT';
-                return ` **ASTRONOMICAL WHALE DETECTED** \nChain: ${event.chain}\nAsset: ${event.payload.asset}\nValue: ${usd}\n[View Deep Dive UI]`;
+                return ` **ASTRONOMICAL LEDGER DETECTED** \nChain: ${event.chain}\nAsset: ${event.payload.asset}\nValue: ${usd}\n[View Deep Dive UI]`;
             case 'LIQUIDATION':
                 return ` **REKT ALERT**\nA massive short position on ${event.payload.asset} was just liquidated on ${event.chain}!\nSize: $${event.payload.amountUsd?.toLocaleString()}`;
             default:

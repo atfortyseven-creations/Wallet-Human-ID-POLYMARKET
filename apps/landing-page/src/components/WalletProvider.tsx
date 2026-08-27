@@ -23,9 +23,9 @@ createAppKit({
   networks,
   projectId,
   metadata: {
-    name: 'Whale Network',
+    name: 'Ledger Network',
     description: 'The Private Plaza for Ethereum.',
-    url: 'https://whalenetwork.com', 
+    url: 'https://ledgernetwork.com', 
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
   features: {

@@ -11,7 +11,7 @@ export function ActiveTerminalWidgets({
   type, 
   workerRef 
 }: { 
-  type: 'ORDER_BOOK' | 'WHALE_FLOW' | 'MARKETS' | 'COPY_ATTESTING';
+  type: 'ORDER_BOOK' | 'LEDGER_FLOW' | 'MARKETS' | 'COPY_ATTESTING';
   workerRef: React.MutableRefObject<Worker | null>;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,7 +24,7 @@ export function ActiveTerminalWidgets({
     
     // Imperative UI Nodes (to avoid React re-renders)
     let ctx: CanvasRenderingContext2D | null = null;
-    let whaleContainer: HTMLDivElement | null = null;
+    let ledgerContainer: HTMLDivElement | null = null;
     let marketsOiNode: HTMLSpanElement | null = null;
     let marketsFundNode: HTMLSpanElement | null = null;
     let copyAttestLogNode: HTMLDivElement | null = null;
@@ -32,8 +32,8 @@ export function ActiveTerminalWidgets({
     if (type === 'ORDER_BOOK' && canvasRef.current) {
         ctx = canvasRef.current.getContext('2d');
     }
-    if (type === 'WHALE_FLOW') {
-        whaleContainer = containerRef.current.querySelector('#whale-flow-container');
+    if (type === 'LEDGER_FLOW') {
+        ledgerContainer = containerRef.current.querySelector('#ledger-flow-container');
     }
     if (type === 'MARKETS') {
         marketsOiNode = containerRef.current.querySelector('#markets-oi-value');
@@ -91,7 +91,7 @@ export function ActiveTerminalWidgets({
             }
         }
 
-        if (type === 'WHALE_FLOW' && data.type === 'WHALE_FLOW' && whaleContainer) {
+        if (type === 'LEDGER_FLOW' && data.type === 'LEDGER_FLOW' && ledgerContainer) {
             const isBuy = data.side === 'BUY';
             const colorClass = isBuy ? 'text-green-500' : 'text-red-500';
             const bgClass = isBuy ? 'bg-green-500/10' : 'bg-red-500/10';
@@ -102,9 +102,9 @@ export function ActiveTerminalWidgets({
                     <span class="font-bold text-[#050505]">$${(data.amountUsd / 1000).toFixed(1)}k</span>
                 </div>
             `;
-            whaleContainer.insertAdjacentHTML('afterbegin', html);
-            if (whaleContainer.children.length > 5) {
-                whaleContainer.lastElementChild?.remove();
+            ledgerContainer.insertAdjacentHTML('afterbegin', html);
+            if (ledgerContainer.children.length > 5) {
+                ledgerContainer.lastElementChild?.remove();
             }
         }
 
@@ -164,7 +164,7 @@ export function ActiveTerminalWidgets({
       );
   }
 
-  if (type === 'WHALE_FLOW') {
+  if (type === 'LEDGER_FLOW') {
       return (
           <div ref={containerRef} className="w-full bg-white border border-[#050505]/5 rounded-xl p-3 mt-3 shadow-inner max-h-[96px] overflow-hidden relative">
               <div className="flex items-center justify-between pb-1.5 border-b border-[#050505]/10 mb-1.5">
@@ -172,7 +172,7 @@ export function ActiveTerminalWidgets({
                   <span className="text-[7.5px] font-black tracking-widest uppercase text-[#050505]/40">Price (USD)</span>
                   <span className="text-[7.5px] font-black tracking-widest uppercase text-[#050505]/40">Volume</span>
               </div>
-              <div id="whale-flow-container" className="flex flex-col">
+              <div id="ledger-flow-container" className="flex flex-col">
                   {/* Imperative nodes injected here */}
                   <div className="text-[9px] text-center py-2 font-mono text-[#050505]/30 animate-pulse">Awaiting blocks &gt; $10k...</div>
               </div>

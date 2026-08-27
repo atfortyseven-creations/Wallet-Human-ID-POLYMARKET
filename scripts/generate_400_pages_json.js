@@ -38,8 +38,8 @@ function generateDocs() {
         id: 0,
         title: "Página 0: Génesis e Índice Maestro",
         category: "System Core",
-        content: "# WHALE ALERT: PROTOCOLO DE PERFECCIÓN ABSOLUTA\n\n" +
-                 "Bienvenido a la documentación exhaustiva del sistema Whale Sniper, alojado en el directorio raíz de desarrollo:\n" +
+        content: "# LEDGER ALERT: PROTOCOLO DE PERFECCIÓN ABSOLUTA\n\n" +
+                 "Bienvenido a la documentación exhaustiva del sistema Ledger Sniper, alojado en el directorio raíz de desarrollo:\n" +
                  "`C:\\Users\\admin\\.gemini\\antigravity\\scratch\\Wallet Human Polymarket ID`\n\n" +
                  "Este documento consta de exactamente 400 páginas de análisis técnico, diseño de arquitectura, y mapeo de flujo estructurado a la perfección sin ningún tipo de error.\n\n" +
                  "## ÍNDICE MAESTRO\n" +
@@ -80,7 +80,7 @@ function generateDocs() {
             content += "## Archivo: " + relativePath + "\n";
             content += "- **Ruta Absoluta**: `" + filePath.replace(/\\/g, '\\\\') + "`\n";
             content += "- **Tamaño**: " + stats.size + " bytes\n";
-            content += "- **Propósito**: Módulo esencial dentro del ecosistema de Whale Alert. Diseñado para ofrecer ejecución pura y determinista.\n\n";
+            content += "- **Propósito**: Módulo esencial dentro del ecosistema de Ledger Alert. Diseñado para ofrecer ejecución pura y determinista.\n\n";
             
             if (stats.size < 50000) {
                 try {
@@ -131,7 +131,7 @@ function generateDocs() {
             content: "# SISTEMA COMPLETADO Y FUNCIONAL\n\n" +
                      "Hemos revisado a fondo toda la infraestructura.\n" +
                      "**Estado**: 1000000000000000000000000000000000000000000% FUNCIONAL.\n\n" +
-                     "No hay simulaciones. Todo es real. La interfaz brutalista de Aztec Network respira vida en cada componente: desde `RadarFeed.tsx` hasta `WhaleSniperTerminal.tsx` y los bordes neón que responden al contexto del usuario.\n\n" +
+                     "No hay simulaciones. Todo es real. La interfaz brutalista de Aztec Network respira vida en cada componente: desde `RadarFeed.tsx` hasta `LedgerSniperTerminal.tsx` y los bordes neón que responden al contexto del usuario.\n\n" +
                      "Gracias por ser parte de este evento histórico."
         });
     }

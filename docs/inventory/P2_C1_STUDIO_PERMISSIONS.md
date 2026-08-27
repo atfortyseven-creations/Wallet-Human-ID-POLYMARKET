@@ -4,7 +4,7 @@
 Document the current permission boundaries and the target state (P2-C.1 Option D policy) for the Studio Mini-App.
 
 ## 2. Current State (STUDIO_PERMISSION_MAP)
-*   **Auth Gate Priority**: Server-side JWT (`whale_session`) is prioritized; fallbacks to Wallet address verification (via `wagmi` or SIWE manual sign-in).
+*   **Auth Gate Priority**: Server-side JWT (`ledger_session`) is prioritized; fallbacks to Wallet address verification (via `wagmi` or SIWE manual sign-in).
 *   **Rate Limits / Quotas**: "Free Tier" users are strictly limited to `3` passports. Checked defensively on both frontend and backend.
 *   **Role Requirements**: Operations require identity bindings (`validateSecureRequest`). Unauthenticated `/api/provenance/log` attempts are silently skipped (fixing `VULN-04` log injection).
 *   **Sovereignty Setting**: EU mode boolean enforcing local localized European processing capabilities.

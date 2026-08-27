@@ -13,7 +13,7 @@ import { prisma } from '@/lib/prisma';
 export type StudioAdapterMode = 'OFF' | 'SHADOW' | 'PILOT' | 'LIVE';
 
 export interface StudioIdentityResult {
-    /** Dirección Ethereum del token legacy (whale_session / human_session) */
+    /** Dirección Ethereum del token legacy (ledger_session / human_session) */
     legacyAddress: string | null;
     /** Dirección Ethereum del token humanity_session (SIWE) */
     humanityAddress: string | null;

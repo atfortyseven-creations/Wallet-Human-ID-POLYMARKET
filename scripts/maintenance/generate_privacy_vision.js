@@ -6,7 +6,7 @@ const visionSections = [
     title: "Introduction to the System Epoch",
     paragraphs: [
       "The digital landscape stands at the precipice of a foundational transformation. For decades, the asymmetry of information has empowered monolithic entities while systematically disenfranchising the system individual. In the realm of decentralized finance, this asymmetry manifests as an invisible architecture where latency, mempool visibility, and cryptographic correlation are monopolized by sovereign actors.",
-      "The Whale Alert Network is not merely an analytical interface; it is a declaration of cryptographic independence. By re-engineering the very thermodynamic structure of how on-chain data is ingested, processed, and visualized, we establish a new paradigm of absolute equity.",
+      "The Ledger Alert Network is not merely an analytical interface; it is a declaration of cryptographic independence. By re-engineering the very thermodynamic structure of how on-chain data is ingested, processed, and visualized, we establish a new paradigm of absolute equity.",
       "Our vision transcends the rudimentary tracking of capital. We are constructing an omniscient, zero-knowledge exoskeleton for the human mind, enabling any individual to perceive the mathematical reality of global liquidity in real-time, without ever surrendering their right to absolute privacy."
     ]
   },

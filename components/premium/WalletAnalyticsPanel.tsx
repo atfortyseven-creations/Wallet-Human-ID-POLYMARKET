@@ -35,7 +35,7 @@ interface WalletAnalytics {
     pnl24h: number;
     change24h: number;
     networksActive: string[];
-    whaleEvidence?: string[];
+    ledgerEvidence?: string[];
     influenceScore?: number;
     lastUpdated: Date;
     error?: string;
@@ -67,9 +67,9 @@ interface LPPosition {
     details?: { positionCount?: number; [key: string]: any }; 
 }
 interface PnLBreakdown { token: string; realized: number; unrealized: number; total: number; }
-interface WhaleMovement { timestamp: Date; type: 'IN' | 'OUT'; token: string; amount: number; valueUsd: number; txHash: string; chainId?: number; }
+interface LedgerMovement { timestamp: Date; type: 'IN' | 'OUT'; token: string; amount: number; valueUsd: number; txHash: string; chainId?: number; }
 
-type AnalyticsTab = 'overview' | 'defi' | 'pnl' | 'heatmap' | 'counterparties' | 'flows' | 'contracts' | 'nfts' | 'staking' | 'lps' | 'whale-moves';
+type AnalyticsTab = 'overview' | 'defi' | 'pnl' | 'heatmap' | 'counterparties' | 'flows' | 'contracts' | 'nfts' | 'staking' | 'lps' | 'ledger-moves';
 
 export default function WalletAnalyticsPanel({ address, label, analytics: initialData, onClose }: WalletAnalyticsPanelProps) {
     const [activeTab, setActiveTab] = useState<AnalyticsTab>('overview');
@@ -248,7 +248,7 @@ export default function WalletAnalyticsPanel({ address, label, analytics: initia
         { id: 'nfts', label: 'NFTs', icon: <Image size={16} />, count: (analytics as any)?.nftPortfolio?.length || 0 },
         { id: 'staking', label: 'Performance', icon: <PiggyBank size={16} /> },
         { id: 'lps', label: 'Liquidity', icon: <Layers size={16} /> },
-        { id: 'whale-moves', label: 'Whales', icon: <Zap size={16} />, count: (analytics as any)?.whaleMovements?.length || 0 },
+        { id: 'ledger-moves', label: 'Ledgers', icon: <Zap size={16} />, count: (analytics as any)?.ledgerMovements?.length || 0 },
     ];
 
     return (
@@ -382,7 +382,7 @@ export default function WalletAnalyticsPanel({ address, label, analytics: initia
                                 {activeTab === 'nfts' && <NFTsTab data={analytics.nftPortfolio} />}
                                 {activeTab === 'staking' && <StakingTab data={analytics.stakingPositions} />}
                                 {activeTab === 'lps' && <LPsTab data={analytics.liquidityPools} />}
-                                {activeTab === 'whale-moves' && <WhaleMovesTab data={analytics.whaleMovements} />}
+                                {activeTab === 'ledger-moves' && <LedgerMovesTab data={analytics.ledgerMovements} />}
                             </motion.div>
                         </AnimatePresence>
                     </div>
@@ -493,14 +493,14 @@ function OverviewTab({ analytics, netWorth, stakingPositions, liquidityPools }: 
                     </div>
                 )}
 
-                {analytics.whaleEvidence && analytics.whaleEvidence.length > 0 && (
+                {analytics.ledgerEvidence && analytics.ledgerEvidence.length > 0 && (
                     <div className="col-span-full md:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-6">
                         <h4 className="text-gray-400 font-bold text-xs uppercase tracking-widest mb-4 flex items-center gap-2">
                             <FileCode size={14} className="text-blue-400" />
                             Verification Evidence
                         </h4>
                         <div className="space-y-3">
-                            {analytics.whaleEvidence.map((ev, i) => (
+                            {analytics.ledgerEvidence.map((ev, i) => (
                                 <div key={i} className="flex items-center gap-2 text-sm text-gray-300">
                                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full shrink-0" />
                                     <span>{ev}</span>
@@ -668,7 +668,7 @@ function FlowsTab({ data }: { data: TokenFlow[] }) {
     );
 }
 
-function WhaleMovesTab({ data }: { data: WhaleMovement[] }) {
+function LedgerMovesTab({ data }: { data: LedgerMovement[] }) {
     const safeData = data || [];
     return (
         <div className="space-y-4">

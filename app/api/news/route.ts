@@ -140,7 +140,7 @@ async function fetchRSSFeed(url: string, sourceName: string): Promise<UINewsArti
 
     return articles;
   } catch (err: any) {
-    console.warn(`[WhaleNews] RSS ${sourceName} failed: ${err.message || 'Unknown Network Error'}`);
+    console.warn(`[LedgerNews] RSS ${sourceName} failed: ${err.message || 'Unknown Network Error'}`);
     return [];
   }
 }

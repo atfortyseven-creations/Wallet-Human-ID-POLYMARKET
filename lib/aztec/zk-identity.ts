@@ -10,12 +10,12 @@ import { keccak256, toBytes } from 'viem';
  * correlation WITHOUT exposing raw wallet addresses in any DB or log.
  *
  * Identity Hash Architecture:
- *   identityHash = SHA-256("whale-identity:" + aztecAddress.toLowerCase())
+ *   identityHash = SHA-256("ledger-identity:" + aztecAddress.toLowerCase())
  *
  * This single-hop hash is:
  *  - Deterministic: same address always → same hash
  *  - Non-reversible: given identityHash, cannot recover aztecAddress
- *  - Domain-separated: prefix "whale-identity:" prevents cross-system collisions
+ *  - Domain-separated: prefix "ledger-identity:" prevents cross-system collisions
  *  - Safe for DB storage: no raw address appears in QuestClaim or Transaction tables
  *
  * All ZK-sensitive API routes MUST use these helpers instead of raw addresses.
@@ -24,7 +24,7 @@ import { keccak256, toBytes } from 'viem';
 
 // Domain-separated prefix for Humanity Ledger identity hashing.
 // Changing this breaks all existing hashes — do NOT modify after launch.
-const ZK_DOMAIN_PREFIX = 'whale-identity:';
+const ZK_DOMAIN_PREFIX = 'ledger-identity:';
 
 /**
  * Derives a deterministic, one-way identity hash from an Aztec/EVM address.
@@ -93,7 +93,7 @@ export function isOwner(evmAddress: string, aztecAddress: string): boolean {
  * @returns       Hex HMAC string
  */
 export function hashIpAddress(rawIp: string): string {
-  const secret = process.env.JWT_SECRET || 'whale-oracle-secret';
+  const secret = process.env.JWT_SECRET || 'ledger-oracle-secret';
   // Take only the first IP from x-forwarded-for proxy chains
   const cleanIp = (rawIp || '127.0.0.1').split(',')[0].trim();
   return crypto

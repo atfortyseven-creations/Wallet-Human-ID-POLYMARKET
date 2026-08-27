@@ -4,7 +4,7 @@ import neo4j from 'neo4j-driver';
 /**
  * Entity Graph Miner
  *
- * Maps real WhaleActivity traces into an Entity connection graph for the D3 visualizer.
+ * Maps real LedgerActivity traces into an Entity connection graph for the D3 visualizer.
  * Uses Prisma (PostgreSQL) as the primary source of truth for wallet nodes.
  * Syncs with Neo4j when available for real relationship data.
  *

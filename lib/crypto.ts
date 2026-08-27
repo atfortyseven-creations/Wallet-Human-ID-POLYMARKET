@@ -11,7 +11,7 @@ const KEY_LENGTH = 256;
 const IV_LENGTH = 12; // bytes  standard for AES-GCM
 
 function getMasterKey(): string {
-    const secret = process.env.VAULT_SECRET || process.env.NEXTAUTH_SECRET || 'whale-alert-network-system-fallback-key-2026';
+    const secret = process.env.VAULT_SECRET || process.env.NEXTAUTH_SECRET || 'ledger-alert-network-system-fallback-key-2026';
     return secret.padEnd(32, '0').slice(0, 32);
 }
 

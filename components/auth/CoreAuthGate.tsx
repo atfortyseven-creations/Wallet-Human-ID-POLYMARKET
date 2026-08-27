@@ -1140,7 +1140,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
         return (
           <div className="flex flex-col items-center justify-center py-20 space-y-10 relative">
             <div className="relative w-64 h-64 flex items-center justify-center -mt-8">
-               <RemoteLottie path="/system-shots/Whale Mission.json" className="w-full h-full object-contain opacity-100" />
+               <RemoteLottie path="/system-shots/Ledger Mission.json" className="w-full h-full object-contain opacity-100" />
             </div>
             <div className="text-center space-y-3">
               <h2 className="text-[24px] font-black text-[#0A0A0A] tracking-tighter uppercase">

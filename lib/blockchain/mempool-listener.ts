@@ -2,7 +2,7 @@ import { WebSocket } from 'ws';
 import { ethers } from 'ethers';
 
 const ALCHEMY_WS_URL = process.env.ALCHEMY_WS_URL || 'wss://eth-mainnet.g.alchemy.com/v2/YOUR_ALCHEMY_KEY';
-const MIN_WHALE_TX_ETH = 100; // 100 ETH minimum to flag as whale in mempool
+const MIN_LEDGER_TX_ETH = 100; // 100 ETH minimum to flag as ledger in mempool
 
 export class SystemMempoolListener {
     private ws: WebSocket | null = null;
@@ -28,15 +28,15 @@ export class SystemMempoolListener {
                 if (tx && tx.value) {
                     const ethValue = parseFloat(ethers.formatEther(tx.value));
                     
-                    if (ethValue >= MIN_WHALE_TX_ETH) {
-                        console.log(`[SystemMempool]  WHALE DETECTED IN MEMPOOL (-12s advantage)`);
+                    if (ethValue >= MIN_LEDGER_TX_ETH) {
+                        console.log(`[SystemMempool]  LEDGER DETECTED IN MEMPOOL (-12s advantage)`);
                         console.log(`Hash: ${tx.hash}`);
                         console.log(`Value: ${ethValue} ETH`);
                         console.log(`From: ${tx.from}`);
                         console.log(`To: ${tx.to}`);
                         
                         // Here we could emit to Redis pub/sub for frontend consumption
-                        // redisClient.publish('mempool:whale', JSON.stringify({ ...tx }));
+                        // redisClient.publish('mempool:ledger', JSON.stringify({ ...tx }));
                     }
                 }
             } catch (err) {

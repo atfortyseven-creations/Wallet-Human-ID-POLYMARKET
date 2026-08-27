@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { FORGE_ENABLED } from '@/lib/forge';
-import { WhaleSeedProcessor } from '@/lib/forge/triggers/whale-seed-processor';
+import { LedgerSeedProcessor } from '@/lib/forge/triggers/ledger-seed-processor';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,7 +40,7 @@ export async function POST() {
      const dummyUsd = 1_000_000 + randomInt(0, 149_000_000);
      const chain = chains[randomInt(0, chains.length)];
 
-     await WhaleSeedProcessor.tryInjectSeed(dummyEventId, dummyUsd, chain);
+     await LedgerSeedProcessor.tryInjectSeed(dummyEventId, dummyUsd, chain);
 
      return NextResponse.json({ success: true, simulatedEvent: dummyEventId });
   } catch (error) {

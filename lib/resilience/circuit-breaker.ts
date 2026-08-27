@@ -205,7 +205,7 @@ export class CircuitBreaker {
   }
 }
 
-// Pre-configured breakers for each RPC provider used by the Whale Worker
+// Pre-configured breakers for each RPC provider used by the Ledger Worker
 export const baseCircuitBreaker = new CircuitBreaker(
   { name: 'rpc-base', failureThreshold: 3, openDurationMs: 30_000 },
   (prev, next, name) => {

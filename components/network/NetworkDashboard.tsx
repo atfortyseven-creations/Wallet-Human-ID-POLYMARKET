@@ -9,7 +9,7 @@ import { LightningStats } from '@/components/network/LightningStats';
 import { HashrateVisualizer } from '@/components/network/HashrateVisualizer';
 import { NetworkSearch } from '@/components/network/NetworkSearch';
 import { FeeEstimator } from '@/components/network/FeeEstimator';
-import { WhaleWatch } from '@/components/network/WhaleWatch';
+import { LedgerWatch } from '@/components/network/LedgerWatch';
 import { NetworkTabs } from '@/components/network/NetworkTabs';
 import { FusionMiningVisualizer } from '@/components/network/FusionMiningVisualizer';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
@@ -94,7 +94,7 @@ export function NetworkDashboard() {
                         </div>
 
                         <div className="flex-grow min-h-[300px]">
-                            <WhaleWatch />
+                            <LedgerWatch />
                         </div>
 
                         {/* Quick nav */}

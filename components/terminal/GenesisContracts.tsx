@@ -24,7 +24,7 @@ export default function GenesisContracts() {
 
   const GENESIS_RECORDS: ContractRecord[] = [
     { id: '1', name: 'IdentityRegistry_v1', address: '0x1a2b...3c4d', type: 'CORE', version: '1.2.0', lastHaltCheck: new Date().toISOString(), auditRating: 'AAA', status: 'SYNCHRONIZED' },
-    { id: '2', name: 'WhaleDeadmanFailsafe', address: '0x5e6f...7g8h', type: 'VAULT', version: '2.0.1', lastHaltCheck: new Date().toISOString(), auditRating: 'AAA', status: 'SYNCHRONIZED' },
+    { id: '2', name: 'LedgerDeadmanFailsafe', address: '0x5e6f...7g8h', type: 'VAULT', version: '2.0.1', lastHaltCheck: new Date().toISOString(), auditRating: 'AAA', status: 'SYNCHRONIZED' },
     { id: '3', name: 'AnalyticsOracle_v3', address: '0x9i0j...1k2l', type: 'ORACLE', version: '3.1.4', lastHaltCheck: new Date().toISOString(), auditRating: 'AA+', status: 'SYNCHRONIZED' },
     { id: '4', name: 'LiquidStaking_Proxy', address: '0x3m4n...5o6p', type: 'PROXY', version: '1.0.0', lastHaltCheck: new Date().toISOString(), auditRating: 'AA', status: 'SYNCHRONIZED' },
     { id: '5', name: 'OmniChainBridge_Core', address: '0x7q8r...9s0t', type: 'CORE', version: '2.4.5', lastHaltCheck: new Date().toISOString(), auditRating: 'AAA', status: 'SYNCHRONIZED' },

@@ -29,7 +29,7 @@ The `prisma/schema.prisma` file needs new models to track the state of advanced 
 - [ ] Implement **zkSNARK** proofs for the Privacy Mixer (using `snarkjs`).
 
 ### 5. Data Feeds
-- [ ] Replace any polling with **WebSockets** for Whale Alerts and real-time prices.
+- [ ] Replace any polling with **WebSockets** for Ledger Alerts and real-time prices.
 - [ ] Ensure `Alchemy` and `CoinGecko` API keys are robust and handled via environment variables.
 
 ## Proposed Strategy

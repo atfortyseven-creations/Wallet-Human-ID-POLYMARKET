@@ -31,7 +31,7 @@ export async function validateApiKey(req: NextRequest): Promise<ApiKeyValidation
         walletAddress: 'SYSTEM',
         status: 'active',
         dailyRequestLimit: 0, // Unlimited
-        whaleThresholdUsd: 50000,
+        ledgerThresholdUsd: 50000,
         ipWhitelist: []
       } 
     };
@@ -69,7 +69,7 @@ export async function validateApiKey(req: NextRequest): Promise<ApiKeyValidation
   if (subscription.status === 'disputed') {
     return {
       valid: false,
-      error: 'API key suspended due to active payment dispute. Contact support@whalealert.corp.',
+      error: 'API key suspended due to active payment dispute. Contact support@ledgeralert.corp.',
       statusCode: 403,
     };
   }
@@ -77,7 +77,7 @@ export async function validateApiKey(req: NextRequest): Promise<ApiKeyValidation
   if (subscription.status === 'canceled') {
     return {
       valid: false,
-      error: 'Subscription canceled. Renew at whalealert.corp/api-marketplace.',
+      error: 'Subscription canceled. Renew at ledgeralert.corp/api-marketplace.',
       statusCode: 403,
     };
   }
@@ -92,7 +92,7 @@ export async function validateApiKey(req: NextRequest): Promise<ApiKeyValidation
       });
       return {
         valid: false,
-        error: 'Subscription suspended due to failed payment. Update payment at whalealert.corp/billing.',
+        error: 'Subscription suspended due to failed payment. Update payment at ledgeralert.corp/billing.',
         statusCode: 403,
       };
     }
@@ -103,7 +103,7 @@ export async function validateApiKey(req: NextRequest): Promise<ApiKeyValidation
   if (subscription.currentPeriodEnd && subscription.currentPeriodEnd < new Date()) {
     return {
       valid: false,
-      error: 'Subscription expired. Renew at whalealert.corp/api-marketplace.',
+      error: 'Subscription expired. Renew at ledgeralert.corp/api-marketplace.',
       statusCode: 402,
     };
   }
@@ -121,7 +121,7 @@ export async function validateApiKey(req: NextRequest): Promise<ApiKeyValidation
   const limit = tierLimits[tier] || tierLimits.starter;
   
   // Attach limits to the subscription object for the route handler
-  subscription.enforcedThreshold = subscription.whaleThresholdUsd || limit.threshold;
+  subscription.enforcedThreshold = subscription.ledgerThresholdUsd || limit.threshold;
   subscription.enforcedWindowDays = limit.windowDays;
 
   //  IP Whitelisting (Elite/Pro) 

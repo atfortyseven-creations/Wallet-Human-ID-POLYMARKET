@@ -109,7 +109,7 @@ export function NotificationsSection() {
                         <ul className="space-y-3">
                             {[
                                 'Confirmaciones instantáneas',
-                                'Alertas de whale activity',
+                                'Alertas de ledger activity',
                                 'Resumen diario personalizado'
                             ].map((item, i) => (
                                 <li key={i} className="flex items-center gap-3 text-[#1F1F1F] font-medium">

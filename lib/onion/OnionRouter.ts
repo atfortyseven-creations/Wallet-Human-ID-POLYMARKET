@@ -279,7 +279,7 @@ export async function sendViaOnion(
 // ── Relay Self-Registration ────────────────────────────────────────────────────
 
 /** Relay node identity stored in sessionStorage (browser relay nodes) */
-const RELAY_KEY_STORAGE = 'whale_onion_relay_identity';
+const RELAY_KEY_STORAGE = 'ledger_onion_relay_identity';
 
 /**
  * Registers the current browser session as an available relay node.

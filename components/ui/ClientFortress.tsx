@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 
 /**
- * WHALE FORTRESS V1 - CLIENT PROTECTION
+ * LEDGER FORTRESS V1 - CLIENT PROTECTION
  * Prevents casual inspection, tampering, and reverse engineering.
  * Implements "inhuman" level interaction guards.
  */

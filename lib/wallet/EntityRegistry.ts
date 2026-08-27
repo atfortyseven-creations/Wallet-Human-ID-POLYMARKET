@@ -7,7 +7,7 @@ export interface BlockchainEntity {
   address: string;
   name: string;
   protocol: string;
-  type: 'ROUTER' | 'BRIDGE' | 'EXCHANGE' | 'SYSTEM' | 'WRAPPER' | 'WHALE';
+  type: 'ROUTER' | 'BRIDGE' | 'EXCHANGE' | 'SYSTEM' | 'WRAPPER' | 'LEDGER';
 }
 
 const ENTITY_DATA: Record<string, BlockchainEntity> = {

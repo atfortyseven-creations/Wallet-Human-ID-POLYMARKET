@@ -26,9 +26,9 @@ export async function GET(request: Request) {
 
     const marketSentiment = {
       overall: 'BULLISH',
-      whaleIndex: 88,
+      ledgerIndex: 88,
       retailIndex: 42,
-      divergence: 'Whales front running retail panic',
+      divergence: 'Ledgers front running retail panic',
     };
 
     return NextResponse.json({

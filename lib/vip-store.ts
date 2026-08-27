@@ -12,7 +12,7 @@ Object.freeze(EMPTY_ARRAY);
 // 
 // TYPES
 // 
-export interface WhaleEvent {
+export interface LedgerEvent {
     id: string;
     wallet: string;
     label: string;
@@ -34,7 +34,7 @@ export interface WhaleEvent {
     telemetryTag?: string;
 }
 
-export interface TopWhale {
+export interface TopLedger {
     address: string;
     label: string;
     btcBalance: number;
@@ -108,7 +108,7 @@ export interface VolumeData {
     updatedAt: number;
 }
 
-export interface WhaleActivity {
+export interface LedgerActivity {
     id: string;
     walletAddress: string;
     walletLabel: string;
@@ -136,12 +136,12 @@ export interface HACandle {
 
 export interface VIPStoreState {
     //  Streams 
-    whaleEvents: WhaleEvent[];
-    whaleActivities: WhaleActivity[]; // Telegram Feed
-    tokenFeeds: Record<string, WhaleEvent[]>;
+    ledgerEvents: LedgerEvent[];
+    ledgerActivities: LedgerActivity[]; // Telegram Feed
+    tokenFeeds: Record<string, LedgerEvent[]>;
     candleFeeds: Record<string, HACandle[]>;
-    topWhales: TopWhale[];
-    leaderboard500: any[]; // [NEW] Top 500 volume whales
+    topLedgers: TopLedger[];
+    leaderboard500: any[]; // [NEW] Top 500 volume ledgers
     mempool: MempoolState | null;
     fundingRates: FundingRate[];
     liquidations: LiquidationMap | null;
@@ -156,7 +156,7 @@ export interface VIPStoreState {
     } | null;
 
     //  Meta 
-    lastWhaleUpdate: number;
+    lastLedgerUpdate: number;
     lastActivityUpdate: number;
     lastMempoolUpdate: number;
     lastFundingUpdate: number;
@@ -168,10 +168,10 @@ export interface VIPStoreState {
     lastLeaderboardUpdate: number; // [NEW]
 
     //  Actions 
-    setWhaleEvents: (events: WhaleEvent[]) => void;
-    setWhaleActivities: (activities: WhaleActivity[]) => void;
-    mergeWhaleEvents: (events: WhaleEvent[]) => void;
-    setTopWhales: (whales: TopWhale[]) => void;
+    setLedgerEvents: (events: LedgerEvent[]) => void;
+    setLedgerActivities: (activities: LedgerActivity[]) => void;
+    mergeLedgerEvents: (events: LedgerEvent[]) => void;
+    setTopLedgers: (ledgers: TopLedger[]) => void;
     setMempool: (m: MempoolState) => void;
     setFundingRates: (rates: FundingRate[]) => void;
     setLiquidations: (l: LiquidationMap) => void;
@@ -180,7 +180,7 @@ export interface VIPStoreState {
     setEthPrice: (p: number) => void;
     setBtcPrice: (p: number) => void;
     setActiveNetworkMetrics: (gas: number, block: number, ethPrice: number, btcPrice: number) => void;
-    setLeaderboard500: (whales: any[]) => void;
+    setLeaderboard500: (ledgers: any[]) => void;
     setNexus: (nexus: { entities: { address: string; label: string; balance: string }[] }) => void;
 }
 
@@ -195,21 +195,21 @@ function parseUsd(raw: string): number {
     return n;
 }
 
-function classifyAction(action: string, hash: string): WhaleEvent['type'] {
+function classifyAction(action: string, hash: string): LedgerEvent['type'] {
     const h = parseInt((hash || '0').slice(-2), 16) % 4;
     if (action === 'SELL' || action === 'VENTA') return 'dump';
     if (action === 'STAKING') return 'transfer';
-    const types: WhaleEvent['type'][] = ['accumulation', 'arbitrage', 'accumulation', 'transfer'];
+    const types: LedgerEvent['type'][] = ['accumulation', 'arbitrage', 'accumulation', 'transfer'];
     return types[h];
 }
 
 export const useVIPStore = create<VIPStoreState>()(
     subscribeWithSelector((set, get) => ({
-        whaleEvents: [],
-        whaleActivities: [],
+        ledgerEvents: [],
+        ledgerActivities: [],
         tokenFeeds: {},
         candleFeeds: {},
-        topWhales: [],
+        topLedgers: [],
         leaderboard500: [],
         mempool: null,
         fundingRates: [],
@@ -222,7 +222,7 @@ export const useVIPStore = create<VIPStoreState>()(
         blockNumber: 0,
         nexus: null,
 
-        lastWhaleUpdate: 0,
+        lastLedgerUpdate: 0,
         lastActivityUpdate: 0,
         lastMempoolUpdate: 0,
         lastFundingUpdate: 0,
@@ -233,28 +233,28 @@ export const useVIPStore = create<VIPStoreState>()(
         lastNexusUpdate: 0,
         lastLeaderboardUpdate: 0,
 
-        setWhaleEvents: (events) => set({ 
-            whaleEvents: events, 
-            lastWhaleUpdate: Date.now() 
+        setLedgerEvents: (events) => set({ 
+            ledgerEvents: events, 
+            lastLedgerUpdate: Date.now() 
         }),
-        setWhaleActivities: (activities) => set({ 
-            whaleActivities: activities, 
+        setLedgerActivities: (activities) => set({ 
+            ledgerActivities: activities, 
             lastActivityUpdate: Date.now() 
         }),
-        mergeWhaleEvents: (incoming) => set(state => {
+        mergeLedgerEvents: (incoming) => set(state => {
             if (!incoming || incoming.length === 0) return state;
 
             const now = Date.now();
             const cutoff = now - 86400000; // 24h
 
             // Deep deduplication: Only process events we don't already have
-            const existingHashes = new Set(state.whaleEvents.map(e => e.hash || e.id));
+            const existingHashes = new Set(state.ledgerEvents.map(e => e.hash || e.id));
             const fresh = incoming.filter(e => !existingHashes.has(e.hash || e.id));
 
             if (fresh.length === 0) return state;
 
             // Merge main feed
-            const mergedEvents = [...fresh, ...state.whaleEvents]
+            const mergedEvents = [...fresh, ...state.ledgerEvents]
                 .filter(e => e.ts > cutoff)
                 .slice(0, 1000);
 
@@ -332,13 +332,13 @@ export const useVIPStore = create<VIPStoreState>()(
             });
 
             return {
-                whaleEvents: mergedEvents,
+                ledgerEvents: mergedEvents,
                 tokenFeeds: newTokenFeeds,
                 candleFeeds: newCandleFeeds,
-                lastWhaleUpdate: now,
+                lastLedgerUpdate: now,
             };
         }),
-        setTopWhales: (topWhales) => set({ topWhales }),
+        setTopLedgers: (topLedgers) => set({ topLedgers }),
         setMempool: (mempool) => set({ mempool, lastMempoolUpdate: Date.now() }),
         setFundingRates: (fundingRates) => set({ fundingRates, lastFundingUpdate: Date.now() }),
         setLiquidations: (liquidations) => set({ liquidations, lastLiqUpdate: Date.now() }),
@@ -354,9 +354,9 @@ export const useVIPStore = create<VIPStoreState>()(
 );
 
 // 
-// HELPER: parse raw alpha-events API response into WhaleEvent[]
+// HELPER: parse raw alpha-events API response into LedgerEvent[]
 // 
-export function parseAlphaEvents(rawEvents: any[]): WhaleEvent[] {
+export function parseAlphaEvents(rawEvents: any[]): LedgerEvent[] {
     return rawEvents.map(e => {
         // Favor raw numeric usdNum if API provides it, otherwise fallback to parsing string
         const usdNum = e.usdNum !== undefined ? e.usdNum : parseUsd(e.usdValue || '0');

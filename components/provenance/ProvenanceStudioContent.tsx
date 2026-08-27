@@ -1478,7 +1478,7 @@ function BandwidthTab() {
           </p>
         </div>
         <a
-          href="mailto:enterprise@whalenetwork.com"
+          href="mailto:enterprise@ledgernetwork.com"
           className="shrink-0 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[#050505] hover:opacity-60 transition-opacity"
         >
           Contact<ArrowRight size={11} />

@@ -1,5 +1,5 @@
 import { cache } from 'react';
-import { WhaleRadarEngine } from './WhaleRadarEngine';
+import { LedgerRadarEngine } from './LedgerRadarEngine';
 import { PolyConfluenceEngine, ConfluenceState } from './PolyConfluenceEngine';
 import { GlobalIcebergsEngine, GlobalIceberg } from './GlobalIcebergsEngine';
 export interface GlobalMarketState {
@@ -157,11 +157,11 @@ export class VIPGridEngine {
             const nearestSqueezeTarget = markPrice * (shortPercent > longPercent ? 1.025 : 0.975); // 2.5% up/down target
 
 
-            // Phase 2: On-Chain Whale Radar Integration
-            const whaleState = await WhaleRadarEngine.getWhaleVigor(asset, markPrice);
-            const institutionalVigorUsd = whaleState.usdVolume;
-            const institutionalVigorPercent = whaleState.vigorPercent;
-            const institutionalIsAccumulation = whaleState.isAccumulation;
+            // Phase 2: On-Chain Ledger Radar Integration
+            const ledgerState = await LedgerRadarEngine.getLedgerVigor(asset, markPrice);
+            const institutionalVigorUsd = ledgerState.usdVolume;
+            const institutionalVigorPercent = ledgerState.vigorPercent;
+            const institutionalIsAccumulation = ledgerState.isAccumulation;
             
             // Phase 3: Polymarket Confluence & Icebergs
             const polyState = await PolyConfluenceEngine.getConfluenceRatio(asset, markPrice);

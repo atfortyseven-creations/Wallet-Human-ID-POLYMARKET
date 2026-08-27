@@ -35,7 +35,7 @@ export function SirDeggenBrowser({ initialUrl = 'aztek://hub' }: SirDeggenBrowse
           getPublicKey: async () => "${cwipublicKey}",
           createAction: async (params) => {
             window.parent.postMessage({ type: 'CWI_ACTION', params }, '*');
-            return { txid: 'authorized_via_whale_terminal' };
+            return { txid: 'authorized_via_ledger_terminal' };
           },
           encrypt: async (p) => "encrypted_placeholder",
           decrypt: async (p) => "decrypted_placeholder",
@@ -48,7 +48,7 @@ export function SirDeggenBrowser({ initialUrl = 'aztek://hub' }: SirDeggenBrowse
           document.head.appendChild(style);
         }
         
-        console.log('Whale Terminal: CWI Substrate Injected.');
+        console.log('Ledger Terminal: CWI Substrate Injected.');
       })();
     `;
     

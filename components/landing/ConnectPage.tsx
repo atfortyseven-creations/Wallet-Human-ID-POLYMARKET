@@ -233,7 +233,7 @@ export default function ConnectPage() {
                   if (parts.length === 3) {
                     const jwtData = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
                     const addr = (jwtData.sub || jwtData.address || '').toLowerCase();
-                    if (payloadRaw.seed && addr) localStorage.setItem(`whale_chat_seed_${addr}`, payloadRaw.seed);
+                    if (payloadRaw.seed && addr) localStorage.setItem(`ledger_chat_seed_${addr}`, payloadRaw.seed);
                     if (payloadRaw.vault) localStorage.setItem('system_vault_v1', payloadRaw.vault);
                   }
                 }

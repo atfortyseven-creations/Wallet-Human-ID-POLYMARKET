@@ -288,7 +288,7 @@ export async function POST(req: NextRequest) {
         continue;
       }
       // Unknown DB error — fail with 500
-      console.error('[WhaleFortress] Atomic DB Guard caught Prisma exception:', error);
+      console.error('[LedgerFortress] Atomic DB Guard caught Prisma exception:', error);
       return NextResponse.json(
         { error: 'Internal database error during quantum registry.' },
         { status: 500 }

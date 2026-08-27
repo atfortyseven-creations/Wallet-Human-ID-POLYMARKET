@@ -10,7 +10,7 @@ export default function PrivacyPolicy() {
           
           <h2 className="text-2xl font-bold text-ink mt-8 mb-4">1. Introduction</h2>
           <p className="mb-4">
-            Studio Provenance (by Whale Network) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our Digital Product Passport (DPP) services.
+            Studio Provenance (by Ledger Network) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our Digital Product Passport (DPP) services.
           </p>
 
           <h2 className="text-2xl font-bold text-ink mt-8 mb-4">2. Zero-Knowledge Proofs & Supply Chain Data</h2>

@@ -5,7 +5,7 @@ rd /s /q "app\docs\legal\cookie-policy"
 rd /s /q "app\docs\legal\privacy-policy"
 rd /s /q "app\docs\legal\risk-disclosure"
 rd /s /q "app\docs\legal\terms-of-service"
-rd /s /q "app\docs\legal\whale-code"
+rd /s /q "app\docs\legal\ledger-code"
 rd /s /q "app\docs\legal\whitepaper"
 
 echo Legacy routes removed successfully!

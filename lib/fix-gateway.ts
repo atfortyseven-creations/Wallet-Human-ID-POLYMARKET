@@ -57,18 +57,18 @@ export class FixGateway {
   /**
    * Broadcasts a Humanity Ledger as a Market Data Snapshot
    */
-  public static createWhaleSignalMessage(whaleEvent: any): string {
+  public static createLedgerSignalMessage(ledgerEvent: any): string {
     return this.constructMessage({
       35: 'W', // MarketDataSnapshotFullRefresh
-      262: whaleEvent.id, // MDReqID
-      55: whaleEvent.token, // Symbol
+      262: ledgerEvent.id, // MDReqID
+      55: ledgerEvent.token, // Symbol
       268: '1', // NoMDEntries
-      269: whaleEvent.action === 'BUY' ? '0' : '1', // MDEntryType (0=Bid/Buy, 1=Offer/Sell)
-      270: whaleEvent.usdValue.toString(), // MDEntryPx
-      271: whaleEvent.amount.toString(), // MDEntrySize
-      272: whaleEvent.timestamp.toISOString().split('T')[0], // MDEntryDate
-      273: whaleEvent.timestamp.toISOString().split('T')[1].replace('Z', ''), // MDEntryTime
-      100: whaleEvent.dex || 'OTC', // ExDestination
+      269: ledgerEvent.action === 'BUY' ? '0' : '1', // MDEntryType (0=Bid/Buy, 1=Offer/Sell)
+      270: ledgerEvent.usdValue.toString(), // MDEntryPx
+      271: ledgerEvent.amount.toString(), // MDEntrySize
+      272: ledgerEvent.timestamp.toISOString().split('T')[0], // MDEntryDate
+      273: ledgerEvent.timestamp.toISOString().split('T')[1].replace('Z', ''), // MDEntryTime
+      100: ledgerEvent.dex || 'OTC', // ExDestination
     });
   }
 

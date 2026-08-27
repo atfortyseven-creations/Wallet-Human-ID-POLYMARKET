@@ -35,7 +35,7 @@ export default function LiveMap() {
             Global Adoption, Real-Time.
           </h2>
           <p className="text-xl text-ink/80 max-w-3xl mx-auto">
-            Watch the Whale Network grow as new wallets connect globally. Completely decentralized, radically transparent on the macro level, completely private on the micro level.
+            Watch the Ledger Network grow as new wallets connect globally. Completely decentralized, radically transparent on the macro level, completely private on the micro level.
           </p>
         </div>
 

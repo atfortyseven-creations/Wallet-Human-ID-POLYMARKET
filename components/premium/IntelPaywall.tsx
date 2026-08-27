@@ -39,7 +39,7 @@ export const IntelPaywall = ({ intelId, onUnlock }: { intelId: string; onUnlock:
             const txid = paymentResult.txid;
 
             // 2. Transmit Payment Proof to the Paywall API
-            const res = await fetch(`/api/whale/intel/${intelId}`, {
+            const res = await fetch(`/api/ledger/intel/${intelId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ txid, address: identity.getAddress() })
@@ -81,7 +81,7 @@ export const IntelPaywall = ({ intelId, onUnlock }: { intelId: string; onUnlock:
 
             <div className="relative z-10 max-w-md space-y-4">
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--aztec-chartreuse)]">Premium Analytics Restricted</span>
-                <h2 className="text-3xl font-bold font-aztec-serif uppercase tracking-tighter">Whale <span className="text-[var(--aztec-orchid)]">De-Masking</span> Required</h2>
+                <h2 className="text-3xl font-bold font-aztec-serif uppercase tracking-tighter">Ledger <span className="text-[var(--aztec-orchid)]">De-Masking</span> Required</h2>
                 <p className="text-[11px] font-aztec-mono text-white/40 leading-relaxed mb-6">
                     This high-tier alert contains identifying metadata and historical PnL analysis. 
                     Unlocking requires an sovereign micropayment.

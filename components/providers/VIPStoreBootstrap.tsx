@@ -8,18 +8,18 @@
  *   1. Active Oracle prices from Binance (fetchOraclePrices)
  *   2. Real alpha events from the database (/api/alpha-events)
  *
- * No Math.random() mock streams. No synthetic whale events.
+ * No Math.random() mock streams. No synthetic ledger events.
  */
 
 import { useEffect, useRef } from 'react';
-import { useVIPStore, WhaleEvent, parseAlphaEvents } from '@/lib/vip-store';
+import { useVIPStore, LedgerEvent, parseAlphaEvents } from '@/lib/vip-store';
 
 
 /**
  * VIPStoreBootstrap: The Sovereign Oracle Hub
  */
 export function VIPStoreBootstrap() {
-    const mergeWhaleEvents  = useVIPStore(s => s.mergeWhaleEvents);
+    const mergeLedgerEvents  = useVIPStore(s => s.mergeLedgerEvents);
     const setEthPrice       = useVIPStore(s => s.setEthPrice);
     const setBtcPrice       = useVIPStore(s => s.setBtcPrice);
     
@@ -67,7 +67,7 @@ export function VIPStoreBootstrap() {
         }
 
         // [DEACTIVATED] Synthetic live simulation loop removed to protect data integrity.
-        // The real-time SSE stream (/api/whale-events/stream) now manages all live updates.
+        // The real-time SSE stream (/api/ledger-events/stream) now manages all live updates.
 
         // 3. Periodic Oracle Sync (every 10s) to keep valuations current
         const oracleSyncId = setInterval(fetchOraclePrices, 10000);
@@ -81,12 +81,12 @@ export function VIPStoreBootstrap() {
                     const data = await res.json();
                     
                     // Map real EVM scanner payload to VIP Store schema without ANY math mocking
-                    const evmEvents: WhaleEvent[] = (Array.isArray(data) ? data : []).map((tx: any) => ({
+                    const evmEvents: LedgerEvent[] = (Array.isArray(data) ? data : []).map((tx: any) => ({
                         id: tx.hash,
                         wallet: tx.from,
-                        label: 'L1 Whale',
+                        label: 'L1 Ledger',
                         tier: tx.usdValue >= 10_000_000 ? 'MEGA' : (tx.usdValue >= 1_000_000 ? 'ALPHA' : 'PRO'),
-                        action: (tx.type === 'ERC20_TRANSFER' ? 'TRANSFER' : 'BUY') as WhaleEvent['action'],
+                        action: (tx.type === 'ERC20_TRANSFER' ? 'TRANSFER' : 'BUY') as LedgerEvent['action'],
                         token: tx.asset,
                         amount: tx.amount.toString(),
                         usdValue: tx.usdValue >= 1_000_000 ? `$${(tx.usdValue / 1_000_000).toFixed(2)}M` : `$${(tx.usdValue / 1000).toFixed(0)}K`,
@@ -100,7 +100,7 @@ export function VIPStoreBootstrap() {
                         confidence: tx.confirmations > 12 ? 99 : 85,
                     }));
 
-                    if (evmEvents.length > 0) mergeWhaleEvents(evmEvents);
+                    if (evmEvents.length > 0) mergeLedgerEvents(evmEvents);
                 }
             } catch {
                 // Keep UI responsive during RPC network stalls
@@ -115,7 +115,7 @@ export function VIPStoreBootstrap() {
             clearInterval(oracleSyncId);
             if (pollingIntervalId.current) clearInterval(pollingIntervalId.current);
         };
-    }, [mergeWhaleEvents, setEthPrice, setBtcPrice]);
+    }, [mergeLedgerEvents, setEthPrice, setBtcPrice]);
 
     return null;
 }

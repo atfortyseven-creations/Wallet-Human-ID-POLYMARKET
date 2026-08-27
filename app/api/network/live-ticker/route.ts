@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { mainnetClient, bscClient } from '@/lib/blockchain/rpc-engine';
 import { formatUnits } from 'viem';
-import { whaleService } from '@/lib/services/whale-data';
+import { ledgerService } from '@/lib/services/ledger-data';
 
 export const revalidate = 0;
 
@@ -13,14 +13,14 @@ export async function GET() {
             bscClient.getBlockNumber(),
             mainnetClient.getGasPrice(),
             bscClient.getGasPrice(),
-            whaleService.getLatestWhaleActivity(5)
+            ledgerService.getLatestLedgerActivity(5)
         ]);
 
         const ethBlock = results[0].status === 'fulfilled' ? results[0].value : null;
         const bscBlock = results[1].status === 'fulfilled' ? results[1].value : null;
         const ethGas = results[2].status === 'fulfilled' ? results[2].value : null;
         const bscGas = results[3].status === 'fulfilled' ? results[3].value : null;
-        const whaleMovements = results[4].status === 'fulfilled' ? results[4].value : [];
+        const ledgerMovements = results[4].status === 'fulfilled' ? results[4].value : [];
 
         const tickerItems = [];
         if (ethBlock) tickerItems.push(`ETH BLOCK: ${ethBlock}`);
@@ -28,10 +28,10 @@ export async function GET() {
         if (ethGas) tickerItems.push(`ETH GAS: ${Math.floor(Number(formatUnits(ethGas, 9)))} GWEI`);
         if (bscGas) tickerItems.push(`BSC GAS: ${Number(formatUnits(bscGas, 9)).toFixed(2)} GWEI`);
 
-        // Add latest whale movements to the ticker
-        if (Array.isArray(whaleMovements)) {
-            whaleMovements.forEach(m => {
-                tickerItems.push(` WHALE: ${m.amount} ${m.token} ON ${m.chain} detected`);
+        // Add latest ledger movements to the ticker
+        if (Array.isArray(ledgerMovements)) {
+            ledgerMovements.forEach(m => {
+                tickerItems.push(` LEDGER: ${m.amount} ${m.token} ON ${m.chain} detected`);
             });
         }
 
@@ -54,7 +54,7 @@ export async function GET() {
             stats: {
                 ethBlock: Number(ethBlock),
                 bscBlock: Number(bscBlock),
-                whaleCount: whaleMovements.length,
+                ledgerCount: ledgerMovements.length,
                 // FIX Bug 12: Removed hardcoded fake uptime and volume metrics.
                 // These are KPIs that must come from real monitoring, not constants.
                 uptime: null,
@@ -76,7 +76,7 @@ export async function GET() {
             stats: {
                 ethBlock: null,
                 bscBlock: null,
-                whaleCount: 0,
+                ledgerCount: 0,
                 uptime: null,
                 volume24h: null,
             }

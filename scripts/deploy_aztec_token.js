@@ -2,7 +2,7 @@
 /**
  * scripts/deploy_aztec_token.ts
  *
- * Deploys the Whale Network QDs TokenContract to Aztec Testnet v5 (rc.2).
+ * Deploys the Ledger Network QDs TokenContract to Aztec Testnet v5 (rc.2).
  *
  * Architecture: Aztec SDK v5.0.0
  * Run this as a separate standalone node process (e.g. via Railway "Run Command")l PXE process (requires Linux/WSL for @aztec/native binaries)
@@ -32,13 +32,13 @@ const fee_1 = require("@aztec/aztec.js/fee");
 // ── Constants ────────────────────────────────────────────────────────────────
 const SPONSORED_FPC = process.env.SPONSORED_FPC_ADDRESS ||
     '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
-const TOKEN_NAME = 'Whale QDs';
+const TOKEN_NAME = 'Ledger QDs';
 const TOKEN_SYMBOL = 'QDs';
 const TOKEN_DECIMALS = 18n;
 // ── Main ─────────────────────────────────────────────────────────────────────
 async function main() {
     console.log('══════════════════════════════════════════════════════');
-    console.log('  Whale Network — QDs Token Deployment                ');
+    console.log('  Ledger Network — QDs Token Deployment                ');
     console.log('  Aztec Testnet v5 (rc.2) | SDK v5.0.0                ');
     console.log('======================================================');
     // ── Validate env ─────────────────────────────────────────────────────────

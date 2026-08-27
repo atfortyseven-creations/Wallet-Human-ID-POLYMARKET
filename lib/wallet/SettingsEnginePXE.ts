@@ -7,11 +7,11 @@ import { encrypt, decrypt } from '@/lib/wallet/encryption';
  *  Abyssal Complexity Level: MAXIMUM TRILLION PARAMETER INTEGRATION
  *
  *  Architecture:
- *    1. WhaleProtocolSettings — The complete typed settings universe
+ *    1. LedgerProtocolSettings — The complete typed settings universe
  *    2. SettingsEnginePXE     — Singleton class with encrypted vault backing
  *    3. pxeEngine             — Singleton instance (import this into React components)
  *
- *  Every field in WhaleProtocolSettings maps to:
+ *  Every field in LedgerProtocolSettings maps to:
  *    a) A UI toggle/selector in LedgerChatSettings.tsx
  *    b) A runtime behaviour gate in LedgerChat.tsx
  *    c) An encrypted quantum blob in the PXE vault (key: pxe_settings_<address>)
@@ -26,7 +26,7 @@ import { encrypt, decrypt } from '@/lib/wallet/encryption';
 //  SECTION 1: COMPLETE SETTINGS INTERFACE
 // ───────────────────────────────────────────────────────────────────────────
 
-export interface WhaleProtocolSettings {
+export interface LedgerProtocolSettings {
   // ─────────────────────────────────────────────────────
   //  ALERTS & SOUNDS
   // ─────────────────────────────────────────────────────
@@ -41,7 +41,7 @@ export interface WhaleProtocolSettings {
   /** Play a sound when a message is received */
   notification_sound: boolean;
   /** Sound pack for message/call events */
-  sound_pack: 'minimal' | 'arcade' | 'whale' | 'asmr';
+  sound_pack: 'minimal' | 'arcade' | 'ledger' | 'asmr';
   /** Mechanical keyboard typing sound while composing */
   mechanical_keyboard: boolean;
   /** Haptic intensity: 0=off, 1=light, 2=medium, 3=strong */
@@ -146,7 +146,7 @@ export interface WhaleProtocolSettings {
   ghost_auto_reply_text: string;
 
   // ─────────────────────────────────────────────────────
-  //  DEFI & WHALE INTELLIGENCE TOOLS
+  //  DEFI & LEDGER INTELLIGENCE TOOLS
   // ─────────────────────────────────────────────────────
   /** Recognize $TICKER cashtags and render as price widgets */
   ticker_widgets: boolean;
@@ -186,7 +186,7 @@ export interface WhaleProtocolSettings {
 //  SECTION 2: DEFAULT SETTINGS MATRIX
 // ───────────────────────────────────────────────────────────────────────────
 
-export const DEFAULT_PXE_SETTINGS: WhaleProtocolSettings = {
+export const DEFAULT_PXE_SETTINGS: LedgerProtocolSettings = {
   // Alerts & Sounds
   notifications_private: true,
   notifications_groups: true,
@@ -244,7 +244,7 @@ export const DEFAULT_PXE_SETTINGS: WhaleProtocolSettings = {
   // AI Ghost Mode
   tone_translator: false,
   ghost_auto_reply: false,
-  ghost_auto_reply_text: 'The Whale is away. Message received by the sovereign network.',
+  ghost_auto_reply_text: 'The Ledger is away. Message received by the sovereign network.',
 
   // DeFi Tools
   ticker_widgets: true,
@@ -269,7 +269,7 @@ export const DEFAULT_PXE_SETTINGS: WhaleProtocolSettings = {
 //  SECTION 3: REACTIVE SUBSCRIPTION TYPE
 // ───────────────────────────────────────────────────────────────────────────
 
-type PXESubscriber = (settings: WhaleProtocolSettings) => void;
+type PXESubscriber = (settings: LedgerProtocolSettings) => void;
 
 // ───────────────────────────────────────────────────────────────────────────
 //  SECTION 4: SETTINGS ENGINE CLASS
@@ -277,7 +277,7 @@ type PXESubscriber = (settings: WhaleProtocolSettings) => void;
 
 class SettingsEnginePXE {
   /** Per-address in-memory cache for instant synchronous access */
-  private cache: Record<string, WhaleProtocolSettings> = {};
+  private cache: Record<string, LedgerProtocolSettings> = {};
   /** Per-address React subscriber callbacks for reactive UI updates */
   private subscribers: Record<string, Set<PXESubscriber>> = {};
   /** Throttle async vault writes to prevent encryption storms */
@@ -289,7 +289,7 @@ class SettingsEnginePXE {
   //  PUBLIC: mountNode — async boot for a user wallet address
   // ─────────────────────────────────────────────────────────────────────
 
-  async mountNode(address: string): Promise<WhaleProtocolSettings> {
+  async mountNode(address: string): Promise<LedgerProtocolSettings> {
     if (this.cache[address]) return this.cache[address];
 
     try {
@@ -319,7 +319,7 @@ class SettingsEnginePXE {
         return fresh;
       }
 
-      const parsed = JSON.parse(decryptedString) as WhaleProtocolSettings;
+      const parsed = JSON.parse(decryptedString) as LedgerProtocolSettings;
 
       // Schema migration: merge any new fields from DEFAULT_PXE_SETTINGS
       const migrated = this.migrateSchema(parsed);
@@ -339,10 +339,10 @@ class SettingsEnginePXE {
   //  PUBLIC: mutate — update a single setting field
   // ─────────────────────────────────────────────────────────────────────
 
-  async mutate<K extends keyof WhaleProtocolSettings>(
+  async mutate<K extends keyof LedgerProtocolSettings>(
     address: string,
     key: K,
-    value: WhaleProtocolSettings[K]
+    value: LedgerProtocolSettings[K]
   ): Promise<void> {
     if (!this.cache[address]) {
       await this.mountNode(address);
@@ -368,7 +368,7 @@ class SettingsEnginePXE {
 
   async mutateBatch(
     address: string,
-    mutations: Partial<WhaleProtocolSettings>
+    mutations: Partial<LedgerProtocolSettings>
   ): Promise<void> {
     if (!this.cache[address]) {
       await this.mountNode(address);
@@ -378,7 +378,7 @@ class SettingsEnginePXE {
     this.broadcast(address, this.cache[address]);
 
     for (const [key, value] of Object.entries(mutations)) {
-      this.applyDOMSideEffects(key as keyof WhaleProtocolSettings, value);
+      this.applyDOMSideEffects(key as keyof LedgerProtocolSettings, value);
     }
 
     await this.syncToPXE(address, this.cache[address]);
@@ -410,7 +410,7 @@ class SettingsEnginePXE {
   //  PUBLIC: get — synchronous read (call mountNode first in useEffect)
   // ─────────────────────────────────────────────────────────────────────
 
-  get(address: string): WhaleProtocolSettings {
+  get(address: string): LedgerProtocolSettings {
     return this.cache[address] ?? { ...DEFAULT_PXE_SETTINGS };
   }
 
@@ -440,7 +440,7 @@ class SettingsEnginePXE {
   //  PRIVATE: syncToPXE — AES-256-GCM encrypt + vault write
   // ─────────────────────────────────────────────────────────────────────
 
-  private async syncToPXE(address: string, settings: WhaleProtocolSettings): Promise<void> {
+  private async syncToPXE(address: string, settings: LedgerProtocolSettings): Promise<void> {
     try {
       const updated = { ...settings, last_synced_at: Date.now() };
       const payload = JSON.stringify(updated);
@@ -455,7 +455,7 @@ class SettingsEnginePXE {
   //  PRIVATE: broadcast — notify all React subscribers
   // ─────────────────────────────────────────────────────────────────────
 
-  private broadcast(address: string, settings: WhaleProtocolSettings): void {
+  private broadcast(address: string, settings: LedgerProtocolSettings): void {
     this.subscribers[address]?.forEach(cb => {
       try { cb(settings); } catch (e) { console.error('[PXE ENGINE] Subscriber error:', e); }
     });
@@ -465,20 +465,20 @@ class SettingsEnginePXE {
   //  PRIVATE: applyDOMSideEffects — instant DOM mutations for critical keys
   // ─────────────────────────────────────────────────────────────────────
 
-  private applyDOMSideEffects(key: keyof WhaleProtocolSettings, value: any): void {
+  private applyDOMSideEffects(key: keyof LedgerProtocolSettings, value: any): void {
     if (typeof document === 'undefined') return;
     const html = document.documentElement;
 
     switch (key) {
       case 'theme':
-        html.setAttribute('data-whale-theme', value);
+        html.setAttribute('data-ledger-theme', value);
         html.setAttribute('data-theme', value === 'neon_void' ? 'dark' : 'light');
         break;
       case 'accent_color':
-        html.style.setProperty('--whale-accent', value);
+        html.style.setProperty('--ledger-accent', value);
         break;
       case 'text_size':
-        html.style.setProperty('--whale-text-size', `${value * 2 + 10}px`);
+        html.style.setProperty('--ledger-text-size', `${value * 2 + 10}px`);
         break;
       case 'ui_density':
         html.classList.remove('ui-relaxed', 'ui-compact', 'ui-dense');
@@ -509,9 +509,9 @@ class SettingsEnginePXE {
   //  PRIVATE: migrateSchema — forward-compatible schema upgrades
   // ─────────────────────────────────────────────────────────────────────
 
-  private migrateSchema(parsed: Partial<WhaleProtocolSettings>): WhaleProtocolSettings {
+  private migrateSchema(parsed: Partial<LedgerProtocolSettings>): LedgerProtocolSettings {
     // Merge with defaults so any new fields added in schema v3 are populated
-    const migrated: WhaleProtocolSettings = { ...DEFAULT_PXE_SETTINGS, ...parsed };
+    const migrated: LedgerProtocolSettings = { ...DEFAULT_PXE_SETTINGS, ...parsed };
 
     // Schema v1 → v2: rename privacy_last_seen legacy values
     if ((migrated as any).privacy_last_seen === 'all') {

@@ -6,7 +6,7 @@ import Redis from 'ioredis';
 import { neuralSegregator } from '../lib/neural-segregator';
 
 /**
- * WHALE NODE INDEXER (RPC SIPHON)
+ * LEDGER NODE INDEXER (RPC SIPHON)
  * Connects directly to GetBlock WebSocket nodes to ingest real-time blocks.
  */
 

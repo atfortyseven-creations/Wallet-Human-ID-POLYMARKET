@@ -14,7 +14,7 @@ const globalForPrisma = global as unknown as { prisma: PrismaClient | undefined 
 type CosmicEntityRecord = {
   id: string;
   seedHash: string;
-  whaleEventId: string | null;
+  ledgerEventId: string | null;
   tier: string;
   amountUSD: number;
   chain: string;

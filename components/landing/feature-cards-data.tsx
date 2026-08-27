@@ -357,15 +357,15 @@ export const FEATURE_CARDS: FeatureCard[] = [
   },
   {
     id: 23,
-    title: "Whale Movement Alerts",
+    title: "Ledger Movement Alerts",
     category: "Analytics",
-    description: "Get notified when whales move large amounts.",
+    description: "Get notified when ledgers move large amounts.",
     detailedInfo: "Track wallets of top holders, VCs, and influencers. Receive instant Telegram/email alerts when they make significant transfersfront-run the market before news goes public.",
     benefits: [
-      "Custom whale watch lists",
+      "Custom ledger watch lists",
       "Threshold-based alerts",
       "Transaction categorization (withdrawal, airdrop, swap)",
-      "Historical whale activity analysis"
+      "Historical ledger activity analysis"
     ],
     icon: <Bell />,
     gradient: "from-cyan-500 to-teal-600"

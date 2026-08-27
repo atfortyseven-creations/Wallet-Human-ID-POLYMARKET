@@ -69,7 +69,7 @@ export const useCurrencyStore = create<CurrencyState>()(
       }
     }),
     {
-      name: 'whale-currency-storage',
+      name: 'ledger-currency-storage',
     }
   )
 )

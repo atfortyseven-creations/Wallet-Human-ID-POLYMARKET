@@ -9,7 +9,7 @@ import { useSocket } from "@/hooks/useSocket";
 import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
 interface SmartAlert {
   id: string;
-  type: 'whale_move' | 'smart_buy' | 'smart_sell' | 'profit_target' | 'risk_alert' | 'copy_signal';
+  type: 'ledger_move' | 'smart_buy' | 'smart_sell' | 'profit_target' | 'risk_alert' | 'copy_signal';
   walletLabel: string;
   walletAddress: string;
   title: string;
@@ -94,8 +94,8 @@ export default function SmartAlertsEngine({ isPremium, selectedWalletAddress }: 
       
       const newAlert: SmartAlert = {
         id: data.hash || ((typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`),
-        type: 'whale_move',
-        walletLabel: 'Whale Tracker',
+        type: 'ledger_move',
+        walletLabel: 'Ledger Tracker',
         walletAddress: data.from || '0x',
         title: `Ballena Detectada: ${data.amount} ${data.asset}`,
         description: `Se ha detectado un movimiento institucional de ${(data.usdValue/1000000).toFixed(2)}M USD en ${data.chain}.`,
@@ -116,8 +116,8 @@ export default function SmartAlertsEngine({ isPremium, selectedWalletAddress }: 
       });
     };
 
-    on('new-whale-alert', handleNewAlert);
-    return () => off('new-whale-alert', handleNewAlert);
+    on('new-ledger-alert', handleNewAlert);
+    return () => off('new-ledger-alert', handleNewAlert);
 
   }, [on, off, isPremium]);
 
@@ -213,7 +213,7 @@ export default function SmartAlertsEngine({ isPremium, selectedWalletAddress }: 
     return (
       <PremiumLocked
         feature="Smart Alerts Engine"
-        description="Get instant notifications when whales make moves, prices spike, or unusual volume is detected. Never miss a attesting opportunity."
+        description="Get instant notifications when ledgers make moves, prices spike, or unusual volume is detected. Never miss a attesting opportunity."
         icon="zap"
         onUpgrade={() => {
           const upgradeBtn = document.querySelector('[data-upgrade-trigger="true"]') as HTMLButtonElement;
@@ -364,7 +364,7 @@ function CreateRuleModal({ isOpen, onClose, onCreate }: { isOpen: boolean, onClo
             <input 
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. WHALE WATCHER ALPHA" 
+              placeholder="e.g. LEDGER WATCHER ALPHA" 
               className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-blue-500 text-white font-bold transition-all"
             />
           </div>
@@ -432,7 +432,7 @@ function AlertCard({ alert, index, onCopyAttest, onMarkRead }: {
       }`}
     >
       <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-          <img src="/official-whale-legendary.png" alt="Logo" className="w-16 h-16 object-contain" />
+          <img src="/official-ledger-legendary.png" alt="Logo" className="w-16 h-16 object-contain" />
       </div>
 
       <div className="flex items-start justify-between gap-6 relative z-10">

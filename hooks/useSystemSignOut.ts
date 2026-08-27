@@ -44,7 +44,7 @@ export function useSystemSignOut() {
                     const eqPos = cookie.indexOf("=");
                     const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
 
-                    if (name.toLowerCase().startsWith('whale_chat_pin_')) continue;
+                    if (name.toLowerCase().startsWith('ledger_chat_pin_')) continue;
 
                     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax`;
                     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname};SameSite=Lax`;
@@ -86,14 +86,14 @@ export function useSystemSignOut() {
 
                 Object.keys(localStorage).forEach(key => {
                     const lower = key.toLowerCase();
-                    if (lower.startsWith('whale_chat_pin_')) return;
-                    if (lower.includes('whale_chat_history_')) return;
-                    if (lower.includes('whale_xmtp')) return;
-                    if (lower.includes('whale-system-wallet-registry')) return; // PROTECT ALL WALLET VERSIONS
+                    if (lower.startsWith('ledger_chat_pin_')) return;
+                    if (lower.includes('ledger_chat_history_')) return;
+                    if (lower.includes('ledger_xmtp')) return;
+                    if (lower.includes('ledger-system-wallet-registry')) return; // PROTECT ALL WALLET VERSIONS
                     if (lower.includes('system_account') || lower.includes('system_keystore')) return; // PROTECT ALL SYSTEM ACCOUNTS
                     // CRITICAL: The hardware-bound session token enables Revolut-style auto-unlock.
                     // Must survive disconnect so user doesn't need to re-enter password on next visit.
-                    if (lower.includes('whale_hw_session_token')) return;
+                    if (lower.includes('ledger_hw_session_token')) return;
 
                     // Nuke EVERYTHING else. If clearing browsing history works, this will mimic it precisely.
                     localStorage.removeItem(key);
@@ -126,13 +126,13 @@ export function useSystemSignOut() {
                             if (
                                 lower.includes('xmtp') ||
                                 lower.includes('Ledger Chatsecurestore') ||
-                                lower.includes('whale_chat_history') ||
+                                lower.includes('ledger_chat_history') ||
                                 // CRITICAL: Preserve the hardware-bound Revolut-style persistence key.
                                 // Deleting this would destroy the non-extractable AES-GCM CryptoKey
                                 // that auto-unlocks the vault on every page load. Users would need
                                 // to re-enter their password after EVERY disconnect — exactly the
                                 // problem we are solving.
-                                lower.includes('whalequantumpersistence')
+                                lower.includes('ledgerquantumpersistence')
                             ) {
                                 return;
                             }
@@ -179,14 +179,14 @@ export function useSystemSignOut() {
             } catch (e) {}
 
             // STEP 6b — Call server-side /api/auth/logout to clear httpOnly cookies.
-            // CRITICAL: whale_session and human_session are httpOnly=true, meaning JavaScript
+            // CRITICAL: ledger_session and human_session are httpOnly=true, meaning JavaScript
             // CANNOT clear them via document.cookie. Without this call, the server-side cookies
             // remain valid and the middleware re-authenticates the user on every page load —
             // making it impossible to log out.
             //
             // [FIX] Increased timeout from 1500ms to 8000ms. The old 1500ms timeout fired before
             // the server responded on slow connections, causing the fetch to be abandoned
-            // mid-flight — the Set-Cookie headers (which clear whale_session) were never received
+            // mid-flight — the Set-Cookie headers (which clear ledger_session) were never received
             // by the browser. Result: users stayed logged in after clicking Disconnect.
             // [FIX] Added one retry on network error for reliability.
             const doLogoutFetch = async () => {

@@ -124,7 +124,7 @@ describe('Chaos Engineering  Fault Injection Suite (Axioma 282)', () => {
 
   //  SCENARIO 4: Network partition (external API) 
   describe('External API Network Partition', () => {
-    it('Whale flow service returns cached data when API unreachable', async () => {
+    it('Ledger flow service returns cached data when API unreachable', async () => {
       const originalFetch = global.fetch;
       global.fetch = vi.fn().mockRejectedValue(new Error('Network Error'));
 
@@ -135,7 +135,7 @@ describe('Chaos Engineering  Fault Injection Suite (Axioma 282)', () => {
       global.fetch = originalFetch;
 
       // Cached data should be served
-      const cached = await (vi.mocked(redisClient.get) as ReturnType<typeof vi.fn>)('whale:flows:cache');
+      const cached = await (vi.mocked(redisClient.get) as ReturnType<typeof vi.fn>)('ledger:flows:cache');
       expect(cached).toBeDefined();
     });
   });

@@ -23,7 +23,7 @@ export interface SmartMoneyMetrics {
   };
   insights: string[];
   confidence: 'high' | 'medium' | 'low';
-  category: 'Beginner' | 'Casual Verifier' | 'Active Verifier' | 'Expert Verifier' | 'Elite Whale' | 'Legendary Apex';
+  category: 'Beginner' | 'Casual Verifier' | 'Active Verifier' | 'Expert Verifier' | 'Elite Ledger' | 'Legendary Apex';
   influenceScore: number;
   metadata: {
     totalTransactions: number;
@@ -145,7 +145,7 @@ function generateInsights(data: any): string[] {
 
 function determineCategory(score: number): SmartMoneyMetrics['category'] {
   if (score >= 90) return 'Legendary Apex';
-  if (score >= 75) return 'Elite Whale';
+  if (score >= 75) return 'Elite Ledger';
   if (score >= 60) return 'Expert Verifier';
   if (score >= 40) return 'Active Verifier';
   if (score >= 20) return 'Casual Verifier';

@@ -1,6 +1,6 @@
 /**
  * 
- *    WHALE FORTRESS WAF  OWASP Core Rule Set v3.3 (Edge Runtime)              
+ *    LEDGER FORTRESS WAF  OWASP Core Rule Set v3.3 (Edge Runtime)              
  *    Humanity Ledger v6  Sovereign Anomaly Scoring Engine                   
  *                                                                               
  *    Architecture:                                                              
@@ -157,7 +157,7 @@ export function banIPGlobal(ip: string) {
 }
 
 function buildBlockResponse(anomalyScore: number, reason: string, ip: string): NextResponse {
-  console.error(`[WhaleFortress:WAF]  BLOCKED & JAILED score=${anomalyScore} reason="${reason}" ip=${ip}`);
+  console.error(`[LedgerFortress:WAF]  BLOCKED & JAILED score=${anomalyScore} reason="${reason}" ip=${ip}`);
   banIPGlobal(ip); // Instant Jail on Hard Block
   return new NextResponse(
     JSON.stringify({ error: 'WAF_BLOCK', code: 403, message: 'Request blocked by Sovereign Security Policy.' }),
@@ -166,7 +166,7 @@ function buildBlockResponse(anomalyScore: number, reason: string, ip: string): N
 }
 
 function buildChallengeResponse(retryAfter: number, ip: string): NextResponse {
-  console.warn(`[WhaleFortress:WAF] ️ RATE_LIMITED ip=${ip} retry=${retryAfter}s`);
+  console.warn(`[LedgerFortress:WAF] ️ RATE_LIMITED ip=${ip} retry=${retryAfter}s`);
   return new NextResponse(
     JSON.stringify({ error: 'RATE_LIMITED', retryAfter, message: `System busy. Retry in ${retryAfter}s.` }),
     { status: 429, headers: { 'Content-Type': 'application/json', 'Retry-After': String(retryAfter) } }
@@ -419,7 +419,7 @@ export async function runWAF(req: NextRequest): Promise<NextResponse | null> {
     
     // [ABYSMALLY COMPLEX OPTIMIZATION]: Defeat NAT overlap (e.g. Apple Private Relay)
     // by composing a compound key using session tokens or user-agent hashes.
-    const sessionCookie = req.cookies.get('whale_session')?.value || req.cookies.get('system_handshake')?.value;
+    const sessionCookie = req.cookies.get('ledger_session')?.value || req.cookies.get('system_handshake')?.value;
     const uaHash = ua ? Array.from(ua).reduce((s, c) => Math.imul(31, s) + c.charCodeAt(0) | 0, 0).toString(16) : 'noua';
     
     // Use session token if available (perfect isolation), otherwise fallback to IP + UA Hash
@@ -446,7 +446,7 @@ export async function runWAF(req: NextRequest): Promise<NextResponse | null> {
   if (anomalyScore >= CHALLENGE_THRESHOLD) {
     const isOnlyNoUA = reasons.length === 1 && reasons[0] === 'NO_UA';
     const logFn = isOnlyNoUA ? console.log : console.warn;
-    logFn(`[WhaleFortress:WAF] ${isOnlyNoUA ? '️' : '️'} HIGH_ANOMALY score=${anomalyScore} ip=${ip} reasons=${reasons.join(',')}`);
+    logFn(`[LedgerFortress:WAF] ${isOnlyNoUA ? '️' : '️'} HIGH_ANOMALY score=${anomalyScore} ip=${ip} reasons=${reasons.join(',')}`);
     // Don't block yet  just log. Upgrade to block if count spikes.
   }
 

@@ -6,20 +6,20 @@ import { motion } from 'framer-motion';
 import { Activity } from 'lucide-react';
 
 interface Props {
-  whales: any[];
+  ledgers: any[];
   isSystemFlow: boolean;
   onProfileClick: (address: string) => void;
 }
 
-export function MacroEntityConstellations({ whales, isSystemFlow, onProfileClick }: Props) {
+export function MacroEntityConstellations({ ledgers, isSystemFlow, onProfileClick }: Props) {
   
-  // Transform real-time whales into Scatter plot data
+  // Transform real-time ledgers into Scatter plot data
   const data = useMemo(() => {
-    let pts = whales.map((tx, idx) => {
+    let pts = ledgers.map((tx, idx) => {
         const btc = tx.value / 1e8;
         return {
             id: tx.txid,
-            index: whales.length - idx, // X axis: older to newer (relative time)
+            index: ledgers.length - idx, // X axis: older to newer (relative time)
             btc: btc,
             size: Math.max(20, Math.min(800, btc * 2)), // Scatter node size
             address: tx.vout?.[0]?.scriptpubkey_address || '',
@@ -32,7 +32,7 @@ export function MacroEntityConstellations({ whales, isSystemFlow, onProfileClick
         pts = pts.filter(p => p.isSystem);
     }
     return pts;
-  }, [whales, isSystemFlow]);
+  }, [ledgers, isSystemFlow]);
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -78,7 +78,7 @@ export function MacroEntityConstellations({ whales, isSystemFlow, onProfileClick
                 domain={['dataMin', 'dataMax + 50']} 
             />
             <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3', stroke: 'rgba(99, 102, 241, 0.2)' }} />
-            <Scatter name="Whales" data={data} onClick={(e) => {
+            <Scatter name="Ledgers" data={data} onClick={(e) => {
                 if(e && e.payload && e.payload.address) onProfileClick(e.payload.address);
             }}>
                 {data.map((entry, index) => {

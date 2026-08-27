@@ -23,7 +23,7 @@ const VerifySchema = z.object({
  * [HARDENED v2] Accepts a wallet address, message, and signature and:
  *   0. Verifies cryptographic signature proves ownership of the address (SIWE)
  *   1. Upserts the User in DB (creates if not found — fixes "account not found")
- *   2. Mints a 7-day JWT covering BOTH whale_session and human_session cookies
+ *   2. Mints a 7-day JWT covering BOTH ledger_session and human_session cookies
  *   3. Sets system_handshake cookie (JS-readable) for mobile QR auth
  *   4. Updates lastActive timestamp for indexation
  *
@@ -131,7 +131,7 @@ export async function POST(req: NextRequest) {
             tier: user.tier || 'FREE',
             kycStatus: 'UNVERIFIED',
             humanityScore: user.humanityScore || 0,
-            iss: 'humanity-ledger', // Fixed old 'whale-alert-network' brand
+            iss: 'humanity-ledger', // Fixed old 'ledger-alert-network' brand
             source: 'system-verify',
             issuedAt: new Date().toISOString(),
         });
@@ -181,7 +181,7 @@ export async function POST(req: NextRequest) {
         };
 
         // Set all three session cookies so every auth gate works
-        response.cookies.set('whale_session', jwt, secureCookieBase);
+        response.cookies.set('ledger_session', jwt, secureCookieBase);
         response.cookies.set('human_session', jwt, secureCookieBase);
         response.cookies.set('humanity_session', jwt, secureCookieBase); // New Option D SIWE session
 

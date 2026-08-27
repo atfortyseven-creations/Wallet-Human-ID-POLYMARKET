@@ -15,13 +15,13 @@ export const REGISTRY = {
   Private_INTEL: {
     massTransfers:  "/api/analytics/mass-transfers", // mapped interceptor
     entityMap:      "/api/network/evm/recent", 
-    smartSignals:   "/api/whale-stream",
+    smartSignals:   "/api/ledger-stream",
     eventLedger:    "/api/network/mempool/recent",
     cosmicForge:    "/api/forge/status",
   },
   VAULT_DATA: {
     portfolio:      "/api/wallet/portfolio",
-    whaleWallets:   "/api/premium/watched-wallets",
+    ledgerWallets:   "/api/premium/watched-wallets",
     coldStorage:    "/api/wallet/onchain-balances",
     zkShield:       "/api/network/forensics",
   },

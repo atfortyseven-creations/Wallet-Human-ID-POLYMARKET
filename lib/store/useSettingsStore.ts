@@ -4,7 +4,7 @@ import { safeStorage } from '@/lib/security/safe-storage';
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  SystemSettings — The Complete Quantum UX Configuration Object
-//  Every toggle, slider, and selection a Whale user will ever need.
+//  Every toggle, slider, and selection a Ledger user will ever need.
 // ═══════════════════════════════════════════════════════════════════════════
 
 export interface SystemSettings {
@@ -36,7 +36,7 @@ export interface SystemSettings {
     emailAlerts: boolean;
     telegramAlerts: boolean;
     audioAlerts: boolean;
-    whaleAlertThreshold: number;
+    ledgerAlertThreshold: number;
     email: string;
 
     // ── 5. Privacy & Security ─────────────────────────────────────────────
@@ -92,7 +92,7 @@ export interface SystemSettings {
 
     // ── 9. Audio & Haptics ────────────────────────────────────────────────
     /** Sound theme pack */
-    soundPack: 'minimal' | 'arcade' | 'whale' | 'asmr';
+    soundPack: 'minimal' | 'arcade' | 'ledger' | 'asmr';
     /** Mechanical keyboard typing sounds while composing */
     mechanicalKeyboard: boolean;
     /** Haptic intensity: 0 = off, 1 = light, 2 = medium, 3 = strong */
@@ -100,7 +100,7 @@ export interface SystemSettings {
     /** Play notification sound when message arrives */
     notificationSound: boolean;
 
-    // ── 10. DeFi & Whale Tools ────────────────────────────────────────────
+    // ── 10. DeFi & Ledger Tools ────────────────────────────────────────────
     /** Recognize $TICKER cashtags and render as price widgets */
     tickerWidgets: boolean;
     /** Scan 0x... addresses for contract verification / honeypot risk */
@@ -215,7 +215,7 @@ const applyDOMClasses = (state: Partial<SystemSettings>) => {
 
     // Accent color via CSS var
     if (state.accentColor) {
-        html.style.setProperty('--whale-accent', state.accentColor);
+        html.style.setProperty('--ledger-accent', state.accentColor);
     }
 };
 
@@ -252,7 +252,7 @@ export const useSettingsStore = create<SettingsState>()(
             emailAlerts: false,
             telegramAlerts: false,
             audioAlerts: true,
-            whaleAlertThreshold: 1000000,
+            ledgerAlertThreshold: 1000000,
             email: '',
 
             // ── Defaults: Privacy ─────────────────────────────────────────
@@ -263,7 +263,7 @@ export const useSettingsStore = create<SettingsState>()(
             allowAnalytics: false,
 
             // ── Defaults: Chat Identity ───────────────────────────────────
-            chatName: 'Whale User',
+            chatName: 'Ledger User',
             chatBio: '',
             qrLabel: 'Scan My Wallet',
             hiddenAssets: '[]',
@@ -302,7 +302,7 @@ export const useSettingsStore = create<SettingsState>()(
             // ── Defaults: AI Ghost Mode ───────────────────────────────────
             toneTranslator: false,
             ghostAutoReply: false,
-            ghostAutoReplyText: 'The Whale is away right now. Your message has been received.',
+            ghostAutoReplyText: 'The Ledger is away right now. Your message has been received.',
 
             // ── State ─────────────────────────────────────────────────────
             settings: null,
@@ -405,7 +405,7 @@ export const useSettingsStore = create<SettingsState>()(
                 emailAlerts: state.emailAlerts,
                 telegramAlerts: state.telegramAlerts,
                 audioAlerts: state.audioAlerts,
-                whaleAlertThreshold: state.whaleAlertThreshold,
+                ledgerAlertThreshold: state.ledgerAlertThreshold,
                 email: state.email,
                 // Privacy
                 inactivityLockMinutes: state.inactivityLockMinutes,

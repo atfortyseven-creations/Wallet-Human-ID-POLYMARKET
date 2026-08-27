@@ -11,8 +11,8 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(req: NextRequest) {
     try {
-        // Fetch 5 most recent unverified whale activity signals
-        const pendingSignals = await prisma.whaleActivity.findMany({
+        // Fetch 5 most recent unverified ledger activity signals
+        const pendingSignals = await prisma.ledgerActivity.findMany({
             where: { isZkVerified: false },
             take: 5,
             orderBy: { timestamp: 'desc' }
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
         }
 
         // 2. Mark the record as mathematically verified in the DB
-        const activity = await prisma.whaleActivity.update({
+        const activity = await prisma.ledgerActivity.update({
             where: { transactionHash: txHash },
             data: { isZkVerified: true }
         });

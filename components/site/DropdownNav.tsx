@@ -117,7 +117,7 @@ export function DropdownNav() {
                     <Link href="/" className="flex items-center gap-4 px-4 group">
                         <div className="relative w-14 h-14 shrink-0">
                             <img 
-                                src="/official-whale-legendary.png"
+                                src="/official-ledger-legendary.png"
                                 alt="Humanity Ledger"
                                 className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 drop-shadow-[0_0_12px_rgba(192,86,221,0.6)]"
                             />
@@ -221,7 +221,7 @@ export function DropdownNav() {
                                                         <div className="p-2 bg-indigo-500/10 rounded-xl group-hover:bg-indigo-500/20 transition-colors">
                                                             <Globe size={18} className="text-indigo-400" />
                                                         </div>
-                                                        <span className="font-bold">Whale Ledger</span>
+                                                        <span className="font-bold">Ledger Ledger</span>
                                                     </div>
                                                 </button>
 

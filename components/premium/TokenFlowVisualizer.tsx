@@ -97,7 +97,7 @@ export default function TokenFlowVisualizer({ isPremium }: { isPremium: boolean 
     },
     {
       id: '2',
-      walletLabel: 'Whale Tracker Pro',
+      walletLabel: 'Ledger Tracker Pro',
       walletAddress: '0x28C6c06298d514Db089934071355E5743bf21d60',
       action: 'BUY',
       token: 'LDO',
@@ -135,7 +135,7 @@ export default function TokenFlowVisualizer({ isPremium }: { isPremium: boolean 
     return (
       <PremiumLocked
         feature="Token Flow & Copy Attesting"
-        description="Visualize money flow between wallets and copy successful verifiers automatically. Track whale movements in real-time."
+        description="Visualize money flow between wallets and copy successful verifiers automatically. Track ledger movements in real-time."
         icon="trending"
         onUpgrade={() => {
           const upgradeBtn = document.querySelector('[data-upgrade-trigger="true"]') as HTMLButtonElement;

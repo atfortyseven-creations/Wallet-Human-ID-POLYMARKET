@@ -6,7 +6,7 @@ export interface MempoolTx {
     hash: string;
     timestamp: number;
     value: number;
-    type: 'whale' | 'dust';
+    type: 'ledger' | 'dust';
     gasPrice: number;
 }
 

@@ -7,17 +7,17 @@ import Image from "next/image";
 import { InmersiveConstellations } from "@/components/shared/InmersiveConstellations";
 import { useVIPStore, VIPStoreState, EMPTY_ARRAY } from "@/lib/vip-store";
 import { TacticalPulseAnalytics } from "@/components/premium/TacticalPulseAnalytics";
-import { LegendaryWhaleLeaderboard } from "@/components/premium/LegendaryWhaleLeaderboard";
+import { LegendaryLedgerLeaderboard } from "@/components/premium/LegendaryLedgerLeaderboard";
 import { PreCognitiveGrid } from "@/components/premium/PreCognitiveGrid";
 import { X, Landmark, Globe, Zap, Cpu, Info, Activity, Fingerprint, Network } from "lucide-react";
 import { MultiChainSystemty } from "@/components/premium/MultiChainSystemty";
 import { SystemsUtilityHeader } from "@/components/shared/SystemsUtilityHeader";
 import { InstitutionalHeader } from "@/components/shared/InstitutionalHeader";
-import { CatchTheWhale } from "@/components/vip/CatchTheWhale";
+import { CatchTheLedger } from "@/components/vip/CatchTheLedger";
 import { TokenChartOverlay } from "@/components/premium/TokenChartOverlay";
 import dynamic from 'next/dynamic';
 
-const WhaleMomentumChart = dynamic(() => import('@/components/network/whale/WhaleMomentumChart').then(m => m.WhaleMomentumChart), { ssr: false });
+const LedgerMomentumChart = dynamic(() => import('@/components/network/ledger/LedgerMomentumChart').then(m => m.LedgerMomentumChart), { ssr: false });
 const MarketHeatmap24h = dynamic(() => import('@/components/vip/MarketHeatmap24h').then(m => m.MarketHeatmap24h), { ssr: false });
 const ExchangeBTCOpenInterest = dynamic(() => import('@/components/vip/ExchangeBTCOpenInterest').then(m => m.ExchangeBTCOpenInterest), { ssr: false });
 
@@ -42,10 +42,10 @@ export function MasterGrid() {
     const [selectedSymbolForOverlay, setSelectedSymbolForOverlay] = useState<string | null>(null);
     const [selectedTokens, setSelectedTokens] = useState<string[]>(PERFECTION_TOKENS);
     
-    const whaleEvents = useVIPStore((state: VIPStoreState) => state.whaleEvents || EMPTY_ARRAY);
+    const ledgerEvents = useVIPStore((state: VIPStoreState) => state.ledgerEvents || EMPTY_ARRAY);
     
     const { globalHeat, deltaStream, deltaColor } = useMemo(() => {
-        const recent = whaleEvents.slice(0, 50);
+        const recent = ledgerEvents.slice(0, 50);
         const buyVol = recent.filter(e => e.action === 'BUY').reduce((acc, e) => acc + e.usdNum, 0);
         const sellVol = recent.filter(e => e.action === 'SELL').reduce((acc, e) => acc + e.usdNum, 0);
         
@@ -57,12 +57,12 @@ export function MasterGrid() {
             deltaStream: (delta >= 0 ? '+' : '') + delta.toFixed(1) + '%',
             deltaColor: delta >= 0 ? 'text-white/90' : 'text-white/50'
         };
-    }, [whaleEvents]);
+    }, [ledgerEvents]);
 
     const filteredFeed = useMemo(() => {
-        if (!activeTokenFilter) return whaleEvents;
-        return whaleEvents.filter(tx => tx.token.toUpperCase() === activeTokenFilter);
-    }, [whaleEvents, activeTokenFilter]);
+        if (!activeTokenFilter) return ledgerEvents;
+        return ledgerEvents.filter(tx => tx.token.toUpperCase() === activeTokenFilter);
+    }, [ledgerEvents, activeTokenFilter]);
 
     const fmt = (n: number) => new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(n);
 
@@ -72,7 +72,7 @@ export function MasterGrid() {
                 <div className="pb-24 relative z-10">
                     <div className="px-8 pt-12 max-w-[2400px] mx-auto">
                     </div>
-                    <CatchTheWhale />
+                    <CatchTheLedger />
 
                     <section className="px-8 pb-8 pt-2 max-w-[2400px] mx-auto space-y-8">
                         <MarketHeatmap24h />
@@ -81,7 +81,7 @@ export function MasterGrid() {
 
                     <section className="p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-[2400px] mx-auto">
                         <div className="lg:col-span-12 space-y-4 mb-8">
-                            <LegendaryWhaleLeaderboard />
+                            <LegendaryLedgerLeaderboard />
                         </div>
 
                         <div className="lg:col-span-12 space-y-4">
@@ -135,7 +135,7 @@ export function MasterGrid() {
                             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                                 <div className="lg:col-span-8 border border-white/5 rounded-[3.5rem] bg-white/[0.02] shadow-2xl p-10 overflow-hidden relative group h-[700px]">
                                     <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-50 pointer-events-none" />
-                                    <WhaleMomentumChart symbol={activeTokenFilter} onClick={() => setSelectedSymbolForOverlay(activeTokenFilter)} />
+                                    <LedgerMomentumChart symbol={activeTokenFilter} onClick={() => setSelectedSymbolForOverlay(activeTokenFilter)} />
                                 </div>
                                 <div className="lg:col-span-4 flex flex-col gap-6">
                                     <div className="flex-1 bg-white/[0.02] backdrop-blur-xl rounded-[3rem] border border-white/5 p-8 overflow-y-auto custom-scrollbar shadow-xl">
@@ -173,7 +173,7 @@ export function MasterGrid() {
                                 {selectedTokens.map((token: string) => (
                                     <div key={token} className="group flex flex-col bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-[2.5rem] overflow-hidden hover:border-white/30 transition-all hover:scale-[1.02] shadow-sm hover:shadow-xl">
                                         <div className="h-64 relative">
-                                            <WhaleMomentumChart symbol={token} compact onClick={() => setSelectedSymbolForOverlay(token)} />
+                                            <LedgerMomentumChart symbol={token} compact onClick={() => setSelectedSymbolForOverlay(token)} />
                                         </div>
                                         <PreCognitiveGrid symbol={token} />
                                     </div>

@@ -57,7 +57,7 @@ export function CosmicForgePanel() {
               Akashic Data Studio
             </h1>
             <p className="text-[11px] font-mono uppercase tracking-widest text-black/50 max-w-md">
-              Living entities spawned by sovereign whale volume. Evolution determined by macro market entropy and network activity.
+              Living entities spawned by sovereign ledger volume. Evolution determined by macro market entropy and network activity.
             </p>
           </div>
 

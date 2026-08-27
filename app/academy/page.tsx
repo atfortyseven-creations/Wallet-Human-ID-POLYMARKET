@@ -1,5 +1,5 @@
 import React from "react";
-import { WhaleMissionLoader } from '@/components/shared/WhaleMissionLoader';
+import { LedgerMissionLoader } from '@/components/shared/LedgerMissionLoader';
 import { getAcademyData } from "@/app/actions/academy-actions";
 import { AcademyInteractiveEngine } from "@/components/academy/AcademyInteractiveEngine";
 import { TOPIC_CATEGORIES } from "@/lib/data/academy-curriculum";
@@ -20,7 +20,7 @@ export default async function AcademyPage() {
     const isDatabaseSeeded = dbCourses.length > 0;
 
     return (
-        <WhaleMissionLoader>
+        <LedgerMissionLoader>
             <div className="flex flex-col bg-white text-slate-900 w-full">
               {/* Main content area — grows freely, never clips children */}
               <div className="w-full flex flex-col items-center justify-start p-4 md:p-8">
@@ -62,6 +62,6 @@ export default async function AcademyPage() {
               </div>
               <SystemFooter />
             </div>
-        </WhaleMissionLoader>
+        </LedgerMissionLoader>
     );
 }

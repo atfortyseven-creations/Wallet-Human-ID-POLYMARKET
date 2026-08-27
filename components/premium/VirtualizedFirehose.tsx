@@ -3,7 +3,7 @@
 import React, { memo, useRef, useEffect, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useVIPStore, WhaleEvent } from '@/lib/vip-store';
+import { useVIPStore, LedgerEvent } from '@/lib/vip-store';
 import { ArrowRight, ChevronUp } from 'lucide-react';
 
 // Dynamic imports to avoid SSR crashes (React Error #130)
@@ -44,7 +44,7 @@ const FirehoseSkeleton = () => (
 // (zero JS cost) and are visually identical at this opacity range.
 // ============================================================================
 const FirehoseRow = memo(({ data, index, style }: any) => {
-    const event: WhaleEvent = data[index];
+    const event: LedgerEvent = data[index];
     if (!event) return null;
 
     const isBuy  = event.action === 'BUY'  || event.action === 'COMPRA';
@@ -117,7 +117,7 @@ FirehoseRow.displayName = 'FirehoseRow';
 // MAIN FIREHOSE COMPONENT
 // ============================================================================
 export function VirtualizedFirehose() {
-    const whaleEvents = useVIPStore(state => state.whaleEvents);
+    const ledgerEvents = useVIPStore(state => state.ledgerEvents);
     const listRef     = useRef<any>(null);
     const [autoScroll, setAutoScroll] = useState(true);
     const [isMounted,  setIsMounted]  = useState(false);
@@ -130,14 +130,14 @@ export function VirtualizedFirehose() {
 
     // PERF: Throttled auto-scroll  coalesce rapid store updates into a single scroll
     useEffect(() => {
-        if (!autoScroll || !listRef.current || whaleEvents.length === 0) return;
+        if (!autoScroll || !listRef.current || ledgerEvents.length === 0) return;
         if (scrollThrottleRef.current) return;
         scrollThrottleRef.current = true;
         requestAnimationFrame(() => {
             listRef.current?.scrollTo(0);
             scrollThrottleRef.current = false;
         });
-    }, [whaleEvents, autoScroll]);
+    }, [ledgerEvents, autoScroll]);
 
     const handleJumpTop = useCallback(() => {
         if (listRef.current) {
@@ -168,25 +168,25 @@ export function VirtualizedFirehose() {
                 }}
             >
                 {/* Empty State / Skeleton */}
-                {(!isMounted || whaleEvents.length === 0) && (
+                {(!isMounted || ledgerEvents.length === 0) && (
                     <div className="absolute inset-0 z-10 bg-[#FFFFFF] flex flex-col">
                         {Array.from({ length: 10 }).map((_idx, i) => <FirehoseSkeleton key={i} />)}
                     </div>
                 )}
 
                 {/* Only render list on client with data */}
-                {isMounted && whaleEvents.length > 0 && (
+                {isMounted && ledgerEvents.length > 0 && (
                     <AutoSizer>
                         {({ height, width }: { height: number; width: number }) => (
                             <FixedSizeList
                                 ref={listRef}
                                 height={height || 400}
-                                itemCount={whaleEvents.length}
+                                itemCount={ledgerEvents.length}
                                 itemSize={64}
                                 width={width || 800}
-                                itemData={whaleEvents}
+                                itemData={ledgerEvents}
                                 className="scrollbar-hide"
-                                itemKey={(index: number, data: WhaleEvent[]) => data[index]?.id || index}
+                                itemKey={(index: number, data: LedgerEvent[]) => data[index]?.id || index}
                                 overscanCount={3}
                             >
                                 {FirehoseRow}
@@ -220,7 +220,7 @@ export function VirtualizedFirehose() {
                 <span className="text-[8px] font-mono text-[#888888] uppercase tracking-[0.3em]">
                     Powered by Zero Knowledge Nodes
                 </span>
-                {!autoScroll && whaleEvents.length > 0 && (
+                {!autoScroll && ledgerEvents.length > 0 && (
                     <button
                         onClick={() => setAutoScroll(true)}
                         className="text-[8px] font-black text-[#00C076] uppercase tracking-[0.2em] animate-pulse hover:underline"

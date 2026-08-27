@@ -20,7 +20,7 @@ async function main() {
 
     if (REDIS_URL) {
         const redisSubscriber = createSubClient('Gateway-Subscriber');
-        redisSubscriber.psubscribe('vitals.*', 'whale-alerts', (err: any) => {
+        redisSubscriber.psubscribe('vitals.*', 'ledger-alerts', (err: any) => {
             if (err) console.error(' [Redis SUB] Failed:', err.message);
             else console.log(' [Gateway] Subscribed to Redis Events');
         });
@@ -28,8 +28,8 @@ async function main() {
         redisSubscriber.on('pmessage', (pattern: string, channel: string, message: string) => {
             try {
                 const data = JSON.parse(message);
-                if (channel === 'whale-alerts') {
-                    io.emit('new-whale-alert', data);
+                if (channel === 'ledger-alerts') {
+                    io.emit('new-ledger-alert', data);
                 } else if (channel === 'vitals.tx.new' || channel.startsWith('vitals.tx.0x')) {
                     io.emit('vitals.tx.new', data);
                 }

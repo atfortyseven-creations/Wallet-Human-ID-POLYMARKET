@@ -167,7 +167,7 @@ export default function InstitutionalLedger() {
                         const merged = [...mappedTxs, ...prev];
                         // Deduplicate
                         const unique = Array.from(new Map(merged.map(item => [item.hash, item])).values());
-                        return unique.slice(0, 30); // keep last 30 whale txs
+                        return unique.slice(0, 30); // keep last 30 ledger txs
                     });
                 }
 

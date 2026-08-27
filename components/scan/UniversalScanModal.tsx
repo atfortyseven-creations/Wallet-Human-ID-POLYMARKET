@@ -176,7 +176,7 @@ export default function UniversalScanModal({
           return;
         } else if (route.type === 'wallet' && route.walletAddress) {
           setSuccessLabel('Opening chat');
-          sessionStorage.setItem('whale_scan_peer', route.walletAddress.toLowerCase());
+          sessionStorage.setItem('ledger_scan_peer', route.walletAddress.toLowerCase());
           onScanRef.current?.(decodedText);
           setStatus('success');
           setTimeout(() => {

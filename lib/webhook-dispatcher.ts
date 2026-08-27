@@ -10,7 +10,7 @@ export class WebhookDispatcher {
     if (!sub || !sub.webhookUrl || sub.status !== 'active') return;
 
     const payload = {
-      event_type: 'whale_activity',
+      event_type: 'ledger_activity',
       timestamp: new Date().toISOString(),
       data: event
     };

@@ -41,7 +41,7 @@ function processMarkdown(mdContent, title, category) {
   const sections = [];
   
   // Extract subtitle from first part if possible
-  let subtitle = "This policy sets forth the legal and attestation rules governing the Whale Network ecosystem.";
+  let subtitle = "This policy sets forth the legal and attestation rules governing the Ledger Network ecosystem.";
   
   let sectionIndex = 1;
   for (let i = 1; i < parts.length; i++) {

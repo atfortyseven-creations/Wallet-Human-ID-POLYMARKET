@@ -1,13 +1,13 @@
 /**
  * ╔══════════════════════════════════════════════════════════════════════════════╗
- * ║           WHALE NETWORK × AZTEC TESTNET V5 — EXHAUSTIVE TEST SUITE         ║
+ * ║           LEDGER NETWORK × AZTEC TESTNET V5 — EXHAUSTIVE TEST SUITE         ║
  * ║           Quantum-Grade Integration Tests — Zero-Mock Mode                  ║
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  *
  * test/aztec-testnet.test.ts
  *
  * Runs against live APIs: Aztec Testnet RPC + local dev server.
- * Set WHALE_DEV_URL=http://localhost:3000 before running (or 4455 if using port override).
+ * Set LEDGER_DEV_URL=http://localhost:3000 before running (or 4455 if using port override).
  *
  * Coverage:
  *  1. Aztec RPC Node connectivity
@@ -31,7 +31,7 @@ import { deriveSecretKeyFromEvm, explorerTxUrl, explorerAddressUrl, AZTEC_EXPLOR
 // ─────────────────────────────────────────────────────────────────────────────
 
 const AZTEC_RPC_URL   = process.env.AZTEC_NODE_URL   || 'https://v5.testnet.rpc.aztec-labs.com';
-const DEV_URL         = process.env.WHALE_DEV_URL    || 'http://localhost:4455';
+const DEV_URL         = process.env.LEDGER_DEV_URL    || 'http://localhost:4455';
 const TIMEOUT_MS      = 30_000;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -392,7 +392,7 @@ describe('Suite 8 — Ledger Chat Message Persistence Regression', () => {
       expect(res.status).not.toBe(500);
     } catch (e: any) {
       if (e.name === 'AbortError') {
-        console.warn('  ⚠️  Whale-chat GET timed out');
+        console.warn('  ⚠️  Ledger-chat GET timed out');
       } else throw e;
     } finally {
       clearTimeout(timer);

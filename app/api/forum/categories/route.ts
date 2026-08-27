@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 export const dynamic = 'force-dynamic';
 
 const DEFAULT_CATEGORIES = [
-    { name: 'Humanity Ledger',  slug: 'whale-network',  description: 'Core discussions about whale movements, large transactions, and on-chain intelligence across all chains.', color: '#050505', orderIndex: 1 },
+    { name: 'Humanity Ledger',  slug: 'ledger-network',  description: 'Core discussions about ledger movements, large transactions, and on-chain intelligence across all chains.', color: '#050505', orderIndex: 1 },
     { name: 'General',        slug: 'general',        description: 'General community discussions, announcements, and introductions.', color: '#0088cc', orderIndex: 2 },
     { name: 'Applications',   slug: 'applications',   description: 'Talk about dApps, DeFi protocols, tools, and ecosystem applications.', color: '#00C076', orderIndex: 3 },
     { name: 'Testnets',       slug: 'testnets',       description: 'Testing environments, devnet updates, and testnet coordination.', color: '#F59E0B', orderIndex: 4 },

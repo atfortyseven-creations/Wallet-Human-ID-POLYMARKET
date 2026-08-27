@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       data: {
         key: hashedKey, // Store only the hash
         userId: user.walletAddress, // Securely obtained from DB
-        plan: 'whale',
+        plan: 'ledger',
       },
     });
 

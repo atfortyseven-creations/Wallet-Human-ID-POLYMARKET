@@ -55,7 +55,7 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
     ],
   },
   {
-    id: 'whale-network-integration',
+    id: 'ledger-network-integration',
     title: '5. Integration with Humanity Ledger',
     paragraphs: [
       'The Humanity Ledger monitors capital flows across more than 20 major blockchain networks in real time. It identifies large asset transfers, exchange inflows and outflows, wallet activations, and macroeconomic flow patterns, and surfaces these events as structured, queryable data.',
@@ -404,7 +404,7 @@ export const ROADMAP_SECTIONS: AztecDocSection[] = [
     bullets: [
       'Aztec Mainnet Readiness: Full deployment of the verified smart contracts.',
       'Token Generation Event (TGE): The Genesis claims for the 200 Beta Supply of the Indexed Identity open to the whitelisted Gold Ticket holders.',
-      'Sentinel Network Rollout: Public availability of the private market intelligence and Whale alerts.'
+      'Sentinel Network Rollout: Public availability of the private market intelligence and Ledger alerts.'
     ]
   }
 ];
@@ -451,7 +451,7 @@ export const API_REFERENCE_SECTIONS: AztecDocSection[] = [
     title: 'WebSocket Multiplexing & High-Frequency Streams',
     paragraphs: [
       'For high-frequency algorithmic execution, the platform provides an authenticated WebSocket endpoint at `wss://stream.humanidfi.com/v1`. Unlike standard HTTP polling, the WebSocket layer supports multiplexing—allowing a single TCP connection to subscribe to multiple, concurrent telemetry channels (e.g., DEX swaps, cross-chain bridge movements, centralised exchange inflows).',
-      'Authentication is handled during the `UPGRADE` request via the same HMAC headers. Once established, the client must send a `{"op": "subscribe", "channels": ["whale_eth", "darkpool_arb"]}` frame to begin receiving binary-encoded JSON payloads.',
+      'Authentication is handled during the `UPGRADE` request via the same HMAC headers. Once established, the client must send a `{"op": "subscribe", "channels": ["ledger_eth", "darkpool_arb"]}` frame to begin receiving binary-encoded JSON payloads.',
       'To maintain connection integrity across load balancers, the client must transmit a `{"op": "ping"}` frame every 15,000 milliseconds. Failure to ping within the TTL window results in an unceremonious TCP closure.'
     ],
   },

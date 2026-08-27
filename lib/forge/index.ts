@@ -4,7 +4,7 @@
 // Zero-mock mandate: if false, the Forge UI and core processors degrade gracefully.
 export const FORGE_ENABLED = process.env.ENABLE_COSMIC_FORGE === 'true';
 
-// Evolution constants based on real whale market caps (defaults)
+// Evolution constants based on real ledger market caps (defaults)
 export const HIVE_HIBERNATION_THRESHOLD_USD = 500_000_000; 
 
 // Base tiers mapping

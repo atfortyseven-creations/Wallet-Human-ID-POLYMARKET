@@ -232,7 +232,7 @@ export async function completeSessionHandshake(
     let payloadStr = jwt || '';
     try {
       const normAddr = resolvedAddress;
-      const seed = normAddr ? localStorage.getItem(`whale_chat_seed_${normAddr}`) : null;
+      const seed = normAddr ? localStorage.getItem(`ledger_chat_seed_${normAddr}`) : null;
       const vault = localStorage.getItem('system_vault_v1');
       payloadStr = JSON.stringify({ jwt, seed, vault });
     } catch {}
@@ -298,12 +298,12 @@ export async function completeSessionHandshake(
             const payload = JSON.parse(decryptedRaw);
             const finalAddr = resolvedAddress;
             if (finalAddr) {
-              if (payload.seed) localStorage.setItem(`whale_chat_seed_${finalAddr}`, payload.seed);
+              if (payload.seed) localStorage.setItem(`ledger_chat_seed_${finalAddr}`, payload.seed);
               if (payload.vault) localStorage.setItem('system_vault_v1', payload.vault);
             }
           } catch {
             if (resolvedAddress) {
-              localStorage.setItem(`whale_chat_seed_${resolvedAddress}`, decryptedRaw);
+              localStorage.setItem(`ledger_chat_seed_${resolvedAddress}`, decryptedRaw);
             }
           }
         }

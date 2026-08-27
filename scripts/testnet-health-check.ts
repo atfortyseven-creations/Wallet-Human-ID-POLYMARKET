@@ -44,7 +44,7 @@ let failures = 0;
 // ── Main ───────────────────────────────────────────────────────────────────────
 async function runHealthCheck() {
   console.log('\n══════════════════════════════════════════════════════');
-  console.log('  Whale Network ↔ Aztec Testnet V5 Gateway            ');
+  console.log('  Ledger Network ↔ Aztec Testnet V5 Gateway            ');
   console.log('  SDK v5.0.0 | Node: v5.testnet.rpc.aztec-labs.com');
   console.log('══════════════════════════════════════════════════════\n');
 

@@ -16,7 +16,7 @@ const SUBMARINE_PARTS = [
   },
   {
     id: "core",
-    title: "El Núcleo Ballena (Whale Node)",
+    title: "El Núcleo Ballena (Ledger Node)",
     description: "El cerebro blindado del sistema. Lee los bloques más profundos de la red y extrae información oculta antes de que salga a la superficie.",
     icon: Cpu,
     x: "35%",

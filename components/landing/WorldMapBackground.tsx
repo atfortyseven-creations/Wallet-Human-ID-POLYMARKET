@@ -12,8 +12,8 @@ export function WorldMapBackground() {
   );
 }
 
-//  BTC Transfer Legend  Real on-chain data via /api/network/whale-flows 
-interface WhaleFlow {
+//  BTC Transfer Legend  Real on-chain data via /api/network/ledger-flows 
+interface LedgerFlow {
   txid:          string;
   fromCity:      string;
   toCity:        string;
@@ -42,7 +42,7 @@ const SKELETON = Array.from({ length: 5 }, (_idx, i) => ({
 }));
 
 export function BtcTransferLegend() {
-  const [flows, setFlows]     = useState<(WhaleFlow & { loading?: boolean })[]>(SKELETON);
+  const [flows, setFlows]     = useState<(LedgerFlow & { loading?: boolean })[]>(SKELETON);
   const [error, setError]     = useState(false);
   const [tick, setTick]       = useState(0);
   const [lastFetch, setLastFetch] = useState(0);
@@ -51,10 +51,10 @@ export function BtcTransferLegend() {
     // Don't refetch more than once per 60s
     if (Date.now() - lastFetch < 58_000) return;
     try {
-      const res = await fetch('/api/network/whale-flows', { cache: 'no-store' });
+      const res = await fetch('/api/network/ledger-flows', { cache: 'no-store' });
       const data = await res.json();
       if (data.flows && data.flows.length > 0) {
-        setFlows(data.flows.map((f: WhaleFlow) => ({ ...f, loading: false })));
+        setFlows(data.flows.map((f: LedgerFlow) => ({ ...f, loading: false })));
         setLastFetch(Date.now());
         setError(false);
       } else {

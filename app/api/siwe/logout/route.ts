@@ -7,12 +7,12 @@ export async function GET() {
   const expiredDate = 'Thu, 01 Jan 1970 00:00:00 GMT';
   const secure = isProd ? '; Secure' : '';
 
-  // [FIX] BUG-4: whale_session was missing — if user authenticated via SIWE (MetaMask),
-  // whale_session persisted and the middleware re-authenticated them on every reload.
+  // [FIX] BUG-4: ledger_session was missing — if user authenticated via SIWE (MetaMask),
+  // ledger_session persisted and the middleware re-authenticated them on every reload.
   // Also: cookies.set() without matching attributes doesn't clear the original cookie.
   // We use raw Set-Cookie headers to guarantee all attribute variants are cleared.
   const cookiesToClear = [
-    'whale_session',    // ← was missing! httpOnly, created by system-verify/qr-hydrate
+    'ledger_session',    // ← was missing! httpOnly, created by system-verify/qr-hydrate
     'human_session',
     'siwe-nonce',
     'human.session-token',
@@ -21,7 +21,7 @@ export async function GET() {
   ];
 
   for (const name of cookiesToClear) {
-    // Delete with SameSite=Strict (matches middleware-enforced cookies like whale_session)
+    // Delete with SameSite=Strict (matches middleware-enforced cookies like ledger_session)
     res.headers.append('Set-Cookie', `${name}=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Strict`);
     // Delete with SameSite=Lax (matches cookies set by route handlers directly)
     res.headers.append('Set-Cookie', `${name}=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax`);

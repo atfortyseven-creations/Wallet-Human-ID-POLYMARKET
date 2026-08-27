@@ -1,5 +1,5 @@
 /**
- * middleware.ts — Whale Network Identity Perimeter
+ * middleware.ts — Ledger Network Identity Perimeter
  * ─────────────────────────────────────────────────
  * Edge Middleware (runs before EVERY request, on Vercel/Railway Edge runtime).
  *
@@ -132,12 +132,12 @@ function getEdgeSecret(): Uint8Array {
 
 // ── Extract session JWT from cookies ─────────────────────────────────────────
 async function extractSessionAddress(req: NextRequest): Promise<string | null> {
-  // Priority 1: SIWE whale session
-  const whaleCookie = req.cookies.get('humanity_session')?.value
-    ?? req.cookies.get('whale_session')?.value
+  // Priority 1: SIWE ledger session
+  const ledgerCookie = req.cookies.get('humanity_session')?.value
+    ?? req.cookies.get('ledger_session')?.value
     ?? req.cookies.get('human_session')?.value;
 
-  if (whaleCookie) {
+  if (ledgerCookie) {
     try {
       const isEdDSA = !!process.env.JWT_EDDSA_PUBLIC_JWK;
       let payload;
@@ -146,10 +146,10 @@ async function extractSessionAddress(req: NextRequest): Promise<string | null> {
         const { importJWK } = await import('jose');
         const pubJwk = JSON.parse(process.env.JWT_EDDSA_PUBLIC_JWK!);
         const publicKey = await importJWK(pubJwk, 'EdDSA');
-        const result = await jwtVerify(whaleCookie, publicKey, { algorithms: ['EdDSA'] });
+        const result = await jwtVerify(ledgerCookie, publicKey, { algorithms: ['EdDSA'] });
         payload = result.payload;
       } else {
-        const result = await jwtVerify(whaleCookie, getEdgeSecret(), { algorithms: ['HS256'] });
+        const result = await jwtVerify(ledgerCookie, getEdgeSecret(), { algorithms: ['HS256'] });
         payload = result.payload;
       }
       

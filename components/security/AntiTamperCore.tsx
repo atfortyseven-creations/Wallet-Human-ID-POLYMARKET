@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 /**
- * AntiTamperCore v3 — Whale Fortress Integrity Engine
+ * AntiTamperCore v3 — Ledger Fortress Integrity Engine
  *
  * Security layers:
  *  1. Merkle-tree UI State Validator  — hashes critical DOM nodes and verifies them
@@ -119,7 +119,7 @@ export function AntiTamperCore() {
               try {
                 document.cookie.split(";").forEach(c => {
                   const key = c.trim().split("=")[0];
-                  if (key.startsWith("whale_") || key.startsWith("__Secure-")) {
+                  if (key.startsWith("ledger_") || key.startsWith("__Secure-")) {
                     document.cookie = `${key}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
                   }
                 });
@@ -141,7 +141,7 @@ export function AntiTamperCore() {
           const el = m.target as Element;
           // Flag if a hidden input's value was changed externally
           if (el.tagName === "INPUT" && el.getAttribute("type") === "hidden") {
-            console.warn(`[WhaleFortress:Mutation] Hidden input mutated: ${el.id || "(no id)"}`);
+            console.warn(`[LedgerFortress:Mutation] Hidden input mutated: ${el.id || "(no id)"}`);
           }
         }
       }

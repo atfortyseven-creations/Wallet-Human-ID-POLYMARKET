@@ -231,7 +231,7 @@ export function SystemLanding() {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                  <GodMetric title="NETWORK TVL" value="$14.2B" change="+2.4%" />
                  <GodMetric title="24H VOLUME" value="$3.1B" change="+12.1%" />
-                 <GodMetric title="WHALES ACTIVE" value="1,240" change="-4%" negative />
+                 <GodMetric title="LEDGERS ACTIVE" value="1,240" change="-4%" negative />
                  <GodMetric title="AI CONFIDENCE" value="99.9%" change="MAX" />
               </div>
 
@@ -239,7 +239,7 @@ export function SystemLanding() {
               <div className="w-full h-64 md:h-80 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md relative overflow-hidden flex flex-col">
                   <div className="absolute inset-0 bg-gradient-to-b from-[#00f5ff]/5 to-transparent pointer-events-none" />
                   <div className="p-5 border-b border-white/5 flex items-center justify-between">
-                     <span className="text-[11px] font-black uppercase tracking-widest text-white/60">Global Whale Topography</span>
+                     <span className="text-[11px] font-black uppercase tracking-widest text-white/60">Global Ledger Topography</span>
                      <div className="flex gap-2">
                         <span className="px-2 py-1 rounded bg-[#00f5ff]/10 text-[#00f5ff] text-[9px] font-bold">LIVE</span>
                      </div>

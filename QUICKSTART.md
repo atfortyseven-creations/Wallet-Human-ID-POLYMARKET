@@ -1,8 +1,8 @@
 # QUICKSTART
 
-## Whale Alert Network - System Vault
+## Ledger Alert Network - System Vault
 
-Get the Whale Alert Network up and running locally in under 5 minutes.
+Get the Ledger Alert Network up and running locally in under 5 minutes.
 
 ### Prerequisites
 - Operating System: Windows, macOS, or Linux
@@ -14,8 +14,8 @@ Get the Whale Alert Network up and running locally in under 5 minutes.
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/humanityledger/whalecosystem.git
-   cd whalecosystem
+   git clone https://github.com/humanityledger/humanityledger.git
+   cd humanityledger
    ```
 
 2. **Install Dependencies**

@@ -119,7 +119,7 @@ export async function sendWelcomeEmail(email: string, name?: string): Promise<vo
       from: getSender('Humanity Ledger'),
       to: email,
       subject: 'WELCOME TO THE Humanity Ledger NETWORK // SENSORS INITIALIZED',
-      replyTo: 'support@whalealertid.fi',
+      replyTo: 'support@ledgeralertid.fi',
       html: `
         <!DOCTYPE html>
         <html>
@@ -142,7 +142,7 @@ export async function sendWelcomeEmail(email: string, name?: string): Promise<vo
                         Sovereign Access Protocol // Node Initialized
                       </div>
                       <h1 style="font-family: 'Martel', serif; font-size: 48px; font-weight: 900; text-transform: uppercase; line-height: 0.9; margin: 0; letter-spacing: -2px;">
-                        WHALE <br/><span style="font-style: italic; color: #D125C7;">ALERT</span>
+                        LEDGER <br/><span style="font-style: italic; color: #D125C7;">ALERT</span>
                       </h1>
                     </td>
                   </tr>
@@ -174,7 +174,7 @@ export async function sendWelcomeEmail(email: string, name?: string): Promise<vo
 
                       <!-- Action CTA -->
                       <div style="text-align: left;">
-                        <a href="https://whalealertid.fi" style="display: inline-block; background-color: #1D1A10; color: #F2ECD8; padding: 20px 40px; font-family: 'Roboto Mono', monospace; font-weight: 900; text-decoration: none; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3em;">
+                        <a href="https://ledgeralertid.fi" style="display: inline-block; background-color: #1D1A10; color: #F2ECD8; padding: 20px 40px; font-family: 'Roboto Mono', monospace; font-weight: 900; text-decoration: none; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3em;">
                           ACCESS NETWORK >
                         </a>
                       </div>

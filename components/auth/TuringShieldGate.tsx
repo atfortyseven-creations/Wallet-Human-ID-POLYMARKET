@@ -21,7 +21,7 @@ const CLEARANCE_TTL_MS = 8 * 60 * 60 * 1000; // 8 hours
 // Real security is always enforced server-side by the /api/auth/enclave-pin route.
 function deriveFingerprint(token: string, ts: number): string {
   // Simple XOR-based fingerprint: makes manual injection require knowing the token
-  const combined = `${token}:${ts}:whale_enclave`;
+  const combined = `${token}:${ts}:ledger_enclave`;
   let hash = 0;
   for (let i = 0; i < combined.length; i++) {
     hash = ((hash << 5) - hash + combined.charCodeAt(i)) | 0;

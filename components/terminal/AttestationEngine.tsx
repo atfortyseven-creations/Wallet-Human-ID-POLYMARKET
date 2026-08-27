@@ -31,7 +31,7 @@ export default function AttestationEngine({ sessionId }: { sessionId: string }) 
       <div className="zk-badge flex items-center gap-3">
         <span className="text-emerald-400"></span>
         <div>
-          <span className="font-mono text-xs tracking-[2px]">WHALE VERIFIED  ZK-PROVEN</span>
+          <span className="font-mono text-xs tracking-[2px]">LEDGER VERIFIED  ZK-PROVEN</span>
           <div className="text-sm">AUM &gt;$500M  Score 0.95  Last Seen: {new Date(payload.statement.last_seen_zk).toLocaleTimeString()}</div>
         </div>
       </div>

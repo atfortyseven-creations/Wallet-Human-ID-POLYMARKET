@@ -59,7 +59,7 @@ export function MigrationHologram() {
                                <div className="text-sm font-black text-slate-900 flex items-center gap-1">
                                    {mig.volume_eth_est.toFixed(2)} Vol
                                </div>
-                               <div className="text-[9px] text-slate-400 uppercase tracking-widest">{mig.whale.substring(0,8)}...</div>
+                               <div className="text-[9px] text-slate-400 uppercase tracking-widest">{mig.ledger.substring(0,8)}...</div>
                            </div>
                         </div>
                     </motion.div>

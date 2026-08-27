@@ -1,4 +1,4 @@
-export { default as WhaleTracker } from './WhaleTracker';
+export { default as LedgerTracker } from './LedgerTracker';
 export { default as WalletComparison } from './WalletComparison';
 export { default as PricingModal } from './PricingModal';
 export { default as AdvancedAnalytics } from './AdvancedAnalytics';
@@ -7,5 +7,5 @@ export { default as SmartAlertsEngine } from './SmartAlertsEngine';
 export { default as TokenFlowVisualizer } from './TokenFlowVisualizer';
 export { ZKProofGrid } from './ZKProofGrid';
 export { MasterGrid } from './MasterGrid';
-export type { WatchedWallet, WhaleActivity } from './WhaleTracker';
+export type { WatchedWallet, LedgerActivity } from './LedgerTracker';
 

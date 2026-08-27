@@ -28,7 +28,7 @@ const FALLBACK_SECTIONS: ManifestoSection[] = [
     body: [
       'the system is designed for sovereign actors  system fund operators, quantitative researchers, protocol architects, and independent validators  who require ground-truth on-chain analytics without intermediary risk.',
       '[SUBTITLE]use cases',
-      '[LIST_ITEM]real-time detection of whale-class transfer events exceeding configurable thresholds',
+      '[LIST_ITEM]real-time detection of ledger-class transfer events exceeding configurable thresholds',
       '[LIST_ITEM]mempool surveillance for pending large-value transactions before block confirmation',
       '[LIST_ITEM]cross-chain capital flow mapping between ethereum, arbitrum, base, polygon, and solana',
       '[LIST_ITEM]defi liquidation cascade warnings with predictive scoring',
@@ -43,7 +43,7 @@ const FALLBACK_SECTIONS: ManifestoSection[] = [
       '[SUBTITLE]active capabilities',
       '[LIST_ITEM]configure custom alert thresholds by asset, chain, or wallet category',
       '[LIST_ITEM]subscribe to sovereign-grade telemetry feeds via sse or webhook',
-      '[LIST_ITEM]explore the system vault  a cryptographically sealed archive of historical whale events',
+      '[LIST_ITEM]explore the system vault  a cryptographically sealed archive of historical ledger events',
       '[LIST_ITEM]access the entity graph to map wallet relationships and trace capital provenance',
       '[LIST_ITEM]deploy the Security Protocol station to verify on-chain claims without exposing position data',
       'the system is not a product. it is a protocol. it is designed to be operated by those who understand that asymmetric information is the last remaining structural edge in digital markets.',

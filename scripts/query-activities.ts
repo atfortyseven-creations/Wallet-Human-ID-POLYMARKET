@@ -8,8 +8,8 @@ dotenv.config({ path: path.join(process.cwd(), '.env.local') });
 const prisma = new PrismaClient();
 
 async function main() {
-    console.log('--- Whale Activities in DB ---');
-    const activities = await prisma.whaleActivity.findMany({
+    console.log('--- Ledger Activities in DB ---');
+    const activities = await prisma.ledgerActivity.findMany({
         orderBy: { timestamp: 'desc' },
         take: 10
     });
@@ -40,7 +40,7 @@ async function main() {
     });
 
     console.log('\n--- Large Balances Check (Activities) ---');
-    const largeActivities = await prisma.whaleActivity.findMany({
+    const largeActivities = await prisma.ledgerActivity.findMany({
         where: {
             OR: [
                 { amount: { gt: 1000000 } },

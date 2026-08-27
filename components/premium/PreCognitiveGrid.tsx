@@ -97,9 +97,9 @@ export function PreCognitiveGrid({ symbol }: PreCognitiveGridProps) {
         if (gravityPercent > 70) auraClass = 'shadow-[0_0_15px_3px_rgba(249,115,22,0.8)] border-orange-400';
     }
 
-    // Phase 2: WHALE CONFLUENCE OVERRIDE
-    const isWhaleConfluence = (state?.institutionalVigorPercent || 0) > 80 && gravityPercent > 70;
-    if (isWhaleConfluence) {
+    // Phase 2: LEDGER CONFLUENCE OVERRIDE
+    const isLedgerConfluence = (state?.institutionalVigorPercent || 0) > 80 && gravityPercent > 70;
+    if (isLedgerConfluence) {
         gaugeColor = '#ef4444'; // Rose-500
         auraClass = 'shadow-[0_0_20px_5px_rgba(239,68,68,0.9)] border-rose-400';
     }
@@ -248,13 +248,13 @@ export function PreCognitiveGrid({ symbol }: PreCognitiveGridProps) {
                             transition={{ type: 'spring', stiffness: 200, damping: 20 }}
                             className="absolute top-1/2 -translate-y-1/2 -ml-1.5 z-20 flex flex-col items-center"
                         >
-                            {isWhaleConfluence && (
+                            {isLedgerConfluence && (
                                 <motion.div 
                                     animate={{ scale: [1, 1.12, 1] }} 
                                     transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut" }}
                                     className="absolute -top-4 w-max text-[6px] font-black tracking-widest text-[#ef4444]"
                                 >
-                                    WHALE CONFLUENCE
+                                    LEDGER CONFLUENCE
                                 </motion.div>
                             )}
                             <motion.div 
@@ -287,7 +287,7 @@ export function PreCognitiveGrid({ symbol }: PreCognitiveGridProps) {
                                                 {state.institutionalVigorPercent.toFixed(0)}% {state.institutionalIsAccumulation ? 'ACCUM' : 'DISTRIB'}
                                             </span>
                                             <span className="text-[8px] font-mono font-bold text-white/60 mt-0.5">
-                                                Delta 1H: {state.institutionalIsAccumulation ? '+' : '-'}${fmtCompact(state.institutionalVigorValue)} (Whale vs Retail)
+                                                Delta 1H: {state.institutionalIsAccumulation ? '+' : '-'}${fmtCompact(state.institutionalVigorValue)} (Ledger vs Retail)
                                             </span>
                                         </div>
                                     </div>

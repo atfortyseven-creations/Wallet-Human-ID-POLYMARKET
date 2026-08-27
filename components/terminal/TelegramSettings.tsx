@@ -278,7 +278,7 @@ export default function TelegramSettings({ wallet }: { wallet: string }) {
           <p className="text-[9px] font-black uppercase tracking-widest text-[#888888] mb-2">You'll Receive Alerts For</p>
           <div className="grid grid-cols-2 gap-1.5">
             {[
-              'Whale movements > $1M',
+              'Ledger movements > $1M',
               'Price threshold breaks',
               evSignals ? 'EV Polymarket signals' : null,
               minApy <= 50 ? `DeFi APY  ${minApy}%` : null,

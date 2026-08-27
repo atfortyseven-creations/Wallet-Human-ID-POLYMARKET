@@ -23,7 +23,7 @@ export interface WalletAnalytics {
     stakingPositions: StakingPosition[];
     liquidityPools: LPPosition[];
     profitLossBreakdown: PnLBreakdown[];
-    whaleMovements: WhaleMovement[];
+    ledgerMovements: LedgerMovement[];
     lastUpdated: Date;
     networksActive: string[];
 }
@@ -37,7 +37,7 @@ interface NFTHolding { contract: string; tokenId: string; name?: string; imageUr
 interface StakingPosition { protocol:string; token: string; amount: number; valueUsd: number; apr?: number; }
 interface LPPosition { protocol: string; pair: string; liquidity: number; valueUsd: number; }
 interface PnLBreakdown { token: string; realized: number; unrealized: number; total: number; }
-interface WhaleMovement { timestamp: Date; type: 'IN' | 'OUT'; token: string; amount: number; valueUsd: number; txHash: string; chainId: number; }
+interface LedgerMovement { timestamp: Date; type: 'IN' | 'OUT'; token: string; amount: number; valueUsd: number; txHash: string; chainId: number; }
 
 export async function getWalletAnalytics(address: string): Promise<WalletAnalytics | null> {
     const addrLower = address.toLowerCase();
@@ -120,7 +120,7 @@ async function fetchFreshAnalytics(address: string): Promise<WalletAnalytics | n
             }
         });
         
-        const whaleMovements = enrichedTransfers
+        const ledgerMovements = enrichedTransfers
             .filter(t => t.valueUsd > 100)
             .slice(0, 50)
             .map(t => ({
@@ -131,7 +131,7 @@ async function fetchFreshAnalytics(address: string): Promise<WalletAnalytics | n
                 valueUsd: t.valueUsd,
                 txHash: t.hash,
                 chainId: t.chainId
-            })) as WhaleMovement[];
+            })) as LedgerMovement[];
 
         // Network set
         const netSet = new Set<string>();
@@ -158,7 +158,7 @@ async function fetchFreshAnalytics(address: string): Promise<WalletAnalytics | n
             stakingPositions: [],
             liquidityPools: [],
             profitLossBreakdown: [],
-            whaleMovements: whaleMovements,
+            ledgerMovements: ledgerMovements,
             lastUpdated: new Date(),
             networksActive: Array.from(netSet)
         };

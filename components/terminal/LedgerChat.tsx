@@ -34,11 +34,11 @@ import { LedgerChatSearchModal } from '@/components/chat/LedgerChatSearchModal';
 import { LedgerChatCallHistory } from '@/components/chat/LedgerChatCallHistory';
 import { LedgerChatVoiceNote } from '@/components/chat/LedgerChatVoiceNote';
 import { moderateContent, sanitizeFilename, isAllowedMimeType, checkRateLimit } from '@/lib/utils/contentFilter';
-import { whaleAnalytics, trackMessageSent, trackCallStarted, trackCallAnswered, trackAttachmentSent, trackFeatureUsed } from '@/lib/utils/whaleAnalytics';
+import { ledgerAnalytics, trackMessageSent, trackCallStarted, trackCallAnswered, trackAttachmentSent, trackFeatureUsed } from '@/lib/utils/ledgerAnalytics';
 import { notificationEngine } from '@/lib/wallet/NotificationEngine';
 import { Search, Phone as PhoneIcon, Clock as ClockIcon } from 'lucide-react';
 
-import { LedgerChatSettings, useWhaleSettings } from './LedgerChatSettings';
+import { LedgerChatSettings, useLedgerSettings } from './LedgerChatSettings';
 
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
@@ -154,7 +154,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   const { reconnect } = useReconnect();
   const { open: openAppKit } = useAppKit();
   const effectiveAddress = (address || '0x0') as string;
-  const { settings: whaleSettings } = useWhaleSettings(effectiveAddress);
+  const { settings: ledgerSettings } = useLedgerSettings(effectiveAddress);
 
   // [PHASE 2 - SILOING] Consume the sandboxed PXE context for Chat Operations
   // This strictly isolates Chat from the Portfolio state to prevent cross-contamination.
@@ -266,8 +266,8 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         setLocalContacts(e.detail.contacts);
       }
     };
-    window.addEventListener('whale_contacts_updated', handler);
-    return () => window.removeEventListener('whale_contacts_updated', handler);
+    window.addEventListener('ledger_contacts_updated', handler);
+    return () => window.removeEventListener('ledger_contacts_updated', handler);
   }, [loadContacts, address]);
 
   useEffect(() => {
@@ -278,8 +278,8 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           setCallHistoryList(e.detail.history);
         }
       };
-      window.addEventListener('whale_calls_updated', handler);
-      return () => window.removeEventListener('whale_calls_updated', handler);
+      window.addEventListener('ledger_calls_updated', handler);
+      return () => window.removeEventListener('ledger_calls_updated', handler);
     }
   }, [address]);
 
@@ -435,7 +435,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   // Both caller and receiver can compute each other's PeerID from the wallet address alone.
   // This eliminates the need for XMTP to carry the PeerID in CALL_ANSWER.
   const derivePeerId = useCallback((walletAddress: string): string => {
-    return `whale${walletAddress.slice(2, 12).toLowerCase()}`;
+    return `ledger${walletAddress.slice(2, 12).toLowerCase()}`;
   }, []);
   
   // ── Telegram/WhatsApp Parity States ──
@@ -485,26 +485,26 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   useEffect(() => {
     const loadBlocked = async () => {
       try {
-        const b = await vault.getItem('whale_blocked');
+        const b = await vault.getItem('ledger_blocked');
         if (b) setBlockedPeers(new Set(JSON.parse(b)));
-        const eula = await vault.getItem('whale_eula_accepted');
+        const eula = await vault.getItem('ledger_eula_accepted');
         if (eula === 'true') setHasAcceptedEula(true);
-        const perm = await vault.getItem('whale_media_perm');
+        const perm = await vault.getItem('ledger_media_perm');
         if (perm === 'true') setHasMediaPermission(true);
 
         // [BUG FIX] "Create Your Identity" shown to returning users.
-        // The flag 'whale_onboarded_' is written on first setup, but may be
+        // The flag 'ledger_onboarded_' is written on first setup, but may be
         // missing after clearing storage or switching devices. We cross-check
-        // with the actual whaleSettings.displayName — if it already exists,
+        // with the actual ledgerSettings.displayName — if it already exists,
         // the user clearly completed onboarding at some point. Never ask again.
         if (typeof window !== 'undefined') {
-          const flagOnboarded = localStorage.getItem('whale_onboarded_' + effectiveAddress) === 'true';
-          const hasProfile = !!(whaleSettings?.displayName && whaleSettings.displayName.trim().length > 0);
+          const flagOnboarded = localStorage.getItem('ledger_onboarded_' + effectiveAddress) === 'true';
+          const hasProfile = !!(ledgerSettings?.displayName && ledgerSettings.displayName.trim().length > 0);
           if (flagOnboarded || hasProfile) {
             setIsOnboarded(true);
             // Backfill the flag so future checks are instant
             if (hasProfile && !flagOnboarded) {
-              try { localStorage.setItem('whale_onboarded_' + effectiveAddress, 'true'); } catch {}
+              try { localStorage.setItem('ledger_onboarded_' + effectiveAddress, 'true'); } catch {}
             }
           }
         }
@@ -515,12 +515,12 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }
-  }, [whaleSettings?.displayName]);
+  }, [ledgerSettings?.displayName]);
 
   useEffect(() => {
     if (address) {
       try {
-        const a = localStorage.getItem(`whale_archived_${address}`);
+        const a = localStorage.getItem(`ledger_archived_${address}`);
         if (a) setArchivedPeers(new Set(JSON.parse(a)));
       } catch {}
     }
@@ -570,7 +570,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
       if (isBlocked) next.delete(peer.toLowerCase());
       else next.add(peer.toLowerCase());
       
-      vault.setItem('whale_blocked', JSON.stringify(Array.from(next)));
+      vault.setItem('ledger_blocked', JSON.stringify(Array.from(next)));
       toast.success(isBlocked ? "User unblocked." : "User blocked. They can no longer message you.");
       return next;
     });
@@ -624,7 +624,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     if (!activePeer || !address) return;
     const dmId = `dm-${activePeer.toLowerCase()}`;
     const clearTs = Date.now();
-    localStorage.setItem(`whale_cleared_${address}_${activePeer.toLowerCase()}`, clearTs.toString());
+    localStorage.setItem(`ledger_cleared_${address}_${activePeer.toLowerCase()}`, clearTs.toString());
     // [BUG FIX] Filter by BOTH conversationId match AND by peer address presence in id
     // This catches messages that may not have conversationId set correctly
     setMessages(prev => prev.filter(m => {
@@ -653,7 +653,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         next.add(peer.toLowerCase());
         toast.success('Chat archived.');
       }
-      try { localStorage.setItem(`whale_archived_${address}`, JSON.stringify([...next])); } catch {}
+      try { localStorage.setItem(`ledger_archived_${address}`, JSON.stringify([...next])); } catch {}
       return next;
     });
     setSidebarMenu(null);
@@ -821,7 +821,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
       setIsOffline(false);
       // Flush the outbox — uses ref to always get the latest executeSend fn
       if (address) {
-        const outboxKey = `whale_outbox_${address.toLowerCase()}`;
+        const outboxKey = `ledger_outbox_${address.toLowerCase()}`;
         const queueStr = localStorage.getItem(outboxKey);
         if (queueStr) {
           try {
@@ -862,7 +862,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   // Extreme Security: Draft Persistence & Typing Telemetry
   useEffect(() => {
     if (!activePeer || !address) return;
-    const draftKey = `whale_draft_${address.toLowerCase()}_${activePeer.toLowerCase()}`;
+    const draftKey = `ledger_draft_${address.toLowerCase()}_${activePeer.toLowerCase()}`;
     
     if (inputText.trim()) {
       localStorage.setItem(draftKey, btoa(encodeURIComponent(inputText)));
@@ -1090,7 +1090,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
             if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
             if (remoteAudioRef.current) {
               remoteAudioRef.current.srcObject = rStream;
-              if (whaleSettings?.notifications_private !== false) {
+              if (ledgerSettings?.notifications_private !== false) {
                 remoteAudioRef.current.play().catch(e => console.warn('[Audio] remote play blocked:', e));
               }
             }
@@ -1266,7 +1266,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     }
     if (remoteAudioRef.current && remoteStream && remoteAudioRef.current.srcObject !== remoteStream) {
       remoteAudioRef.current.srcObject = remoteStream;
-      if (whaleSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(e => console.warn('Audio play blocked:', e)); }
+      if (ledgerSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(e => console.warn('Audio play blocked:', e)); }
     }
   }, [callState, remoteStream]);
 
@@ -1492,7 +1492,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
             if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
             if (remoteAudioRef.current) {
               remoteAudioRef.current.srcObject = rStream;
-              if (whaleSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err)); }
+              if (ledgerSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err)); }
             }
           });
           outConn.on('close', () => performEndCallRef.current());
@@ -1600,7 +1600,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
           if (remoteAudioRef.current) {
             remoteAudioRef.current.srcObject = rStream;
-            if (whaleSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err)); }
+            if (ledgerSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err)); }
           }
         });
         pendingConn.on('close', () => performEndCallRef.current());
@@ -1634,7 +1634,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
           if (remoteAudioRef.current) {
             remoteAudioRef.current.srcObject = rStream;
-            if (whaleSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err)); }
+            if (ledgerSettings?.notifications_private !== false) { remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err)); }
           }
         });
         conn.on('close', () => performEndCallRef.current());
@@ -2044,7 +2044,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   // Draft Loading on Peer Switch
   useEffect(() => {
     if (activePeer && address) {
-      const draftKey = `whale_draft_${address.toLowerCase()}_${activePeer.toLowerCase()}`;
+      const draftKey = `ledger_draft_${address.toLowerCase()}_${activePeer.toLowerCase()}`;
       const saved = localStorage.getItem(draftKey);
       if (saved) {
           try {
@@ -2061,7 +2061,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   const loadConversations = useCallback(async () => {
     try {
       let merged: ConversationMeta[] = [];
-      const stored = localStorage.getItem(`whale_chat_history_${address}`);
+      const stored = localStorage.getItem(`ledger_chat_history_${address}`);
       if (stored) {
         const parsed = JSON.parse(stored);
         if (parsed.conversations) merged = parsed.conversations;
@@ -2105,7 +2105,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           }
 
           if (merged.length > 0) {
-            localStorage.setItem(`whale_chat_history_${address}`, JSON.stringify({ conversations: merged }));
+            localStorage.setItem(`ledger_chat_history_${address}`, JSON.stringify({ conversations: merged }));
           }
         } catch (e) {
           console.error('[Ledger Chat] Failed to sync contacts/pending from server', e);
@@ -2178,7 +2178,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         const realClient = await getXMTPClient(wagmiSigner);
         setClient(realClient);
         if (typeof localStorage !== 'undefined') {
-            localStorage.setItem('whale_xmtp_initialized', 'true');
+            localStorage.setItem('ledger_xmtp_initialized', 'true');
             // [ATOMIC INDEXING] Log session event (once per session)
             const chatLogKey = `provenance_chat_${address}_${new Date().toDateString()}`;
             if (!localStorage.getItem(chatLogKey)) {
@@ -2187,7 +2187,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
-                    body: JSON.stringify({ type: 'WHALE_CHAT_SYNC', details: { address } })
+                    body: JSON.stringify({ type: 'LEDGER_CHAT_SYNC', details: { address } })
                 }).catch(() => {});
             }
         }
@@ -2280,7 +2280,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
             setInitError('Humanity Ledger module failed to load. Please check your network connection and reload the terminal.');
           } else if (errorMsg.includes('No active wallet') || errorMsg.includes('connector') || errorMsg.includes('signMessage') || errorMsg.toLowerCase().includes('unknown signer')) {
             if (isSystemHandshake) {
-               setInitError('Whale identity not yet synchronized from desktop. Please keep this browser open while the desktop terminal finishes the handshake.');
+               setInitError('Ledger identity not yet synchronized from desktop. Please keep this browser open while the desktop terminal finishes the handshake.');
             } else {
                setInitError('Active wallet connection lost or not detected. Please ensure your wallet app is open and connected directly to this browser.');
             }
@@ -2309,7 +2309,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   // Sync contacts to backend debounced
   const persistToLocal = useCallback((arr: ConversationMeta[]) => {
     if (!address) return;
-    localStorage.setItem(`whale_chat_history_${address}`, JSON.stringify({ conversations: arr }));
+    localStorage.setItem(`ledger_chat_history_${address}`, JSON.stringify({ conversations: arr }));
     
     // Also backup to server — send x-web3-address so WalletConnect users are accepted
     fetch('/api/chat/contacts', {
@@ -2580,7 +2580,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
               if (fromPeer && !content.startsWith('__')) {
                 // We are focused on this chat, so send a read receipt!
                 if (!document.hidden) {
-                  if (whaleSettings?.notification_sound !== false) { playReceiveSound(); };
+                  if (ledgerSettings?.notification_sound !== false) { playReceiveSound(); };
                   sendMessage(client, msgConvPeer, `__READ__${realId}`, address).catch(e => console.warn('Failed to send read receipt', e));
                 } else {
                   // Phase 5: Advanced Push Notifications when app is hidden
@@ -2588,7 +2588,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                     `Ledger Chat: ${shortAddr(msgConvPeer)}`,
                     formatMessagePreview(content),
                     msgConvPeer,
-                    !!(whaleSettings as any)?.hide_notification_content
+                    !!(ledgerSettings as any)?.hide_notification_content
                   );
                 }
               }
@@ -2679,7 +2679,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         let raw = await getMessages(client, activePeer);
         if (cancelled) return;
         
-        const clearTsMs = parseInt(localStorage.getItem(`whale_cleared_${address}_${activePeer.toLowerCase()}`) || '0', 10);
+        const clearTsMs = parseInt(localStorage.getItem(`ledger_cleared_${address}_${activePeer.toLowerCase()}`) || '0', 10);
         if (clearTsMs > 0) {
           const clearTsNs = clearTsMs * 1000000;
           raw = raw.filter((m: any) => m.sentAtNs > clearTsNs);
@@ -2827,7 +2827,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
 
         // Auto-send read receipt if there is an unread message from the peer
         if (lastPeerMsgId) {
-          const receiptKey = `whale_receipt_${address.toLowerCase()}_${activePeer.toLowerCase()}`;
+          const receiptKey = `ledger_receipt_${address.toLowerCase()}_${activePeer.toLowerCase()}`;
           if (localStorage.getItem(receiptKey) !== lastPeerMsgId) {
             localStorage.setItem(receiptKey, lastPeerMsgId);
             sendMessage(client, activePeer, `__READ__${lastPeerMsgId}`, address).catch(e => console.warn('Failed to send read receipt', e));
@@ -2857,7 +2857,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           // [BUG FIX] CLEAR CHAT GUARD FOR RT STREAM
           // Filter out messages older than the user's local clear timestamp,
           // otherwise every poll re-injects the deleted history.
-          const clearTsMs = parseInt(localStorage.getItem(`whale_cleared_${address}_${activePeer.toLowerCase()}`) || '0', 10);
+          const clearTsMs = parseInt(localStorage.getItem(`ledger_cleared_${address}_${activePeer.toLowerCase()}`) || '0', 10);
           if (clearTsMs > 0) {
             const clearTsNs = clearTsMs * 1000000;
             newConfirmed = newConfirmed.filter((m: any) => m.sentAtNs > clearTsNs);
@@ -3023,7 +3023,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     }
 
     if (address) {
-        localStorage.removeItem(`whale_draft_${address.toLowerCase()}_${activePeer.toLowerCase()}`);
+        localStorage.removeItem(`ledger_draft_${address.toLowerCase()}_${activePeer.toLowerCase()}`);
     }
 
     const optimisticId = `optimistic-${Date.now()}`;
@@ -3066,13 +3066,13 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         }
       }
 
-      if (!isSystemSignal && !isReaction) if (whaleSettings?.notification_sound !== false) { playSendSound(); };
+      if (!isSystemSignal && !isReaction) if (ledgerSettings?.notification_sound !== false) { playSendSound(); };
 
       // Always attempt to send directly via XMTP.
       // sendMessage() handles canReceive checks, retries with backoff,
       // and graceful offline queue internally — no need to pre-check here.
       if (isOffline) {
-        const outboxKey = `whale_outbox_${address.toLowerCase()}`;
+        const outboxKey = `ledger_outbox_${address.toLowerCase()}`;
         const existing = JSON.parse(localStorage.getItem(outboxKey) || '[]');
         existing.push(finalContent);
         localStorage.setItem(outboxKey, JSON.stringify(existing));
@@ -3398,7 +3398,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                     onClick={() => {
                       // Clear all XMTP-related IndexedDB and localStorage keys so a fresh installation can be created
                       try {
-                        const keys = Object.keys(localStorage).filter(k => k.startsWith('xmtp') || k.startsWith('whale_xmtp') || k.includes('xmtp'));
+                        const keys = Object.keys(localStorage).filter(k => k.startsWith('xmtp') || k.startsWith('ledger_xmtp') || k.includes('xmtp'));
                         keys.forEach(k => localStorage.removeItem(k));
                         // Delete XMTP IndexedDB databases
                         if (typeof indexedDB !== 'undefined') {
@@ -3459,7 +3459,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     return (
       <ChatCommunityGate
         onAccept={() => {
-          vault.setItem('whale_eula_accepted', 'true');
+          vault.setItem('ledger_eula_accepted', 'true');
           setHasAcceptedEula(true);
         }}
         onDecline={() => {
@@ -3536,7 +3536,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                 onClick={() => {
                   setPeerInput('');
                   // focus the input below
-                  setTimeout(() => document.getElementById('whale-new-chat-input')?.focus(), 100);
+                  setTimeout(() => document.getElementById('ledger-new-chat-input')?.focus(), 100);
                 }}
                 className="w-10 h-10 rounded-full bg-[#007AFF] flex items-center justify-center text-white hover:bg-[#0071E3] transition-all active:scale-95 shadow-sm"
                 title="New conversation"
@@ -3551,7 +3551,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
             <div className="flex-1 relative">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="absolute left-3 top-1/2 -translate-y-1/2 text-black/30 pointer-events-none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               <input
-                id="whale-new-chat-input"
+                id="ledger-new-chat-input"
                 type="text"
                 placeholder="Wallet address or .eth name"
                 value={peerInput}
@@ -3653,7 +3653,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
             conversations.filter(conv => showArchived ? archivedPeers.has(conv.peerAddress.toLowerCase()) : !archivedPeers.has(conv.peerAddress.toLowerCase())).map((conv, i) => {
               const isActive = activePeer?.toLowerCase() === conv.peerAddress.toLowerCase();
               const contactName = resolveContactName(effectiveAddress, conv.peerAddress);
-              const displayLabel = contactName || whaleSettings?.displayName || shortAddr(conv.peerAddress);
+              const displayLabel = contactName || ledgerSettings?.displayName || shortAddr(conv.peerAddress);
               return (
                 <div key={i} className="relative w-full overflow-hidden border-b border-black/[0.04]">
                   <div className="absolute inset-y-0 right-0 flex items-center justify-center w-20 bg-[#FF3B30] text-white text-[11px] font-semibold cursor-pointer" onClick={() => toggleArchive(conv.peerAddress)}>
@@ -5160,7 +5160,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
               pendingCallType={pendingCallType}
               setPendingCallType={setPendingCallType}
               onGrant={(type) => {
-                vault.setItem('whale_media_perm', 'true');
+                vault.setItem('ledger_media_perm', 'true');
                 setHasMediaPermission(true);
                 setPendingCallType(null);
                 if (type === 'audio' || type === 'video') startCall(type);

@@ -60,7 +60,7 @@ export const TelemetryTerminal = React.memo(function TelemetryTerminal({ nodes }
             }]);
         });
         
-        socket.on('new-whale-alert', (data) => {
+        socket.on('new-ledger-alert', (data) => {
             const now = new Date();
             const timeStr = now.toLocaleTimeString();
             

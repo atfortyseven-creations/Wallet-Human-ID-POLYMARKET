@@ -107,8 +107,8 @@ export async function GET(req: NextRequest) {
             ekey,
           });
 
-          // Set whale_session cookie so the page can redirect
-          response.cookies.set('whale_session', jwt, {
+          // Set ledger_session cookie so the page can redirect
+          response.cookies.set('ledger_session', jwt, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',

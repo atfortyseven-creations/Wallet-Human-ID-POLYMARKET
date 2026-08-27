@@ -347,8 +347,8 @@ export const attestingModules = [
                 </div>`
             },
             {
-                id: "whale-tracking-smart-money",
-                title: "20. Whale Tracking: Siguiendo al Smart Money",
+                id: "ledger-tracking-smart-money",
+                title: "20. Ledger Tracking: Siguiendo al Smart Money",
                 description: "Analizando wallets de +$10M.",
                 readTime: 60,
                 content: `<div class="academy-article">

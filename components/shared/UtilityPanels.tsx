@@ -6,7 +6,7 @@ import { X, Clock, Eye, Settings, ShieldAlert, Fingerprint, Zap, Laptop, MapPin,
 import { useUIStore } from '@/lib/store/ui-store';
 import { useSettings } from '@/src/context/SettingsContext';
 import useSWR from 'swr';
-import { useVIPStore, VIPStoreState, WhaleEvent } from '@/lib/vip-store'; 
+import { useVIPStore, VIPStoreState, LedgerEvent } from '@/lib/vip-store'; 
 import { useSystemAccount as useAccount } from '@/hooks/useSystemAccount';
 import { useOmniInfrastructure } from "@/lib/api-client";
 import { useWalletConnectStore } from '@/lib/store/wallet-connect-store';
@@ -470,36 +470,36 @@ function SettingToggle({ label, description, active, onToggle, color = 'chartreu
     );
 }
 
-export function BillionWhaleNotification() {
-    const whaleEvents = useVIPStore((state: VIPStoreState) => state.whaleEvents);
-    const [activeTransfers, setActiveTransfers] = useState<WhaleEvent[]>([]);
+export function BillionLedgerNotification() {
+    const ledgerEvents = useVIPStore((state: VIPStoreState) => state.ledgerEvents);
+    const [activeTransfers, setActiveTransfers] = useState<LedgerEvent[]>([]);
 
     useEffect(() => {
-        if (!whaleEvents) return;
+        if (!ledgerEvents) return;
         
-        const checkWhales = () => {
-            const data = whaleEvents.filter(w => w.usdNum >= 1000000000);
+        const checkLedgers = () => {
+            const data = ledgerEvents.filter(w => w.usdNum >= 1000000000);
             if (data.length > 0) {
                 setActiveTransfers(prev => {
                     const existingIds = new Set(prev.map(item => item.id));
-                    const newWhales = data.filter(w => !existingIds.has(w.id));
-                    if (newWhales.length === 0) return prev;
+                    const newLedgers = data.filter(w => !existingIds.has(w.id));
+                    if (newLedgers.length === 0) return prev;
                     
-                    return [...newWhales, ...prev].slice(0, 5);
+                    return [...newLedgers, ...prev].slice(0, 5);
                 });
             }
         };
 
-        const interval = setInterval(checkWhales, 15000); 
+        const interval = setInterval(checkLedgers, 15000); 
         return () => clearInterval(interval);
-    }, [whaleEvents]);
+    }, [ledgerEvents]);
 
     return (
         <div className="fixed bottom-4 right-4 sm:bottom-10 sm:right-10 z-[200] flex flex-col gap-3 items-end pointer-events-none max-w-[calc(100vw-2rem)] sm:max-w-[420px]">
             <AnimatePresence mode="popLayout">
-                {activeTransfers.map((whale) => (
+                {activeTransfers.map((ledger) => (
                     <motion.div
-                        key={whale.id}
+                        key={ledger.id}
                         layout
                         initial={{ x: 400, opacity: 0, clipPath: 'inset(0% 100% 0% 0%)' }}
                         animate={{ x: 0, opacity: 1, clipPath: 'inset(0% 0% 0% 0%)' }}
@@ -529,7 +529,7 @@ export function BillionWhaleNotification() {
                                     </div>
                                 </div>
                                 <button 
-                                    onClick={() => setActiveTransfers(prev => prev.filter(t => t.id !== whale.id))}
+                                    onClick={() => setActiveTransfers(prev => prev.filter(t => t.id !== ledger.id))}
                                     className="p-1.5 hover:bg-black/5 transition-colors text-black/40 hover:text-black border border-transparent hover:border-black/10"
                                 >
                                     <X size={14} />
@@ -542,9 +542,9 @@ export function BillionWhaleNotification() {
                                     <span className="text-[10px] font-aztec-mono text-black/50 uppercase tracking-widest">Global Asset Volume</span>
                                     <div className="flex items-baseline gap-3 flex-wrap">
                                         <span className="font-aztec-mono text-3xl font-black text-black tracking-tighter break-all">
-                                            {whale.amount}
+                                            {ledger.amount}
                                         </span>
-                                        <span className="text-xs font-black text-[#050505] uppercase tracking-widest">{whale.token}</span>
+                                        <span className="text-xs font-black text-[#050505] uppercase tracking-widest">{ledger.token}</span>
                                     </div>
                                 </div>
 
@@ -553,13 +553,13 @@ export function BillionWhaleNotification() {
                                         <span className="text-[9px] font-aztec-mono uppercase text-black/40 tracking-widest flex items-center gap-1.5">
                                             <Globe size={10} /> USD EQUIVALENT
                                         </span>
-                                        <span className="font-aztec-mono text-xs font-black text-black">${(whale.usdNum / 1000000000).toFixed(2)}B USD</span>
+                                        <span className="font-aztec-mono text-xs font-black text-black">${(ledger.usdNum / 1000000000).toFixed(2)}B USD</span>
                                     </div>
                                     <div className="flex flex-col gap-1.5">
                                         <span className="text-[9px] font-aztec-mono uppercase text-black/40 tracking-widest flex items-center gap-1.5">
                                             <Globe size={10} /> EUR EQUIVALENT
                                         </span>
-                                        <span className="font-aztec-mono text-xs font-black text-black">{((whale.usdNum * 0.92) / 1000000000).toFixed(2)}B EUR</span>
+                                        <span className="font-aztec-mono text-xs font-black text-black">{((ledger.usdNum * 0.92) / 1000000000).toFixed(2)}B EUR</span>
                                     </div>
                                 </div>
                             </div>
@@ -570,7 +570,7 @@ export function BillionWhaleNotification() {
                                     <div className="flex items-center gap-1.5 text-[9px] font-aztec-mono uppercase text-black/60 tracking-widest">
                                         <Fingerprint size={12} /> SENDER TRACE
                                     </div>
-                                    <span className="font-aztec-mono text-[11px] text-[#050505]/70 bg-black/5 py-1 px-2 border border-black/10">{whale.wallet.slice(0, 16)}...</span>
+                                    <span className="font-aztec-mono text-[11px] text-[#050505]/70 bg-black/5 py-1 px-2 border border-black/10">{ledger.wallet.slice(0, 16)}...</span>
                                 </div>
                                 <button className="px-6 py-2.5 bg-black text-[#FFFFFF] font-aztec-mono text-[10px] font-black uppercase tracking-widest border border-transparent hover:border-black hover:bg-[#FFFFFF] hover:text-black transition-colors leading-tight text-center">
                                     EXECUTE <br/> AUDIT

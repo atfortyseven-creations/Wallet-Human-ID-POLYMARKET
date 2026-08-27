@@ -73,7 +73,7 @@ export function SessionRequestModal() {
                 toast.success('Transaction broadcast', { description: hash.slice(0, 16) + '...' });
             }
             else {
-                throw new Error(`Method "${methodRequest.method}" is not supported by Whale Portfolio`);
+                throw new Error(`Method "${methodRequest.method}" is not supported by Ledger Portfolio`);
             }
 
             await web3wallet.respondSessionRequest({ topic, response });

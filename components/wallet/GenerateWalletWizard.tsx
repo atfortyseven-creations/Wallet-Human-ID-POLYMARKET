@@ -369,7 +369,7 @@ export function GenerateWalletWizard({ onComplete, onCancel }: GenerateWalletWiz
             {step === 4 && wallet && (
               <motion.div key="step4" initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center text-center">
                 <div className="w-full h-48 pointer-events-none">
-                  <RemoteLottie path="/system-shots/Whale Mission.json" className="w-full h-full object-contain" />
+                  <RemoteLottie path="/system-shots/Ledger Mission.json" className="w-full h-full object-contain" />
                 </div>
                 <h2 className="text-2xl font-black uppercase tracking-tight mb-1">Wallet Secured</h2>
                 <p className="text-[10px] text-black/40 font-black uppercase tracking-widest mb-5">Your identity is now on-chain</p>

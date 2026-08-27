@@ -22,7 +22,7 @@ export async function analyzeSentiment(text: string) {
         Task:
         1. Determine if the sentiment is BULLISH, BEARISH, or NEUTRAL.
         2. Provide a one-sentence "Legendary" grade justification in Spanish.
-        3. Identify any major entities (Protocols, Whales, Institutions) mentioned.
+        3. Identify any major entities (Protocols, Ledgers, Institutions) mentioned.
 
         Output JSON ONLY:
         {

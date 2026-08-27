@@ -95,7 +95,7 @@ export function ForumHeader() {
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="w-8 h-8 rounded-full bg-blue-100 text-blue-600   flex items-center justify-center font-bold overflow-hidden"
             >
-              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Whale" alt="Avatar" className="w-full h-full object-cover" />
+              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ledger" alt="Avatar" className="w-full h-full object-cover" />
             </button>
             <AnimatePresence>
               {showUserMenu && (

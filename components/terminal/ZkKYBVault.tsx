@@ -71,10 +71,10 @@ export function ZkKYBVault() {
       }
 
       // Save seed to prevent double-signing in Ledger Chat
-      const existingSeed = localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`);
+      const existingSeed = localStorage.getItem(`ledger_chat_seed_${address.toLowerCase()}`);
       if (!existingSeed) {
         const { keccak256 } = await import('viem');
-        localStorage.setItem(`whale_chat_seed_${address.toLowerCase()}`, keccak256(signature as `0x${string}`));
+        localStorage.setItem(`ledger_chat_seed_${address.toLowerCase()}`, keccak256(signature as `0x${string}`));
       }
 
       const mintRes = await fetch('/api/oracle/kyb-mint', {

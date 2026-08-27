@@ -73,7 +73,7 @@ export function TitaniumGate({ children, requiredTier = 'PRO' }: TitaniumGatePro
             // After nuclearDisconnect(), __disconnected__ is written to BOTH
             // localStorage (survives hard reloads) and sessionStorage (same tab).
             // If this guard is active we MUST NOT call /api/auth/verify-session —
-            // the httpOnly cookies (whale_session, human_session) may still be
+            // the httpOnly cookies (ledger_session, human_session) may still be
             // present in the browser for a brief moment while the server processes
             // the deletion response. A verify-session call in that window would
             // return authenticated:true and silently re-log the user back in.
@@ -129,7 +129,7 @@ export function TitaniumGate({ children, requiredTier = 'PRO' }: TitaniumGatePro
                 return;
             }
 
-            // Priority 4: Server-side JWT cookies (whale_session / human_session).
+            // Priority 4: Server-side JWT cookies (ledger_session / human_session).
             // These are HttpOnly so we cannot read them from document.cookie.
             // Call verify-session which checks all token types server-side.
             // This is the fallback for QR-hydrated sessions where system_handshake

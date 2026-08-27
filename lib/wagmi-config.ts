@@ -38,7 +38,7 @@ export const config = createConfig({
                 name: 'Humanity Ledger',
                 description: 'The System Identity & Prediction Market Suite',
                 url: 'https://humanidfi.com',
-                icons: ['https://humanidfi.com/official-whale-legendary.png'],
+                icons: ['https://humanidfi.com/official-ledger-legendary.png'],
             }
         }),
         coinbaseWallet({ 

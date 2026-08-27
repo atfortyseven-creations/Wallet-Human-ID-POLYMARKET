@@ -36,7 +36,7 @@ export function LiquidationRadar() {
   
   // Fake data for demo
   useEffect(() => {
-    fetch("/api/network/whale/liquidations")
+    fetch("/api/network/ledger/liquidations")
       .then(r => {
         if (!r.ok) throw new Error("API not ok");
         return r.json();

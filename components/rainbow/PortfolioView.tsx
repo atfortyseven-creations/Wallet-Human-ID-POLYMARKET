@@ -44,7 +44,7 @@ import { GenerateWalletWizard } from "../wallet/GenerateWalletWizard";
  * - backgroundAttachment: scroll (never fixed) on all pattern divs
  *
  * DESIGN CONTRACT (matches target screenshot precisely):
- * - Dark header with whale logo + "Humanity Ledger NETWORK / TERMINAL"
+ * - Dark header with ledger logo + "Humanity Ledger NETWORK / TERMINAL"
  * - Giant centered NET WORTH value
  * - Glowing green dot 24H change pill
  * - 4 circular action buttons (Send/Blue, Receive/Green, Swap/Purple, Buy/Pink)
@@ -493,7 +493,7 @@ export default function PortfolioView({
       )}
       {/* 
           HEADER  Matches screenshot exactly
-          Whale logo · Brand · Dark on left, tools on right
+          Ledger logo · Brand · Dark on left, tools on right
            */}
       <header
         className="sticky top-0 z-30 flex items-center justify-between px-5 py-4"

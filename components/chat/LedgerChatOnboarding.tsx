@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, ChevronRight, Check, MapPin, AtSign, User } from 'lucide-react';
-import { useWhaleSettings } from '@/components/terminal/LedgerChatSettings';
+import { useLedgerSettings } from '@/components/terminal/LedgerChatSettings';
 
 interface OnboardingProps {
   address: string;
@@ -22,7 +22,7 @@ const COUNTRIES = [
 ];
 
 export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
-  const { updateBatch, isLoaded } = useWhaleSettings(address);
+  const { updateBatch, isLoaded } = useLedgerSettings(address);
   const [step, setStep] = useState(1);
   const [displayName, setDisplayName] = useState('');
   const [username, setUsername] = useState('');
@@ -105,7 +105,7 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
 
     // Mark as onboarded for this address
     if (typeof window !== 'undefined') {
-       localStorage.setItem(`whale_onboarded_${address}`, 'true');
+       localStorage.setItem(`ledger_onboarded_${address}`, 'true');
     }
     
     setIsSubmitting(false);
@@ -175,14 +175,14 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
 
               {/* Nickname Input */}
               <div className="w-full mb-6">
-                <label className="block text-[13px] font-bold text-[#050505] mb-2">Nickname (e.g. @whale)</label>
+                <label className="block text-[13px] font-bold text-[#050505] mb-2">Nickname (e.g. @ledger)</label>
                 <div className="relative">
                   <AtSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-black/30" />
                   <input
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="whale"
+                    placeholder="ledger"
                     className="w-full bg-[#f5f5f7] border-2 border-transparent focus:border-[#1c7aff] focus:bg-white rounded-2xl py-4 pl-12 pr-4 text-[16px] font-bold text-black outline-none transition-all shadow-inner"
                   />
                 </div>

@@ -7,7 +7,7 @@ import rateLimit from '@/lib/rate-limit';
  *
  * System API Marketplace  Sovereign Signal Distribution
  *
- * Serves on-chain whale analytics signals to paying subscribers
+ * Serves on-chain ledger analytics signals to paying subscribers
  * WITHOUT exposing source wallets, RPC endpoints, or detection methodology.
  *
  * Authentication:
@@ -210,7 +210,7 @@ export async function GET(req: NextRequest) {
         if (token)  where.token = token.toUpperCase();
         if (minUsd > 0) where.usdValue = { gte: minUsd.toString() };
 
-        const rows = await prisma.whaleActivity.findMany({
+        const rows = await prisma.ledgerActivity.findMany({
             where,
             orderBy: { timestamp: 'desc' },
             take:    tierCfg.eventLimit,

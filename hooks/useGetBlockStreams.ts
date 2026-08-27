@@ -4,8 +4,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 //  Types 
 
-export interface WhaleEvent {
-  type: "whale";
+export interface LedgerEvent {
+  type: "ledger";
   txHash: string;
   blockNumber: number;
   token: string;
@@ -44,16 +44,16 @@ export interface OnChainToken {
   chain: string;
 }
 
-//  Whale Events Hook 
+//  Ledger Events Hook 
 
 /**
- * useWhaleStream
+ * useLedgerStream
  * 
- * Subscribes to /api/whale-events/stream (SSE  GetBlock EP2 WebSocket)
- * Returns live and buffered whale alert events.
+ * Subscribes to /api/ledger-events/stream (SSE  GetBlock EP2 WebSocket)
+ * Returns live and buffered ledger alert events.
  */
-export function useWhaleStream(maxEvents = 50) {
-  const [events, setEvents] = useState<WhaleEvent[]>([]);
+export function useLedgerStream(maxEvents = 50) {
+  const [events, setEvents] = useState<LedgerEvent[]>([]);
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const esRef = useRef<EventSource | null>(null);
@@ -63,7 +63,7 @@ export function useWhaleStream(maxEvents = 50) {
   const connect = useCallback(() => {
     if (esRef.current) esRef.current.close();
 
-    const es = new EventSource("/api/whale-events/stream");
+    const es = new EventSource("/api/ledger-events/stream");
     esRef.current = es;
 
     es.onmessage = (e) => {
@@ -73,8 +73,8 @@ export function useWhaleStream(maxEvents = 50) {
           setConnected(true);
           setError(null);
           retryCount.current = 0;
-        } else if (data.type === "whale") {
-          setEvents((prev) => [data as WhaleEvent, ...prev].slice(0, maxEvents));
+        } else if (data.type === "ledger") {
+          setEvents((prev) => [data as LedgerEvent, ...prev].slice(0, maxEvents));
         }
       } catch {
         // ignore parse errors

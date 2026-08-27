@@ -59,10 +59,10 @@ export default function PricingModal({ isOpen, onClose, onSubscribe }: PricingMo
             VIP PREMIUM
           </div>
           <h2 className="text-4xl font-black text-[#1F1F1F] mb-2">
-            Unlock Whale Tracker Pro
+            Unlock Ledger Tracker Pro
           </h2>
           <p className="text-[#1F1F1F]/70 text-lg">
-            Track unlimited wallets & get instant whale movement alerts
+            Track unlimited wallets & get instant ledger movement alerts
           </p>
         </div>
 
@@ -152,7 +152,7 @@ export default function PricingModal({ isOpen, onClose, onSubscribe }: PricingMo
 
               <div className="bg-white/10 p-4 rounded-xl mb-6 border border-white/10">
                    <p className="text-xs text-white/90 font-medium leading-relaxed">
-                       Unlimited access to Whale Tracker, Smart Alerts, Wallet Comparison, and much more. No subscriptions.
+                       Unlimited access to Ledger Tracker, Smart Alerts, Wallet Comparison, and much more. No subscriptions.
                    </p>
               </div>
 

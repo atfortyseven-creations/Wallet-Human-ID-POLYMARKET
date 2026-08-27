@@ -89,7 +89,7 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
             {/* Header */}
             <div className="relative z-10 mb-12 text-center md:text-left">
                 <h2 className="text-4xl md:text-5xl font-black text-[#1F1F1F] tracking-tight mb-4">
-                    The Whale Card.
+                    The Ledger Card.
                 </h2>
                 <p className="text-lg text-[#1F1F1F]/60 max-w-xl font-medium leading-relaxed">
                     Spend your crypto instantly, anywhere. Android & Apple Pay ready. Zero foreign transaction fees. 
@@ -171,7 +171,7 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
                                     onClick={() => setStep('customize')}
                                     className="w-full py-4 bg-[#1F1F1F] text-white rounded-2xl font-bold text-lg hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 group"
                                 >
-                                    Get Your Whale Card <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform"/>
+                                    Get Your Ledger Card <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform"/>
                                 </button>
                             </motion.div>
                         )}
@@ -259,7 +259,7 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
                                 <p className="text-[#1F1F1F]/60">
                                     {kycRequired 
                                         ? "Your account is created on Striga. Please check your email to complete verification." 
-                                        : "Your Whale Card is active and spendable."}
+                                        : "Your Ledger Card is active and spendable."}
                                 </p>
                                 
                                 <div className="grid grid-cols-1 gap-3">

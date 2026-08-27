@@ -173,7 +173,7 @@ export function MobileEnforcer({ children }: { children: React.ReactNode }) {
         //  [DIRECT ACCESS ROUTES] 
         // These are PUBLIC or informational routes that render normally on mobile.
         // ️  PC-ONLY routes (/terminal, /portfolio, /settings, /system-intel,
-        //     /predictions, /vip, /whalepost) are intentionally EXCLUDED here.
+        //     /predictions, /vip, /ledgerpost) are intentionally EXCLUDED here.
         //     A mobile user  even with a connected wallet  must NOT reach those
         //     pages because they are designed exclusively for the PC terminal.
         //     They will stay on MobileSystemLanding as intended.

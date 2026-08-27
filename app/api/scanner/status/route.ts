@@ -51,19 +51,19 @@ export async function GET() {
         const h24ago= new Date(now.getTime() - 86_400_000);
 
         const [perChain1h, perChain24h, totalEvents, newest] = await Promise.all([
-            prisma.whaleActivity.groupBy({
+            prisma.ledgerActivity.groupBy({
                 by: ['chain'],
                 _count: { id: true },
                 _sum:   { usdValue: true } as any,
                 where:  { timestamp: { gte: h1ago } },
             }),
-            prisma.whaleActivity.groupBy({
+            prisma.ledgerActivity.groupBy({
                 by: ['chain'],
                 _count: { id: true },
                 where:  { timestamp: { gte: h24ago } },
             }),
-            prisma.whaleActivity.count(),
-            prisma.whaleActivity.findFirst({
+            prisma.ledgerActivity.count(),
+            prisma.ledgerActivity.findFirst({
                 orderBy: { timestamp: 'desc' },
                 select:  { timestamp: true, chain: true, usdValue: true, token: true },
             }),
@@ -88,7 +88,7 @@ export async function GET() {
         //  4. Redis Stream depth (backpressure indicator) 
         let streamDepth = -1;
         if (redisClient && !(redisClient as any).__isMock) {
-            streamDepth = await (redisClient as any).xlen('whale:alert:stream').catch(() => -1);
+            streamDepth = await (redisClient as any).xlen('ledger:alert:stream').catch(() => -1);
         }
 
         const queryLatencyMs = Date.now() - start;

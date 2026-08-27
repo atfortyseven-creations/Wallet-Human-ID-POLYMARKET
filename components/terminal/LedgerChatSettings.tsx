@@ -17,18 +17,18 @@ import { vault } from '@/lib/core/SecureVault';
 import { getCallHistory, CallRecord } from '@/lib/wallet/callHistory';
 import {
   pxeEngine,
-  WhaleProtocolSettings,
+  LedgerProtocolSettings,
   DEFAULT_PXE_SETTINGS
 } from '@/lib/wallet/SettingsEnginePXE';
 import { useAppKit } from '@reown/appkit/react';
 
 // ─────────────────────────────────────────────────────────────────────────
-//  HOOK: useWhaleSettings
+//  HOOK: useLedgerSettings
 //  Subscribes a component to the PXE engine for reactive setting updates.
 // ─────────────────────────────────────────────────────────────────────────
 
-export function useWhaleSettings(address: string) {
-  const [settings, setSettings] = useState<WhaleProtocolSettings>(DEFAULT_PXE_SETTINGS);
+export function useLedgerSettings(address: string) {
+  const [settings, setSettings] = useState<LedgerProtocolSettings>(DEFAULT_PXE_SETTINGS);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -40,14 +40,14 @@ export function useWhaleSettings(address: string) {
     return () => unsubscribe();
   }, [address]);
 
-  const updateSetting = async <K extends keyof WhaleProtocolSettings>(
+  const updateSetting = async <K extends keyof LedgerProtocolSettings>(
     key: K,
-    value: WhaleProtocolSettings[K]
+    value: LedgerProtocolSettings[K]
   ) => {
     await pxeEngine.mutate(address, key, value);
   };
 
-  const updateBatch = async (mutations: Partial<WhaleProtocolSettings>) => {
+  const updateBatch = async (mutations: Partial<LedgerProtocolSettings>) => {
     await pxeEngine.mutateBatch(address, mutations);
   };
 
@@ -66,7 +66,7 @@ export interface LedgerChatSettingsProps {
 export function LedgerChatSettings({ onClose, address }: LedgerChatSettingsProps) {
   const [viewStack, setViewStack] = useState<string[]>(['root']);
   const [direction, setDirection] = useState(1);
-  const { settings, updateSetting, updateBatch, isLoaded } = useWhaleSettings(address);
+  const { settings, updateSetting, updateBatch, isLoaded } = useLedgerSettings(address);
 
   const view = viewStack[viewStack.length - 1];
 
@@ -102,9 +102,9 @@ export function LedgerChatSettings({ onClose, address }: LedgerChatSettingsProps
     : view === 'devices' ? 'ACTIVE DEVICES'
     : view === 'workspaces' ? 'WORKSPACES'
     : view === 'ghost_mode' ? 'AI GHOST MODE'
-    : view === 'defi_tools' ? 'WHALE TOOLS'
+    : view === 'defi_tools' ? 'LEDGER TOOLS'
     : view === 'network' ? 'NETWORK PROTOCOL'
-    : view === 'premium' ? 'WHALE NETWORK PRO'
+    : view === 'premium' ? 'LEDGER NETWORK PRO'
     : view === 'stars' ? 'QUANTUM DOTS'
     : view.toUpperCase().replace(/_/g, ' ');
 
@@ -201,14 +201,14 @@ function RootView({ onNavigate, address, s }: any) {
 
         <BBlock>
           <BItem icon={<Bot size={18}/>} label="AI Ghost Mode" onClick={() => onNavigate('ghost_mode')} />
-          <BItem icon={<Activity size={18}/>} label="Whale Intelligence Tools" onClick={() => onNavigate('defi_tools')} />
+          <BItem icon={<Activity size={18}/>} label="Ledger Intelligence Tools" onClick={() => onNavigate('defi_tools')} />
           <BItem icon={<Radio size={18}/>} label="Network Protocol" onClick={() => onNavigate('network')} noBorder />
         </BBlock>
 
         <div onClick={() => onNavigate('premium')} className="w-full border-[3px] border-black bg-black text-white p-4 flex items-center gap-4 cursor-pointer hover:bg-zinc-900 transition-colors shadow-[6px_6px_0_0_#1c7aff]">
           <Crown size={28} className="text-[#1c7aff] shrink-0" />
           <div className="flex flex-col">
-            <span className="text-[16px] font-black uppercase">Whale Network Pro</span>
+            <span className="text-[16px] font-black uppercase">Ledger Network Pro</span>
             <span className="text-[11px] text-zinc-400">Unlock maximum capacity</span>
           </div>
           <ArrowRight size={18} className="ml-auto text-zinc-500" />
@@ -380,7 +380,7 @@ function NotificationsView({ s, update }: any) {
 
       <SH title="Sound Pack" />
       <BBlock>
-        {(['minimal', 'arcade', 'whale', 'asmr'] as const).map((pack, i, arr) => (
+        {(['minimal', 'arcade', 'ledger', 'asmr'] as const).map((pack, i, arr) => (
           <div key={pack} onClick={() => update('sound_pack', pack)} className={`flex items-center justify-between p-4 cursor-pointer hover:bg-zinc-100 ${i !== arr.length - 1 ? 'border-b-[3px] border-black' : ''}`}>
             <span className="font-black uppercase text-sm">{pack}</span>
             {s.sound_pack === pack && <Check size={18} />}
@@ -426,7 +426,7 @@ function PrivacyView({ s, update }: any) {
   const [showBlocked, setShowBlocked] = useState(false);
 
   useEffect(() => {
-    vault.getItem('whale_blocked').then(res => {
+    vault.getItem('ledger_blocked').then(res => {
       if (res) { try { setBlocked(JSON.parse(res)); } catch(e) {} }
     });
   }, []);
@@ -434,7 +434,7 @@ function PrivacyView({ s, update }: any) {
   const unblock = (addr: string) => {
     const updated = blocked.filter(a => a !== addr);
     setBlocked(updated);
-    vault.setItem('whale_blocked', JSON.stringify(updated));
+    vault.setItem('ledger_blocked', JSON.stringify(updated));
     toast.success('Address removed from blocklist.');
   };
 
@@ -539,7 +539,7 @@ function DataView({ s, update, address }: any) {
     if (confirm('This will clear all locally cached message data. Continue?')) {
       for (let i = localStorage.length - 1; i >= 0; i--) {
         const key = localStorage.key(i) || '';
-        if (key.includes('whale_cache_')) localStorage.removeItem(key);
+        if (key.includes('ledger_cache_')) localStorage.removeItem(key);
       }
       setStats({ sent: 0, received: 0 });
       toast.success('Cache purged successfully.');
@@ -698,7 +698,7 @@ function PersonalVaultView({ address }: { address: string }) {
   const [draft, setDraft] = useState('');
 
   useEffect(() => {
-    vault.getItem(`whale_vault_notes_${address}`).then(res => {
+    vault.getItem(`ledger_vault_notes_${address}`).then(res => {
       if (res) { try { setNotes(JSON.parse(res)); } catch(e) {} }
     });
   }, [address]);
@@ -707,7 +707,7 @@ function PersonalVaultView({ address }: { address: string }) {
     if (!draft.trim()) return;
     const updated = [{ id: crypto.randomUUID(), text: draft.trim(), date: Date.now() }, ...notes];
     setNotes(updated);
-    await vault.setItem(`whale_vault_notes_${address}`, JSON.stringify(updated));
+    await vault.setItem(`ledger_vault_notes_${address}`, JSON.stringify(updated));
     setDraft('');
     toast.success('Fragment encrypted and stored in Vault.');
   };
@@ -715,7 +715,7 @@ function PersonalVaultView({ address }: { address: string }) {
   const deleteNote = async (id: string) => {
     const updated = notes.filter(n => n.id !== id);
     setNotes(updated);
-    await vault.setItem(`whale_vault_notes_${address}`, JSON.stringify(updated));
+    await vault.setItem(`ledger_vault_notes_${address}`, JSON.stringify(updated));
   };
 
   return (
@@ -792,7 +792,7 @@ function ConnectionLogView({ address }: { address: string }) {
 
 function DevicesView() {
   const [sessions] = useState([
-    { name: 'Whale Desktop Node', platform: 'Windows', network: 'Local Network', status: 'ONLINE (CURRENT)', isCurrent: true },
+    { name: 'Ledger Desktop Node', platform: 'Windows', network: 'Local Network', status: 'ONLINE (CURRENT)', isCurrent: true },
   ]);
 
   return (
@@ -994,7 +994,7 @@ function PremiumView() {
       <div className="w-32 h-32 border-[4px] border-[#1c7aff] bg-black flex items-center justify-center shadow-[10px_10px_0_0_#1c7aff] mb-8">
         <Crown size={48} className="text-[#1c7aff]" />
       </div>
-      <h1 className="text-3xl font-black uppercase text-center mb-2">Whale Pro</h1>
+      <h1 className="text-3xl font-black uppercase text-center mb-2">Ledger Pro</h1>
       <p className="text-sm font-bold text-zinc-600 text-center mb-6 max-w-xs">Unlimited limits. Autonomous tooling. Complete sovereignty.</p>
 
       {/* Azguard Wallet Banner */}
@@ -1121,7 +1121,7 @@ function StarsView() {
       
       // If balance is returned, could dispatch an event or use a global state to update the UI
       if (typeof window !== 'undefined') {
-         window.dispatchEvent(new CustomEvent('whale_qd_balance_update', { detail: data.balance }));
+         window.dispatchEvent(new CustomEvent('ledger_qd_balance_update', { detail: data.balance }));
       }
       
     } catch (e: any) {

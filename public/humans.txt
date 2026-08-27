@@ -1,5 +1,5 @@
 /* TEAM */
-Author: Whale Network / Humanity Ledger S.L.
+Author: Humanity Ledger / Humanity Ledger S.L.
 Site: humanidfi.com
 From: Earth
 

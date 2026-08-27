@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { RpcRelayerManager } from '@/lib/blockchain/rpc-relayer';
 import { getPriceCached } from '@/lib/price-cache';
 
-const WHALE_USD_THRESHOLD = 0; // $0 minimum to guarantee system vitality and Zero-Mock attestation
+const LEDGER_USD_THRESHOLD = 0; // $0 minimum to guarantee system vitality and Zero-Mock attestation
 
 // Token registry: (address lowercase) -> { symbol, decimals }
 const TOKEN_REGISTRY: Record<string, { symbol: string; decimals: number }> = {
@@ -161,7 +161,7 @@ async function scanChain(chain: ChainConfig): Promise<any[]> {
         const valueNative = parseFloat(ethers.formatEther(tx.value));
         const usdValue = valueNative * nativePrice;
 
-        if (usdValue >= WHALE_USD_THRESHOLD) {
+        if (usdValue >= LEDGER_USD_THRESHOLD) {
           results.push({
             id: tx.hash,
             hash: tx.hash,
@@ -182,7 +182,7 @@ async function scanChain(chain: ChainConfig): Promise<any[]> {
       }
     }
 
-    // Scan last 5 blocks for ERC20 whale transfers
+    // Scan last 5 blocks for ERC20 ledger transfers
     const fromBlock = latestBlock - 5;
     try {
       const logs = await provider.getLogs({
@@ -204,7 +204,7 @@ async function scanChain(chain: ChainConfig): Promise<any[]> {
           const tokenPrice = await getPrice(tokenCfg.symbol);
           const usdValue = tokenAmount * tokenPrice;
 
-          if (usdValue >= WHALE_USD_THRESHOLD) {
+          if (usdValue >= LEDGER_USD_THRESHOLD) {
             const from = ethers.AbiCoder.defaultAbiCoder().decode(['address'], log.topics[1])[0] as string;
             const to = ethers.AbiCoder.defaultAbiCoder().decode(['address'], log.topics[2])[0] as string;
 

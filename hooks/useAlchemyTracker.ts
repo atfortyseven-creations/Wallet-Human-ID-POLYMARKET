@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Alchemy, Network, AlchemySubscription } from 'alchemy-sdk';
 
-export interface WhaleTransfer {
+export interface LedgerTransfer {
   hash: string;
   from: string;
   to: string;
@@ -11,7 +11,7 @@ export interface WhaleTransfer {
 }
 
 export function useAlchemyTracker() {
-  const [recentTransfers, setRecentTransfers] = useState<WhaleTransfer[]>([]);
+  const [recentTransfers, setRecentTransfers] = useState<LedgerTransfer[]>([]);
 
   useEffect(() => {
     // We expect the user to provide an Alchemy API Key in their .env.local
@@ -41,7 +41,7 @@ export function useAlchemyTracker() {
       (tx) => {
         if (tx && tx.hash) {
             setRecentTransfers(prev => {
-                const newTx: WhaleTransfer = {
+                const newTx: LedgerTransfer = {
                     hash: tx.hash,
                     from: tx.from,
                     to: tx.to || "Unknown Object",

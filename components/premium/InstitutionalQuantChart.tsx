@@ -5,7 +5,7 @@
  * InstitutionalQuantChart  Epicentro 3: Quant Terminal
  * 
  * Native lightweight-charts (AttestingView engine) integrated with
- * the Zustand whale event store for real-time volume visualization.
+ * the Zustand ledger event store for real-time volume visualization.
  *
  * Architecture decisions:
  * - NO React re-renders on data updates: reads store directly inside
@@ -53,16 +53,16 @@ const RES_BARS:    Record<Resolution, number> = { '1H': 72,   '4H': 60,    '1D':
 
 //  Candle builder 
 /**
- * Builds OHLCV bars from the raw whale event feed kept in the Zustand store.
+ * Builds OHLCV bars from the raw ledger event feed kept in the Zustand store.
  * Each "close" is the aggregate USD volume in that bar's window.
  * This is not financial price data  it is a *volume-flow proxy chart*
- * used for visual pattern recognition of whale activity, not attesting signals.
+ * used for visual pattern recognition of ledger activity, not attesting signals.
  */
 function buildBarsFromStore(resolution: Resolution): {
   candles: CandlestickData[];
   volumes: HistogramData[];
 } {
-  const events  = useVIPStore.getState().whaleEvents ?? [];
+  const events  = useVIPStore.getState().ledgerEvents ?? [];
   const interval = RES_SECONDS[resolution];
   const maxBars  = RES_BARS[resolution];
 
@@ -76,7 +76,7 @@ function buildBarsFromStore(resolution: Resolution): {
     if (!buckets.has(t)) buckets.set(t, []);
   }
 
-  // Inject real event volumes using EXACT field names from WhaleEvent interface:
+  // Inject real event volumes using EXACT field names from LedgerEvent interface:
   // ev.usdNum = parsed numeric USD, ev.ts = unix seconds timestamp
   events.forEach((ev: any) => {
     const evTime = typeof ev.ts === 'number' ? ev.ts : Math.floor(Date.now() / 1000);
@@ -225,7 +225,7 @@ export function InstitutionalQuantChart() {
     chartRef.current?.timeScale().scrollToRealTime();
 
     setLastUpdate(new Date().toLocaleTimeString());
-    setEvCount(useVIPStore.getState().whaleEvents?.length ?? 0);
+    setEvCount(useVIPStore.getState().ledgerEvents?.length ?? 0);
   }, [resolution]);
 
   // Inject on mount + whenever resolution changes
@@ -233,7 +233,7 @@ export function InstitutionalQuantChart() {
     injectData();
   }, [injectData]);
 
-  // Refresh every 8 seconds to capture new whale events without re-mounting
+  // Refresh every 8 seconds to capture new ledger events without re-mounting
   useEffect(() => {
     const id = setInterval(injectData, 8_000);
     return () => clearInterval(id);
@@ -247,7 +247,7 @@ export function InstitutionalQuantChart() {
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pb-3 border-b border-white/10">
         <div className="flex flex-col gap-1">
           <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-[#888888]">
-            WHALE FLOW TERMINAL
+            LEDGER FLOW TERMINAL
           </h2>
           <p className="text-[9px] font-mono text-[#444444] uppercase tracking-wider">
             Volume-proxy chart · {evCount} events in store · Last update: {lastUpdate}

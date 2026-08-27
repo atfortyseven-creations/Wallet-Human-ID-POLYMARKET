@@ -32,7 +32,7 @@ const faqs: FAQItem[] = [
         answer: "Transactions follow the gas fees of each network. However, we offer gasless transactions for certain operations through Account Abstraction (ERC-4337)."
     },
     {
-        question: "What is the Whale Tracker?",
+        question: "What is the Ledger Tracker?",
         answer: "A specialized tool that detects movements of +$100,000 on chain, identifies Elite wallets, and generates real-time alerts."
     }
 ];

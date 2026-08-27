@@ -105,7 +105,7 @@ describe('Portfolio Core - Quantum Resilience Test Suite', () => {
     expect(results.length).toBe(100);
   });
 
-  it('301-400: Manejo de Billeteras Whale y Paginación (100 Pruebas)', async () => {
+  it('301-400: Manejo de Billeteras Ledger y Paginación (100 Pruebas)', async () => {
     // Simulamos paginación masiva con balances positivos para que pasen el filtro
     vi.mocked(moralisService.getWalletBalances).mockImplementation(async (addr, chain, cursor) => {
         const bal = '1000000000000000000'; // 1 ETH 

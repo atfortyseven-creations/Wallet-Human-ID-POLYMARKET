@@ -19,8 +19,8 @@ contract AztecOracleL1 is Ownable {
         aztecInboxAddress = _aztecInbox;
     }
     
-    // Bridge verified Whale alerts into the Private Shielded Pool
-    function pushWhaleAlertToAztec(bytes32 l2Recipient, bytes32 txDataHash) external onlyOwner {
+    // Bridge verified Ledger alerts into the Private Shielded Pool
+    function pushLedgerAlertToAztec(bytes32 l2Recipient, bytes32 txDataHash) external onlyOwner {
         // Enforce System rules
         require(txDataHash != bytes32(0), "Invalid Active Data");
         

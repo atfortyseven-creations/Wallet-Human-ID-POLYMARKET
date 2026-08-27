@@ -791,7 +791,7 @@ export const useWalletStore = create<WalletState>()(
       setDisplayCurrency: (currency: 'EUR' | 'USD' | 'BTC') => set({ displayCurrency: currency })
     }),
     {
-      name: 'whale-system-wallet-registry-v3', // Bumped for encryption
+      name: 'ledger-system-wallet-registry-v3', // Bumped for encryption
       partialize: (state) => {
         // EXTREMELY CRITICAL: Never serialize privateKey, mnemonic, or plaintext accounts!
         // If passwordHash exists, we ONLY save the encryptedVault.

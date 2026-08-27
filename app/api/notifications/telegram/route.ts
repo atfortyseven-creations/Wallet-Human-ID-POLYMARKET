@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     // Format message based on type
     switch (type) {
-      case 'whale_alert':
+      case 'ledger_alert':
         message = formatHumanityLedgerTelegram(data);
         break;
       
@@ -124,7 +124,7 @@ export async function GET(request: NextRequest) {
 This is a test message from <b>Humanity Ledger VIP</b>.
 
 You will now receive:
- Whale movement alerts
+ Ledger movement alerts
  Price threshold notifications
  Daily portfolio digests
 

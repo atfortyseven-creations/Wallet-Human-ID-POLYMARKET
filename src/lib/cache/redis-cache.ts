@@ -10,7 +10,7 @@ export const CacheTTL = {
   NFT_METADATA: 300,         // 5 minutes
   TOKEN_PRICES: 10,          // 10 seconds
   TRANSACTION_HISTORY: 60,   // 1 minute
-  WHALE_ACTIVITY: 120,       // 2 minutes
+  LEDGER_ACTIVITY: 120,       // 2 minutes
   MARKET_DATA: 5,            // 5 seconds
 } as const;
 

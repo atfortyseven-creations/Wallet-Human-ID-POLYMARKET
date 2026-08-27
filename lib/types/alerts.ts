@@ -1,5 +1,5 @@
 // Universal Omnichannel Alert Event Data Model
-// Designed to be flexible enough for ANY scale of alert (Whale, Gas, Price, Minting)
+// Designed to be flexible enough for ANY scale of alert (Ledger, Gas, Price, Minting)
 // and agnostic enough to hit any channel (Telegram, Discord, SMS, Webhook, Next.js UI).
 
 export type AlertSeverity = 'INFO' | 'WARNING' | 'CRITICAL' | 'ASTRONOMICAL';
@@ -19,7 +19,7 @@ export interface AlertPayload {
 export interface OmnichannelAlertEvent {
     eventId: string;              // UUIDv4
     timestamp: number;            // Unix epoch ms
-    type: string;                 // 'WHALE_TX', 'GAS_DROP', 'LIQUIDATION', 'DEX_PUMP', 'PRICE_BREAKOUT'
+    type: string;                 // 'LEDGER_TX', 'GAS_DROP', 'LIQUIDATION', 'DEX_PUMP', 'PRICE_BREAKOUT'
     chain: AlertChain;
     
     // Impact and Filtering

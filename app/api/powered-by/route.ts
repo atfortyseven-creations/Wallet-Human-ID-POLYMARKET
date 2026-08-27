@@ -24,7 +24,7 @@ export const dynamic = 'force-dynamic';
 
 const FEATURED_INTEGRATIONS = [
     {
-        id:          'whale-alert-native',
+        id:          'ledger-alert-native',
         name:        'Humanity Ledger',
         url:         'https://humanidfi.com',
         description: 'The system terminal. EVM Thermodynamics engine, ZK identity layer, sovereign analytics.',
@@ -33,7 +33,7 @@ const FEATURED_INTEGRATIONS = [
         since:       '2026-01-01',
         logo:        '/logo.png',
         badge:       ' Core Platform',
-        features:    ['Real-time whale detection', 'ZK identity', 'Dead Man Switch', 'API Marketplace'],
+        features:    ['Real-time ledger detection', 'ZK identity', 'Dead Man Switch', 'API Marketplace'],
     },
 ];
 

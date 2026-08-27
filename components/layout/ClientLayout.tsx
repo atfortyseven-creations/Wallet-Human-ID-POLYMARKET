@@ -23,8 +23,8 @@ const UtilityPanels = dynamic(
   () => import('@/components/shared/UtilityPanels').then(m => ({ default: m.UtilityPanels })),
   { ssr: false }
 );
-const BillionWhaleNotification = dynamic(
-  () => import('@/components/shared/UtilityPanels').then(m => ({ default: m.BillionWhaleNotification })),
+const BillionLedgerNotification = dynamic(
+  () => import('@/components/shared/UtilityPanels').then(m => ({ default: m.BillionLedgerNotification })),
   { ssr: false }
 );
 
@@ -58,7 +58,7 @@ const NO_DOWNHEAD_PREFIXES = [
 // 
 // Routes that use a bounded-viewport layout (no dead space below content)
 // Everything except the landing page ("/") and the dashboard (managed by
-// WhaleProShell with its own fixed-inset shell) should be fully contained.
+// LedgerProShell with its own fixed-inset shell) should be fully contained.
 // 
 const BOUNDED_PREFIXES = [
   '/portfolio', '/academy', '/support', '/news',
@@ -134,7 +134,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   //  Layout mode 
-  // DASHBOARD   fixed inset-0 overflow-hidden   (WhaleProShell owns scroll)
+  // DASHBOARD   fixed inset-0 overflow-hidden   (LedgerProShell owns scroll)
   // BOUNDED     fixed inset-0 overflow-hidden   (header + inner scroll box)
   // LANDING     also bounded — prevents white zone below footer
   const isDashboard = pathname.startsWith('/terminal');
@@ -148,7 +148,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   // portion of the screen. There is NO hard visual border  the wallpaper's
   // gradient overlay handles the fusion seamlessly.
   // `isLanding`  full width immersive layout
-  // `isDashboard`  WhaleProShell owns the full viewport (its own shell)
+  // `isDashboard`  LedgerProShell owns the full viewport (its own shell)
   // everything else  content max-width left-aligned with transparent bg
   const displayContent = content;
 
@@ -330,7 +330,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
             <div className={innerClass}>
               <div className="relative z-40">
                 <UtilityPanels />
-                <BillionWhaleNotification />
+                <BillionLedgerNotification />
               </div>
 
               <ZoomWrapper>

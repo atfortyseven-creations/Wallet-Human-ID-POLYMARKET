@@ -3,7 +3,7 @@ import { FixGateway } from '../lib/fix-gateway';
 async function verifyFix() {
   console.log('--- FIX Protocol Verification ---');
   
-  const mockWhale = {
+  const mockLedger = {
     id: 'tx_alpha_99',
     token: 'BTC',
     action: 'BUY',
@@ -13,7 +13,7 @@ async function verifyFix() {
     dex: 'UNISWAP_V3'
   };
 
-  const fixMessage = FixGateway.createWhaleSignalMessage(mockWhale);
+  const fixMessage = FixGateway.createLedgerSignalMessage(mockLedger);
   console.log(' Generated FIX Message:');
   console.log(fixMessage.replace(/\x01/g, '|')); // Replace SOH for readability
 

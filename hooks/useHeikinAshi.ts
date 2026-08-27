@@ -27,7 +27,7 @@ export function useHeikinAshi(tokens: string[]) {
         
         await Promise.all(tokens.map(async (token) => {
           try {
-            const res = await fetch(`/api/v1/whale/analytics?type=heikin-ashi&token=${token}`, {
+            const res = await fetch(`/api/v1/ledger/analytics?type=heikin-ashi&token=${token}`, {
               headers: {
                 'X-WAC-API-KEY': 'DEV_INTERNAL_WAC' // Internal bypass or use a real key if configured
               }

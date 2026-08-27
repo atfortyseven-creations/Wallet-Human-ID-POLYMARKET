@@ -20,7 +20,7 @@ contract QrScannerVerification {
     /// The scanner proves that the scanned qr_payload_hash matches the
     /// expected_commitment without revealing the raw QR data on-chain.
     ///
-    /// This is the foundation of Whale Network's cross-device authentication:
+    /// This is the foundation of Ledger Network's cross-device authentication:
     /// desktop generates a QR challenge, mobile scans and calls this function,
     /// desktop polls verified_qr_payloads to confirm authentication.
     #[aztec(private)]

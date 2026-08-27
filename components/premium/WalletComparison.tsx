@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart3, TrendingUp, TrendingDown, DollarSign, Percent, ArrowUpDown, Eye, Crown } from 'lucide-react';
-import type { WatchedWallet } from './WhaleTracker';
+import type { WatchedWallet } from './LedgerTracker';
 
 import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
 interface WalletComparisonProps {

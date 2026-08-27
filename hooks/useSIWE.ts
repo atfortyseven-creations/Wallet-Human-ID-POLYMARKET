@@ -62,7 +62,7 @@ export function useSIWE(): UseSIWEReturn {
       const message = new SiweMessage({
         domain,
         address: checksummedAddress,
-        statement: "Authenticate into the Whale Alert System Network. This request will not trigger a blockchain transaction or cost any gas fees.",
+        statement: "Authenticate into the Ledger Alert System Network. This request will not trigger a blockchain transaction or cost any gas fees.",
         uri: origin,
         version: "1",
         chainId: chainId || 1,

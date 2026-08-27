@@ -46,7 +46,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "How do I access sovereign-grade features and what are the tier requirements?",
-    a: "The platform operates on a tiered access model. The Community tier provides access to the live whale feed, basic portfolio analytics, and the public API. The Sovereign tier, activated via World ID proof-of-personhood verification combined with the requisite Gold Humanity Ledger membership credential, provides access to the Akashic Ledger, Mass Transfer Analytics, the System Vault transaction suite, and the full 99-endpoint sovereign API with HMAC-signed request authentication. Tier credentials are issued as EIP-712 signed off-chain documents and optionally registered as non-transferable ERC-1155 tokens on Ethereum Mainnet for on-chain verifiability."
+    a: "The platform operates on a tiered access model. The Community tier provides access to the live ledger feed, basic portfolio analytics, and the public API. The Sovereign tier, activated via World ID proof-of-personhood verification combined with the requisite Gold Humanity Ledger membership credential, provides access to the Akashic Ledger, Mass Transfer Analytics, the System Vault transaction suite, and the full 99-endpoint sovereign API with HMAC-signed request authentication. Tier credentials are issued as EIP-712 signed off-chain documents and optionally registered as non-transferable ERC-1155 tokens on Ethereum Mainnet for on-chain verifiability."
   },
   {
     q: "What should I do if a transaction fails or is stuck pending?",
@@ -74,15 +74,15 @@ const CHANNELS = [
   {
     icon: Twitter,
     label: "X (Twitter)",
-    desc: "Follow @whalecosystem for real-time analytics pulses, system status announcements, and sovereign market commentary. Direct messages for time-sensitive operational issues are monitored continuously.",
-    link: "https://x.com/whalecosystem",
-    cta: "Follow @whalecosystem",
+    desc: "Follow @humanityledger for real-time analytics pulses, system status announcements, and sovereign market commentary. Direct messages for time-sensitive operational issues are monitored continuously.",
+    link: "https://x.com/humanityledger",
+    cta: "Follow @humanityledger",
   },
   {
     icon: BookOpen,
     label: "Documentation",
     desc: "The technical architecture, API reference, integration guides, and operational procedures are documented in the system README. Consult the documentation before submitting a support request for technical integration questions.",
-    link: "https://github.com/humanityledger/whalecosystem",
+    link: "https://github.com/humanityledger/humanityledger",
     cta: "View Documentation",
   },
 ];

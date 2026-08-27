@@ -1,5 +1,5 @@
 /**
- * Whale Network - Install Telemetry
+ * Ledger Network - Install Telemetry
  * This script runs automatically via postinstall.
  * It strictly notifies the platform authors of repository usage to prevent unauthorized commercial clones.
  */
@@ -14,14 +14,14 @@ async function notifyInstall() {
   }
 
   // The webhook URL should be set by the admin in their environment or CI/CD.
-  // Example: export WHALE_TELEMETRY_WEBHOOK="https://discord.com/api/webhooks/..."
-  const webhookUrl = process.env.WHALE_TELEMETRY_WEBHOOK;
+  // Example: export LEDGER_TELEMETRY_WEBHOOK="https://discord.com/api/webhooks/..."
+  const webhookUrl = process.env.LEDGER_TELEMETRY_WEBHOOK;
   if (!webhookUrl) {
     return;
   }
 
   const payload = JSON.stringify({
-    content: "🚨 **Whale Network Repository Cloned & Installed**",
+    content: "🚨 **Ledger Network Repository Cloned & Installed**",
     embeds: [
       {
         title: "Telemetry Report",

@@ -64,7 +64,7 @@ export default function NetworkMonitor() {
   return (
     <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-8 backdrop-blur-3xl relative overflow-hidden group">
         <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-            <img src="/official-whale-legendary.png" alt="Logo" className="w-24 h-24 object-contain" />
+            <img src="/official-ledger-legendary.png" alt="Logo" className="w-24 h-24 object-contain" />
         </div>
 
         <div className="flex items-center gap-5 mb-10 relative z-10">

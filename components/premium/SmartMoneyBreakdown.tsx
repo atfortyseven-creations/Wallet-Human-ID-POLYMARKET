@@ -43,7 +43,7 @@ export default function SmartMoneyBreakdown({ address }: SmartMoneyBreakdownProp
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/whale/smart-analysis?address=${address}`);
+      const response = await fetch(`/api/ledger/smart-analysis?address=${address}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch analysis');

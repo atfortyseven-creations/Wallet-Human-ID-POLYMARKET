@@ -12,7 +12,7 @@ export default function SimpleDashboard() {
     const { address, isConnected } = useSystemAccount();
 
     const { data: stats, error, isLoading } = useSWR(
-        isConnected && address ? `/api/whale/stats?address=${address}` : null,
+        isConnected && address ? `/api/ledger/stats?address=${address}` : null,
         fetcher,
         { refreshInterval: 15000 }
     );

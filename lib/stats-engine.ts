@@ -87,7 +87,7 @@ export async function getLegendaryStats(address: string, forceDeep = false) {
         let portfolio = await portfolioService.getMultiChainPortfolio(addrLower, [], forceDeep);
 
         if (!forceDeep && (!portfolio || portfolio.totalValueUsd === 0) && (addrLower.includes('.') || addrLower.length > 20)) {
-            console.log(`[LEGENDARY-STATS]  Suspected whale/ENS ${addrLower} returned $0. Triggering DEEP SCAN...`);
+            console.log(`[LEGENDARY-STATS]  Suspected ledger/ENS ${addrLower} returned $0. Triggering DEEP SCAN...`);
             portfolio = await portfolioService.getMultiChainPortfolio(addrLower, [], true);
         }
 

@@ -14,8 +14,8 @@ const files = [
     './components/landing/SubmarineDeconstruction3D.tsx',
     './components/marketing/EarlyAccess.tsx',
     './components/network/ForensicHistoryVisualizer.tsx',
-    './components/network/whale/EntityNexus.tsx',
-    './components/network/whale/WhaleProfiler.tsx',
+    './components/network/ledger/EntityNexus.tsx',
+    './components/network/ledger/LedgerProfiler.tsx',
     './components/node_infrastructure/SecurityPanel.tsx',
     './components/notifications/NotificationCenter.tsx',
     './components/omni-matrix/DarkForestRadar.tsx',
@@ -31,12 +31,12 @@ const files = [
     './components/premium/CopyTradingArena.tsx',
     './components/premium/LegendaryNewsFeed.tsx',
     './components/premium/MinimalDarkPool.tsx',
-    './components/premium/TacticalWhaleDatabase.tsx',
+    './components/premium/TacticalLedgerDatabase.tsx',
     './components/premium/ToastManager.tsx',
     './components/premium/TokenChartOverlay.tsx',
     './components/premium/WalletAnalyticsPanel.tsx',
-    './components/premium/WhaleTracker.tsx',
-    './components/premium/WhaleVerificationReport.tsx',
+    './components/premium/LedgerTracker.tsx',
+    './components/premium/LedgerVerificationReport.tsx',
     './components/privacy/CookieConsent.tsx',
     './components/privacy/NukeProfile.tsx',
     './components/provenance/ProvenanceStudioContent.tsx',
@@ -55,8 +55,8 @@ const files = [
     './components/terminal/OmniExplorer.tsx',
     './components/terminal/PolymarketPanel.tsx',
     './components/terminal/SystemAMLOracle.tsx',
-    './components/terminal/WhaleContractModal.tsx',
-    './components/terminal/WhaleSonar.tsx',
+    './components/terminal/LedgerContractModal.tsx',
+    './components/terminal/LedgerSonar.tsx',
     './components/ui/GlobalErrorBoundary.tsx',
     './components/ui/InstitutionalErrorBoundary.tsx',
     './components/ui/TokenInfoModal.tsx',
@@ -69,7 +69,7 @@ const files = [
     './app/forum/settings/page.tsx',
     './app/gold-registry/page.tsx',
     './app/terms/page.tsx',
-    './app/whalepost/full-report/page.tsx'
+    './app/ledgerpost/full-report/page.tsx'
 ];
 
 let broken = 0;

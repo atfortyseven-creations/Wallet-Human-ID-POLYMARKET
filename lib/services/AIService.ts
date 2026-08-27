@@ -41,17 +41,17 @@ export class AIService {
 
         const prompt = `
         ### ROLE
-        You are a Legendary On-Chain Forensic Scientist at a Professional Whale-Grade Digital Asset Fund.
+        You are a Legendary On-Chain Forensic Scientist at a Professional Ledger-Grade Digital Asset Fund.
         
         ### TASK
         Perform a MAJESTIC forensic analysis of the address ${address} using the following telemetry:
         - Total Transactions: ${context.transactionCount}
         - Operational Age: ${context.activeAgeDays} days
-        - Whale DeFi Footprint: ${JSON.stringify(context.defiPositions)}
+        - Ledger DeFi Footprint: ${JSON.stringify(context.defiPositions)}
         - Execution DNA (Recent Samples): ${JSON.stringify(context.historySnippet.slice(0, 10))}
 
         ### RECOGNITION PATTERNS (Detect & Tag)
-        - "Whale Accumulation" (Systematic buying over time)
+        - "Ledger Accumulation" (Systematic buying over time)
         - "Exit Liquidity Hunter" (Large transfers to CEX during high volatility)
         - "Flash-Loan Arbitrageur" (Complex multi-hop atomic attestations)
         - "Alpha-Capture Bot" (Sub-second reaction to pool imbalances)
@@ -63,7 +63,7 @@ export class AIService {
         2. summary: A majestic, technical 2-sentence breakdown of the entity's behavior.
         3. signals: An array of ForensicSignal objects detailing high-fidelity patterns.
         4. isElite: Boolean (True if sovereign/managed).
-        5. label: A majestic designation (e.g. "Whale Deep-Sea Collector", "Fund Custodian", "Alpha Predator").
+        5. label: A majestic designation (e.g. "Ledger Deep-Sea Collector", "Fund Custodian", "Alpha Predator").
 
         ### OUTPUT FORMAT
         JSON object only. Zero conversational filler.

@@ -8,20 +8,20 @@ export interface NetworkPulse {
     label: string;
     tps: number;
     gasPriceGwei?: number;
-    whaleHeatIndex: number; // 0-100 based on recent volume
+    ledgerHeatIndex: number; // 0-100 based on recent volume
     status: 'OPTIMAL' | 'CONGESTED' | 'STRESS';
     lastSync: number;
 }
 
 export class PulseService {
     private pulses: Record<string, NetworkPulse> = {
-        'BITCOIN': { chainId: 'btc', label: 'BTC', tps: 7, whaleHeatIndex: 45, status: 'OPTIMAL', lastSync: Date.now() },
-        'ETHEREUM': { chainId: 'eth', label: 'ETH', tps: 15, gasPriceGwei: 12, whaleHeatIndex: 65, status: 'OPTIMAL', lastSync: Date.now() },
-        'BSC': { chainId: '56', label: 'BNB', tps: 85, gasPriceGwei: 3, whaleHeatIndex: 30, status: 'OPTIMAL', lastSync: Date.now() },
-        'BASE': { chainId: '8453', label: 'BASE', tps: 120, gasPriceGwei: 0.01, whaleHeatIndex: 85, status: 'OPTIMAL', lastSync: Date.now() },
-        'SOLANA': { chainId: 'sol', label: 'SOL', tps: 2400, whaleHeatIndex: 92, status: 'OPTIMAL', lastSync: Date.now() },
-        'POLYGON': { chainId: '137', label: 'MATIC', tps: 45, gasPriceGwei: 40, whaleHeatIndex: 22, status: 'OPTIMAL', lastSync: Date.now() },
-        'CHAINLINK': { chainId: 'link', label: 'LINK', tps: 12, whaleHeatIndex: 78, status: 'OPTIMAL', lastSync: Date.now() },
+        'BITCOIN': { chainId: 'btc', label: 'BTC', tps: 7, ledgerHeatIndex: 45, status: 'OPTIMAL', lastSync: Date.now() },
+        'ETHEREUM': { chainId: 'eth', label: 'ETH', tps: 15, gasPriceGwei: 12, ledgerHeatIndex: 65, status: 'OPTIMAL', lastSync: Date.now() },
+        'BSC': { chainId: '56', label: 'BNB', tps: 85, gasPriceGwei: 3, ledgerHeatIndex: 30, status: 'OPTIMAL', lastSync: Date.now() },
+        'BASE': { chainId: '8453', label: 'BASE', tps: 120, gasPriceGwei: 0.01, ledgerHeatIndex: 85, status: 'OPTIMAL', lastSync: Date.now() },
+        'SOLANA': { chainId: 'sol', label: 'SOL', tps: 2400, ledgerHeatIndex: 92, status: 'OPTIMAL', lastSync: Date.now() },
+        'POLYGON': { chainId: '137', label: 'MATIC', tps: 45, gasPriceGwei: 40, ledgerHeatIndex: 22, status: 'OPTIMAL', lastSync: Date.now() },
+        'CHAINLINK': { chainId: 'link', label: 'LINK', tps: 12, ledgerHeatIndex: 78, status: 'OPTIMAL', lastSync: Date.now() },
     };
 
     /**

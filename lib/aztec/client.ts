@@ -75,7 +75,7 @@ export function deriveSecretKeyFromEvm(evmAddress: string): string {
   // [SECURITY PATCH A2] Use server-side secret (pepper) for derivation instead of predictable 0x00 padding.
   // This ensures the secret key remains strictly custodial and cannot be guessed.
   const crypto = require('crypto');
-  const secret = process.env.JWT_SECRET || 'whale-oracle-secret';
+  const secret = process.env.JWT_SECRET || 'ledger-oracle-secret';
   const hash = crypto.createHash('sha256').update(`${normalized}:${secret}`).digest('hex');
   
   // Pad to 62 chars then prefix — result fits in bn254 scalar field (Fr)

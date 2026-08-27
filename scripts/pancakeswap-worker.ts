@@ -1,16 +1,16 @@
 /**
- *  WHALE ALERT MONITORING: PANCAKESWAP V3 (BSC)
+ *  LEDGER ALERT MONITORING: PANCAKESWAP V3 (BSC)
  * Core Engine for Real-Time Elite Settlement Observation
  * 
  * Mastered by: Antigravity Systems
- * Version: 2.1.0 (Whale Elite Edition)
+ * Version: 2.1.0 (Ledger Elite Edition)
  */
 
 import { ethers } from "ethers";
 import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
 import { getRealTimePrice } from "../lib/priceHelper";
-import { addWhaleToQueue } from "../lib/queues/whaleQueue";
+import { addLedgerToQueue } from "../lib/queues/ledgerQueue";
 import { bscResilientProvider } from "../lib/blockchain/ResilientProvider";
 
 dotenv.config();
@@ -18,7 +18,7 @@ dotenv.config();
 const prisma = new PrismaClient();
 
 // --- CONFIGURATION ---
-const WHALE_THRESHOLD_USD = 50000; // Lowered to 50k for testing visibility, normally 100k+
+const LEDGER_THRESHOLD_USD = 50000; // Lowered to 50k for testing visibility, normally 100k+
 const V3_SWAP_TOPIC = "0x19b47279447a12f1da31edcc137f8152e3796593a8d9a18ceb7875b058c422c5";
 
 // Elite Asset Layer Cache
@@ -37,8 +37,8 @@ const tokenCache = new Map<string, { symbol: string, decimals: number }>();
  * CORE MONITORING ENGINE
  */
 async function startPancakeWorker() {
-    console.log("\n[SYSTEM]  INITIATING WHALE PANCAKESWAP MONITOR");
-    console.log(`[SYSTEM] Threshold: $${WHALE_THRESHOLD_USD.toLocaleString()} USD`);
+    console.log("\n[SYSTEM]  INITIATING LEDGER PANCAKESWAP MONITOR");
+    console.log(`[SYSTEM] Threshold: $${LEDGER_THRESHOLD_USD.toLocaleString()} USD`);
     
     let lastProcessedBlock: number;
     try {
@@ -114,7 +114,7 @@ async function handleV3Swap(log: ethers.Log) {
     const amount0 = BigInt(decoded.amount0.toString());
     const amount1 = BigInt(decoded.amount1.toString());
 
-    // Whale Token Resolution
+    // Ledger Token Resolution
     const [t0, t1] = await Promise.all([
         resolveToken(t0Addr, provider),
         resolveToken(t1Addr, provider)
@@ -134,7 +134,7 @@ async function handleV3Swap(log: ethers.Log) {
 
     const eliteUsdValue = Math.max(val0Usd, val1Usd);
 
-    if (eliteUsdValue >= WHALE_THRESHOLD_USD) {
+    if (eliteUsdValue >= LEDGER_THRESHOLD_USD) {
         const from = decoded.sender;
         const to = decoded.recipient;
         const mainToken = val0Usd > val1Usd ? t0.symbol : t1.symbol;
@@ -142,7 +142,7 @@ async function handleV3Swap(log: ethers.Log) {
             ? (Number(absAmount0) / Math.pow(10, t0.decimals)) 
             : (Number(absAmount1) / Math.pow(10, t1.decimals));
 
-        await processWhaleSwap({
+        await processLedgerSwap({
             hash: log.transactionHash,
             from,
             to,
@@ -192,14 +192,14 @@ async function resolveToken(address: string, provider: ethers.Provider) {
 /**
  * Persistence & Distribution Layer
  */
-async function processWhaleSwap(data: any) {
-    const exists = await prisma.whaleActivity.findUnique({ where: { transactionHash: data.hash } });
+async function processLedgerSwap(data: any) {
+    const exists = await prisma.ledgerActivity.findUnique({ where: { transactionHash: data.hash } });
     if (exists) return;
 
-    console.log(`\n[WHALE DETECTED] $${data.usdValue.toLocaleString()} USD | ${data.asset} swap on BSC`);
+    console.log(`\n[LEDGER DETECTED] $${data.usdValue.toLocaleString()} USD | ${data.asset} swap on BSC`);
 
     try {
-        await (prisma.whaleActivity as any).create({
+        await (prisma.ledgerActivity as any).create({
             data: {
                 walletAddress: data.from,
                 type: "SWAP",
@@ -216,7 +216,7 @@ async function processWhaleSwap(data: any) {
             }
         });
 
-        await addWhaleToQueue({
+        await addLedgerToQueue({
             ...data,
             blockNumber: data.blockNumber.toString(),
             type: 'SWAP'
@@ -228,6 +228,6 @@ async function processWhaleSwap(data: any) {
 
 // --- BOOTSTRAP ---
 startPancakeWorker().catch(err => {
-    console.error("[FATAL] Whale Engine failure:", err);
+    console.error("[FATAL] Ledger Engine failure:", err);
     process.exit(1);
 });

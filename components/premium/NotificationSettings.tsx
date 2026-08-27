@@ -43,7 +43,7 @@ export default function NotificationSettings() {
   ]);
 
   const [alertTypes, setAlertTypes] = useState({
-    whaleMovement: { enabled: true, threshold: 500000000 }, // $500,000,000
+    ledgerMovement: { enabled: true, threshold: 500000000 }, // $500,000,000
     priceAlert: { enabled: true },
     smartMoneyChange: { enabled: true, minChange: 10 },
     dailyDigest: { enabled: false },
@@ -88,7 +88,7 @@ export default function NotificationSettings() {
         case 'email':
           endpoint = '/api/notifications/email';
           body.to = channel.config.address;
-          body.type = 'whale_alert';
+          body.type = 'ledger_alert';
           body.data = {
             address: '0x1234567890123456789012345678901234567890',
             type: 'SWAP',
@@ -105,7 +105,7 @@ export default function NotificationSettings() {
         case 'discord':
           endpoint = '/api/notifications/discord';
           body.webhookUrl = channel.config.webhookUrl;
-          body.type = 'whale_alert';
+          body.type = 'ledger_alert';
           body.data = {
             address: '0x1234567890123456789012345678901234567890',
             type: 'SWAP',
@@ -172,12 +172,12 @@ export default function NotificationSettings() {
           }));
 
           // LOAD TRIGGER THRESHOLDS
-          if (s.whaleThreshold) {
+          if (s.ledgerThreshold) {
             setAlertTypes(prev => ({
               ...prev,
-              whaleMovement: { 
-                ...prev.whaleMovement, 
-                threshold: Number(s.whaleThreshold) 
+              ledgerMovement: { 
+                ...prev.ledgerMovement, 
+                threshold: Number(s.ledgerThreshold) 
               }
             }));
           }
@@ -205,7 +205,7 @@ export default function NotificationSettings() {
           telegramChatId: telegram?.config.chatId,
           telegramTopicId: telegram?.config.topicId,
           telegramUsername: telegram?.config.username,
-          whaleThreshold: Number(alertTypes.whaleMovement.threshold),
+          ledgerThreshold: Number(alertTypes.ledgerMovement.threshold),
           emailNotifications: email?.enabled,
         }),
       });
@@ -234,7 +234,7 @@ export default function NotificationSettings() {
           Notification Settings
         </h1>
         <p className="text-sm text-[#1F1F1F]/70 mt-1">
-          Configure multi-channel alerts for whale tracking
+          Configure multi-channel alerts for ledger tracking
         </p>
       </div>
 
@@ -245,7 +245,7 @@ export default function NotificationSettings() {
           <div className="text-sm text-blue-900">
             <strong>Unlocked Feature!</strong> Get instant notifications via Email, Telegram, or Discord when:
             <ul className="list-disc ml-5 mt-2 space-y-1">
-              <li>Large whale movements detected (customizable threshold)</li>
+              <li>Large ledger movements detected (customizable threshold)</li>
               <li>Price targets reached</li>
               <li>Smart Money scores change significantly</li>
               <li>Daily portfolio digest</li>
@@ -276,23 +276,23 @@ export default function NotificationSettings() {
 
         <div className="space-y-3">
           <TriggerToggle
-            label="Whale Movement Alerts"
+            label="Ledger Movement Alerts"
             description="Notify when transaction exceeds threshold"
-            enabled={alertTypes.whaleMovement.enabled}
+            enabled={alertTypes.ledgerMovement.enabled}
             onToggle={() =>
               setAlertTypes(prev => ({
                 ...prev,
-                whaleMovement: { ...prev.whaleMovement, enabled: !prev.whaleMovement.enabled },
+                ledgerMovement: { ...prev.ledgerMovement, enabled: !prev.ledgerMovement.enabled },
               }))
             }
           >
             <input
               type="number"
-              value={alertTypes.whaleMovement.threshold}
+              value={alertTypes.ledgerMovement.threshold}
               onChange={e =>
                 setAlertTypes(prev => ({
                   ...prev,
-                  whaleMovement: { ...prev.whaleMovement, threshold: parseInt(e.target.value) },
+                  ledgerMovement: { ...prev.ledgerMovement, threshold: parseInt(e.target.value) },
                 }))
               }
               className="px-3 py-2 bg-white border border-[#1F1F1F]/20 rounded-lg w-32"
@@ -511,7 +511,7 @@ function ChannelCard({
               ) : (
                 <div className="flex justify-center py-2">
                   <TelegramLoginButton 
-                    botName="warningwhalesbot"
+                    botName="warningledgersbot"
                     onAuth={(user) => {
                       onConfigChange('chatId', user.id.toString());
                       if (user.username) {

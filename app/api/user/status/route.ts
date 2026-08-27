@@ -32,9 +32,9 @@ export async function GET(req: NextRequest) {
         });
 
         // [SECURITY HARDENING] Removed cookie auto-hydration here.
-        // Previously, if an attacker queried ?address=<verified_whale_address>,
+        // Previously, if an attacker queried ?address=<verified_ledger_address>,
         // the server would issue them valid kyc_token and human_session cookies
-        // for that whale, allowing instant account takeover. Sessions must only
+        // for that ledger, allowing instant account takeover. Sessions must only
         // be established via cryptographic proof in /auth endpoints.
 
         return response;

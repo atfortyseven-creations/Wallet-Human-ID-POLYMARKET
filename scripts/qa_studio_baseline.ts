@@ -217,8 +217,8 @@ async function step5_mutationBaseline() {
 
     const freeToken = await createQAToken(WALLET_FREE);
     const eliteToken = await createQAToken(WALLET_ELITE);
-    const cookieFree = `whale_session=${freeToken}`;
-    const cookieElite = `whale_session=${eliteToken}`;
+    const cookieFree = `ledger_session=${freeToken}`;
+    const cookieElite = `ledger_session=${eliteToken}`;
 
     const results: any[] = [];
     const passportBody = JSON.stringify({ title: 'QA Baseline Passport', category: 'TECH', payload: { origin: 'QA Test' } });
@@ -262,7 +262,7 @@ async function step6_idempotency() {
     console.log('╚═══════════════════════════════════════════╝');
 
     const token = await createQAToken(WALLET_ELITE);
-    const cookie = `whale_session=${token}`;
+    const cookie = `ledger_session=${token}`;
     const body = JSON.stringify({ title: 'Idempotency Test', category: 'TECH', payload: { origin: 'QA Test' } });
     const opts = { method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: cookie }, body };
 
@@ -288,7 +288,7 @@ async function step7_concurrency() {
     console.log('╚═══════════════════════════════════════════╝');
 
     const token = await createQAToken(WALLET_ELITE);
-    const cookie = `whale_session=${token}`;
+    const cookie = `ledger_session=${token}`;
 
     // N=5 simultaneous passport creates
     const N = 5;
@@ -317,7 +317,7 @@ async function step8_revocation() {
     console.log('╚═══════════════════════════════════════════╝');
 
     const token = await createQAToken(WALLET_FREE);
-    const cookie = `whale_session=${token}`;
+    const cookie = `ledger_session=${token}`;
 
     // Step A: mutation before revoke
     const r1 = await measure('  POST /api/passport BEFORE revoke', `${QA_BASE}/api/passport`, {
@@ -326,9 +326,9 @@ async function step8_revocation() {
         body: JSON.stringify({ title: 'Revocation Test Before', category: 'TECH', payload: { origin: 'QA Test' } }),
     });
 
-    // Step B: "Revoke" the JWT in the legacy system = there is no DB-level revocation for whale_session.
+    // Step B: "Revoke" the JWT in the legacy system = there is no DB-level revocation for ledger_session.
     // The token is still cryptographically valid. Revocation is silent in legacy.
-    console.log('  Simulating revocation (legacy has no DB revocation for whale_session)...');
+    console.log('  Simulating revocation (legacy has no DB revocation for ledger_session)...');
 
     // Step C: mutation after revoke
     const r2 = await measure('  POST /api/passport AFTER revoke', `${QA_BASE}/api/passport`, {
@@ -337,7 +337,7 @@ async function step8_revocation() {
         body: JSON.stringify({ title: 'Revocation Test After', category: 'TECH', payload: { origin: 'QA Test' } }),
     });
 
-    // CRITICAL FINDING: Legacy whale_session has NO DB revocation check.
+    // CRITICAL FINDING: Legacy ledger_session has NO DB revocation check.
     // A revoked identity can still execute mutations as long as JWT is not expired.
     // This is the gap that Option D (P2-C.1) closes.
     const finding = r1.status === r2.status 
@@ -411,10 +411,10 @@ ${data.mutations.map(r => `| ${r.label} | ${r.status} | ${r.latencyMs}ms | ${r.s
 ### Current Auth Model Per Mutation
 | Mutation | Auth Source | Identity Source | DB Authority | Revocability |
 |---|---|---|---|---|
-| POST /api/passport | whale_session JWT | payload.address | NONE | NONE — JWT-only |
-| POST /api/premium/prover | whale_session JWT | payload.address | NONE | NONE — JWT-only |
+| POST /api/passport | ledger_session JWT | payload.address | NONE | NONE — JWT-only |
+| POST /api/premium/prover | ledger_session JWT | payload.address | NONE | NONE — JWT-only |
 | POST /api/aztec/transfer | x-web3-address header | header value | NONE | NONE — JWT-only |
-| POST /api/provenance/log | whale_session JWT | payload.address | NONE | silently skipped if missing |
+| POST /api/provenance/log | ledger_session JWT | payload.address | NONE | silently skipped if missing |
 
 ---
 
@@ -445,7 +445,7 @@ ${data.mutations.map(r => `| ${r.label} | ${r.status} | ${r.latencyMs}ms | ${r.s
 - **Finding: ${data.revocation.note}**
 
 ### Gap Summary
-Legacy \`whale_session\` is a pure JWT. There is NO database-level revocation check
+Legacy \`ledger_session\` is a pure JWT. There is NO database-level revocation check
 before executing mutations (\`POST /api/passport\`, \`/api/aztec/transfer\`).  
 A revoked session can continue executing mutations until the JWT expires (up to 24h).
 

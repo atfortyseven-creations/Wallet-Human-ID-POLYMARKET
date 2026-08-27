@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useVIPStore, WhaleEvent } from '@/lib/vip-store';
+import { useVIPStore, LedgerEvent } from '@/lib/vip-store';
 import { ExternalLink, ArrowUpRight, ArrowDownLeft, Eye, EyeOff, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAccount } from 'wagmi';
@@ -15,8 +15,8 @@ import { useAccount } from 'wagmi';
  */
 export function AlphaToaster() {
     const { isConnected } = useAccount();
-    const whaleEvents = useVIPStore(state => state.whaleEvents);
-    const [activeAlert, setActiveAlert] = useState<WhaleEvent | null>(null);
+    const ledgerEvents = useVIPStore(state => state.ledgerEvents);
+    const [activeAlert, setActiveAlert] = useState<LedgerEvent | null>(null);
     const [isMuted, setIsMuted] = useState(false);
 
     // Fixed conversion rate (approximate for display perfection)
@@ -28,8 +28,8 @@ export function AlphaToaster() {
             if (activeAlert) setActiveAlert(null);
             return;
         }
-        if (whaleEvents.length > 0 && !isMuted) {
-            const latest = whaleEvents[0];
+        if (ledgerEvents.length > 0 && !isMuted) {
+            const latest = ledgerEvents[0];
             // Defensive Audit: Improved threshold for better visibility
             if (latest && (latest.tier === 'MEGA' || latest.tier === 'LARGE' || latest.confidence > 90)) {
                 if (activeAlert?.id !== latest.id) {
@@ -39,7 +39,7 @@ export function AlphaToaster() {
                 }
             }
         }
-    }, [whaleEvents, activeAlert?.id, isMuted, isConnected]);
+    }, [ledgerEvents, activeAlert?.id, isMuted, isConnected]);
 
     const formatEUR = (usd: number) => {
         const eur = usd * USD_TO_EUR;

@@ -76,7 +76,7 @@ export async function fetchHLLeaderboard(): Promise<HLVerifier[]> {
                 const pnlRaw = parseFloat(allTime.pnl || '0');
                 const roi = parseFloat(allTime.roi || '0') * 100;
 
-                const badges = ['APEX PREDATOR', 'HFT ALGO', 'WHALE SHARK', 'LIQUIDITY SNIPER', 'DARK POOL', 'MOMENTUM RIDER', 'DELTA NEUTRAL', 'TREND FOLLOWER'];
+                const badges = ['APEX PREDATOR', 'HFT ALGO', 'LEDGER SHARK', 'LIQUIDITY SNIPER', 'DARK POOL', 'MOMENTUM RIDER', 'DELTA NEUTRAL', 'TREND FOLLOWER'];
                 const badge = badges[idx % badges.length];
 
                 const addr = r.ethAddress || r.stakeAddress || '';
@@ -168,7 +168,7 @@ export function buildHLOrderTypedData(order: HLOrderPayload, nonce: number) {
         // For direct per-order signing, use the exchange REST with EIP-712.
         primaryType: 'Agent' as const,
         message: {
-            source: 'https://whalecosystem.com',
+            source: 'https://humanityledger.com',
             connectionId: `0x${nonce.toString(16).padStart(64, '0')}`,
         },
     };

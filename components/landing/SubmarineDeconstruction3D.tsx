@@ -400,7 +400,7 @@ export default function SubmarineDeconstruction3D() {
         </div>
         
         <div className="absolute bottom-12 right-12 text-right opacity-40 font-aztec-serif italic text-white text-[10vw] leading-none select-none pointer-events-none hidden md:block z-0 mix-blend-overlay">
-          WHALE
+          LEDGER
         </div>
       </div>
     </section>

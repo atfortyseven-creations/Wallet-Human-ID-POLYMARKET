@@ -39,7 +39,7 @@ export interface AuditEvent {
   checksum: string;  // simple integrity check
 }
 
-const AUDIT_STORAGE_KEY = 'whale_audit_log';
+const AUDIT_STORAGE_KEY = 'ledger_audit_log';
 const MAX_AUDIT_EVENTS = 1000;
 
 function computeChecksum(event: Omit<AuditEvent, 'checksum'>): string {

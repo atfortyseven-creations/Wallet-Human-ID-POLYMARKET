@@ -3,7 +3,7 @@
  *
  * System Dune Analytics Export Engine
  *
- * Exports live whale activity data in a format ready to be imported
+ * Exports live ledger activity data in a format ready to be imported
  * into Dune Analytics or used as a dataset in a custom Dune query.
  *
  * Query params:
@@ -93,7 +93,7 @@ export async function GET(req: NextRequest) {
         if (minUsd > 0)    where.usdValue  = { gte: minUsd.toString() };
         if (chains.length) where.chain     = { in: chains };
 
-        const rows = await prisma.whaleActivity.findMany({
+        const rows = await prisma.ledgerActivity.findMany({
             where,
             orderBy: { timestamp: 'desc' },
             take: limit,

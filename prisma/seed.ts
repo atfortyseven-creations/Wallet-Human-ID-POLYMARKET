@@ -25,9 +25,9 @@ async function main() {
     await prisma.intelItem.create({
         data: {
             source: 'Bloomberg AI',
-            title: 'Regulatory Approval for Whale Alert Network likely in Q2',
+            title: 'Regulatory Approval for Ledger Alert Network likely in Q2',
             category: 'Regulation',
-            url: 'https://bloomberg.com/crypto/whale-alert',
+            url: 'https://bloomberg.com/crypto/ledger-alert',
             publishedAt: new Date(),
             aiSummary: 'Fuentes internas confirman que la SEC ve con buenos ojos el modelo de identidad.',
         }

@@ -1,6 +1,6 @@
 {
-  "name": "Whale Alert Network",
-  "short_name": "Whale",
+  "name": "Ledger Alert Network",
+  "short_name": "Ledger",
   "description": "Institutional on-chain analytics. Real-time mempool surveillance. Cryptographic identity. Zero-mock. Zero-trust.",
   "start_url": "/",
   "scope": "/",
@@ -67,14 +67,14 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Whale Alert Network  Desktop"
+      "label": "Ledger Alert Network  Desktop"
     },
     {
       "src": "/system-shots/Captura de pantalla 2026-05-07 012904.png",
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Whale Alert Network  Mobile"
+      "label": "Ledger Alert Network  Mobile"
     }
   ],
   "shortcuts": [
@@ -111,7 +111,7 @@
   "related_applications": [],
   "protocol_handlers": [
     {
-      "protocol": "web+whale",
+      "protocol": "web+ledger",
       "url": "/protocol?q=%s"
     }
   ]

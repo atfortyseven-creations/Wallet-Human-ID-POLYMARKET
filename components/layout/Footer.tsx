@@ -64,7 +64,7 @@ export const Footer = () => {
                                 <FooterLink href="/api-docs">API Docs</FooterLink>
                                 <FooterLink href="/zk-sandbox">ZK Sandbox</FooterLink>
                                 <FooterLink href="/architecture">Architecture</FooterLink>
-                                <FooterLink href="https://github.com/Whale-Network" external>GitHub</FooterLink>
+                                <FooterLink href="https://github.com/Ledger-Network" external>GitHub</FooterLink>
                             </div>
                         </div>
 

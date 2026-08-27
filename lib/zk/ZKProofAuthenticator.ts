@@ -10,7 +10,7 @@
  */
 import { ethers } from 'ethers';
 
-export interface WhaleEventPayload {
+export interface LedgerEventPayload {
   id: string;
   token: string;
   amount: string;
@@ -42,7 +42,7 @@ export class ZKProofAuthenticator {
   /**
    * Generates a REAL cryptographic signature for a batch of events.
    */
-  public static generateProof(events: WhaleEventPayload[]): ZKAuthenticationPayload {
+  public static generateProof(events: LedgerEventPayload[]): ZKAuthenticationPayload {
     const startTime = performance.now();
     
     // 1. Calculate the absolute Keccak256 hash of the payload

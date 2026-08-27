@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     const consentValue = typeof consent === 'object' ? JSON.stringify(consent) : String(consent);
 
     const cookieStore = await cookies();
-    cookieStore.set('whale_system_consent', consentValue, {
+    cookieStore.set('ledger_system_consent', consentValue, {
         path: '/',
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -26,6 +26,6 @@ export async function POST(req: Request) {
 
 export async function GET() {
     const cookieStore = await cookies();
-    const consent = cookieStore.get('whale_system_consent');
+    const consent = cookieStore.get('ledger_system_consent');
     return NextResponse.json({ consented: !!consent, state: consent?.value || null });
 }

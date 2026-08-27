@@ -1,6 +1,6 @@
 # Hardware Requirements
 
-The **Whale Alert Network** (System Vault) processes significant volumes of data to deliver sovereign-grade analytics without delegating computation to centralized servers. Because everything runs locally to maintain your privacy, there are standard hardware requirements.
+The **Ledger Alert Network** (System Vault) processes significant volumes of data to deliver sovereign-grade analytics without delegating computation to centralized servers. Because everything runs locally to maintain your privacy, there are standard hardware requirements.
 
 ## 1. Optimal Specifications (Full Indexing)
 Recommended for users tracking Ethereum Mainnet, Base, and maintaining 90-day heuristics analysis.

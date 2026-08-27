@@ -23,7 +23,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. Mitigación de DoS y Preservación de Invariantes</h2>
-                        <p>El riesgo forense del EIP-2929 era el bloqueo de contratos antiguos que dependían de límites de gas fijos (Hardcoded Gas Limits). Las Access Lists actúan como una "póliza de seguro" técnica: si un contrato falla por falta de gas al intentar leer un slot frío, declarar ese slot en la Access List reduce el costo lo suficiente para que la transacción sea válida. En la Whale Academy, consideramos el uso de Access Lists como un estándar de <strong>Higiene de Gas</strong> para cualquier interacción con bóvedas multisig o protocolos de gobernanza.</p>
+                        <p>El riesgo forense del EIP-2929 era el bloqueo de contratos antiguos que dependían de límites de gas fijos (Hardcoded Gas Limits). Las Access Lists actúan como una "póliza de seguro" técnica: si un contrato falla por falta de gas al intentar leer un slot frío, declarar ese slot en la Access List reduce el costo lo suficiente para que la transacción sea válida. En la Ledger Academy, consideramos el uso de Access Lists como un estándar de <strong>Higiene de Gas</strong> para cualquier interacción con bóvedas multisig o protocolos de gobernanza.</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 220" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -99,7 +99,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. El Mapa de Calor Forense: Auditoría de I/O</h2>
-                        <p>Para el analista forense, el EIP-2929 es vital para detectar ataques de agotamiento de recursos. Un exploit de DoS (Denial of Service) puede saturar a un validador forzándolo a realizar miles de lecturas "frías" en un solo bloque, retrasando la validación y provocando la bifurcación de la red. En la Whale Academy, auditamos los contratos para garantizar que los datos críticos estén agrupados (Data Locality), minimizando los saltos entre slots aislados y asegurando una ejecución predecible y económica.</p>
+                        <p>Para el analista forense, el EIP-2929 es vital para detectar ataques de agotamiento de recursos. Un exploit de DoS (Denial of Service) puede saturar a un validador forzándolo a realizar miles de lecturas "frías" en un solo bloque, retrasando la validación y provocando la bifurcación de la red. En la Ledger Academy, auditamos los contratos para garantizar que los datos críticos estén agrupados (Data Locality), minimizando los saltos entre slots aislados y asegurando una ejecución predecible y económica.</p>
                         
                         <div class="technical-table">
                             <table>
@@ -230,7 +230,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. Statelessness y la Purga del Estado</h2>
-                        <p>La implementación de Verkle Trees es el habilitador tecnológico para el <strong>Stateless Ethereum</strong>. Permitirá que los nodos validen bloques sin necesidad de almacenar los gigabytes del estado completo en un disco duro, basándose únicamente en los testigos compactos incluidos en el bloque. Para la Whale Academy, esto representa la democratización total del hardware de validación: un analista podrá verificar la integridad de la red global desde un dispositivo ligero (Light Client), manteniendo la soberanía sin la carga de una infraestructura de servidor masiva.</p>
+                        <p>La implementación de Verkle Trees es el habilitador tecnológico para el <strong>Stateless Ethereum</strong>. Permitirá que los nodos validen bloques sin necesidad de almacenar los gigabytes del estado completo en un disco duro, basándose únicamente en los testigos compactos incluidos en el bloque. Para la Ledger Academy, esto representa la democratización total del hardware de validación: un analista podrá verificar la integridad de la red global desde un dispositivo ligero (Light Client), manteniendo la soberanía sin la carga de una infraestructura de servidor masiva.</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 220" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -265,7 +265,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. Auditoría del Mapa de Memoria</h2>
-                        <p>Un analista forense debe verificar que el contrato Proxy y su Implementación compartan una estructura de variables idéntica línea por línea. Cualquier desviación provoca una <strong>Colisión de Slots</strong>. Si el Proxy espera el balance en el Slot 1, pero la Implementación escribe el <code>nonce</code> en ese mismo Slot, el sistema colapsará matemáticamente. La Whale Academy recomienda el uso estricto del estándar <strong>EIP-1967</strong>, que sitúa los punteros críticos en slots aleatorios al final del espacio de memoria (cerca de 2^256) para blindar la arquitectura contra sobreescrituras accidentales.</p>
+                        <p>Un analista forense debe verificar que el contrato Proxy y su Implementación compartan una estructura de variables idéntica línea por línea. Cualquier desviación provoca una <strong>Colisión de Slots</strong>. Si el Proxy espera el balance en el Slot 1, pero la Implementación escribe el <code>nonce</code> en ese mismo Slot, el sistema colapsará matemáticamente. La Ledger Academy recomienda el uso estricto del estándar <strong>EIP-1967</strong>, que sitúa los punteros críticos en slots aleatorios al final del espacio de memoria (cerca de 2^256) para blindar la arquitectura contra sobreescrituras accidentales.</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 200" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -302,7 +302,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. El Coste del Estado y el Gas Refund Paradox</h2>
-                        <p>La EVM incentiva la limpieza del estado mediante <strong>Gas Refunds</strong> (devoluciones). Al poner un slot de almacenamiento a cero (borrar datos), el usuario recibe una devolución de gas al final de la transacción. Sin embargo, para evitar ataques de especulación de gas (donde protocolos almacenaban datos baratos para borrarlos cuando el gas era caro y recibir devoluciones），el EIP-3529 limitó estas devoluciones al 20% del gas total usado. La Whale Academy audita los circuitos de limpieza para maximizar este beneficio sin comprometer la integridad atómica del estado corporativo.</p>
+                        <p>La EVM incentiva la limpieza del estado mediante <strong>Gas Refunds</strong> (devoluciones). Al poner un slot de almacenamiento a cero (borrar datos), el usuario recibe una devolución de gas al final de la transacción. Sin embargo, para evitar ataques de especulación de gas (donde protocolos almacenaban datos baratos para borrarlos cuando el gas era caro y recibir devoluciones），el EIP-3529 limitó estas devoluciones al 20% del gas total usado. La Ledger Academy audita los circuitos de limpieza para maximizar este beneficio sin comprometer la integridad atómica del estado corporativo.</p>
                         
                         <div class="technical-table">
                             <table>
@@ -396,7 +396,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. Seguridad Determinista y el Fin de los Saltos Dinámicos</h2>
-                        <p>Uno de los mayores riesgos forenses es el uso de <code>JUMP</code> y <code>JUMPI</code> con destinos calculados dinámicamente, lo que puede llevar a comportamientos impredecibles si un atacante manipula el stack. EOF introduce **Static Jumps**, donde todos los destinos deben ser validados previamente. En la Whale Academy, vemos el EOF como la transición de la EVM de ser una "máquina de estados salvaje" a un entorno de ejecución de grado industrial, donde la integridad del flujo de control es una garantía matemática, no una esperanza del desarrollador.</p>
+                        <p>Uno de los mayores riesgos forenses es el uso de <code>JUMP</code> y <code>JUMPI</code> con destinos calculados dinámicamente, lo que puede llevar a comportamientos impredecibles si un atacante manipula el stack. EOF introduce **Static Jumps**, donde todos los destinos deben ser validados previamente. En la Ledger Academy, vemos el EOF como la transición de la EVM de ser una "máquina de estados salvaje" a un entorno de ejecución de grado industrial, donde la integridad del flujo de control es una garantía matemática, no una esperanza del desarrollador.</p>
                         
                         <div class="technical-table">
                             <table>
@@ -428,7 +428,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. Análisis de Desbordamiento y Ataques de Memoria</h2>
-                        <p>Para el analista forense, el costo cuadrático es un indicador de anomalías. Si una transacción consume millones de gas solo en expansión de memoria, suele ser síntoma de un <em>Buffer Overflow</em> lógico o de un intento de DoS. Al auditar protocolos de alto rendimiento (como agregadores DEX que manejan arrays dinámicos masivos), la Whale Academy prioriza la reutilización de buffers (Buffer Recycling) para mantenerse en la sección lineal de la curva de costos, asegurando que la scalabilidad del protocolo no se vea truncada por la física económica de la red.</p>
+                        <p>Para el analista forense, el costo cuadrático es un indicador de anomalías. Si una transacción consume millones de gas solo en expansión de memoria, suele ser síntoma de un <em>Buffer Overflow</em> lógico o de un intento de DoS. Al auditar protocolos de alto rendimiento (como agregadores DEX que manejan arrays dinámicos masivos), la Ledger Academy prioriza la reutilización de buffers (Buffer Recycling) para mantenerse en la sección lineal de la curva de costos, asegurando que la scalabilidad del protocolo no se vea truncada por la física económica de la red.</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 220" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -457,7 +457,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. Estrategias de Fragmentación y Diamantes (EIP-2535)</h2>
-                        <p>Para superar este límite sin sacrificar la coherencia del protocolo, los arquitectos de la Whale Academy emplean el **Diamond Pattern**. En lugar de un solo contrato, se despliega un proxy que redirige llamadas a múltiples "fetas" (facets) de código, cada una ocupando sus propios 24KB. Forensemente, auditar un Diamante requiere mapear el <em>Selector-to-Facet mapping</em> para asegurar que no existan colisiones de funciones ni "huecos" de seguridad donde una llamada pueda ser interceptada por un contrato malicioso.</p>
+                        <p>Para superar este límite sin sacrificar la coherencia del protocolo, los arquitectos de la Ledger Academy emplean el **Diamond Pattern**. En lugar de un solo contrato, se despliega un proxy que redirige llamadas a múltiples "fetas" (facets) de código, cada una ocupando sus propios 24KB. Forensemente, auditar un Diamante requiere mapear el <em>Selector-to-Facet mapping</em> para asegurar que no existan colisiones de funciones ni "huecos" de seguridad donde una llamada pueda ser interceptada por un contrato malicioso.</p>
                         
                         <div class="technical-box">
                             <strong>Métrica de Densidad:</strong>
@@ -480,7 +480,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. Deuda Técnica y Optimización de Gas</h2>
-                        <p>El analista forense busca patrones de ineficiencia crítica: contratos que escriben resultados intermedios en el storage en lugar de mantenerlos en memoria hasta el paso final. Una sola escritura innecesaria puede costar 20,000 gas (si el slot cambia de cero), mientras que mil operaciones en memoria podrían costar menos de 500 gas. En la Whale Academy, consideramos el storage como un recurso sagrado que solo debe ser tocado para registrar la "Verdad Final" de la transacción, preservando la eficiencia termodinámica del ecosistema institucional.</p>
+                        <p>El analista forense busca patrones de ineficiencia crítica: contratos que escriben resultados intermedios en el storage en lugar de mantenerlos en memoria hasta el paso final. Una sola escritura innecesaria puede costar 20,000 gas (si el slot cambia de cero), mientras que mil operaciones en memoria podrían costar menos de 500 gas. En la Ledger Academy, consideramos el storage como un recurso sagrado que solo debe ser tocado para registrar la "Verdad Final" de la transacción, preservando la eficiencia termodinámica del ecosistema institucional.</p>
                         
                         <div class="technical-table">
                             <table>
@@ -543,7 +543,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. Forense de Proxies y Manipulación de Buffers</h2>
-                        <p>En la Whale Academy, auditamos cómo los proxies manejan el <code>RETURNDATA</code>. Un fallo común es no limpiar el buffer después de una llamada fallida, lo que puede llevar a que una función posterior interprete por error los datos de una respuesta anterior. El uso correcto de <code>RETURNDATACOPY</code> garantiza que la comunicación entre módulos institucionales sea atómica y que los datos de salida sean una representación fiel y fresca de la ejecución del contrato lógico, sin contaminación cruzada de memoria.</p>
+                        <p>En la Ledger Academy, auditamos cómo los proxies manejan el <code>RETURNDATA</code>. Un fallo común es no limpiar el buffer después de una llamada fallida, lo que puede llevar a que una función posterior interprete por error los datos de una respuesta anterior. El uso correcto de <code>RETURNDATACOPY</code> garantiza que la comunicación entre módulos institucionales sea atómica y que los datos de salida sean una representación fiel y fresca de la ejecución del contrato lógico, sin contaminación cruzada de memoria.</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 200" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -578,7 +578,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. Implicaciones para la Resiliencia de Protocolos</h2>
-                        <p>Este cambio estructural elimina el riesgo de "suicidio accidental" de protocolos DeFi que usaban <code>SELFDESTRUCT</code> como mecanismo de pausa de emergencia mal diseñado. Para los analistas de la Whale Academy, esto significa una mayor predictibilidad del estado: una dirección que contiene código hoy, seguirá conteniendo el mismo código mañana (a menos que sea un contrato creado en ese mismo bloque). Es un paso fundamental hacia la <strong>Inmutabilidad Absoluta</strong> del estado de la red.</p>
+                        <p>Este cambio estructural elimina el riesgo de "suicidio accidental" de protocolos DeFi que usaban <code>SELFDESTRUCT</code> como mecanismo de pausa de emergencia mal diseñado. Para los analistas de la Ledger Academy, esto significa una mayor predictibilidad del estado: una dirección que contiene código hoy, seguirá conteniendo el mismo código mañana (a menos que sea un contrato creado en ese mismo bloque). Es un paso fundamental hacia la <strong>Inmutabilidad Absoluta</strong> del estado de la red.</p>
                         
                         <div class="technical-table">
                             <table>
@@ -608,7 +608,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. Blindaje contra Reentrancy en Auditorías Pro</h2>
-                        <p>Un error clásico en DeFi es realizar una consulta de precio a un pool de liquidez usando <code>CALL</code> en lugar de <code>STATICCALL</code>. Si el pool es malicioso, podría usar esa llamada para reentrar en el contrato original. Al usar <code>STATICCALL</code>, el contrato llamante se asegura de que el entorno externo es pasivo y seguro. En la Whale Academy, exigimos que todas las integraciones de oráculos y validaciones de balances institucionales se realicen bajo el paraguas de <code>STATICCALL</code>, garantizando la inmutabilidad local del estado durante la fase de toma de decisiones.</p>
+                        <p>Un error clásico en DeFi es realizar una consulta de precio a un pool de liquidez usando <code>CALL</code> en lugar de <code>STATICCALL</code>. Si el pool es malicioso, podría usar esa llamada para reentrar en el contrato original. Al usar <code>STATICCALL</code>, el contrato llamante se asegura de que el entorno externo es pasivo y seguro. En la Ledger Academy, exigimos que todas las integraciones de oráculos y validaciones de balances institucionales se realicen bajo el paraguas de <code>STATICCALL</code>, garantizando la inmutabilidad local del estado durante la fase de toma de decisiones.</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 200" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -644,7 +644,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. Transparencia Absoluta de Grado Institucional</h2>
-                        <p>Para un analista forense de la Whale Academy, la "verdad" no reside en el código pegado en una interfaz web, sino en la correspondencia aritmética entre el bytecode y el fuente. Al auditar una bóveda de $100M, realizamos una verificación local recreando el entorno de compilación exacto. Si el hash del metadato difiere, incluso por un solo bit, el contrato se considera <strong>no verificado</strong> desde una perspectiva de riesgo institucional. Esta es la base de la transparencia inyectada: el código es ley, pero solo si puedes probar que el código que ves es el código que se ejecuta.</p>
+                        <p>Para un analista forense de la Ledger Academy, la "verdad" no reside en el código pegado en una interfaz web, sino en la correspondencia aritmética entre el bytecode y el fuente. Al auditar una bóveda de $100M, realizamos una verificación local recreando el entorno de compilación exacto. Si el hash del metadato difiere, incluso por un solo bit, el contrato se considera <strong>no verificado</strong> desde una perspectiva de riesgo institucional. Esta es la base de la transparencia inyectada: el código es ley, pero solo si puedes probar que el código que ves es el código que se ejecuta.</p>
                         
                         <div class="technical-box">
                             <strong>Workflow de Verificación:</strong>

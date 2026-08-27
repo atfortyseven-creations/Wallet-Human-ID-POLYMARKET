@@ -329,7 +329,7 @@ export default function DeadMansSwitchModal({ isOpen, onClose }: DeadMansSwitchM
             {/* Security note */}
             <div className="mt-4 pt-4 border-t border-white/5">
               <p className="text-white/25 text-[9px] leading-relaxed">
-                Non-custodial protocol. No server handles your funds. All actions require your wallet signature and execute directly on-chain via <code>WhaleDeadmanSwitch.sol</code> (Ownable2Step · ReentrancyGuard · Pausable · 72h backup cooldown).
+                Non-custodial protocol. No server handles your funds. All actions require your wallet signature and execute directly on-chain via <code>LedgerDeadmanSwitch.sol</code> (Ownable2Step · ReentrancyGuard · Pausable · 72h backup cooldown).
               </p>
             </div>
           </motion.div>

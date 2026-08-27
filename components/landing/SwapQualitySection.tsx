@@ -8,8 +8,8 @@ import { useAccount } from "wagmi";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 /**
- * [LEGENDARY] Whale Monitoring Quality Section
- * Explains why Humanity Ledger has the world's best real-time whale analytics
+ * [LEGENDARY] Ledger Monitoring Quality Section
+ * Explains why Humanity Ledger has the world's best real-time ledger analytics
  */
 export function SwapQualitySection() {
   const { t } = useLanguage();
@@ -65,7 +65,7 @@ export function SwapQualitySection() {
       <div className="relative z-10 max-w-[2560px] mx-auto text-left">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           
-          {/* Left: Whale Visual Mockup */}
+          {/* Left: Ledger Visual Mockup */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -76,7 +76,7 @@ export function SwapQualitySection() {
             <div className="relative w-full aspect-square max-w-[500px] mx-auto rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl bg-black/40">
               <Image
                 src="/models/update/Aztec Image_03.jpg"
-                alt="Humanity Ledger Whale Monitor"
+                alt="Humanity Ledger Ledger Monitor"
                 fill
                 className="object-cover transition-transform duration-1000 group-hover:scale-110"
                 style={{ 

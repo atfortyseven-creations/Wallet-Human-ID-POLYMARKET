@@ -27,7 +27,7 @@ export function DropdownNav() {
 
     const navLinks = [
         { name: t('nav.functions'), href: '/funciones', icon: null },
-        { name: 'WHALE', href: '/vip', icon: <Crown size={16} className="text-[#D4AF37]" />, isVIP: true },
+        { name: 'LEDGER', href: '/vip', icon: <Crown size={16} className="text-[#D4AF37]" />, isVIP: true },
         { name: t('nav.developer'), href: '/developer', icon: null },
         { name: t('nav.human_card'), href: '/wallet', icon: null },
         { name: t('nav.support'), href: '/soporte', icon: null },

@@ -72,13 +72,13 @@ export function initializeWebSocket(httpServer: HttpServer): Server {
 
         // Subscribe to:
         //  vitals.tx.*    per-address transaction events (e.g. vitals.tx.0xabc...)
-        //  whale-alerts   global whale detection events
+        //  ledger-alerts   global ledger detection events
         //  vitals.tx.new  global broadcast for any UI listening
-        redisSubscriber.psubscribe('vitals.*', 'whale-alerts', (err) => {
+        redisSubscriber.psubscribe('vitals.*', 'ledger-alerts', (err) => {
             if (err) {
                 console.error(' [Redis SUB] Subscribe failed:', err.message);
             } else {
-                console.log(' [Redis SUB] Subscribed to: vitals.*, whale-alerts');
+                console.log(' [Redis SUB] Subscribed to: vitals.*, ledger-alerts');
             }
         });
 
@@ -88,9 +88,9 @@ export function initializeWebSocket(httpServer: HttpServer): Server {
             try {
                 const data = JSON.parse(message) as TransactionEvent | HumanityLedgerEvent;
 
-                if (channel === 'whale-alerts') {
+                if (channel === 'ledger-alerts') {
                     // Broadcast to all connected clients (Humanity Ledgers are global)
-                    io.emit('new-whale-alert', data);
+                    io.emit('new-ledger-alert', data);
                 } else if (channel === 'vitals.tx.new') {
                     // Global broadcast  every client gets it and filters client-side
                     io.emit('vitals.tx.new', data);
@@ -135,8 +135,8 @@ export function initializeWebSocket(httpServer: HttpServer): Server {
         // Track active clients for CU Optimization (Sleep Mode)
         try {
             const redis = createSubClient('WS-Presence');
-            await redis.incr('WHALE_MONITOR_CLIENTS');
-            await redis.expire('WHALE_MONITOR_CLIENTS', 3600); // 1-hour relative expiry
+            await redis.incr('LEDGER_MONITOR_CLIENTS');
+            await redis.expire('LEDGER_MONITOR_CLIENTS', 3600); // 1-hour relative expiry
             await redis.quit();
         } catch (e) {
             console.error('️ [WebSocket] Failed to increment presence counter:', e);
@@ -163,8 +163,8 @@ export function initializeWebSocket(httpServer: HttpServer): Server {
             console.log(`[WebSocket] Socket ${socket.id} disconnected`);
             try {
                 const redis = createSubClient('WS-Absence');
-                const count = await redis.decr('WHALE_MONITOR_CLIENTS');
-                if (count < 0) await redis.set('WHALE_MONITOR_CLIENTS', '0');
+                const count = await redis.decr('LEDGER_MONITOR_CLIENTS');
+                if (count < 0) await redis.set('LEDGER_MONITOR_CLIENTS', '0');
                 await redis.quit();
             } catch (e) {
                 console.error('️ [WebSocket] Failed to decrement presence counter:', e);

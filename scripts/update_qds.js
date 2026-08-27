@@ -8,7 +8,7 @@ const newSections = `const SECTIONS = [
     num: '01',
     title: 'What QDs is',
     paragraphs: [
-      'QDs (Core Dots) is a digital asset designed to act as the foundational unit of economic exchange within the Whale Alert network. It is not a governance token, a reward coupon, or a speculative vehicle with hidden unlock schedules. It is a base layer of exchange: finite, minable, and enforced entirely by the deployed contract code.',
+      'QDs (Core Dots) is a digital asset designed to act as the foundational unit of economic exchange within the Ledger Alert network. It is not a governance token, a reward coupon, or a speculative vehicle with hidden unlock schedules. It is a base layer of exchange: finite, minable, and enforced entirely by the deployed contract code.',
       'The name derives from the concept of core dots  the smallest indivisible unit of verifiable computational work. Just as physical matter cannot be reduced below the atomic scale, QDs cannot be created beyond its defined ceiling or subdivided beyond its defined precision. This physical analogy represents the strict mathematical boundaries established by the protocol layer.',
       'Every design decision for QDs was measured against one test: does this reduce complexity, or add it? Any structure that added complexity without adding a mathematical guarantee was removed. What remains is a token defined by absolute clarity. The codebase has been stripped of any redundant logic, administrative backdoors, or upgradeable proxy patterns that could introduce centralized risk.',
       'The full technical specification of QDs is publicly auditable from day one. There are no hidden parameters, no admin keys, and no emergency override functions. The rules encoded at genesis govern QDs until the final token is mined. Cryptographic integrators can rely on this stability to build deterministic financial models and automated settlement infrastructure without the counterparty risk associated with human intervention.'
@@ -41,7 +41,7 @@ const newSections = `const SECTIONS = [
       'Zero percent of the QDs supply is allocated to the founding team, early investors, advisors, or any organizational entity. This is not a policy position subject to future amendment  it is a technical constraint baked into the genesis contract from which there is no administrative exit. The protocol fundamentally rejects the notion of privileged issuance.',
       'The absence of a team allocation eliminates the most common form of misalignment in token design: the disconnect between team incentives and participant incentives. Every QDs token that exists was earned through the same mining process available to all participants. The creators of the protocol must commit computing resources to the network in the exact same manner as the general public if they wish to acquire the asset.',
       'There is no treasury wallet with signing authority over accumulated funds. There is no multisig controlled by named individuals who could, under pressure or incentive, alter the distribution model. The contract is the only authority, and its logic is entirely deterministic and non-interactive regarding monetary policy.',
-      'Operating costs for the Whale Alert network are funded separately from QDs supply. The protocol economics and the operational economics are structurally independent, so neither can compromise the other. This separation of concerns protects the monetary layer from corporate insolvency, strategic pivots, or operational mismanagement.'
+      'Operating costs for the Ledger Alert network are funded separately from QDs supply. The protocol economics and the operational economics are structurally independent, so neither can compromise the other. This separation of concerns protects the monetary layer from corporate insolvency, strategic pivots, or operational mismanagement.'
     ],
   },
   {
@@ -66,12 +66,12 @@ const newSections = `const SECTIONS = [
   },
   {
     num: '07',
-    title: 'Integration with Whale Alert',
+    title: 'Integration with Ledger Alert',
     paragraphs: [
-      'QDs functions as the native economic layer of the Whale Alert network. Participants who contribute value to the network  through mining, data validation, or infrastructure provisioning  are compensated in QDs. Participants who consume network services pay in QDs. This creates a closed-loop economic system tied directly to network utility.',
-      'The Whale Alert platform tracks on-chain capital flows across multiple blockchain networks. QDs provides the internal accounting unit that aligns the economic interests of data producers and data consumers within this system. It standardizes the cost of data queries across disparate underlying protocols and network states.',
+      'QDs functions as the native economic layer of the Ledger Alert network. Participants who contribute value to the network  through mining, data validation, or infrastructure provisioning  are compensated in QDs. Participants who consume network services pay in QDs. This creates a closed-loop economic system tied directly to network utility.',
+      'The Ledger Alert platform tracks on-chain capital flows across multiple blockchain networks. QDs provides the internal accounting unit that aligns the economic interests of data producers and data consumers within this system. It standardizes the cost of data queries across disparate underlying protocols and network states.',
       'The fixed supply of QDs creates a deflationary pressure as network usage grows. More participants consuming network services while the supply remains constant means each QDs unit represents a greater share of network economic activity over time. This dynamic rewards long-term liquidity providers and network validators.',
-      'Integration between QDs and the broader Whale Alert ecosystem is documented in the technical specifications available in the developer section of this site. The integration is designed to function without custodial intermediaries  all settlement occurs on-chain via smart contracts that programmatically enforce data delivery upon payment.'
+      'Integration between QDs and the broader Ledger Alert ecosystem is documented in the technical specifications available in the developer section of this site. The integration is designed to function without custodial intermediaries  all settlement occurs on-chain via smart contracts that programmatically enforce data delivery upon payment.'
     ],
   },
   {
@@ -98,10 +98,10 @@ const newSections = `const SECTIONS = [
     num: '10',
     title: 'Before 2027',
     paragraphs: [
-      'The QDs genesis block will be produced before December 31, 2026. This commitment is public and specific. The date is not contingent on market conditions, funding rounds, regulatory approvals, or any external variable within the control of the Whale Alert team. The countdown is deterministic.',
+      'The QDs genesis block will be produced before December 31, 2026. This commitment is public and specific. The date is not contingent on market conditions, funding rounds, regulatory approvals, or any external variable within the control of the Ledger Alert team. The countdown is deterministic.',
       'The period between now and mainnet launch is used for final contract auditing, infrastructure preparation, and public documentation of the protocol parameters. No tokens exist before the genesis block. There are no pre-launch sale events, no private rounds, and no initial coin offerings. The distribution starts at absolute zero.',
       'Participants can prepare for mining by reviewing the hardware requirements and protocol documentation as they are published. No deposit, reservation, or registration is required or accepted in advance of launch. The network will bootstrap organically based purely on participant interest and computational deployment.',
-      'After the genesis block, the protocol operates autonomously. The Whale Alert team contributes to the network as participants, not as administrators. The network is maintained by its participants, secured by its miners, and governed by its code. Any future evolution of the protocol must occur through decentralized consensus, not executive mandate.'
+      'After the genesis block, the protocol operates autonomously. The Ledger Alert team contributes to the network as participants, not as administrators. The network is maintained by its participants, secured by its miners, and governed by its code. Any future evolution of the protocol must occur through decentralized consensus, not executive mandate.'
     ],
   },
 ];`;

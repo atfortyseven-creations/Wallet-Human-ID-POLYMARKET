@@ -171,7 +171,7 @@ const DIR_CONFIG = {
     shadow: "shadow-[0_20px_60px_rgba(16,185,129,0.05)]",
     bg: "from-emerald-50/50 via-white to-white",
     bar: "from-emerald-500 to-emerald-400",
-    desc: "Whale and sovereign activity is currently expanding capital positions. Real-time network demand indicates high settlement priority and intense liquidity flow.",
+    desc: "Ledger and sovereign activity is currently expanding capital positions. Real-time network demand indicates high settlement priority and intense liquidity flow.",
   },
   NEUTRAL: {
     label: "STABLE",
@@ -210,13 +210,13 @@ export function MempoolCollider() {
     if (transactions.length === 0) return;
 
     const total = transactions.length;
-    const whaleTxs = transactions.filter(tx => tx.type === "whale").length;
-    const whalePct = (whaleTxs / total) * 100;
+    const ledgerTxs = transactions.filter(tx => tx.type === "ledger").length;
+    const ledgerPct = (ledgerTxs / total) * 100;
     const avgGas = transactions.reduce((s, tx) => s + tx.gasPrice, 0) / total;
     const gasPressure = clamp((avgGas / 80) * 100, 0, 100);
     const avgValue = transactions.reduce((s, tx) => s + tx.value, 0) / total;
 
-    const score = clamp(rate * 4.5 + whalePct * 2.5 + gasPressure * 0.8, 0, 100);
+    const score = clamp(rate * 4.5 + ledgerPct * 2.5 + gasPressure * 0.8, 0, 100);
     const dir: VectorDir = score > 58 ? "EXPAND" : score < 32 ? "CONTRACT" : "NEUTRAL";
     setDirection(dir);
     setConfidence(Math.round(clamp(35 + score * 0.55, 45, 96)));
@@ -236,11 +236,11 @@ export function MempoolCollider() {
         color: "text-slate-950",
       },
       {
-        key: "whale",
+        key: "ledger",
         label: "Elite Ratio",
-        value: `${whalePct.toFixed(1)}%`,
-        prev: prev.whale ?? whalePct,
-        current: whalePct,
+        value: `${ledgerPct.toFixed(1)}%`,
+        prev: prev.ledger ?? ledgerPct,
+        current: ledgerPct,
         unit: "sovereign share",
         color: "text-slate-950",
       },
@@ -264,7 +264,7 @@ export function MempoolCollider() {
       },
     ];
     prevSignalsRef.current = {
-      rate, whale: whalePct, gas: gasPressure, value: avgValue,
+      rate, ledger: ledgerPct, gas: gasPressure, value: avgValue,
     };
     setSignals(newSignals);
   }, [transactions, rate]);

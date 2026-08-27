@@ -18,7 +18,7 @@ export const disasterModules = [
 
                     <section class="pro-section">
                         <h2>II. Forense On-Chain: Tumblers y el Rastro de 3.6B</h2>
-                        <p>Los análisis forenses revelaron que los fondos se movieron a través de una red de mezcladores (<em>tumblers</em>) y wallets intermedias antes de la desaparición de los fundadores. Para la Whale Academy, Africrypt es el caso de estudio de la <strong>Evasión de Custodia Pre-Planificada</strong>: el uso de Bitcoin era intencionalmente fácil para los mezcladores, mientras que el modelo de negocio era deliberadamente opaco. El protocolo de recuperación fallido expuso la ausencia total de Proof of Reserves verificables, demostrando que el acceso al capital era siempre unilateral.</p>
+                        <p>Los análisis forenses revelaron que los fondos se movieron a través de una red de mezcladores (<em>tumblers</em>) y wallets intermedias antes de la desaparición de los fundadores. Para la Ledger Academy, Africrypt es el caso de estudio de la <strong>Evasión de Custodia Pre-Planificada</strong>: el uso de Bitcoin era intencionalmente fácil para los mezcladores, mientras que el modelo de negocio era deliberadamente opaco. El protocolo de recuperación fallido expuso la ausencia total de Proof of Reserves verificables, demostrando que el acceso al capital era siempre unilateral.</p>
                         <div class="technical-table">
                             <table>
                                 <thead><tr><th>Señal de Alerta</th><th>Comportamiento Africrypt</th><th>Respuesta Forense</th></tr></thead>
@@ -46,7 +46,7 @@ export const disasterModules = [
 
                     <section class="pro-section">
                         <h2>II. Anatomía del Colapso: La Señal de Volatilidad</h2>
-                        <p>En enero de 2018, BitConnect anunció el cierre de su plataforma de préstamos alegando «cartas de cese y desistimiento» de reguladores y ataques DDoS. El Token BCC, que cotizaba cerca de $400, se desplomó a $1 en cuestión de horas. Para la Whale Academy, este es el patrón de la <strong>Liquidez de Salida Coordinada</strong>: los operadores internos vendieron su posición masiva antes del anuncio, maximizando la extracción de capital a expensas de los últimos inversores. La inelasticidad del precio hacia abajo fue total porque el único caso de uso del token era el propio esquema.</p>
+                        <p>En enero de 2018, BitConnect anunció el cierre de su plataforma de préstamos alegando «cartas de cese y desistimiento» de reguladores y ataques DDoS. El Token BCC, que cotizaba cerca de $400, se desplomó a $1 en cuestión de horas. Para la Ledger Academy, este es el patrón de la <strong>Liquidez de Salida Coordinada</strong>: los operadores internos vendieron su posición masiva antes del anuncio, maximizando la extracción de capital a expensas de los últimos inversores. La inelasticidad del precio hacia abajo fue total porque el único caso de uso del token era el propio esquema.</p>
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 200" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
                                 <text x="50" y="30" fill="#ffa600" style="font-weight:bold;">Ciclo Ponzi de BitConnect</text>
@@ -75,7 +75,7 @@ export const disasterModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Línea de Crédito Fatal: Contagio por Dependencia Bilateral</h2>
-                        <p>BlockFi, tras sufrir pérdidas masivas por su exposición a Three Arrows Capital (3AC), aceptó en julio de 2022 una <strong>línea de crédito renovable de $400M de FTX</strong> a cambio de una opción de compra. Este «rescate» no fue un salvamento; fue una cadena de dependencia que convirtió la solvencia de BlockFi en un derivado directo de la solvencia de FTX. Cuando FTX implosionó en noviembre de 2022, BlockFi cayó exactamente 5 días después. Para la Whale Academy, este es el <strong>Riesgo de Contraparte de Nivel Sistémico</strong>: la concentración de riesgo en un único proveedor de liquidez sin colateral verificable es un fallo de gestión de riesgo de primer orden.</p>
+                        <p>BlockFi, tras sufrir pérdidas masivas por su exposición a Three Arrows Capital (3AC), aceptó en julio de 2022 una <strong>línea de crédito renovable de $400M de FTX</strong> a cambio de una opción de compra. Este «rescate» no fue un salvamento; fue una cadena de dependencia que convirtió la solvencia de BlockFi en un derivado directo de la solvencia de FTX. Cuando FTX implosionó en noviembre de 2022, BlockFi cayó exactamente 5 días después. Para la Ledger Academy, este es el <strong>Riesgo de Contraparte de Nivel Sistémico</strong>: la concentración de riesgo en un único proveedor de liquidez sin colateral verificable es un fallo de gestión de riesgo de primer orden.</p>
                     </section>
 
                     <section class="pro-section">
@@ -126,7 +126,7 @@ export const disasterModules = [
 
                     <section class="pro-section">
                         <h2>II. El Precedente Legal: Responsabilidad del Promotor</h2>
-                        <p>El caso de Centra Tech estableció jurisprudencia en EE. UU. sobre la <strong>Responsabilidad Civil y Criminal del Promotor de Tokens</strong>. Mayweather y Khaled fueron sancionados por la SEC por no revelar que recibían compensación por su promoción. Los fundadores fueron condenados a prisión. Para la Whale Academy, Centra Tech ilustra el protocolo de verificación de ICO: nunca invertir en proyectos que dependan de endorsements de celebridades, y siempre verificar directamente con los socios mencionados la existencia de los acuerdos antes de comprometer capital.</p>
+                        <p>El caso de Centra Tech estableció jurisprudencia en EE. UU. sobre la <strong>Responsabilidad Civil y Criminal del Promotor de Tokens</strong>. Mayweather y Khaled fueron sancionados por la SEC por no revelar que recibían compensación por su promoción. Los fundadores fueron condenados a prisión. Para la Ledger Academy, Centra Tech ilustra el protocolo de verificación de ICO: nunca invertir en proyectos que dependan de endorsements de celebridades, y siempre verificar directamente con los socios mencionados la existencia de los acuerdos antes de comprometer capital.</p>
                     </section>
                 </div>`
         },
@@ -200,7 +200,7 @@ export const disasterModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. El Modelo de Minería en la Nube: Imposibilidad de Verificación</h2>
-                        <p>El <em>Cloud Mining</em> vende un derecho contractual sobre potencia de cómputo que el usuario nunca controla físicamente. HashOcean prometia retornos de minado sin revelar el inventario real de hardware, las ubicaciones de los centros de datos ni los consumos eléctricos. Un día, el sitio web simplemente desapareció. Para la Whale Academy, el cloud mining es estructuralmente equivalente a un Ponzi: <strong>cuando el precio del Bitcoin cae por debajo del breakeven de minar, el operador no tiene incentivo para continuar pagando contratos, y los usuarios no tienen mecanismo para recuperar el "hardware" vendido</strong> porque nunca fue real.</p>
+                        <p>El <em>Cloud Mining</em> vende un derecho contractual sobre potencia de cómputo que el usuario nunca controla físicamente. HashOcean prometia retornos de minado sin revelar el inventario real de hardware, las ubicaciones de los centros de datos ni los consumos eléctricos. Un día, el sitio web simplemente desapareció. Para la Ledger Academy, el cloud mining es estructuralmente equivalente a un Ponzi: <strong>cuando el precio del Bitcoin cae por debajo del breakeven de minar, el operador no tiene incentivo para continuar pagando contratos, y los usuarios no tienen mecanismo para recuperar el "hardware" vendido</strong> porque nunca fue real.</p>
                     </section>
 
                     <section class="pro-section">
@@ -223,7 +223,7 @@ export const disasterModules = [
 
                     <section class="pro-section">
                         <h2>II. El Fin de los Altos Rendimientos "Sin Riesgo"</h2>
-                        <p>El colapso simultáneo de decenas de plataformas de <em>yield</em> en 2022 demostró que los APYs del 8-20% en BTC/ETH eran imposibles sin asumir un riesgo de mercado sustancial. El riesgo era real; solo la transparencia era ficticia. Para la Whale Academy, el principio fundamental post-2022 es: <strong>cualquier rendimiento superior a la tasa libre de riesgo en cripto implica un riesgo proporcional que debe ser explicitamente identificado y aceptado por el inversor</strong>.</p>
+                        <p>El colapso simultáneo de decenas de plataformas de <em>yield</em> en 2022 demostró que los APYs del 8-20% en BTC/ETH eran imposibles sin asumir un riesgo de mercado sustancial. El riesgo era real; solo la transparencia era ficticia. Para la Ledger Academy, el principio fundamental post-2022 es: <strong>cualquier rendimiento superior a la tasa libre de riesgo en cripto implica un riesgo proporcional que debe ser explicitamente identificado y aceptado por el inversor</strong>.</p>
                     </section>
                 </div>`
         },
@@ -241,7 +241,7 @@ export const disasterModules = [
 
                     <section class="pro-section">
                         <h2>II. El Fallo del CEO Fugitivo: OPSEC Criminal</h2>
-                        <p>El CEO Johann Steynberg huyó a Brasil en diciembre de 2020, donde fue arrestado más tarde. Las investigaciones forenses revelaron que MTI no realizaba ningún tipo de attesting real: el 89% de los fondos se destó a pagos a clientes anteriores y gastos operativos, un esquema Ponzi puro. Para la Whale Academy, MTI es el manual del <strong>Identificador del MLM Cripto</strong>: si la compensación por reclutar nuevos miembros supera al rendimiento del producto en sí, la estructura es un esquema pirámide independientemente de sus afirmaciones de attesting.</p>
+                        <p>El CEO Johann Steynberg huyó a Brasil en diciembre de 2020, donde fue arrestado más tarde. Las investigaciones forenses revelaron que MTI no realizaba ningún tipo de attesting real: el 89% de los fondos se destó a pagos a clientes anteriores y gastos operativos, un esquema Ponzi puro. Para la Ledger Academy, MTI es el manual del <strong>Identificador del MLM Cripto</strong>: si la compensación por reclutar nuevos miembros supera al rendimiento del producto en sí, la estructura es un esquema pirámide independientemente de sus afirmaciones de attesting.</p>
                     </section>
                 </div>`
         },
@@ -299,7 +299,7 @@ export const disasterModules = [
             content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
-                        <h2>I. 2019: El Año en que los Whales de PlusToken Hundiron al Mercado</h2>
+                        <h2>I. 2019: El Año en que los Ledgers de PlusToken Hundiron al Mercado</h2>
                         <p>PlusToken fue una aplicación de wallet con promesas de rendimiento que captó a 3 millones de víctimas principalmente en China y Corea del Sur, acumulando más de <strong>200,000 BTC y 800,000 ETH</strong>. Tras el colapso en junio de 2019, los operadores comenzaron a liquidar los activos de forma masiva a través de exchanges OTC. El volumen masivo de ventas ejerció una presión bajista sistemática en los precios de BTC y ETH durante la segunda mitad de 2019, demostrando el poder de impacto macroeconómico de un único fraude de escala suficiente.</p>
                     </section>
 
@@ -318,7 +318,7 @@ export const disasterModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. El Manual del Analista: 7 Señales de Insolvencia Prematura</h2>
-                        <p>La Whale Academy sintetiza los patrones comunes identificados en todos los colapsos analizados en este módulo. Estas son las <strong>7 Señales de Alerta Forense</strong> que preceden a cualquier colapso de plataforma:</p>
+                        <p>La Ledger Academy sintetiza los patrones comunes identificados en todos los colapsos analizados en este módulo. Estas son las <strong>7 Señales de Alerta Forense</strong> que preceden a cualquier colapso de plataforma:</p>
                         <div class="technical-table">
                             <table>
                                 <thead><tr><th>#</th><th>Señal de Alerta</th><th>Ejemplo Real</th></tr></thead>
@@ -373,7 +373,7 @@ export const disasterModules = [
 
                     <section class="pro-section">
                         <h2>II. Do Kwon y el Fallo de la Transparencia</h2>
-                        <p>El fundador Do Kwon había prometido que el protocolo era infalible y que sus críticos eran ignorantes. Esta arrogancia y la opacidad sobre los riesgos del mecanismo endógeno dejaron a 200,000 millones de dólares de valor de mercado sin la cobertura de riesgo adecuada. Para la Whale Academy, Terra es el caso definitivo de <strong>Confianza Plútocrática vs. Análisis Forense</strong>: siempre hay que analizar el mecanismo de respaldo, no las declaraciones del fundador.</p>
+                        <p>El fundador Do Kwon había prometido que el protocolo era infalible y que sus críticos eran ignorantes. Esta arrogancia y la opacidad sobre los riesgos del mecanismo endógeno dejaron a 200,000 millones de dólares de valor de mercado sin la cobertura de riesgo adecuada. Para la Ledger Academy, Terra es el caso definitivo de <strong>Confianza Plútocrática vs. Análisis Forense</strong>: siempre hay que analizar el mecanismo de respaldo, no las declaraciones del fundador.</p>
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 200" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
                                 <text x="400" y="30" fill="#ff4d4d" text-anchor="middle" font-weight="bold">ESPIRAL DE MUERTE LUNA/UST</text>
@@ -409,7 +409,7 @@ export const disasterModules = [
 
                     <section class="pro-section">
                         <h2>II. El Dilema de «Code is Law» y el Hard Fork</h2>
-                        <p>El ataque llevó a la comunidad de Ethereum al debate más profundo de su historia: si «el código es la ley», entonces el atacante hizo algo técnicamente legal al explotar la lógica del contrato. La mayoría votó por realizar un <strong>Hard Fork</strong> que revertiera el robo, creando Ethereum (ETH). La minoría que rechazó el fork continuó como Ethereum Classic (ETC). Para la Whale Academy, el DAO Hack estableció el <strong>Patrón Checks-Effects-Interactions</strong> como estándar de oro del desarrollo de contratos inteligentes seguros.</p>
+                        <p>El ataque llevó a la comunidad de Ethereum al debate más profundo de su historia: si «el código es la ley», entonces el atacante hizo algo técnicamente legal al explotar la lógica del contrato. La mayoría votó por realizar un <strong>Hard Fork</strong> que revertiera el robo, creando Ethereum (ETH). La minoría que rechazó el fork continuó como Ethereum Classic (ETC). Para la Ledger Academy, el DAO Hack estableció el <strong>Patrón Checks-Effects-Interactions</strong> como estándar de oro del desarrollo de contratos inteligentes seguros.</p>
                     </section>
                 </div>`
         },
@@ -445,7 +445,7 @@ export const disasterModules = [
 
                     <section class="pro-section">
                         <h2>II. El Contagio: Efecto Dominó Institucional</h2>
-                        <p>El colapso de 3AC no fue el fin; fue el inicio del colapso en cascada del verano cripto. Como 3AC debía dinero a casi todos los prestamistas del mercado simultáneamente, sus margin calls arrastraron a Voyager, BlockFi y Genesis en pocos meses. Para la Whale Academy, la lección es la imposibilidad de diversificar verdaderamente el riesgo de contraparte cuando <strong>un actor acumula posiciones de deuda en múltiples instituciones simultáneamente sin disclosure público</strong>. La solución institucional es exigir registros de exposición máxima por contraparte.</p>
+                        <p>El colapso de 3AC no fue el fin; fue el inicio del colapso en cascada del verano cripto. Como 3AC debía dinero a casi todos los prestamistas del mercado simultáneamente, sus margin calls arrastraron a Voyager, BlockFi y Genesis en pocos meses. Para la Ledger Academy, la lección es la imposibilidad de diversificar verdaderamente el riesgo de contraparte cuando <strong>un actor acumula posiciones de deuda en múltiples instituciones simultáneamente sin disclosure público</strong>. La solución institucional es exigir registros de exposición máxima por contraparte.</p>
                     </section>
                 </div>`
         },
@@ -463,7 +463,7 @@ export const disasterModules = [
 
                     <section class="pro-section">
                         <h2>II. La Posibilidad Perdida: Debida Diligencia de Riesgo de Crédito</h2>
-                        <p>Voyager ejecutó su propio análisis de crédito que clasificó a 3AC como un prestatario de bajo riesgo, omitiendo el nivel de apalancamiento total de la firma en el mercado. Para la Whale Academy, este es el caso definitivo de <strong>Fallo en la Agregación del Riesgo de Contraparte</strong>: el riesgo individual puede parecer aceptable, pero el riesgo real debe evaluarse en el contexto del endeudamiento total del prestatario en todo el ecosistema financiero. Esta es la leccion que la industria cripto aprendió al precio más alto posible.</p>
+                        <p>Voyager ejecutó su propio análisis de crédito que clasificó a 3AC como un prestatario de bajo riesgo, omitiendo el nivel de apalancamiento total de la firma en el mercado. Para la Ledger Academy, este es el caso definitivo de <strong>Fallo en la Agregación del Riesgo de Contraparte</strong>: el riesgo individual puede parecer aceptable, pero el riesgo real debe evaluarse en el contexto del endeudamiento total del prestatario en todo el ecosistema financiero. Esta es la leccion que la industria cripto aprendió al precio más alto posible.</p>
                     </section>
                 </div>`
         }

@@ -174,7 +174,7 @@ function getDemoNews(): NewsArticle[] {
     {
       id: '1',
       title: 'Major DeFi Protocol Sees $100M in 24h Attesting Volume',
-      body: 'A leading decentralised exchange has experienced unprecedented attesting volume as whale activity surges...',
+      body: 'A leading decentralised exchange has experienced unprecedented attesting volume as ledger activity surges...',
       url: '#',
       source: 'CryptoNews',
       publishedOn: now - 3600,
@@ -185,15 +185,15 @@ function getDemoNews(): NewsArticle[] {
     },
     {
       id: '2',
-      title: 'Whale Moves 50,000 ETH to Unknown Wallet',
-      body: 'Blockchain analytics reveal significant Ethereum movement from a known whale address...',
+      title: 'Ledger Moves 50,000 ETH to Unknown Wallet',
+      body: 'Blockchain analytics reveal significant Ethereum movement from a known ledger address...',
       url: '#',
       source: 'HumanityLedger',
       publishedOn: now - 7200,
-      tags: ['Ethereum', 'Whales'],
+      tags: ['Ethereum', 'Ledgers'],
       categories: ['Transaction'],
       sentiment: 'neutral',
-      imageUrl: getLegendaryImage('Whale Moves 50,000 ETH to Unknown Wallet')
+      imageUrl: getLegendaryImage('Ledger Moves 50,000 ETH to Unknown Wallet')
     },
     {
       id: '3',

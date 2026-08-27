@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { ethers } from 'ethers';
-import { WhaleKnowledgeGraphABI } from '@/lib/abi/WhaleKnowledgeGraph';
+import { LedgerKnowledgeGraphABI } from '@/lib/abi/LedgerKnowledgeGraph';
 
 // Fallback configuration if not fully deployed
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_KNOWLEDGE_GRAPH_ADDRESS || "0x0000000000000000000000000000000000000000";
@@ -44,7 +44,7 @@ export function useKnowledgeGraph() {
         try {
             const rpcUrl = process.env.NEXT_PUBLIC_BASE_RPC || "https://mainnet.base.org";
             const provider = new ethers.JsonRpcProvider(rpcUrl);
-            const contract = new ethers.Contract(CONTRACT_ADDRESS, WhaleKnowledgeGraphABI, provider);
+            const contract = new ethers.Contract(CONTRACT_ADDRESS, LedgerKnowledgeGraphABI, provider);
             const result = await contract.getEntityAnalytics(address);
             if (!result[5]) return null;
             return {

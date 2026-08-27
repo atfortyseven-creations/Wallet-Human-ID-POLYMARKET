@@ -9,7 +9,7 @@
 ### Reality Check: On-Chain vs Off-Chain
 **Finding:** Despite being marketed as a "ZK-rollup ecosystem settled on Aztec", **there are exactly ZERO deployed smart contracts on any network (Mainnet, L2, or testnet)**.
 - `hardhat.config.js` contains definitions for Base, Optimism, Polygon, and World Chain.
-- `contracts/` contains 17 Solidity files (AegisCircuitBreaker, WhalePass, HumanTimeLock, DeadMansSwitch, etc.)
+- `contracts/` contains 17 Solidity files (AegisCircuitBreaker, LedgerPass, HumanTimeLock, DeadMansSwitch, etc.)
 - **No `ignition/deployments/` exists.** No addresses are hardcoded in the frontend except for standard ERC20 tokens (USDC, WETH, WBTC) and a deprecated Aztec Connect Rollup Processor address (`0xFF1F2B4ADb9dF6FC8eAFecDcbF96A2B351680455`).
 
 ### Contract Status
@@ -17,7 +17,7 @@
 |---|---|---|---|
 | `CoreAirdrop.sol` | QDS Airdrop | NOT DEPLOYED | None |
 | `CoreLedger.sol` | QDS Ledger | NOT DEPLOYED | None |
-| `WhalePass.sol` | NFT Membership | NOT DEPLOYED | None |
+| `LedgerPass.sol` | NFT Membership | NOT DEPLOYED | None |
 | `HumanTimeLock.sol` | Vault | NOT DEPLOYED | None |
 | `DeadMansSwitch.sol`| Inheritance | NOT DEPLOYED | None |
 | `SystemForumAnchor.sol`| Forum sync | NOT DEPLOYED | None |
@@ -30,7 +30,7 @@
 **Finding:** The platform claims to use Aztec PXE and Noir circuits for identity and messaging. **In reality, ZK proofs are being simulated with HMAC-SHA256 signatures.**
 
 1. **Noir Circuits (`noir-projects/circuits/`)**
-   - 19 circuit directories exist (e.g., `whale_chat`, `forum-zk-auth`, `zk-dna-biometrics`).
+   - 19 circuit directories exist (e.g., `ledger_chat`, `forum-zk-auth`, `zk-dna-biometrics`).
    - None of them are compiled (`target/` missing) or integrated into the Next.js app.
    - The CI workflow compiles them but does not deploy verifiers.
 

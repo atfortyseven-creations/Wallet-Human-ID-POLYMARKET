@@ -43,7 +43,7 @@ export function SystemManifesto() {
                    description="Thermodynamic telemetry processes macroscopic on-chain anomalies in real-time. By leveraging predictive isometric modeling and algorithmic auditing constraints, the protocol isolates state derivations to generate asymmetrical alpha signals before transaction finality."
                    lotties={[
                      { file: "Big Data Analytics.json", title: "Thermodynamic Telemetry", desc: "Processing raw hex-encoded block data into behavioral maps." },
-                     { file: "Isometric data analysis.json", title: "Predictive Vector Modeling", desc: "Machine learning heuristics tracking whale migration patterns." },
+                     { file: "Isometric data analysis.json", title: "Predictive Vector Modeling", desc: "Machine learning heuristics tracking ledger migration patterns." },
                      { file: "A Female Employee is Reading Financial Statements.json", title: "Algorithmic Integrity Auditing", desc: "Automated verification of smart contract liquidity reserves." }
                    ]}
                    reverse

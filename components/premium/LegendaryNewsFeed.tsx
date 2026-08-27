@@ -167,7 +167,7 @@ function LegendaryNewsCard({ article, index }: { article: NewsArticle; index: nu
           src={article.imageUrl ? `/api/proxy-image?url=${encodeURIComponent(article.imageUrl)}` : `/api/proxy-image?seed=${index}`}
           alt={article.title}
           onError={(e) => {
-            e.currentTarget.src = "/official-whale-monochrome.png";
+            e.currentTarget.src = "/official-ledger-monochrome.png";
           }}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 grayscale-[0.3] group-hover:grayscale-0"
         />

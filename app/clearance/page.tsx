@@ -25,7 +25,7 @@ export default function ClearanceTab() {
             Clearance Clearance Level 9
           </span>
         </div>
-        <h1 className="text-6xl font-black uppercase tracking-tighter mb-4">Whale Clearance / OTC</h1>
+        <h1 className="text-6xl font-black uppercase tracking-tighter mb-4">Ledger Clearance / OTC</h1>
         <p className="text-sm font-medium tracking-wide opacity-50 max-w-2xl leading-relaxed">
           Access heavily vetted, sovereign-grade Over-The-Counter (OTC) desks and System IRA gateways. Bypassing public order books eliminates slippage on high-velocity wealth transfers.
         </p>

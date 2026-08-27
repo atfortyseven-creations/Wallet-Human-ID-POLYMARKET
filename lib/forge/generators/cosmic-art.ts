@@ -2,7 +2,7 @@ import { CosmicSeed, ArtMetadata } from '../types';
 
 export class CosmicArtGenerator {
   /**
-   * Procedurally generates visual metadata based on the Whale Event's deterministic hash.
+   * Procedurally generates visual metadata based on the Ledger Event's deterministic hash.
    * This drives the WebGL shaders in the frontend without relying on external image APIs.
    */
   static generate(seed: CosmicSeed): ArtMetadata {

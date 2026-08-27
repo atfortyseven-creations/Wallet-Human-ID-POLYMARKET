@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     const cursor = searchParams.get('cursor') ?? undefined;
     const filterInstitutional = searchParams.get('institutional') === 'true';
 
-    const entries = await db.whaleActivity.findMany({
+    const entries = await db.ledgerActivity.findMany({
       where: {
         usdValue: { gte: '50000000' }, // $>50M
         ...(filterInstitutional && { institutional: true }),
@@ -33,7 +33,7 @@ export async function GET(req: Request) {
       },
     });
 
-    const totalIndexed = await db.whaleActivity.count({
+    const totalIndexed = await db.ledgerActivity.count({
       where: { usdValue: { gte: '50000000' } }
     });
 

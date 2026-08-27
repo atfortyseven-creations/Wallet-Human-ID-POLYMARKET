@@ -35,5 +35,5 @@
     *   `events`: Array of historic events (e.g., `manufactured` with location data).
     *   `txHash`, `chainId`, `coreEntropy`, `createdAt`.
 *   **`ProvenanceEvent`**:
-    *   `type`: 'WHALE_CHAT_SYNC', 'PORTFOLIO_ACCESS', or 'STUDIO_ACCESS'.
+    *   `type`: 'LEDGER_CHAT_SYNC', 'PORTFOLIO_ACCESS', or 'STUDIO_ACCESS'.
     *   `details`: Arbitrary JSON for telemetry.

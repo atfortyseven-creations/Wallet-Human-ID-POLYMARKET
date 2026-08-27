@@ -43,7 +43,7 @@ export function LedgerChatVaultManager({ onClose }: VaultManagerProps) {
   useEffect(() => {
     (async () => {
       try {
-        const stored = await vault.getItem('whale_vault_files');
+        const stored = await vault.getItem('ledger_vault_files');
         if (stored) {
           setFiles(JSON.parse(stored));
         } else {
@@ -74,7 +74,7 @@ export function LedgerChatVaultManager({ onClose }: VaultManagerProps) {
   const handleDownloadSelected = async () => {
     for (const id of Array.from(selectedFiles)) {
       try {
-        const fileData = await vault.getItem(`whale_vault_data_${id}`);
+        const fileData = await vault.getItem(`ledger_vault_data_${id}`);
         const fileMeta = files.find(f => f.id === id);
         if (fileData && fileMeta) {
           // fileData is expected to be a base64 or DataURL string
@@ -95,10 +95,10 @@ export function LedgerChatVaultManager({ onClose }: VaultManagerProps) {
   const handleDeleteSelected = async () => {
     const toDelete = Array.from(selectedFiles);
     for (const id of toDelete) {
-      await vault.removeItem(`whale_vault_data_${id}`);
+      await vault.removeItem(`ledger_vault_data_${id}`);
     }
     const nextFiles = files.filter(f => !selectedFiles.has(f.id));
-    await vault.setItem('whale_vault_files', JSON.stringify(nextFiles));
+    await vault.setItem('ledger_vault_files', JSON.stringify(nextFiles));
     setFiles(nextFiles);
     setSelectedFiles(new Set());
   };

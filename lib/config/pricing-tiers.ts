@@ -45,16 +45,16 @@ export const SECTION_FEATURES: SectionFeatureGroup[] = [
     label: 'Dashboard',
     icon: '',
     freeFeatures: [
-      'Active whale movement feed (top 50 per day)',
+      'Active ledger movement feed (top 50 per day)',
       'Basic on-chain activity overview',
       'Market cap & volume snapshot',
       '24h price movement tracker',
       'Standard network health indicators',
     ],
     proFeatures: [
-      'Unlimited whale movements across all blockchains',
+      'Unlimited ledger movements across all blockchains',
       'Set custom alert thresholds by wallet size & token',
-      'AI-powered whale behavior predictions',
+      'AI-powered ledger behavior predictions',
       'Smart money accumulation & sell-off heatmaps',
       'Multi-chain tracking: ETH, BTC, SOL, ARB, BASE & more',
       'Sovereign wallet profiling & risk scoring',
@@ -72,7 +72,7 @@ export const SECTION_FEATURES: SectionFeatureGroup[] = [
       'Basic market discussion channels',
     ],
     proFeatures: [
-      'Exclusive VIP Whale Analytics Channel',
+      'Exclusive VIP Ledger Analytics Channel',
       'Verified analyst signals & private alpha feed',
       'AI sentiment engine built from live chat data',
       'Real-time on-chain event alerts delivered to chat',
@@ -95,7 +95,7 @@ export const SECTION_FEATURES: SectionFeatureGroup[] = [
     proFeatures: [
       'Unlimited wallets & multi-chain tracking',
       'Advanced P&L with cost basis & tax optimization',
-      'Whale copy-attesting signals — follow the best wallets',
+      'Ledger copy-attesting signals — follow the best wallets',
       'DeFi yield optimization & opportunity alerts',
       'Smart portfolio rebalancing recommendations',
       'NFT collection valuation & floor price tracking',
@@ -113,9 +113,9 @@ export const SECTION_FEATURES: SectionFeatureGroup[] = [
       'Basic leaderboard visibility',
     ],
     proFeatures: [
-      'Verified Whale Member badge on your profile',
+      'Verified Ledger Member badge on your profile',
       'Access to private sovereign forum',
-      'Monthly live Q&A sessions with top whale analysts',
+      'Monthly live Q&A sessions with top ledger analysts',
       'DAO governance voting rights',
       'Early access to all new platform features',
       'Priority support with a dedicated response channel',
@@ -129,13 +129,13 @@ export const PRICING_TIERS: PricingTier[] = [
   {
     id:           'FREE',
     name:         'Humanity Ledger',
-    tagline:      'Start tracking whale movements for free, today.',
+    tagline:      'Start tracking ledger movements for free, today.',
     priceMonthly: '0',
     priceAnnual:  '0',
     accentColor:  '#050505',
     lottie:       'isometric-cube.json',
     features: [
-      { text: 'Active whale movement feed (top 50 per day)', section: 'dashboard' },
+      { text: 'Active ledger movement feed (top 50 per day)', section: 'dashboard' },
       { text: 'Basic on-chain activity overview & market snapshot', section: 'dashboard' },
       { text: 'Access to public community chat (7-day history)', section: 'chat' },
       { text: 'Single wallet portfolio tracker', section: 'portfolio' },
@@ -158,17 +158,17 @@ export const PRICING_TIERS: PricingTier[] = [
     lottie:       'Safe Box.json',
     features: [
       // Dashboard
-      { text: 'Unlimited whale movements — all chains, no daily cap', highlight: true, section: 'dashboard' },
-      { text: 'AI whale behavior predictions & accumulation heatmaps', highlight: true, section: 'dashboard' },
+      { text: 'Unlimited ledger movements — all chains, no daily cap', highlight: true, section: 'dashboard' },
+      { text: 'AI ledger behavior predictions & accumulation heatmaps', highlight: true, section: 'dashboard' },
       { text: 'Custom thresholds, multi-chain & 12-month data archive', section: 'dashboard' },
       // Chat
-      { text: 'VIP Whale Analytics Channel & analyst alpha signals', highlight: true, section: 'chat' },
+      { text: 'VIP Ledger Analytics Channel & analyst alpha signals', highlight: true, section: 'chat' },
       { text: 'AI market sentiment engine & unlimited chat history', section: 'chat' },
       // Portfolio
-      { text: 'Multi-wallet tracking & whale copy-attesting signals', highlight: true, section: 'portfolio' },
+      { text: 'Multi-wallet tracking & ledger copy-attesting signals', highlight: true, section: 'portfolio' },
       { text: 'DeFi yield alerts, NFT valuation & tax export reports', section: 'portfolio' },
       // Community
-      { text: 'Verified Whale badge & sovereign forum access', highlight: true, section: 'community' },
+      { text: 'Verified Ledger badge & sovereign forum access', highlight: true, section: 'community' },
       { text: 'DAO voting, monthly analyst Q&As & priority support', section: 'community' },
     ],
     buttonText: 'Unlock Full Access',

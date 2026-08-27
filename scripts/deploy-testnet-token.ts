@@ -12,7 +12,7 @@ async function main() {
   console.log(`Using Sponsored FPC: ${SPONSORED_FPC_ADDRESS}`);
 
   // We rely on aztec.js to estimate gas settings, so we just provide the payment method
-  const token = await TokenContract.deploy(wallet, adminAddress, 'Whale QD', 'WQD', 18)
+  const token = await TokenContract.deploy(wallet, adminAddress, 'Ledger QD', 'WQD', 18)
     .send({
       fee: {
         paymentMethod: new SponsoredFeePaymentMethod(

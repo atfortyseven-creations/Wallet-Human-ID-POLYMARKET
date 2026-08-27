@@ -160,8 +160,8 @@ export const MODULE_EXPLANATIONS: Record<string, { title: string, subtitle: stri
             { title: 'Asset Breakdown', desc: 'Per-asset view with current market values.' },
         ]
     },
-    'whale-port': {
-        title: 'Whale Watch',
+    'ledger-port': {
+        title: 'Ledger Watch',
         subtitle: 'Large wallet monitoring',
         overview: 'Observe the public portfolio positions of large on-chain participants. Useful for understanding how major holders are positioned.',
         features: [

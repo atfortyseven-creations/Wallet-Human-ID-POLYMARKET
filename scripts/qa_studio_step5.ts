@@ -259,8 +259,8 @@ async function step5_mutationBaseline() {
     const freeHumanity = await createHumanityTokenAndSession(WALLET_FREE);
     const eliteHumanity = await createHumanityTokenAndSession(WALLET_ELITE);
 
-    const cookieFree = `whale_session=${freeTokenLegacy}; humanity_session=${freeHumanity.token}`;
-    const cookieElite = `whale_session=${eliteTokenLegacy}; humanity_session=${eliteHumanity.token}`;
+    const cookieFree = `ledger_session=${freeTokenLegacy}; humanity_session=${freeHumanity.token}`;
+    const cookieElite = `ledger_session=${eliteTokenLegacy}; humanity_session=${eliteHumanity.token}`;
 
     const results: any[] = [];
     const passportBody = JSON.stringify({ title: 'QA Pilot Passport', category: 'TECH', payload: { origin: 'QA Test' } });
@@ -305,7 +305,7 @@ async function step6_idempotency() {
 
     const tokenLegacy = await createQAToken(WALLET_ELITE);
     const tokenHumanity = await createHumanityTokenAndSession(WALLET_ELITE);
-    const cookie = `whale_session=${tokenLegacy}; humanity_session=${tokenHumanity.token}`;
+    const cookie = `ledger_session=${tokenLegacy}; humanity_session=${tokenHumanity.token}`;
     const body = JSON.stringify({ title: 'Idempotency Test', category: 'TECH', payload: { origin: 'QA Test' } });
     const opts = { method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: cookie }, body };
 
@@ -332,7 +332,7 @@ async function step7_concurrency() {
 
     const tokenLegacy = await createQAToken(WALLET_ELITE);
     const tokenHumanity = await createHumanityTokenAndSession(WALLET_ELITE);
-    const cookie = `whale_session=${tokenLegacy}; humanity_session=${tokenHumanity.token}`;
+    const cookie = `ledger_session=${tokenLegacy}; humanity_session=${tokenHumanity.token}`;
 
     // N=5 simultaneous passport creates
     const N = 5;
@@ -362,7 +362,7 @@ async function step8_revocation() {
 
     const tokenLegacy = await createQAToken(WALLET_FREE);
     const tokenHumanity = await createHumanityTokenAndSession(WALLET_FREE);
-    const cookie = `whale_session=${tokenLegacy}; humanity_session=${tokenHumanity.token}`;
+    const cookie = `ledger_session=${tokenLegacy}; humanity_session=${tokenHumanity.token}`;
 
     // Step A: mutation before revoke
     const r1 = await measure('  POST /api/passport BEFORE revoke', `${QA_BASE}/api/passport`, {
@@ -456,10 +456,10 @@ ${data.mutations.map(r => `| ${r.label} | ${r.status} | ${r.latencyMs}ms | ${r.s
 ### Current Auth Model Per Mutation
 | Mutation | Auth Source | Identity Source | DB Authority | Revocability |
 |---|---|---|---|---|
-| POST /api/passport | whale_session JWT | payload.address | NONE | NONE — JWT-only |
-| POST /api/premium/prover | whale_session JWT | payload.address | NONE | NONE — JWT-only |
+| POST /api/passport | ledger_session JWT | payload.address | NONE | NONE — JWT-only |
+| POST /api/premium/prover | ledger_session JWT | payload.address | NONE | NONE — JWT-only |
 | POST /api/aztec/transfer | x-web3-address header | header value | NONE | NONE — JWT-only |
-| POST /api/provenance/log | whale_session JWT | payload.address | NONE | silently skipped if missing |
+| POST /api/provenance/log | ledger_session JWT | payload.address | NONE | silently skipped if missing |
 
 ---
 
@@ -490,7 +490,7 @@ ${data.mutations.map(r => `| ${r.label} | ${r.status} | ${r.latencyMs}ms | ${r.s
 - **Finding: ${data.revocation.note}**
 
 ### Gap Summary
-Legacy \`whale_session\` is a pure JWT. There is NO database-level revocation check
+Legacy \`ledger_session\` is a pure JWT. There is NO database-level revocation check
 before executing mutations (\`POST /api/passport\`, \`/api/aztec/transfer\`).  
 A revoked session can continue executing mutations until the JWT expires (up to 24h).
 

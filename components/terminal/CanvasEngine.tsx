@@ -7,7 +7,7 @@ import { CanvasNode as CanvasNodeComponent } from './CanvasNode';
 import { CanvasEdges } from './CanvasEdges';
 import { ContextMenu } from './ContextMenu';
 import { TelemetryTerminal } from './TelemetryTerminal';
-import { WhaleSonar } from './WhaleSonar';
+import { LedgerSonar } from './LedgerSonar';
 
 // Re-export for backward compatibility with existing imports
 export type { NodeType, NodeData, EdgeData } from './canvas-types';
@@ -204,7 +204,7 @@ export function CanvasEngine() {
             </div>
 
             {/* Overlays */}
-            <WhaleSonar />
+            <LedgerSonar />
             <TelemetryTerminal nodes={nodes} />
 
             <AnimatePresence>

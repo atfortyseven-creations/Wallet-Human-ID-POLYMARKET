@@ -16,7 +16,7 @@ export default function InstitutionalFooter() {
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center gap-2">
             <span className="text-purple-600 font-bold"></span>
-            <span className="font-serif text-2xl font-black tracking-tighter uppercase text-[#1a1a1a]">Whale Protocol</span>
+            <span className="font-serif text-2xl font-black tracking-tighter uppercase text-[#1a1a1a]">Ledger Protocol</span>
           </div>
           <p className="text-sm text-black/60 leading-relaxed font-serif max-w-sm">
             The System Analytics Protocol for advanced on-chain observability. 
@@ -78,7 +78,7 @@ export default function InstitutionalFooter() {
       </div>
 
       <div className="max-w-[2560px] mx-auto mt-20 pt-8 border-t border-black/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-[10px] font-mono font-bold text-black/40 tracking-widest uppercase">
-        <div>© 2026 Whale Protocol</div>
+        <div>© 2026 Ledger Protocol</div>
       </div>
     </footer>
   );

@@ -1,17 +1,17 @@
 > **Last Updated: 14/08/2026** - Official January Launch Revision
 
-# COMPREHENSIVE OPERATING CODEX: WHALE ALERT
+# COMPREHENSIVE OPERATING CODEX: LEDGER ALERT
 ## Treatise on System Capabilities, Limitations, and Systemty
 
 **Issue Date:** February 2nd, Year of Our Lord 2026  
 **Classification:** GOVERNING DOCUMENT / OMNISCIENT  
-**Drafted by:** Whale Network Engineering Team
+**Drafted by:** Ledger Network Engineering Team
 
 ---
 
 ### PREAMBLE
 
-Let it be known to all present and future operators of this digital architecture, that the system known as **"Whale Alert Wallet"** is not merely an application, but a **System Financial Organism**. As such, its existence is governed by immutable laws of cryptography, state logic, and human will.
+Let it be known to all present and future operators of this digital architecture, that the system known as **"Ledger Alert Wallet"** is not merely an application, but a **System Financial Organism**. As such, its existence is governed by immutable laws of cryptography, state logic, and human will.
 
 This document, drafted with the utmost sumptuousness and semantic rigor, aims to delineate with surgical precision the boundaries of the possible and the impossible within this vast digital domain.
 
@@ -43,7 +43,7 @@ Having delimited the forbidden, let us now unfold the vast range of powers that 
 3.  **Teleportation of Value:** The user can send value to any address in the world in seconds, crossing national borders without asking permission from any authority.
 
 #### CHAPTER II: INTELLIGENCE AND ANALYSIS
-1.  **The Whale's Vision (Whale Tracking):** The system grants the user "God's Eyes" over the movements of large capitals. They can configure alerts to be notified (via Telegram, Email, or Discord) at the precise instant a "Whale" moves more than $100,000 USD.
+1.  **The Ledger's Vision (Ledger Tracking):** The system grants the user "God's Eyes" over the movements of large capitals. They can configure alerts to be notified (via Telegram, Email, or Discord) at the precise instant a "Ledger" moves more than $100,000 USD.
 2.  **Deep Market Analysis:** Through elite-quality charts (AttestingView) and "Smart Money" metrics, the user can dissect market health, identifying bullish or bearish trends before they are obvious to the masses.
 3.  **Stealth Mode:** With a single click, the user can hide all their balances from the visual interface, allowing them to operate in public environments without revealing their wealth to prying eyes.
 
@@ -68,13 +68,13 @@ Having delimited the forbidden, let us now unfold the vast range of powers that 
 
 ### EPILOGUE
 
-This system, **Whale Alert**, stands not as a tool, but as a **bastion of freedom**. What can be done here is everything a free individual should be able to do with their wealth. What cannot be done is everything that would put that same freedom at risk.
+This system, **Ledger Alert**, stands not as a tool, but as a **bastion of freedom**. What can be done here is everything a free individual should be able to do with their wealth. What cannot be done is everything that would put that same freedom at risk.
 
 The scope of our creation is thus sealed and documented.
 
 *Dixi.*
 
 ---
-**Digital Signature:** Whale Network Team  
+**Digital Signature:** Ledger Network Team  
 **Verification Hash:** 0x...[IMMUTABLE]
 

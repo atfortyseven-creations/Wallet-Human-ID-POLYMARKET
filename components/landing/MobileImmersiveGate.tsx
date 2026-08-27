@@ -407,7 +407,7 @@ export function MobileImmersiveGate() {
                 transition={{ delay: 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="font-serif text-[11vw] font-normal tracking-tight text-[#0A0A0A] leading-none select-none text-center mb-10"
               >
-                WHALE
+                LEDGER
                 <br />
                 NETWORK
               </motion.h1>

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Whale Alert Network - System Vault Installer
+# Ledger Alert Network - System Vault Installer
 # This script configures your environment in under 1 minute.
 
 set -e
 
 echo "==================================================="
-echo "   Whale Alert Network - System Vault Setup     "
+echo "   Ledger Alert Network - System Vault Setup     "
 echo "==================================================="
 
 echo "Checking prerequisites..."
@@ -23,14 +23,14 @@ then
 fi
 
 echo "[1/4] Cloning the repository (if not already present)..."
-if [ ! -d "whalecosystem" ]; then
-    git clone https://github.com/humanityledger/whalecosystem.git
-    cd whalecosystem
+if [ ! -d "humanityledger" ]; then
+    git clone https://github.com/humanityledger/humanityledger.git
+    cd humanityledger
 else
     echo "Directory exists. Ensuring we are in the right place."
     if [ ! -f "package.json" ]; then
-        if [ -d "whalecosystem" ]; then
-            cd whalecosystem
+        if [ -d "humanityledger" ]; then
+            cd humanityledger
         else
             echo "[!] Error: package.json not found."
             exit 1

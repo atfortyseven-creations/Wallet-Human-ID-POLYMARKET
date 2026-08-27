@@ -3,7 +3,7 @@ import { Worker, Job } from 'bullmq';
 import { neuralSegregator } from '../lib/neural-segregator';
 
 /**
- * Whale Alert Syndicate Daemon
+ * Ledger Alert Syndicate Daemon
  * Listens to anomalous Z-Scores from the Neural Segregator and pushes them
  * to Substack, X, Telegram, and RSS for automated Omnichannel SEO Dominance.
  */
@@ -27,17 +27,17 @@ export const syndicateWorker = new Worker('SyndicationQueue', async (job: Job<An
   console.log(`[Syndicate Daemon] Initiating Cross-Pollination for ${sector.toUpperCase()} (${signal})`);
 
   try {
-    const title = `Whale Alert Oracle: Anomalous ${zScore > 0 ? 'Inflow' : 'Outflow'} detected in ${sector}`;
+    const title = `Ledger Alert Oracle: Anomalous ${zScore > 0 ? 'Inflow' : 'Outflow'} detected in ${sector}`;
     const moneyStr = (volumeContext / 1000000).toFixed(2);
-    const body = `The Whale Alert Neural Segregator has detected extreme capital rotation. \n\nSignal: ${signal}\n24h Volume Deviation Context: $${moneyStr}M`;
+    const body = `The Ledger Alert Neural Segregator has detected extreme capital rotation. \n\nSignal: ${signal}\n24h Volume Deviation Context: $${moneyStr}M`;
     await publishToSubstack({
       title,
       body,
-      tags: [sector, 'Macro', 'Whale Alert']
+      tags: [sector, 'Macro', 'Ledger Alert']
     });
 
     await publishToSocials(
-      ` #HumanityLedgerNetwork Oracle Alert \n\n${signal}\nSector: ${sector.toUpperCase()}\nZ-Score: ${zScore.toFixed(3)}\n\nIntercept this flow at Whale Alert Network`
+      ` #HumanityLedgerNetwork Oracle Alert \n\n${signal}\nSector: ${sector.toUpperCase()}\nZ-Score: ${zScore.toFixed(3)}\n\nIntercept this flow at Ledger Alert Network`
     );
 
     console.log(`[Syndicate Daemon] Syndication Complete.`);

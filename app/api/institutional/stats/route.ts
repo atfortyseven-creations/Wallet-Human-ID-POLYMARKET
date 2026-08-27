@@ -12,7 +12,7 @@ export async function GET() {
     const last1h = new Date(now.getTime() - 1 * 60 * 60 * 1000);
 
     // 1. Fetch records for Telemetry & Liquid Leak detection
-    const records24h = await db.whaleActivity.findMany({
+    const records24h = await db.ledgerActivity.findMany({
       where: { timestamp: { gte: last24h }, usdValue: { gte: '50000000' } },
       select: { usdValue: true, institutional: true, entityName: true, timestamp: true, type: true }
     });
@@ -24,7 +24,7 @@ export async function GET() {
 
     // 2. Telemetry: Throughput
     const records1h = records24h.filter(r => new Date(r.timestamp) >= last1h);
-    const whaleThroughput = records1h.length;
+    const ledgerThroughput = records1h.length;
 
     // 3. Liquidity Leak & Supernova Detection
     const liquidityLeaks = records24h.filter(r => r.type === 'CEX_OUTFLOW' || r.entityName.includes('Binance') || r.entityName.includes('Bybit'));
@@ -37,7 +37,7 @@ export async function GET() {
     else if (liquidityBreachDelta > 200_000_000) hazardLevel = 'MEDIUM';
 
     // 4. Aggregated Volume BTC
-    const stats24h = await db.whaleActivity.aggregate({
+    const stats24h = await db.ledgerActivity.aggregate({
       where: { timestamp: { gte: last24h }, usdValue: { gte: '50000000' } },
       _sum: { valueBTC: true },
     });
@@ -45,7 +45,7 @@ export async function GET() {
     // 5. Top Entities
     const entityCounts: Record<string, number> = {};
     records24h.forEach(r => {
-      if (r.entityName !== 'Unknown Whale') {
+      if (r.entityName !== 'Unknown Ledger') {
         entityCounts[r.entityName] = (entityCounts[r.entityName] || 0) + 1;
       }
     });
@@ -68,7 +68,7 @@ export async function GET() {
       total24hBtc: stats24h._sum.valueBTC || 0,
       transactionCount: records24h.length,
       institutionalRatio,
-      whaleThroughput,
+      ledgerThroughput,
       liquidityBreachDelta,
       supernovaDetected,
       hazardLevel,

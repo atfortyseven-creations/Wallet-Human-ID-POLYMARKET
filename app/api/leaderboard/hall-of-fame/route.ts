@@ -6,9 +6,9 @@
  *   Submit a community detection for verification.
  *   Body: { walletAddress, txHash, chain, description }
  *
- * A "detection" is a whale event that was:
+ * A "detection" is a ledger event that was:
  *   1. First flagged by a non-sovereign community member, AND
- *   2. Verified on-chain (transactionHash exists in whaleActivity)
+ *   2. Verified on-chain (transactionHash exists in ledgerActivity)
  *
  * Each verified submission earns the submitter:
  *   - A "Sentinel" badge on their profile
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
 
         const { prisma } = await import('@/lib/prisma');
 
-        // Aggregate community detections from whaleActivity where metadata.communityDetection = true
+        // Aggregate community detections from ledgerActivity where metadata.communityDetection = true
         const detections = await (prisma as any).communityDetection?.findMany?.({
             where:   { verified: true, detectionCount: { gte: minDetect } },
             orderBy: { totalUsdDetected: 'desc' },
@@ -50,9 +50,9 @@ export async function GET(req: NextRequest) {
             include: { user: { select: { id: true, name: true, image: true } } },
         });
 
-        // Graceful fallback: if table not yet migrated, aggregate from whaleActivity metadata
+        // Graceful fallback: if table not yet migrated, aggregate from ledgerActivity metadata
         if (!detections) {
-            const rows = await prisma.whaleActivity.findMany({
+            const rows = await prisma.ledgerActivity.findMany({
                 where: {
                     metadata: { path: ['communityDetection'], equals: true },
                 },
@@ -170,7 +170,7 @@ export async function POST(req: NextRequest) {
         const { prisma } = await import('@/lib/prisma');
 
         // Verify the detection exists in our on-chain DB (no fabrication allowed)
-        const verified = await prisma.whaleActivity.findUnique({
+        const verified = await prisma.ledgerActivity.findUnique({
             where: { transactionHash: txHash },
         });
 
@@ -182,7 +182,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Tag the existing record with community detection metadata
-        await prisma.whaleActivity.update({
+        await prisma.ledgerActivity.update({
             where: { transactionHash: txHash },
             data: {
                 metadata: {

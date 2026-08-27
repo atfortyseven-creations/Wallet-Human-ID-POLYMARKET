@@ -102,11 +102,11 @@ export interface VIPNetworkStats {
     currentBlock: number;
     tps: number;
     baseFee: number;
-    activeWhales: number;
+    activeLedgers: number;
     liquidityContraction: number;
     systemicRisk: string; // "LOW", "MODERATE", "ELEVATED", "CRITICAL"
     nextReset?: string;
-    whalesToday?: number;
+    ledgersToday?: number;
 }
 
 // Global store to prevent unmounting data loss across VIP pages
@@ -119,14 +119,14 @@ export function useVIPAnalytics() {
         currentBlock: 0,
         tps: 0,
         baseFee: 0,
-        activeWhales: 0,
+        activeLedgers: 0,
         liquidityContraction: 0,
         systemicRisk: "LOW"
     });
     
     const [isStreaming, setIsStreaming] = useState(false);
     const lastBlockPolled = useRef<number>(0);
-    const knownWhaleAddresses = useRef<Set<string>>(new Set());
+    const knownLedgerAddresses = useRef<Set<string>>(new Set());
     const [nextResetTime, setNextResetTime] = useState<string>('');
     const ethPriceUsd = TOKEN_PRICES['ETH']; 
 
@@ -134,15 +134,15 @@ export function useVIPAnalytics() {
         fetch('/api/network/daily-stats')
             .then(r => r.json())
             .then(data => {
-                if (data.whalesToday !== undefined) {
-                    // Initialize the known whale list from DB for perfect daily synchronization
-                    if (data.whaleAddresses) {
-                        data.whaleAddresses.forEach((addr: string) => knownWhaleAddresses.current.add(addr));
+                if (data.ledgersToday !== undefined) {
+                    // Initialize the known ledger list from DB for perfect daily synchronization
+                    if (data.ledgerAddresses) {
+                        data.ledgerAddresses.forEach((addr: string) => knownLedgerAddresses.current.add(addr));
                     }
                     
                     setStats(prev => ({ 
                         ...prev, 
-                        activeWhales: data.whalesToday,
+                        activeLedgers: data.ledgersToday,
                         systemicRisk: data.systemicRisk || prev.systemicRisk,
                         nextReset: data.nextReset 
                     }));
@@ -229,9 +229,9 @@ export function useVIPAnalytics() {
                     let aiRiskScore = Math.min(100, Math.floor(((valueUsd > 100000) ? 50 : 10) + ((gasPrice > 80) ? 20 : 0)));
                     let anomalyDetected = aiRiskScore > 65;
 
-                    // Persistent Whale Counting
+                    // Persistent Ledger Counting
                     if (valueUsd > 500000 || (txType === 'MEV_BOT' && valueUsd > 100000)) {
-                        knownWhaleAddresses.current.add(tx.from);
+                        knownLedgerAddresses.current.add(tx.from);
                     }
 
                     return {
@@ -263,16 +263,16 @@ export function useVIPAnalytics() {
 
             // Update global network stats
             setStats(prev => {
-                const liveWhaleCount = knownWhaleAddresses.current.size;
-                // Accumulate live whales with daily persistence
-                const totalWhales = Math.max(prev.activeWhales, liveWhaleCount);
+                const liveLedgerCount = knownLedgerAddresses.current.size;
+                // Accumulate live ledgers with daily persistence
+                const totalLedgers = Math.max(prev.activeLedgers, liveLedgerCount);
                 
                 return {
                     ...prev,
                     currentBlock: blockNum,
                     tps: block.transactions.length / 12, // approx 12 sec block time
                     baseFee: Number(formatEther(block.baseFeePerGas || 0n)) * 1e9,
-                    activeWhales: totalWhales,
+                    activeLedgers: totalLedgers,
                     liquidityContraction: 0, // Awaiting real-time contraction telemetry
                     systemicRisk: (valuableTxs.filter(t => t.anomalyDetected).length > 5) ? 'ELEVATED' : prev.systemicRisk
                 };

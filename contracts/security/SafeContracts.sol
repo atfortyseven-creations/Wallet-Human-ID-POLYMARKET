@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 
 /**
  * @title SafeContracts (The Citadel Standard)
- * @notice Abstract base for WhaleAlert ID.fi contracts.
+ * @notice Abstract base for LedgerAlert ID.fi contracts.
  * @dev Implements Emergency Stop (Circuit Breaker) and Reentrancy Protections.
  */
 abstract contract SafeContracts is Pausable, ReentrancyGuard, AccessControl {

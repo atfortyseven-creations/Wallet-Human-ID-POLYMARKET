@@ -1,5 +1,5 @@
 /**
- * This script simulates the Logic of app/api/v1/whale/analytics/route.ts
+ * This script simulates the Logic of app/api/v1/ledger/analytics/route.ts
  * without requiring the full Next.js runtime, ensuring the gating logic is correct.
  */
 const mockSubscriptions = [

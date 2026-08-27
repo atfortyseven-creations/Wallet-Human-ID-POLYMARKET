@@ -144,7 +144,7 @@ export default function ScanPage() {
         return;
       } else if (route.type === 'wallet' && route.walletAddress) {
         setSuccessLabel('Opening Chat');
-        sessionStorage.setItem('whale_scan_peer', route.walletAddress.toLowerCase());
+        sessionStorage.setItem('ledger_scan_peer', route.walletAddress.toLowerCase());
         setStatus('success');
         setTimeout(() => router.push('/chat'), 900);
         return;
@@ -325,7 +325,7 @@ export default function ScanPage() {
         {/* Logo mark */}
         <div className="w-8 h-8 rounded-lg border border-black/10 bg-black/[0.03] flex items-center justify-center overflow-hidden">
           <img
-            src="/official-whale-monochrome.png"
+            src="/official-ledger-monochrome.png"
             alt="HL"
             className="w-6 h-6 object-contain opacity-70 mix-blend-multiply"
           />

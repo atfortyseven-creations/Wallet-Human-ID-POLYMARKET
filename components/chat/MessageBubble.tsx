@@ -477,12 +477,12 @@ export const MessageBubble = React.memo(({
                       const fileId = Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5);
                       const newFile = { id: fileId, name: attachment.name, type: attachment.mime, size: Math.round(attachment.url.length * 0.75), createdAt: Date.now(), encrypted: true };
                       const { vault } = await import('@/lib/core/SecureVault');
-                      const stored = await vault.getItem('whale_vault_files');
+                      const stored = await vault.getItem('ledger_vault_files');
                       const files = stored ? JSON.parse(stored) : [];
                       files.push(newFile);
-                      await vault.setItem('whale_vault_files', JSON.stringify(files));
-                      await vault.setItem(`whale_vault_data_${fileId}`, attachment.url);
-                      alert('Saved securely to Whale Vault!');
+                      await vault.setItem('ledger_vault_files', JSON.stringify(files));
+                      await vault.setItem(`ledger_vault_data_${fileId}`, attachment.url);
+                      alert('Saved securely to Ledger Vault!');
                     } catch (err) { alert('Failed to save to vault.'); }
                   }}
                   className="absolute top-2 right-2 bg-black/60 backdrop-blur-md p-1.5 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"

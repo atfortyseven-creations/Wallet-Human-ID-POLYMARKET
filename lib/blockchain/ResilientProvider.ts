@@ -43,7 +43,7 @@ if (typeof process !== 'undefined' && !(globalThis as any).__WS_PROTECTED) {
             return;
         }
         
-        console.error('[WhaleFortress:Fatal] Unhandled Exception:', err);
+        console.error('[LedgerFortress:Fatal] Unhandled Exception:', err);
         process.exit(1);
     });
 }

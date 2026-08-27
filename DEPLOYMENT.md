@@ -65,7 +65,7 @@ npx hardhat run scripts/deploy-zap-gasless.ts --network baseSepolia
 1. **Prepare your Repository**: Ensure your GitHub repository contains the `railway.json` and `Dockerfile` (or `docker-compose.yml` if using full stack).
 2. **Login to Railway**: Go to the Railway Dashboard (https://railway.app/).
 3. **Create New Project**: Click on `New Project` -> `Deploy from GitHub repo`.
-4. **Select Repository**: Search for `humanityledger/whalecosystem` and select it.
+4. **Select Repository**: Search for `humanityledger/humanityledger` and select it.
 5. **Add Environment Variables**: Go to the `Variables` tab of your new service and paste all variables from your local `.env`. Ensure to use production RPCs and keys.
 6. **Set Continuous Deployment**: Ensure "Automatic Deployments" is on so that pushing to `main` updates the app automatically.
 7. **Generate Domain**: Go to `Settings` -> `Networking` and click `Generate Domain` to get your public URL.

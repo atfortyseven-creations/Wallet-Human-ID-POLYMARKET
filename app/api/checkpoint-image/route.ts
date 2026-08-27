@@ -11,18 +11,18 @@ import path from "path";
 //  Asset alias map 
 // Maps clean semantic names  actual filesystem paths
 const ASSET_ALIAS: Record<string, string[]> = {
-  "official-whale-system.png": [
-    path.join(process.cwd(), "public", "official-whale-system.png"),
+  "official-ledger-system.png": [
+    path.join(process.cwd(), "public", "official-ledger-system.png"),
     path.join(process.cwd(), "public", "logo-landingpage.png"),
-    path.join(process.cwd(), "public", "official-whale-legendary.png"),
-    path.join(process.cwd(), "public", "official-whale-monochrome.png"),
-    path.join(process.cwd(), "public", "whale-logo.png"),
-    path.join(process.cwd(), "public", "official-whale.png"),
+    path.join(process.cwd(), "public", "official-ledger-legendary.png"),
+    path.join(process.cwd(), "public", "official-ledger-monochrome.png"),
+    path.join(process.cwd(), "public", "ledger-logo.png"),
+    path.join(process.cwd(), "public", "official-ledger.png"),
   ],
-  "whale-logo-institutional.png": [
-    path.join(process.cwd(), "public", "official-whale-system.png"),
+  "ledger-logo-institutional.png": [
+    path.join(process.cwd(), "public", "official-ledger-system.png"),
     path.join(process.cwd(), "public", "logo-landingpage.png"),
-    path.join(process.cwd(), "public", "whale-logo-institutional.png"),
+    path.join(process.cwd(), "public", "ledger-logo-institutional.png"),
   ],
   "corporate-cube-grid.jpg": [
     path.join(process.cwd(), "public", "corporate-cube-grid.jpg"),

@@ -27,7 +27,7 @@ export class WacAnalyticsService {
     // No arbitrary string matching allowed.
     
     // 2. Analyze historical volume via Indexed Events
-    const events = await prisma.globalWhaleEvent.findMany({
+    const events = await prisma.globalLedgerEvent.findMany({
       take: 20
     });
 
@@ -47,7 +47,7 @@ export class WacAnalyticsService {
    * Detects circular flows between a cluster of wallets
    */
   static async detectWashAttesting(token: string): Promise<any[]> {
-    const recent = await prisma.globalWhaleEvent.findMany({
+    const recent = await prisma.globalLedgerEvent.findMany({
       where: { protocol: { mode: 'insensitive', equals: token } },
       orderBy: { timestamp: 'desc' },
       take: 50
@@ -97,7 +97,7 @@ export class WacAnalyticsService {
    *  DARK POOL & BLOCK ATTESTATIONS
    */
   static async getDarkPoolEvents(): Promise<any[]> {
-    const transfers = await prisma.globalWhaleEvent.findMany({
+    const transfers = await prisma.globalLedgerEvent.findMany({
       where: { 
         protocol: 'PUENTE', // Classified as Bridge/Internal in our radar
         amountUSD: { gte: 500000 } 
@@ -118,7 +118,7 @@ export class WacAnalyticsService {
    *  HEIKIN-ASHI SIGNALS (Refined)
    */
   static async getHeikinAshiSignals(token: string, limit: number = 20): Promise<HeikinAshiCandle[]> {
-    const events = await prisma.globalWhaleEvent.findMany({
+    const events = await prisma.globalLedgerEvent.findMany({
       where: { protocol: { contains: token, mode: 'insensitive' } },
       orderBy: { timestamp: 'desc' },
       take: limit * 10,
@@ -167,7 +167,7 @@ export class WacAnalyticsService {
 
   static async getAnomalyAlerts(token?: string): Promise<any[]> {
     const windowSize = 200;
-    const events = await prisma.globalWhaleEvent.findMany({
+    const events = await prisma.globalLedgerEvent.findMany({
       where: token ? { protocol: { contains: token, mode: 'insensitive' } } : {},
       orderBy: { timestamp: 'desc' },
       take: windowSize,

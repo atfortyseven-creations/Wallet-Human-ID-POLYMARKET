@@ -117,15 +117,15 @@ export default function FeaturesPage() {
                         <div className="bg-gradient-to-br from-orange-600/10 to-red-600/10 p-6 rounded-xl border border-orange-500/30">
                             <div className="flex items-center gap-3 mb-4">
                                 <Eye className="text-orange-400" size={32} />
-                                <h3 className="text-2xl font-bold">Whale Tracker & Analytics</h3>
+                                <h3 className="text-2xl font-bold">Ledger Tracker & Analytics</h3>
                             </div>
                             <p className="mb-4 text-white/70">
-                                Track, analyze, and learn from the biggest wallets in crypto. See what whales are doing before the market reacts.
+                                Track, analyze, and learn from the biggest wallets in crypto. See what ledgers are doing before the market reacts.
                             </p>
                             <ul className="space-y-2 text-sm">
                                 <li className="flex items-start gap-2">
                                     <span className="text-orange-400"></span>
-                                    <span><strong>Whale Detection:</strong> Auto-identify high-value wallets</span>
+                                    <span><strong>Ledger Detection:</strong> Auto-identify high-value wallets</span>
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <span className="text-orange-400"></span>
@@ -327,13 +327,13 @@ export default function FeaturesPage() {
                                     <td className="border border-white/10 p-3 text-center"> + Custom Indicators</td>
                                 </tr>
                                 <tr className="bg-white/5">
-                                    <td className="border border-white/10 p-3">Whale Tracker (Basic)</td>
+                                    <td className="border border-white/10 p-3">Ledger Tracker (Basic)</td>
                                     <td className="border border-white/10 p-3 text-center"></td>
                                     <td className="border border-white/10 p-3 text-center"></td>
                                     <td className="border border-white/10 p-3 text-center"></td>
                                 </tr>
                                 <tr>
-                                    <td className="border border-white/10 p-3">Whale Tracker (Premium Analytics)</td>
+                                    <td className="border border-white/10 p-3">Ledger Tracker (Premium Analytics)</td>
                                     <td className="border border-white/10 p-3 text-center"></td>
                                     <td className="border border-white/10 p-3 text-center"></td>
                                     <td className="border border-white/10 p-3 text-center"></td>

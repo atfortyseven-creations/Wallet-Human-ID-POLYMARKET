@@ -1,11 +1,11 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
-const WhaleKnowledgeGraphModule = buildModule("WhaleKnowledgeGraphModule", (m) => {
+const LedgerKnowledgeGraphModule = buildModule("LedgerKnowledgeGraphModule", (m) => {
   // Deploy the Knowledge Graph contract
-  const oracle = m.contract("WhaleKnowledgeGraph", []);
+  const oracle = m.contract("LedgerKnowledgeGraph", []);
 
   return { oracle };
 });
 
-export default WhaleKnowledgeGraphModule;
+export default LedgerKnowledgeGraphModule;
 

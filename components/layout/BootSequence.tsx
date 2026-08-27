@@ -126,7 +126,7 @@ export const BootSequence = () => {
                                 animate={{ textShadow: ["0 0 10px rgba(255,255,255,0.2)", "0 0 20px rgba(255,255,255,0.6)", "0 0 10px rgba(255,255,255,0.2)"] }}
                                 transition={{ duration: 2, repeat: Infinity }}
                             >
-                                WHALE<span className="text-[#00f2ea]">ALERT</span>
+                                LEDGER<span className="text-[#00f2ea]">ALERT</span>
                             </motion.h1>
 
                             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Whale Support',
+  title: 'Ledger Support',
   description: '24/7 sovereign-grade assistance for the Humanity Ledger Pro ecosystem.',
 };
 

@@ -37,11 +37,11 @@ const ENDPOINT_GROUPS: { label: string; icon: React.ReactNode; endpoints: Endpoi
         ]
     },
     {
-        label: 'Whale Analytics',
+        label: 'Ledger Analytics',
         icon: <Zap size={13}/>,
         endpoints: [
-            { id: 'watched-wallets', group: 'whale', method: 'GET',  path: '/api/user/watched-wallets',         description: 'Retrieve your list of monitored whale entities with live analytics.',  category: 'WHALE' },
-            { id: 'user-signals',    group: 'whale', method: 'GET',  path: '/api/user/signals',                 description: 'Historical on-chain signal events recorded for this account.',         category: 'WHALE' },
+            { id: 'watched-wallets', group: 'ledger', method: 'GET',  path: '/api/user/watched-wallets',         description: 'Retrieve your list of monitored ledger entities with live analytics.',  category: 'LEDGER' },
+            { id: 'user-signals',    group: 'ledger', method: 'GET',  path: '/api/user/signals',                 description: 'Historical on-chain signal events recorded for this account.',         category: 'LEDGER' },
         ]
     },
     {
@@ -67,7 +67,7 @@ const ENDPOINT_GROUPS: { label: string; icon: React.ReactNode; endpoints: Endpoi
         endpoints: [
             { id: 'graph-search',    group: 'graph', method: 'GET',  path: '/api/graph?q=vitalik',            description: 'Search Neo4j graph for Person/Token/Wallet/Company entities.', category: 'GRAPH', params: 'q (string), type (person|token|wallet|company|all)' },
             { id: 'graph-query',     group: 'graph', method: 'POST', path: '/api/graph',                      description: 'Execute a safe read-only Cypher query on the network knowledge graph.', category: 'GRAPH', params: '{ cypher: string, params?: object }' },
-            { id: 'whale-intel',     group: 'graph', method: 'GET',  path: '/api/analytics/whales',        description: 'On-chain whale leaderboard with real movement analytics and alpha scores.', category: 'GRAPH' },
+            { id: 'ledger-intel',     group: 'graph', method: 'GET',  path: '/api/analytics/ledgers',        description: 'On-chain ledger leaderboard with real movement analytics and alpha scores.', category: 'GRAPH' },
         ]
     },
 ];
@@ -201,7 +201,7 @@ export function ApiTerminal() {
                     <div className="flex items-center gap-3">
                         <Terminal size={15} className="text-[#00C076]"/>
                         <span className="text-[10px] font-mono text-white/60">
-                            WHALECOSYSTEM API CONSOLE &gt; {selected.path}
+                            LEDGERCOSYSTEM API CONSOLE &gt; {selected.path}
                         </span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -232,7 +232,7 @@ export function ApiTerminal() {
                     <div className="bg-[#111] rounded-lg border border-white/10 p-3 relative">
                         <span className="absolute -top-2 left-3 bg-[#111] px-1 text-[7px] font-mono text-[#00C076] uppercase tracking-widest">cURL</span>
                         <code className="text-[9px] font-mono text-white/60 select-all break-all">
-                            curl -X {selected.method} "https://api.whalecosystem.com{selected.path}"<br/>
+                            curl -X {selected.method} "https://api.humanityledger.com{selected.path}"<br/>
                             &nbsp;&nbsp;-H "Authorization: Bearer &lt;YOUR_API_KEY&gt;"<br/>
                             &nbsp;&nbsp;-H "Content-Type: application/json"
                         </code>

@@ -69,7 +69,7 @@ Wallet: Humanity Ledger Terminal v4.0
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `whale-wallet-recovery-${Date.now()}.txt`;
+        a.download = `ledger-wallet-recovery-${Date.now()}.txt`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

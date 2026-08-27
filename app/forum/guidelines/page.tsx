@@ -61,7 +61,7 @@ const RULES = [
     n: '04',
     icon: Zap,
     title: 'Mantenerse en el tema del foro',
-    body: 'Este foro está dedicado al análisis de la blockchain, finanzas descentralizadas (DeFi), comportamiento de grandes billeteras (whales) y la plataforma Humanity Ledger. Las conversaciones fuera de tema o la promoción no autorizada no están permitidas.',
+    body: 'Este foro está dedicado al análisis de la blockchain, finanzas descentralizadas (DeFi), comportamiento de grandes billeteras (ledgers) y la plataforma Humanity Ledger. Las conversaciones fuera de tema o la promoción no autorizada no están permitidas.',
     dos: [
       'Abrir hilos en la categoría correcta (Análisis, Plataforma, Investigación, etc.)',
       'Usar títulos descriptivos que faciliten la lectura de los temas',

@@ -137,7 +137,7 @@ async function cacheFirst(request, cacheName) {
 function offlineFallback() {
   return new Response(
     `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
-    <title>Whale Network — Offline</title>
+    <title>Ledger Network — Offline</title>
     <style>
       body{margin:0;background:#ffffff;color:#050505;font-family:monospace;
            display:flex;align-items:center;justify-content:center;min-height:100vh;
@@ -146,7 +146,7 @@ function offlineFallback() {
       p{font-size:11px;opacity:.4;letter-spacing:.1em;text-transform:uppercase;}
     </style>
     </head><body>
-      <h1>Whale Network</h1>
+      <h1>Ledger Network</h1>
       <p>Offline — Reconnect to resume</p>
     </body></html>`,
     { headers: { 'Content-Type': 'text/html' } }
@@ -175,7 +175,7 @@ self.addEventListener('push', (event) => {
   try {
     const { title, body, icon, data } = event.data.json();
     event.waitUntil(
-      self.registration.showNotification(title ?? 'Whale Alert', {
+      self.registration.showNotification(title ?? 'Ledger Alert', {
         body:  body  ?? 'New on-chain signal detected.',
         icon:  icon  ?? '/icons/icon-192x192.png',
         badge: '/icons/icon-96x96.png',

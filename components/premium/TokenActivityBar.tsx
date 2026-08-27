@@ -11,12 +11,12 @@ interface TokenActivityBarProps {
 }
 
 export function TokenActivityBar({ symbol }: TokenActivityBarProps) {
-    const whaleEvents = useVIPStore(state => state.whaleEvents || EMPTY_ARRAY);
+    const ledgerEvents = useVIPStore(state => state.ledgerEvents || EMPTY_ARRAY);
     const { prices, changes } = useTokenPrice();
     
     const filtered = useMemo(() => {
-        return whaleEvents.filter(tx => tx.token.toUpperCase() === symbol.toUpperCase());
-    }, [whaleEvents, symbol]);
+        return ledgerEvents.filter(tx => tx.token.toUpperCase() === symbol.toUpperCase());
+    }, [ledgerEvents, symbol]);
 
     const { vigor, sentiment } = useMemo(() => {
         const recent = filtered.slice(0, 30);

@@ -67,7 +67,7 @@ The service was delivered and API keys were provisioned as contracted.
         customer_purchase_ip: metadata?.purchase_ip,
         customer_name: customer.name || undefined,
         customer_email_address: customer.email || undefined,
-        product_description: `Humanity Ledger Corporation ${subscription.tier} API Subscription  Real-time whale transaction analytics`,
+        product_description: `Humanity Ledger Corporation ${subscription.tier} API Subscription  Real-time ledger transaction analytics`,
         customer_signature: evidenceText,
         service_date: (subscription.createdAt ?? new Date()).toISOString().split('T')[0],
         service_documentation: `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
           keyPrefix:           rawKey.slice(0, 16),
           keyHash,
           dailyRequestLimit:   limits.dailyRequests,
-          whaleThresholdUsd:   limits.threshold,
+          ledgerThresholdUsd:   limits.threshold,
           purchaseIp:          stripeSub.metadata?.purchase_ip || '',
           purchaseCountry:     stripeSub.metadata?.purchase_country || '',
         },
@@ -181,7 +181,7 @@ export async function POST(req: NextRequest) {
     const userEmail = (await stripe.customers.retrieve(stripeSession.customer as string) as Stripe.Customer).email;
     if (userEmail && process.env.RESEND_API_KEY) {
       await resend.emails.send({
-        from: 'Humanity Ledger Corporation <api@whalealert.corp>',
+        from: 'Humanity Ledger Corporation <api@ledgeralert.corp>',
         to: userEmail,
         subject: ' Tu API key de Humanity Ledger Corporation',
         html: `

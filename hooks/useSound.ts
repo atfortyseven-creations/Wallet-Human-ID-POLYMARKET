@@ -3,7 +3,7 @@
 import { useCallback } from 'react';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
 
-type SoundType = 'whale-alert' | 'activity' | 'achievement' | 'level-up' | 'notification';
+type SoundType = 'ledger-alert' | 'activity' | 'achievement' | 'level-up' | 'notification';
 
 export function useSound() {
   const { audioAlerts, hapticFeedback } = useSettingsStore();

@@ -44,7 +44,7 @@ const NODES: RoadmapNode[] = [
     title: 'PostgreSQL + Prisma ORM',
     status: 'live',
     quarter: 'Completed',
-    description: 'Production database on Railway. Prisma ORM handles users, sessions, memberships, product passports, transaction history, and Whale tier data.',
+    description: 'Production database on Railway. Prisma ORM handles users, sessions, memberships, product passports, transaction history, and Ledger tier data.',
     x: C1, y: 200,
   },
   {
@@ -75,15 +75,15 @@ const NODES: RoadmapNode[] = [
   },
   {
     id: 'vip',
-    title: 'Whale Tier Access',
+    title: 'Ledger Tier Access',
     status: 'live',
     quarter: 'Completed',
-    description: 'Tiered membership system (Whale, Orca, Shark, Initiate). Each tier unlocks progressively deeper access: LedgerChat, Studio Provenance creation, sovereign circuit library, and advanced terminal modules. Tiers are verified cryptographically via wallet signature.',
+    description: 'Tiered membership system (Ledger, Orca, Shark, Initiate). Each tier unlocks progressively deeper access: LedgerChat, Studio Provenance creation, sovereign circuit library, and advanced terminal modules. Tiers are verified cryptographically via wallet signature.',
     x: C2, y: 200,
   },
   {
     id: 'terminal',
-    title: 'Whale Terminal',
+    title: 'Ledger Terminal',
     status: 'live',
     quarter: 'Completed',
     description: 'Sovereign-grade multi-tab terminal: Portfolio Dashboard, Markets, Roadmap, Governance, LedgerChat, Studio Provenance, Alerts, Session Logs, and ZK Developer Sandbox — all in one shell.',
@@ -159,10 +159,10 @@ const NODES: RoadmapNode[] = [
   },
   {
     id: 'alerts',
-    title: 'Whale Alert Engine',
+    title: 'Ledger Alert Engine',
     status: 'building',
     quarter: 'Sep 2026',
-    description: 'Real-time on-chain whale movement monitoring. Tracks wallets above $1M threshold, detects suspicious clustering and wash-trading patterns, and delivers push notifications through the in-terminal alert panel.',
+    description: 'Real-time on-chain ledger movement monitoring. Tracks wallets above $1M threshold, detects suspicious clustering and wash-trading patterns, and delivers push notifications through the in-terminal alert panel.',
     x: C4, y: 480,
   },
 
@@ -172,7 +172,7 @@ const NODES: RoadmapNode[] = [
     title: 'Hyperliquid Execution',
     status: 'planned',
     quarter: 'Oct 2026',
-    description: 'Direct perpetuals execution panel. Place, modify, and cancel orders on Hyperliquid L1 from within the Whale terminal with institutional-grade slippage and position controls.',
+    description: 'Direct perpetuals execution panel. Place, modify, and cancel orders on Hyperliquid L1 from within the Ledger terminal with institutional-grade slippage and position controls.',
     x: C5, y: 60,
   },
   {
@@ -180,7 +180,7 @@ const NODES: RoadmapNode[] = [
     title: 'Dark Pool Orderbook',
     status: 'planned',
     quarter: 'Oct 2026',
-    description: 'Private institutional orderbook using the compiled ZK Order Matching circuit. Makers and takers cross price without revealing order size or price. Beta access for Whale tier members only.',
+    description: 'Private institutional orderbook using the compiled ZK Order Matching circuit. Makers and takers cross price without revealing order size or price. Beta access for Ledger tier members only.',
     x: C5, y: 200,
   },
   {
@@ -196,7 +196,7 @@ const NODES: RoadmapNode[] = [
     title: 'Native Mobile App',
     status: 'planned',
     quarter: 'Nov 2026',
-    description: 'Native iOS and Android app wrapping the Whale terminal. Biometric wallet signing, push notifications for whale alerts, LedgerChat, and Studio Provenance QR scanning from the camera.',
+    description: 'Native iOS and Android app wrapping the Ledger terminal. Biometric wallet signing, push notifications for ledger alerts, LedgerChat, and Studio Provenance QR scanning from the camera.',
     x: C5, y: 480,
   },
 
@@ -211,10 +211,10 @@ const NODES: RoadmapNode[] = [
   },
   {
     id: 'dao',
-    title: 'Whale DAO Governance',
+    title: 'Ledger DAO Governance',
     status: 'planned',
     quarter: 'Dec 2026',
-    description: 'On-chain governance with ZK-private voting. Whale Token holders vote on treasury, protocol upgrades, and fee structures without revealing wallet identity or token balance.',
+    description: 'On-chain governance with ZK-private voting. Ledger Token holders vote on treasury, protocol upgrades, and fee structures without revealing wallet identity or token balance.',
     x: C6, y: 280,
   },
   {

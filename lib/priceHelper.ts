@@ -1,5 +1,5 @@
 /**
- * Whale-Grade Price Helper
+ * Ledger-Grade Price Helper
  * ZERO-LATENCY Binance/DexScreener Hybrid Fetcher
  */
 
@@ -14,7 +14,7 @@ interface PriceCache {
 const priceCache: PriceCache = {};
 const CACHE_DURATION = 15 * 1000; // 15 seconds cache for backend reads (UI uses 0ms WS)
 
-// Binance Symbol Mapping (Whale-Grade Core Assets)
+// Binance Symbol Mapping (Ledger-Grade Core Assets)
 const BINANCE_MAP: Record<string, string> = {
   'BTC': 'BTCUSDT', 'ETH': 'ETHUSDT', 'BNB': 'BNBUSDT', 'SOL': 'SOLUSDT', 'XRP': 'XRPUSDT',
   'ADA': 'ADAUSDT', 'DOGE': 'DOGEUSDT', 'SHIB': 'SHIBUSDT', 'DOT': 'DOTUSDT', 'LINK': 'LINKUSDT',

@@ -46,7 +46,7 @@ export function startCosmicForgeWorker() {
     };
 
     console.log(`[CosmicForgeWorker]  Processing Cosmic Seed for ${tier} (Hash: ${seedHash.substring(0, 8)}...)`);
-    const entity = await ForgeService.processWhaleSeed(seed);
+    const entity = await ForgeService.processLedgerSeed(seed);
 
     if (entity) {
       console.log(`[CosmicForgeWorker]  Entity Created: ${entity.id} [${entity.generatorType}]`);

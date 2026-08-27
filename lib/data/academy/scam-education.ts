@@ -340,7 +340,7 @@ export const scamEducationModules = [
                     </section>
                     <section class="pro-section">
                         <h2>II. El Legado de Satoshi: Responsabilidad Absoluta L1 P2P M1 T-1 L2 M2 O(N)</h2>
-                        <p>Ser tu propio banco significa ser tu propio oficial de seguridad P2P L1 M1 O(1). En la Whale Academy, hemos desglosado 460 artículos T-1 L2 M2 para darte la armadura intelectual O(N) P2P L1. La red es un océano de depredadores M1 L2 T-1 O(1). La única protección es el conocimiento profundo del código y la disciplina marcial en la ejecución on-chain P2P L1 O(1). <strong>System Analytics is the only shield.</strong></p>
+                        <p>Ser tu propio banco significa ser tu propio oficial de seguridad P2P L1 M1 O(1). En la Ledger Academy, hemos desglosado 460 artículos T-1 L2 M2 para darte la armadura intelectual O(N) P2P L1. La red es un océano de depredadores M1 L2 T-1 O(1). La única protección es el conocimiento profundo del código y la disciplina marcial en la ejecución on-chain P2P L1 O(1). <strong>System Analytics is the only shield.</strong></p>
                     </section>
                 </div>`
             }

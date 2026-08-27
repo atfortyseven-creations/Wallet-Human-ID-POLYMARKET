@@ -54,13 +54,13 @@ function processTrade(e) {
     const qty = parseFloat(e.q);
     const usdValue = price * qty;
     
-    // WHALE FLOW: Filter only > 10K $
+    // LEDGER FLOW: Filter only > 10K $
     if (usdValue >= 10000) {
         const isBuyerMaker = e.m; // if true, trade was a sell (taker sold to maker)
         const side = isBuyerMaker ? 'SELL' : 'BUY';
 
         postMessage({
-            type: 'WHALE_FLOW',
+            type: 'LEDGER_FLOW',
             id: e.a,
             price: price,
             amountUsd: usdValue,
@@ -69,7 +69,7 @@ function processTrade(e) {
         });
 
         // MARKETS: Correlated Stochastic Fluctuation
-        // Whale trades shift OI and funding stochastically
+        // Ledger trades shift OI and funding stochastically
         if (usdValue > 50000) {
             oiBaseline += (isBuyerMaker ? -usdValue : usdValue) * 0.1;
             fundingBaseline += (isBuyerMaker ? -0.0001 : 0.0001);

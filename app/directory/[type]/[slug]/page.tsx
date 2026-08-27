@@ -50,7 +50,7 @@ export default async function KnowledgeGraphEntityPage({
       <header className="mb-12 border-b border-black/10 pb-6 flex justify-between items-end">
         <div>
           <span className="text-[10px] font-black uppercase tracking-[0.25em] opacity-40 mb-2 block text-indigo-600">
-            Whale Directory / {label} // Private TERMINAL INDEX
+            Ledger Directory / {label} // Private TERMINAL INDEX
           </span>
           <h1 className="text-6xl font-black tracking-tighter uppercase italic drop-shadow-sm">
             {entity.name || slug}

@@ -91,7 +91,7 @@ export class AlchemyMonitor {
 
             // Humanity Ledger threshold: > 10 ETH
             if (Number(ethValue) / 1e18 > 10) {
-                await redis.publish('whale-alerts', JSON.stringify({
+                await redis.publish('ledger-alerts', JSON.stringify({
                     type: 'TRANSACTION',
                     title: `Large Movement Detected`,
                     message: `Pending ${direction}: ${ethFormatted} ETH from ${watchedAddr.slice(0, 10)}...`,

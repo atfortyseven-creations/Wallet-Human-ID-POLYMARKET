@@ -103,20 +103,20 @@ export default function SettingsPanel() {
 
 function DangerZoneReveal({ onSuccess }: { onSuccess: () => void }) {
     const [input, setInput] = useState('');
-    const correctPhrase = "WHALE";
+    const correctPhrase = "LEDGER";
     const isMatched = input.toUpperCase() === correctPhrase;
 
     return (
         <div className="space-y-4">
             <p className="text-[10px] uppercase tracking-widest">
-                TYPE <span className="font-black">WHALE</span> TO REVEAL SECRETS.
+                TYPE <span className="font-black">LEDGER</span> TO REVEAL SECRETS.
             </p>
 
             <input 
                 type="text" 
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="TYPE WHALE..."
+                placeholder="TYPE LEDGER..."
                 className="w-full px-6 py-4 border border-black outline-none font-black text-[11px] uppercase tracking-widest transition-colors focus:bg-black focus:text-white placeholder:text-black/30"
             />
 

@@ -73,11 +73,11 @@ describe('useSettingsStore (Quantum UX Multiplatform Settings Sync)', () => {
   it('should configure DeFi/Trading scanners flawlessly', () => {
     useSettingsStore.getState().updateSetting('recognizeTickers', true);
     useSettingsStore.getState().updateSetting('contractScanner', true);
-    useSettingsStore.getState().updateSetting('whaleAlertThreshold', 50000);
+    useSettingsStore.getState().updateSetting('ledgerAlertThreshold', 50000);
 
     const state = useSettingsStore.getState();
     expect(state.recognizeTickers).toBe(true);
     expect(state.contractScanner).toBe(true);
-    expect(state.whaleAlertThreshold).toBe(50000);
+    expect(state.ledgerAlertThreshold).toBe(50000);
   });
 });

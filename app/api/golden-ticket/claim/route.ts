@@ -365,13 +365,13 @@ export async function POST(req: NextRequest) {
             totalClaimed:    totalClaimed + 1,
             paymentVerified,
             paymentGraceMode,
-            message:         'Whale Gold Ticket claimed successfully.',
+            message:         'Ledger Gold Ticket claimed successfully.',
         }, { status: 201 });
 
     } catch (error: any) {
         if (error?.message === 'MAX_SUPPLY_REACHED') {
             return NextResponse.json({
-                error: 'Max supply reached. All 200 Whale Gold Tickets have been minted.',
+                error: 'Max supply reached. All 200 Ledger Gold Tickets have been minted.',
             }, { status: 410 });
         }
         if (error?.code === 'P2002') {

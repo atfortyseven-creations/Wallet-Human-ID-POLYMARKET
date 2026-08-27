@@ -269,7 +269,7 @@ constructor() {
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 250" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
                                 <rect x="50" y="90" width="180" height="70" fill="rgba(77,148,255,0.2)" stroke="#4d94ff" stroke-width="2" />
-                                <text x="140" y="125" fill="#fff" text-anchor="middle" style="font-weight:bold;">TX_0: Whale Drop</text>
+                                <text x="140" y="125" fill="#fff" text-anchor="middle" style="font-weight:bold;">TX_0: Ledger Drop</text>
                                 <text x="140" y="145" fill="#4d94ff" text-anchor="middle" style="font-size: 11px;">$10M ETH Dump (Slippage 5%)</text>
                                 
                                 <path d="M230 125 L340 125" stroke="#fff" marker-end="url(#arrowhead)" stroke-width="2" stroke-dasharray="4" />
@@ -1127,7 +1127,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
 
                     <section class="pro-section">
                         <h2>II. Programabilidad del Cumplimiento (Attestation-as-Code)</h2>
-                        <p>El futuro reside en los <strong>Privacy-Preserving Protocols</strong> que utilizan Zero Knowledge Proofs (ZKP) para demostrar cumplimiento regulatorio sin exponer la estrategia de attesting o el balance total. Para la Whale Academy, esto representa el clímax de la soberanía: control absoluto de la identidad y el flujo de datos, operando con eficiencia institucional pero con la privacidad del "Bosque Oscuro".</p>
+                        <p>El futuro reside en los <strong>Privacy-Preserving Protocols</strong> que utilizan Zero Knowledge Proofs (ZKP) para demostrar cumplimiento regulatorio sin exponer la estrategia de attesting o el balance total. Para la Ledger Academy, esto representa el clímax de la soberanía: control absoluto de la identidad y el flujo de datos, operando con eficiencia institucional pero con la privacidad del "Bosque Oscuro".</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 150" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -1226,7 +1226,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. El Smart Contract como Contraparte Solvente</h2>
-                        <p>En el mercado tradicional, el riesgo de contraparte se gestiona mediante colaterales en cámaras de compensación. En DeFi, la contraparte es el <strong>Código</strong>. El riesgo no es solo la insolvencia financiera, sino la <em>falla lógica</em>. Un contrato puede ser solvente hoy pero vulnerable a una manipulación de estado mañana. La Whale Academy enfoca el análisis en la <strong>Inmutabilidad Selectiva</strong>: ¿puede el dueño del contrato pausar retiros o alterar los oráculos de precio unilateralmente?</p>
+                        <p>En el mercado tradicional, el riesgo de contraparte se gestiona mediante colaterales en cámaras de compensación. En DeFi, la contraparte es el <strong>Código</strong>. El riesgo no es solo la insolvencia financiera, sino la <em>falla lógica</em>. Un contrato puede ser solvente hoy pero vulnerable a una manipulación de estado mañana. La Ledger Academy enfoca el análisis en la <strong>Inmutabilidad Selectiva</strong>: ¿puede el dueño del contrato pausar retiros o alterar los oráculos de precio unilateralmente?</p>
                     </section>
 
                     <section class="pro-section">
@@ -1276,7 +1276,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
 
                     <section class="pro-section">
                         <h2>II. Slippage: La Incertidumbre del Tiempo de Bloque</h2>
-                        <p>A diferencia del Impacto, el <strong>Slippage</strong> (Deslizamiento) es la diferencia entre el precio esperado al enviar la transacción y el precio real al momento de la inclusión en el bloque. En redes de alta latencia o durante picos de volatilidad, el slippage puede ser devastador. La Whale Academy enseña el uso de <strong>Slippage Tolerance Masks</strong>: límites estrictos en el contrato que revierten la transacción si el precio final se desvía más de un micro-porcentaje predefinido (ej. 0.01%).</p>
+                        <p>A diferencia del Impacto, el <strong>Slippage</strong> (Deslizamiento) es la diferencia entre el precio esperado al enviar la transacción y el precio real al momento de la inclusión en el bloque. En redes de alta latencia o durante picos de volatilidad, el slippage puede ser devastador. La Ledger Academy enseña el uso de <strong>Slippage Tolerance Masks</strong>: límites estrictos en el contrato que revierten la transacción si el precio final se desvía más de un micro-porcentaje predefinido (ej. 0.01%).</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 200" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -1308,7 +1308,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Impermanent Loss (IL): El Costo de Oportunidad Convexo</h2>
-                        <p>El IL es la métrica tradicional que describe la pérdida de un LP al comparar su saldo contra una estrategia de <em>Holding</em> pasivo. Debido a la fórmula $x \cdot y = k$, el LP siempre vende el activo que sube y compra el que baja. Geométricamente, el IL es una función convexa: la pérdida se acelera a medida que el precio se desvía del punto de entrada. Para la Whale Academy, el IL es un "espejismo" que ignora que el precio rara vez regresa al equilibrio original, convirtiéndose en una pauta de pérdida permanente.</p>
+                        <p>El IL es la métrica tradicional que describe la pérdida de un LP al comparar su saldo contra una estrategia de <em>Holding</em> pasivo. Debido a la fórmula $x \cdot y = k$, el LP siempre vende el activo que sube y compra el que baja. Geométricamente, el IL es una función convexa: la pérdida se acelera a medida que el precio se desvía del punto de entrada. Para la Ledger Academy, el IL es un "espejismo" que ignora que el precio rara vez regresa al equilibrio original, convirtiéndose en una pauta de pérdida permanente.</p>
                     </section>
 
                     <section class="pro-section">
@@ -1355,7 +1355,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
 
                     <section class="pro-section">
                         <h2>II. Impacto en el Ecosistema y Defensa</h2>
-                        <p>Aunque el usuario que realiza el swap se beneficia (recibe un precio mejor debido a la liquidez masiva inyectada), los LPs de largo plazo sufren una canibalización de sus ingresos. El análisis forense identifica JIT Liquidity mediante el patrón <strong>Mint -> Swap -> Burn</strong> en el mismo índice de transacción. La Whale Academy considera esto una "liquidez predadora" que obliga a los LPs institucionales a evolucionar hacia modelos de liquidez dinámica y Hooks de protección para penalizar retiros ultra-rápidos.</p>
+                        <p>Aunque el usuario que realiza el swap se beneficia (recibe un precio mejor debido a la liquidez masiva inyectada), los LPs de largo plazo sufren una canibalización de sus ingresos. El análisis forense identifica JIT Liquidity mediante el patrón <strong>Mint -> Swap -> Burn</strong> en el mismo índice de transacción. La Ledger Academy considera esto una "liquidez predadora" que obliga a los LPs institucionales a evolucionar hacia modelos de liquidez dinámica y Hooks de protección para penalizar retiros ultra-rápidos.</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 180" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -1432,7 +1432,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
 
                     <section class="pro-section">
                         <h2>II. LVR-Reduction y System Liquidity</h2>
-                        <p>Para la Whale Academy, un McAMM es la herramienta definitiva de <strong>Soberanía de Liquidez</strong>. Al capturar el valor del arbitraje, el protocolo reduce efectivamente el LVR del pool, permitiendo a los LPs ser rentables incluso con volúmenes retail menores. Es una transición de un modelo de "Mercado Abierto al Robo" hacia un modelo de "Mercado de Acceso Subastado", donde la plusvalía del flujo informado se queda dentro del ecosistema institucional.</p>
+                        <p>Para la Ledger Academy, un McAMM es la herramienta definitiva de <strong>Soberanía de Liquidez</strong>. Al capturar el valor del arbitraje, el protocolo reduce efectivamente el LVR del pool, permitiendo a los LPs ser rentables incluso con volúmenes retail menores. Es una transición de un modelo de "Mercado Abierto al Robo" hacia un modelo de "Mercado de Acceso Subastado", donde la plusvalía del flujo informado se queda dentro del ecosistema institucional.</p>
                     </section>
                 </div>`
             },
@@ -1445,7 +1445,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Física de la Ejecución On-Chain: Ticks y Espaciado</h2>
-                        <p>En la liquidez concentrada (Uniswap V3), el precio no es un continuo, sino una serie de puntos discretos denominados <strong>Ticks</strong>. El <code>tickSpacing</code> define la granularidad del mercado: un espaciado pequeño (ej. 1 tick = 0.01%) permite una precisión quirúrgica pero aumenta los costos de gas para los LPs; un espaciado grande reduce el gas pero aumenta el slippage para el usuario. La Whale Academy analiza el tick spacing como la "resolución" de una cámara: a mayor resolución, mejor descubrimiento de precio pero mayor carga de datos computacionales.</p>
+                        <p>En la liquidez concentrada (Uniswap V3), el precio no es un continuo, sino una serie de puntos discretos denominados <strong>Ticks</strong>. El <code>tickSpacing</code> define la granularidad del mercado: un espaciado pequeño (ej. 1 tick = 0.01%) permite una precisión quirúrgica pero aumenta los costos de gas para los LPs; un espaciado grande reduce el gas pero aumenta el slippage para el usuario. La Ledger Academy analiza el tick spacing como la "resolución" de una cámara: a mayor resolución, mejor descubrimiento de precio pero mayor carga de datos computacionales.</p>
                     </section>
 
                     <section class="pro-section">
@@ -1499,7 +1499,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. EigenLayer y la Hipoteca de Seguridad</h2>
-                        <p>El <strong>Re-staking</strong> es una primitiva financiera que permite a los validadores de Ethereum "re-prometer" su Beacon Chain ETH para asegurar servicios adicionales (AVS) como puentes, oráculos o redes de disponibilidad de datos. Esto crea una <strong>Capa de Seguridad Compartida</strong> que reduce dramáticamente el costo de lanzar nuevos protocolos. Para la Whale Academy, es la máxima expresión de la eficiencia del capital: un solo activo asegurando múltiples redes simultáneamente.</p>
+                        <p>El <strong>Re-staking</strong> es una primitiva financiera que permite a los validadores de Ethereum "re-prometer" su Beacon Chain ETH para asegurar servicios adicionales (AVS) como puentes, oráculos o redes de disponibilidad de datos. Esto crea una <strong>Capa de Seguridad Compartida</strong> que reduce dramáticamente el costo de lanzar nuevos protocolos. Para la Ledger Academy, es la máxima expresión de la eficiencia del capital: un solo activo asegurando múltiples redes simultáneamente.</p>
                     </section>
 
                     <section class="pro-section">
@@ -1517,7 +1517,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. El Trilema de la Estabilidad Algorítmica</h2>
-                        <p>Las stablecoins algorítmicas puras (que mantienen la paridad solo mediante algoritmos de expansión/contracción de oferta) han evolucionado hacia modelos híbridos. La Whale Academy analiza el modelo de <strong>Delta-Neutral Backing</strong> (ej. Ethena USDe), que utiliza posiciones cortas en futuros para neutralizar la volatilidad del colateral de staking. No es magia algorítmica; es ingeniería financiera de derivados aplicada a la estabilidad de precios.</p>
+                        <p>Las stablecoins algorítmicas puras (que mantienen la paridad solo mediante algoritmos de expansión/contracción de oferta) han evolucionado hacia modelos híbridos. La Ledger Academy analiza el modelo de <strong>Delta-Neutral Backing</strong> (ej. Ethena USDe), que utiliza posiciones cortas en futuros para neutralizar la volatilidad del colateral de staking. No es magia algorítmica; es ingeniería financiera de derivados aplicada a la estabilidad de precios.</p>
                     </section>
 
                     <section class="pro-section">
@@ -1540,7 +1540,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
 
                     <section class="pro-section">
                         <h2>II. El Clímax de la Ingeniería Financiera en AMMs</h2>
-                        <p>La soberanía total en el Market Making se alcanza cuando el LP utiliza <strong>Range Orders</strong> como órdenes de límite institucionales. Al posicionar liquidez concentrada, el LP no solo gana comisiones, sino que ejecuta una estrategia de entrada/salida de activos con precisión milimétrica. Con la finalización de este módulo, el analista de la Whale Academy posee el conocimiento para diseccionar, operar y dominar el flujo institucional en la frontera descentralizada.</p>
+                        <p>La soberanía total en el Market Making se alcanza cuando el LP utiliza <strong>Range Orders</strong> como órdenes de límite institucionales. Al posicionar liquidez concentrada, el LP no solo gana comisiones, sino que ejecuta una estrategia de entrada/salida de activos con precisión milimétrica. Con la finalización de este módulo, el analista de la Ledger Academy posee el conocimiento para diseccionar, operar y dominar el flujo institucional en la frontera descentralizada.</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 200" style="background: rgba(0,0,0,0.2); border-radius: 8px;">

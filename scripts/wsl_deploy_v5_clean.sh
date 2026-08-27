@@ -25,7 +25,7 @@ nvm use 20
 
 echo ""
 echo "╔══════════════════════════════════════════════════════════════╗"
-echo "║   WHALE NETWORK — Aztec Testnet V5 Deployment               ║"
+echo "║   LEDGER NETWORK — Aztec Testnet V5 Deployment               ║"
 echo "║   Target: QDs TokenContract                                  ║"
 echo "╚══════════════════════════════════════════════════════════════╝"
 echo ""

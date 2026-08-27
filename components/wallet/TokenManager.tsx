@@ -21,13 +21,13 @@ export default function TokenManager({ walletAddress, chainId, onSelectToken }: 
   const [showAddTokenDialog, setShowAddTokenDialog] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
 
-  // Real-time token loading using our whale/stats API
+  // Real-time token loading using our ledger/stats API
   const loadTokens = async () => {
     if (!walletAddress) return;
     
     setLoading(true);
     try {
-      const response = await fetch(`/api/whale/stats?address=${walletAddress}`);
+      const response = await fetch(`/api/ledger/stats?address=${walletAddress}`);
       const data = await response.json();
       
       if (data.inventory) {

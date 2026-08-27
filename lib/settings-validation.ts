@@ -95,7 +95,7 @@ export const UserSettingsSchema = z.object({
   telegramChatId: z.string().nullable().optional(),
   telegramTopicId: z.string().nullable().optional(),
   telegramUsername: z.string().nullable().optional(),
-  whaleThreshold: z.coerce.number().min(0).max(10000000000).default(500000000),
+  ledgerThreshold: z.coerce.number().min(0).max(10000000000).default(500000000),
 
   // Attesting
   defaultSlippage: z.coerce.number().min(0).max(100).default(0.5),
@@ -234,7 +234,7 @@ export function getDefaultUserSettings(): UserSettings {
     telegramChatId: null,
     telegramTopicId: null,
     telegramUsername: null,
-    whaleThreshold: 50000,
+    ledgerThreshold: 50000,
 
     // Attesting
     defaultSlippage: 0.5,

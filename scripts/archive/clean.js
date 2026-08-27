@@ -10,7 +10,7 @@ async function clean() {
             'MINT_IDENTITY',
             'IDENTITY_PROOF',
             'FORUM_POST',
-            'WHALE_CHAT_SYNC',
+            'LEDGER_CHAT_SYNC',
             'PORTFOLIO_ACCESS',
             'STUDIO_ACCESS',
             'ANCHOR',

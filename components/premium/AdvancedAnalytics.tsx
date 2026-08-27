@@ -8,7 +8,7 @@ import AttestingViewChart from './TradingViewChart';
 import PremiumLocked from './PremiumLocked';
 import { useAccount } from 'wagmi';
 import { useAuth } from '@/hooks/useAuth';
-import { useWhaleFeed } from '@/hooks/useWhaleFeed';
+import { useLedgerFeed } from '@/hooks/useLedgerFeed';
 
 import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
 interface AdvancedAnalyticsProps {
@@ -36,7 +36,7 @@ interface PortfolioData {
 export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed }: AdvancedAnalyticsProps) {
   const { address: web3Address } = useAccount();
   const { isAuthenticated } = useAuth();
-  const { unifiedWhaleFeed } = useWhaleFeed();
+  const { unifiedLedgerFeed } = useLedgerFeed();
   const [timeframe, setTimeframe] = useState<'24h' | '7d' | '30d' | '90d' | '1y'>('7d');
   const [selectedMetric, setSelectedMetric] = useState<'value' | 'pnl' | 'activity' | 'risk'>('value');
   const [portfolioData, setPortfolioData] = useState<any>({
@@ -54,7 +54,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
     strategicSummary: '',
     yieldPositions: [],
     networksActive: [],
-    whaleEvidence: [],
+    ledgerEvidence: [],
     influenceScore: 0,
     entityInfo: null,
     totalFlow30d: 0,
@@ -106,7 +106,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
         strategicSummary: statsData.strategicSummary || '',
         yieldPositions: statsData.yieldPositions || [],
         networksActive: statsData.networksActive || [],
-        whaleEvidence: statsData.whaleEvidence || [],
+        ledgerEvidence: statsData.ledgerEvidence || [],
         influenceScore: statsData.influenceScore || 0
       });
     } catch (e: any) {
@@ -142,7 +142,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
                 yieldPositions: statsData.yieldPositions ?? prev.yieldPositions,
                 networksActive: statsData.networksActive ?? prev.networksActive,
                 smartMoneyMetrics: statsData.smartMoneyMetrics ?? prev.smartMoneyMetrics,
-                whaleEvidence: statsData.whaleEvidence ?? prev.whaleEvidence,
+                ledgerEvidence: statsData.ledgerEvidence ?? prev.ledgerEvidence,
                 influenceScore: statsData.influenceScore ?? prev.influenceScore,
                 entityInfo: statsData.entityInfo ?? prev.entityInfo,
                 totalFlow30d: statsData.totalFlow30d ?? prev.totalFlow30d,
@@ -231,7 +231,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
         <AttestingViewChart 
             symbol="BTCUSDT" 
             height={300} 
-            transfers={unifiedWhaleFeed
+            transfers={unifiedLedgerFeed
                 .filter(tx => tx.asset === 'BTC' || tx.asset === 'WBTC' || tx.asset === 'BTCB')
                 .map(tx => ({
                     timestamp: tx.timestamp,
@@ -362,14 +362,14 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
         </div>
         
         {/* Elite Evidence Panel */}
-        {portfolioData.whaleEvidence && portfolioData.whaleEvidence.length > 0 && (
+        {portfolioData.ledgerEvidence && portfolioData.ledgerEvidence.length > 0 && (
           <div className="lg:col-span-2 bg-blue-600/5 border border-blue-500/20 rounded-3xl p-6 backdrop-blur-md">
             <h4 className="text-xs font-black text-blue-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
               <ShieldCheck size={16} />
               Elite Verification Evidence
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {portfolioData.whaleEvidence.map((ev: string, i: number) => (
+              {portfolioData.ledgerEvidence.map((ev: string, i: number) => (
                 <div key={i} className="flex items-center gap-3 text-sm text-gray-300 font-medium bg-white/5 p-3 rounded-2xl border border-white/5">
                   <div className="w-2 h-2 bg-blue-500 rounded-full" />
                   {ev}

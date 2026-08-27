@@ -97,7 +97,7 @@ const HONEYPOT_PATTERNS = [
 const GEO_RESTRICTED_PATTERNS = ['/api/polymarket(.*)'];
 const RESTRICTED_COUNTRIES = ['US', 'CU', 'IR', 'KP', 'SY', 'CN', 'RU'];
 
-// SECURITY MIDDLEWARE  "THE IRON GATE v6 - WHALE FORTRESS Cryptographic"
+// SECURITY MIDDLEWARE  "THE IRON GATE v6 - LEDGER FORTRESS Cryptographic"
 // Absolute protection. Zero Clerk dependency. SIWE-native authentication.
 
 export default async function middleware(request: NextRequest) {
@@ -118,7 +118,7 @@ export default async function middleware(request: NextRequest) {
     // [PHASE 3: ZERO-METADATA ROUTING] Onion-like IP obfuscation.
     // Plaintext IP addresses are NEVER logged or stored in the database.
     const encoder = new TextEncoder();
-    const data = encoder.encode(rawIp + (process.env.NEXTAUTH_SECRET || 'whale-salt'));
+    const data = encoder.encode(rawIp + (process.env.NEXTAUTH_SECRET || 'ledger-salt'));
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const ip = 'onion_' + hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 16);
@@ -156,7 +156,7 @@ export default async function middleware(request: NextRequest) {
 
     // [QUANTUM HARDENING] Strict Origin & CSRF Enforcement (Zero-Trust POST)
     // SECURITY FIX VULN-02: Read allowed origin from env so any Railway deployment (Studio Provenance,
-    // Whale Network, etc.) is automatically whitelisted without hardcoding domain names.
+    // Ledger Network, etc.) is automatically whitelisted without hardcoding domain names.
     if (request.method !== 'GET' && request.method !== 'OPTIONS' && request.method !== 'HEAD') {
         const origin = request.headers.get('origin');
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://humanidfi.com';
@@ -170,7 +170,7 @@ export default async function middleware(request: NextRequest) {
             'http://localhost:8080',
         ].filter(Boolean);
         if (origin && !allowedOrigins.some(o => origin === o)) {
-            console.error(`[WhaleFortress] ⛔ CSRF Block: Invalid Origin detected -> ${origin} from IP: ${ip}`);
+            console.error(`[LedgerFortress] ⛔ CSRF Block: Invalid Origin detected -> ${origin} from IP: ${ip}`);
             return new NextResponse(JSON.stringify({ error: 'INVALID_ORIGIN' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
         }
     }
@@ -186,7 +186,7 @@ export default async function middleware(request: NextRequest) {
     // 0. GEOFENCING  Regulatory Firewall (CFTC/OFAC)
     if (!isBypassIP && matchesPattern(pathname, GEO_RESTRICTED_PATTERNS)) {
       if (RESTRICTED_COUNTRIES.includes(country)) {
-        console.warn(`[WhaleFortress]  Geoblocked Restricted Access from Country: ${country}, IP: ${ip}`);
+        console.warn(`[LedgerFortress]  Geoblocked Restricted Access from Country: ${country}, IP: ${ip}`);
         return new NextResponse(
           JSON.stringify({
             error: 'RESTRICTED_JURISDICTION',
@@ -202,10 +202,10 @@ export default async function middleware(request: NextRequest) {
       const isCommonNoise = pathname.includes('wp-') || pathname.includes('phpmyadmin');
       if (isCommonNoise) {
         // Log common scanner noise at info level to keep console clean
-        console.info(`[WhaleFortress:Noise]  Scanner blocked: ${ip} -> ${pathname}`);
+        console.info(`[LedgerFortress:Noise]  Scanner blocked: ${ip} -> ${pathname}`);
       } else {
         // High-priority alert for unexpected paths (genuine security threats)
-        console.error(`[WhaleFortress:SECURITY]  SHADOW_PROBE BLOCKED: ${ip} -> ${pathname}`);
+        console.error(`[LedgerFortress:SECURITY]  SHADOW_PROBE BLOCKED: ${ip} -> ${pathname}`);
       }
       
       // [QUANTUM AEGIS FORTIFICATION] Absolute Zero Tolerance.
@@ -231,7 +231,7 @@ export default async function middleware(request: NextRequest) {
            
          // [ABYSMALLY COMPLEX OPTIMIZATION]: Defeat NAT overlap in Distributed Rate Limiter
          const uaHash = request.headers.get('user-agent') ? Array.from(request.headers.get('user-agent')!).reduce((s, c) => Math.imul(31, s) + c.charCodeAt(0) | 0, 0).toString(16) : 'noua';
-         const sessionToken = request.cookies.get('whale_session')?.value || request.cookies.get('system_handshake')?.value;
+         const sessionToken = request.cookies.get('ledger_session')?.value || request.cookies.get('system_handshake')?.value;
          
          // Extract uuid for qr-poll to prevent NAT blocking unauthenticated QR generation
          let qrUuid = '';
@@ -245,7 +245,7 @@ export default async function middleware(request: NextRequest) {
          
          const limitCheck = await checkRateLimit(distributedKey, resolvedTier);
         if (!limitCheck.success) {
-          console.log(`[WhaleFortress]  DDoS Protection: Key ${distributedKey} (IP: ${ip}) Rate Limited (tier: ${tier}, limit: ${limitCheck.limit} reqs/10s)`);
+          console.log(`[LedgerFortress]  DDoS Protection: Key ${distributedKey} (IP: ${ip}) Rate Limited (tier: ${tier}, limit: ${limitCheck.limit} reqs/10s)`);
           // Fire-and-forget audit entry  do not await to avoid adding latency
           logAuditSafe(request, 'SECURITY_RATE_LIMITED', 'system', ip, { tier, limit: limitCheck.limit, path: pathname, distributedKey });
           return new NextResponse(
@@ -254,7 +254,7 @@ export default async function middleware(request: NextRequest) {
           );
         }
       } catch (rateLimitErr) {
-        console.error('[WhaleFortress:CRITICAL] Rate limiter evaluation block failed.', rateLimitErr);
+        console.error('[LedgerFortress:CRITICAL] Rate limiter evaluation block failed.', rateLimitErr);
       }
 
       // 2.5 [CRITICAL] Anti-Replay Attack Engine (POST State Mutations)
@@ -270,7 +270,7 @@ export default async function middleware(request: NextRequest) {
             
             // Reject if older than 60 seconds or more than 5 seconds in the future
             if (now - txTime > 60000 || now - txTime < -5000) {
-               console.warn(`[WhaleFortress]  REPLAY ATTACK BLOCKED: Invalid payload timestamp from IP ${ip}`);
+               console.warn(`[LedgerFortress]  REPLAY ATTACK BLOCKED: Invalid payload timestamp from IP ${ip}`);
                return new NextResponse(JSON.stringify({ error: 'PAYLOAD_EXPIRED_OR_INVALID' }), { status: 401 });
             }
             
@@ -278,7 +278,7 @@ export default async function middleware(request: NextRequest) {
             if (replayMap.has(signatureNonce)) {
                const expiresAt = replayMap.get(signatureNonce)!;
                if (now < expiresAt) {
-                 console.warn(`[WhaleFortress]  REPLAY ATTACK BLOCKED: Duplicated signature from IP ${ip}`);
+                 console.warn(`[LedgerFortress]  REPLAY ATTACK BLOCKED: Duplicated signature from IP ${ip}`);
                  return new NextResponse(JSON.stringify({ error: 'REPLAY_DETECTED' }), { status: 401 });
                } else {
                  replayMap.delete(signatureNonce); // Cleanup expired manually
@@ -304,33 +304,33 @@ export default async function middleware(request: NextRequest) {
     const nextAuthToken = request.cookies.get('next-auth.session-token');
     const systemHandshakeCookie = request.cookies.get('system_handshake');
 
-    // Validate SIWE JWT from whale_session cookie
+    // Validate SIWE JWT from ledger_session cookie
     let siweSessionValid = false;
     let userTier = 'FREE'; // Default tier
-    const whaleSessionCookie = request.cookies.get('whale_session')?.value;
-    if (whaleSessionCookie) {
+    const ledgerSessionCookie = request.cookies.get('ledger_session')?.value;
+    if (ledgerSessionCookie) {
       try {
         const { isTokenRevoked } = await import('./lib/security/jwt-blacklist');
-        if (isTokenRevoked(whaleSessionCookie)) {
-            console.error(`[WhaleFortress:SECURITY]  REVOKED TOKEN DETECTED: IP ${ip} tried to use a blacklisted JWT.`);
+        if (isTokenRevoked(ledgerSessionCookie)) {
+            console.error(`[LedgerFortress:SECURITY]  REVOKED TOKEN DETECTED: IP ${ip} tried to use a blacklisted JWT.`);
             throw new Error('TOKEN_REVOKED');
         }
 
         const { verifyJWT } = await import('./lib/jwt');
-        const payload = await verifyJWT(whaleSessionCookie);
+        const payload = await verifyJWT(ledgerSessionCookie);
         siweSessionValid = true;
         if (payload.tier) {
           userTier = payload.tier as string;
         }
       } catch (err) {
-        // console.error('[WhaleFortress] JWT validation failed', err);
+        // console.error('[LedgerFortress] JWT validation failed', err);
         siweSessionValid = false;
       }
     }
 
     // [SECURITY PATCH] system_handshake bypass REMOVED.
     // It was causing catastrophic IDOR and Account Takeover vulnerabilities. 
-    // Authentication must rely purely on cryptographically verified JWTs (whale_session / nextAuth).
+    // Authentication must rely purely on cryptographically verified JWTs (ledger_session / nextAuth).
     let systemHandshakeValid = false;
 
     const isAuthenticated = siweSessionValid || !!nextAuthToken;
@@ -343,7 +343,7 @@ export default async function middleware(request: NextRequest) {
           pathname.startsWith('/attest') ||
           pathname.startsWith('/settings')
         ) {
-          console.warn(`[WhaleFortress] ️ Masking protected route: ${pathname} for IP: ${ip}`);
+          console.warn(`[LedgerFortress] ️ Masking protected route: ${pathname} for IP: ${ip}`);
           return new NextResponse(null, { status: 404 });
         }
         return NextResponse.redirect(new URL('/', request.url).toString());
@@ -453,7 +453,7 @@ export default async function middleware(request: NextRequest) {
         cookiesArray.forEach(cookie => {
           let secureCookie = cookie;
           if (!secureCookie.toLowerCase().includes('secure')) secureCookie += '; Secure';
-          if (!secureCookie.toLowerCase().includes('httponly') && secureCookie.includes('whale_session=')) secureCookie += '; HttpOnly';
+          if (!secureCookie.toLowerCase().includes('httponly') && secureCookie.includes('ledger_session=')) secureCookie += '; HttpOnly';
           if (!secureCookie.toLowerCase().includes('samesite')) secureCookie += '; SameSite=Lax';
           response.headers.append('Set-Cookie', secureCookie);
         });
@@ -473,7 +473,7 @@ export default async function middleware(request: NextRequest) {
     // to protected routes rather than silently passing all requests through.
     // Fail-Open was exploitable: an attacker who triggers a middleware crash
     // could bypass WAF, rate limiting, auth checks, and honeypot detection.
-    console.error('⨯ [WhaleFortress:Critical]  Zero-Crash Safeguard:', err.message);
+    console.error('⨯ [LedgerFortress:Critical]  Zero-Crash Safeguard:', err.message);
     const { pathname } = request.nextUrl;
     if (matchesPattern(pathname, PROTECTED_PATTERNS) || pathname.startsWith('/api/admin')) {
         return new NextResponse(

@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Fetch candidates from DB (entries >= $50M)
-        const allActive = await prisma.whaleActivity.findMany({
+        const allActive = await prisma.ledgerActivity.findMany({
             orderBy: { timestamp: 'desc' },
             take:    500,
         });
@@ -153,7 +153,7 @@ export async function GET(req: NextRequest) {
     if (!id) {
         // Public Audit Feed: Return the 5 latest verified entries
         try {
-            const allActive = await prisma.whaleActivity.findMany({
+            const allActive = await prisma.ledgerActivity.findMany({
                 orderBy: { timestamp: 'desc' },
                 take: 100, // Fetch a chunk to find qualifying entries
             });

@@ -70,7 +70,7 @@ export function SettingsView({ onBack }: { onBack: () => void }) {
                 className="flex border-b border-black bg-white shrink-0 overflow-x-auto"
                 style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}
             >
-                <style>{`.whale-tabs::-webkit-scrollbar { display: none; }`}</style>
+                <style>{`.ledger-tabs::-webkit-scrollbar { display: none; }`}</style>
                 {TABS.map(tab => (
                     <button
                         key={tab.id}

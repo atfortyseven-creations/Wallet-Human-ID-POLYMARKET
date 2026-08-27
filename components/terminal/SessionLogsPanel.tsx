@@ -221,7 +221,7 @@ export function SessionLogsPanel() {
             const url  = URL.createObjectURL(blob);
             const a    = document.createElement("a");
             a.href = url;
-            a.download = `whale_network_audit_${Date.now()}.csv`;
+            a.download = `ledger_network_audit_${Date.now()}.csv`;
             document.body.appendChild(a);
             a.click();
             a.remove();

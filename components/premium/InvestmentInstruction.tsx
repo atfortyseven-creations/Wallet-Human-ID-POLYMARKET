@@ -24,7 +24,7 @@ export function InvestmentInstruction() {
                         <span className="text-[10px] font-black uppercase text-slate-900 tracking-widest">Growth Entry (Long)</span>
                     </div>
                     <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
-                        Enter when <span className="text-cyan-600 font-bold">Whale Activity</span> shows high long-side persistence (&gt;70%) and the <span className="text-slate-900 font-bold">Sentiment Pulse</span> turns vivid cyan. Follow the smart money in phase 1 of accumulation.
+                        Enter when <span className="text-cyan-600 font-bold">Ledger Activity</span> shows high long-side persistence (&gt;70%) and the <span className="text-slate-900 font-bold">Sentiment Pulse</span> turns vivid cyan. Follow the smart money in phase 1 of accumulation.
                     </p>
                 </div>
 
@@ -44,7 +44,7 @@ export function InvestmentInstruction() {
                         <span className="text-[9px] font-black uppercase text-slate-900 tracking-[0.2em]">Risk Management</span>
                     </div>
                     <p className="text-[10px] text-slate-400 italic">
-                        Always verify signal persistence across multiple blocks. One whale transfer can be a trap; a coordinated flow is a trend.
+                        Always verify signal persistence across multiple blocks. One ledger transfer can be a trap; a coordinated flow is a trend.
                     </p>
                 </div>
             </div>

@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
   const formatUser = (u: any) => {
     const resolvedName =
-      u.chatName && u.chatName !== 'Whale User'
+      u.chatName && u.chatName !== 'Ledger User'
         ? u.chatName
         : u.displayName ?? null;
     return {

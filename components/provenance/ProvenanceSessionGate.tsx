@@ -10,7 +10,7 @@ import { useSystemAccount } from '@/hooks/useSystemAccount';
 // ─────────────────────────────────────────────────────────────────────────────
 //
 // Authentication priority:
-//   1. Server-side JWT (whale_session / human_session) via /api/auth/verify-session
+//   1. Server-side JWT (ledger_session / human_session) via /api/auth/verify-session
 //   2. Live wagmi wallet connection (address present = wallet connected in browser)
 //
 // P2-C.1 additions (SHADOW mode):
@@ -51,7 +51,7 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
       const message = new SiweMessage({
         domain: window.location.host,
         address: address as string,
-        statement: 'Sign in to Whale Alert Network',
+        statement: 'Sign in to Ledger Alert Network',
         uri: window.location.origin,
         version: '1',
         chainId: 1,

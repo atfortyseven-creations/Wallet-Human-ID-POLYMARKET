@@ -38,7 +38,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Whale Network Signer</Text>
+      <Text style={styles.title}>Ledger Network Signer</Text>
       <Text style={styles.subtitle}>ZK Session Authenticator</Text>
       
       <View style={styles.card}>

@@ -10,7 +10,7 @@ interface Node {
     x: number;
     y: number;
     size: number;
-    type: 'WHALE' | 'EXCHANGE' | 'BOT';
+    type: 'LEDGER' | 'EXCHANGE' | 'BOT';
 }
 
 interface Edge {
@@ -22,11 +22,11 @@ export default function VisualTopography() {
     const [hoveredId, setHoveredId] = useState<string | null>(null);
 
     const nodes: Node[] = useMemo(() => [
-        { id: '1', label: 'Jump Crypto', x: 200, y: 150, size: 40, type: 'WHALE' },
+        { id: '1', label: 'Jump Crypto', x: 200, y: 150, size: 40, type: 'LEDGER' },
         { id: '2', label: 'Binance Hot Wallet', x: 500, y: 300, size: 60, type: 'EXCHANGE' },
-        { id: '3', label: 'Wintermute', x: 700, y: 200, size: 45, type: 'WHALE' },
+        { id: '3', label: 'Wintermute', x: 700, y: 200, size: 45, type: 'LEDGER' },
         { id: '4', label: 'Arbitrage Bot v4', x: 300, y: 400, size: 20, type: 'BOT' },
-        { id: '5', label: 'Alameda Remnant', x: 100, y: 350, size: 35, type: 'WHALE' },
+        { id: '5', label: 'Alameda Remnant', x: 100, y: 350, size: 35, type: 'LEDGER' },
         { id: '6', label: 'Coinbase Custody', x: 600, y: 100, size: 55, type: 'EXCHANGE' },
     ], []);
 

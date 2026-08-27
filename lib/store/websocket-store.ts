@@ -5,7 +5,7 @@ import { safeToFixed } from '@/lib/utils/number-format';
 import { transactionNotifier } from '@/lib/wallet/transaction-notifier';
 
 // Common Types
-export interface WhaleEvent {
+export interface LedgerEvent {
   hash: string;
   wallet: string;
   token: string;
@@ -35,15 +35,15 @@ interface WebSocketState {
   ws: WebSocket | null;
   isConnected: boolean;
   reconnectAttempts: number;
-  whaleEvents: WhaleEvent[];
+  ledgerEvents: LedgerEvent[];
   akashicData: { ok: boolean; total: number; records: AkashicRecord[]; nextEntry: string; lastUpdated: string } | null;
   lastAlchemyTx: any;
   
   // Actions
   connectAlchemy: (address: string) => void;
   disconnect: () => void;
-  addWhaleEvent: (event: WhaleEvent) => void;
-  setWhaleEvents: (events: WhaleEvent[]) => void;
+  addLedgerEvent: (event: LedgerEvent) => void;
+  setLedgerEvents: (events: LedgerEvent[]) => void;
   setAkashicData: (data: any) => void;
 }
 
@@ -51,7 +51,7 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
   ws: null,
   isConnected: false,
   reconnectAttempts: 0,
-  whaleEvents: [],
+  ledgerEvents: [],
   akashicData: null,
   lastAlchemyTx: null,
 
@@ -109,9 +109,9 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
             }
           }
           
-          // MOCK: If we receive global whale events from another channel in the same WS or custom backend
-          if (message.type === 'WHALE_EVENT_STREAM') {
-             get().addWhaleEvent(message.data);
+          // MOCK: If we receive global ledger events from another channel in the same WS or custom backend
+          if (message.type === 'LEDGER_EVENT_STREAM') {
+             get().addLedgerEvent(message.data);
           }
 
         } catch (e) {
@@ -143,12 +143,12 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
     }
   },
   
-  addWhaleEvent: (event: WhaleEvent) => {
-    set((state) => ({ whaleEvents: [event, ...state.whaleEvents].slice(0, 500) }));
+  addLedgerEvent: (event: LedgerEvent) => {
+    set((state) => ({ ledgerEvents: [event, ...state.ledgerEvents].slice(0, 500) }));
   },
   
-  setWhaleEvents: (events: WhaleEvent[]) => {
-    set({ whaleEvents: events });
+  setLedgerEvents: (events: LedgerEvent[]) => {
+    set({ ledgerEvents: events });
   },
 
   setAkashicData: (data: any) => {

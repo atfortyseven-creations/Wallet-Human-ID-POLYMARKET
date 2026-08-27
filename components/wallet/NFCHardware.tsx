@@ -35,7 +35,7 @@ export default function NFCHardware() {
                         <div>
                             <h2 className="text-3xl font-black text-[#1F1F1F] mb-3">Tap to Pair</h2>
                             <p className="text-[#1F1F1F]/60">
-                                Turn your Whale Card into a hardware key. 
+                                Turn your Ledger Card into a hardware key. 
                                 <br/>Sign transactions securely with a tap.
                             </p>
                         </div>
@@ -89,7 +89,7 @@ export default function NFCHardware() {
 
                          <div>
                             <h3 className="text-2xl font-bold text-[#1F1F1F] animate-pulse">Scanning...</h3>
-                            <p className="text-[#1F1F1F]/50">Hold your Whale Card against the back of your device.</p>
+                            <p className="text-[#1F1F1F]/50">Hold your Ledger Card against the back of your device.</p>
                         </div>
                         
                         {!isSupported && (

@@ -101,7 +101,7 @@ describe('CHAOS 2: Neo4j Timeout  Memory Grid', () => {
     // Mock Memory Grid result (matches mineLocalNetworkGraph return type)
     const mockResult = {
       nodes: [
-        { id: '0xabc', group: 2, label: 'Sovereign Whale', size: 50 },
+        { id: '0xabc', group: 2, label: 'Sovereign Ledger', size: 50 },
         { id: '0xdef', group: 3, label: 'Unknown', size: 5 },
       ],
       links: [], // ZERO links  Zero-Simulation Mandate

@@ -19,7 +19,7 @@ export default function Header() {
       <div className="px-6 py-4 flex justify-between items-center border-b-2 border-ink">
         <div className="flex flex-col">
           <div className="font-serif font-bold text-2xl tracking-tight text-ink">
-            Whale Network
+            Ledger Network
           </div>
           <div className="text-[10px] font-sans font-bold uppercase tracking-widest text-ink/70">
             Powered by Aztec Network

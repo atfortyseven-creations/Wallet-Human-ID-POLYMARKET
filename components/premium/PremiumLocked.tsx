@@ -125,7 +125,7 @@ export default function PremiumLocked({
             'Unlimited access to all features',
             'Real-time data & analytics',
             'Priority support',
-            'Advanced whale tracking'
+            'Advanced ledger tracking'
           ].map((item, i) => (
             <motion.div
               key={i}

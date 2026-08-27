@@ -44,7 +44,7 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: NewsItem
 
 function SuperWalletContent({ recentNews = [] }: { recentNews?: NewsItem[] }) {
     const { t } = useLanguage();
-    const [activeView, setActiveView] = useState<'ticket_mint' | 'portfolio' | 'billing' | 'top_markets' | 'new_listings' | 'whale_ledger' | 'mass_transfers' | 'block_explorer' | 'aztec_pipeline' | 'session_logs' | 'support' | 'analytics' | 'activity' | 'contacts' | 'referrals' | 'vault' | 'nfc' | 'network' | 'settings'>('portfolio');
+    const [activeView, setActiveView] = useState<'ticket_mint' | 'portfolio' | 'billing' | 'top_markets' | 'new_listings' | 'ledger_ledger' | 'mass_transfers' | 'block_explorer' | 'aztec_pipeline' | 'session_logs' | 'support' | 'analytics' | 'activity' | 'contacts' | 'referrals' | 'vault' | 'nfc' | 'network' | 'settings'>('portfolio');
     const [showWatchInput, setShowWatchInput] = useState(false);
     const [accounts, setAccounts] = useState<WalletAccount[]>([]);
     const [currentAddress, setCurrentAddress] = useState<string>('');
@@ -145,7 +145,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: NewsItem[] }) {
             id: w.id,
             address: w.address,
             name: w.label,
-            type: (w.isWhale || w.isSmart) ? 'WATCH_ONLY' : 'DERIVED', // Heuristic mapping
+            type: (w.isLedger || w.isSmart) ? 'WATCH_ONLY' : 'DERIVED', // Heuristic mapping
             color: getAccountColor(w.address)
         }));
 
@@ -358,7 +358,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: NewsItem[] }) {
                     <ViewTab icon={<CreditCard size={18}/>} label="Billing & Plan" active={activeView==='billing'} onClick={()=>setActiveView('billing')} />
                     <ViewTab icon={<BarChart2 size={18}/>} label="Top Markets" active={activeView==='top_markets'} onClick={()=>setActiveView('top_markets')} />
                     <ViewTab icon={<Activity size={18}/>} label="New Listings" active={activeView==='new_listings'} onClick={()=>setActiveView('new_listings')} />
-                    <ViewTab icon={<Zap size={18}/>} label="Whale Ledger" active={activeView==='whale_ledger'} onClick={()=>setActiveView('whale_ledger')} />
+                    <ViewTab icon={<Zap size={18}/>} label="Ledger Ledger" active={activeView==='ledger_ledger'} onClick={()=>setActiveView('ledger_ledger')} />
                     <ViewTab icon={<Network size={18}/>} label="Mass Transfers" active={activeView==='mass_transfers'} onClick={()=>setActiveView('mass_transfers')} />
                     <ViewTab icon={<Search size={18}/>} label="Block Explorer" active={activeView==='block_explorer'} onClick={()=>setActiveView('block_explorer')} />
                     <ViewTab icon={<Shield size={18}/>} label="Aztec Pipeline" active={activeView==='aztec_pipeline'} onClick={()=>setActiveView('aztec_pipeline')} />
@@ -375,7 +375,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: NewsItem[] }) {
              {/* Mobile Tab Bar (Bottom) */}
              <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-white/90 backdrop-blur-lg border border-[#1F1F1F]/5 shadow-2xl rounded-full p-2 flex gap-1 overflow-x-auto w-[90vw] scrollbar-hide">
                  <ViewTab icon={<PieChart size={20}/>} label="Portfolio" active={activeView==='portfolio'} onClick={()=>setActiveView('portfolio')} />
-                 <ViewTab icon={<Zap size={20}/>} label="Ledger" active={activeView==='whale_ledger'} onClick={()=>setActiveView('whale_ledger')} />
+                 <ViewTab icon={<Zap size={20}/>} label="Ledger" active={activeView==='ledger_ledger'} onClick={()=>setActiveView('ledger_ledger')} />
                  <ViewTab icon={<Shield size={20}/>} label="Aztec" active={activeView==='aztec_pipeline'} onClick={()=>setActiveView('aztec_pipeline')} />
                  <ViewTab icon={<CreditCard size={20}/>} label="Billing" active={activeView==='billing'} onClick={()=>setActiveView('billing')} />
                  <ViewTab icon={<LifeBuoy size={20}/>} label="Support" active={activeView==='support'} onClick={()=>setActiveView('support')} />

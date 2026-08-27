@@ -27,7 +27,7 @@ export async function POST(req: Request) {
         // We now support multi-chain verification for Smart Wallets on Polygon
         let isValid = false;
         try {
-            const message = `RE-CONNECT-WHALE-SESSION-${token}`;
+            const message = `RE-CONNECT-LEDGER-SESSION-${token}`;
             
             // Standard EIP-191 verification
             isValid = await verifyMessage({
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
         }
 
         if (!isValid) {
-            console.warn(`[Handshake:Reject] Invalid signature for ${address}. Token: ${token.slice(0, 8)}... Expected: RE-CONNECT-WHALE-SESSION-${token}`);
+            console.warn(`[Handshake:Reject] Invalid signature for ${address}. Token: ${token.slice(0, 8)}... Expected: RE-CONNECT-LEDGER-SESSION-${token}`);
             return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
         }
 

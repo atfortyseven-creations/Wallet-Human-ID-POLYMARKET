@@ -1,7 +1,7 @@
 /**
  * GET /api/contracts/status
  *
- * Returns live on-chain state for WhaleDeadmanSwitch + HumanTimeLock
+ * Returns live on-chain state for LedgerDeadmanSwitch + HumanTimeLock
  * deployed by the authenticated user.
  *
  * Query params:

@@ -1,7 +1,7 @@
 "use client";
 
 import { IDKitWidget, VerificationLevel } from "@worldcoin/idkit";
-import { useWhaleFi } from "@/hooks/useWhaleFi";
+import { useLedgerFi } from "@/hooks/useLedgerFi";
 import { useAccount, useConnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { formatEther } from "viem";
@@ -10,7 +10,7 @@ import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
 export default function RealDashboard() {
     const { isConnected } = useAccount();
     const { connect } = useConnect();
-    const { claimFaucet, executeZap, castVote, votingPower, wldBalance, isPending, txHash } = useWhaleFi();
+    const { claimFaucet, executeZap, castVote, votingPower, wldBalance, isPending, txHash } = useLedgerFi();
 
     if (!isConnected) {
         return (

@@ -21,5 +21,5 @@ echo "=== Buscando en aztec versions dir ==="
 find /home/atfortyseven/.aztec/versions/4.4.0 -name "lib.nr" 2>/dev/null | head -20
 
 echo ""
-echo "=== Buscando en whale-circuits para contratos de ejemplo ==="
-find /home/atfortyseven/whale-circuits -name "*.nr" 2>/dev/null | head -20
+echo "=== Buscando en ledger-circuits para contratos de ejemplo ==="
+find /home/atfortyseven/ledger-circuits -name "*.nr" 2>/dev/null | head -20

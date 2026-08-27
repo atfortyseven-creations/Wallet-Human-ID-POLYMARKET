@@ -128,7 +128,7 @@ export function useSystemAccount() {
     // Wagmi sometimes auto-reconnects on page load if IndexedDB clearing fails.
     // If the guard is active, we FORCE the UI to show disconnected.
     // IMPORTANT: The guard ONLY kills wagmi/session state — it NEVER touches
-    // whale_hw_session_token (IDB-based), which is the hardware-bound key that
+    // ledger_hw_session_token (IDB-based), which is the hardware-bound key that
     // must survive logout so the user can re-login without re-creating a wallet.
     const isGuarded = typeof window !== 'undefined' && (
         safeSessionGet('__disconnected__') === '1' ||
@@ -147,7 +147,7 @@ export function useSystemAccount() {
                 try { sessionStorage.removeItem('__disconnected__'); } catch {}
             }
 
-            // Purge wagmi/session tokens. Do NOT touch whale_hw_session_token — that
+            // Purge wagmi/session tokens. Do NOT touch ledger_hw_session_token — that
             // must survive so the user can log back in without re-creating a wallet.
             if (isGuarded && !wagmiAccount.isConnected) {
                 try { localStorage.removeItem('system_session_v2'); } catch {}

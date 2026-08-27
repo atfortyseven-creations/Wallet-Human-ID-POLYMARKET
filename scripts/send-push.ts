@@ -57,7 +57,7 @@ async function broadcastUpdate() {
     }
 
     const message = `
- *SISTEMA ESTABILIZADO: WHALE ALERT v6.12.0 ONLINE* 
+ *SISTEMA ESTABILIZADO: LEDGER ALERT v6.12.0 ONLINE* 
 
 We have completed Elite-grade optimization for our analytics network.
 

@@ -28,7 +28,7 @@ contract SystemForumAnchor is EIP712, Ownable {
 
     event RootAnchored(uint256 indexed dayId, bytes32 root);
 
-    constructor() EIP712("WhaleAlertNetwork", "1") Ownable(msg.sender) {}
+    constructor() EIP712("LedgerAlertNetwork", "1") Ownable(msg.sender) {}
 
     /**
      * @dev Called by the Relayer (Paymaster) to commit the daily batch of posts

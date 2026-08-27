@@ -58,7 +58,7 @@ describe('Audit Trail', () => {
 
   it('verifies a valid chain as intact', async () => {
     await appendAuditEntry('AUTH_SUCCESS', '0xabc', '1.1.1.1', {});
-    await appendAuditEntry('WHALE_DETECTED', 'system', '0.0.0.0', { chain: 'BASE' });
+    await appendAuditEntry('LEDGER_DETECTED', 'system', '0.0.0.0', { chain: 'BASE' });
     const result = await verifyAuditTrailIntegrity();
     expect(result.valid).toBe(true);
     if (result.valid) expect(result.count).toBe(2);
@@ -98,7 +98,7 @@ describe('Audit Trail', () => {
 
   it('stores metadata as JSON string', async () => {
     const meta = { chain: 'ETHEREUM', amount: '50000', token: 'USDC' };
-    await appendAuditEntry('WHALE_DETECTED', '0xwhale', '3.3.3.3', meta);
+    await appendAuditEntry('LEDGER_DETECTED', '0xledger', '3.3.3.3', meta);
     const stored = mockEntries[0].metadata;
     expect(typeof stored).toBe('string');
     expect(JSON.parse(stored)).toMatchObject(meta);

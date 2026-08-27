@@ -4,7 +4,7 @@
 set -e
 
 echo "══════════════════════════════════════════════════════"
-echo "  Whale Network — QDs Token Deployment"
+echo "  Ledger Network — QDs Token Deployment"
 echo "  Aztec Testnet v5 | SDK v5.0.0"
 echo "══════════════════════════════════════════════════════"
 
@@ -16,14 +16,14 @@ node -v
 
 echo "[2/3] Installing linux esbuild binary..."
 cd /tmp
-rm -rf whale-deploy
-mkdir whale-deploy
-cd whale-deploy
+rm -rf ledger-deploy
+mkdir ledger-deploy
+cd ledger-deploy
 
 # Initialize a fresh ESM project
 cat > package.json << 'EOF'
 {
-  "name": "whale-deploy",
+  "name": "ledger-deploy",
   "version": "1.0.0",
   "type": "module",
   "private": true

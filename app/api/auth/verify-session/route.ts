@@ -5,14 +5,14 @@ import { NextRequest, NextResponse } from 'next/server';
  *
  * [UNIVERSAL SESSION VERIFICATION]
  * Checks ALL valid session token types used across the system:
- *   - whale_session   : JWT from system-verify (MetaMask/Rainbow/Wagmi connect)
+ *   - ledger_session   : JWT from system-verify (MetaMask/Rainbow/Wagmi connect)
  *   - human_session   : JWT from qr-hydrate or system-verify
  *   - humanity_session: JWT from SIWE flow (P2-C.1 Identity Adapter)
  *   - system_handshake: raw 0x address (QR mobile handshake, fast path)
  *   - human.session-token: NextAuth JWT (Google OAuth, Email OTP via NextAuth)
  *
  * Priority order:
- *   1. Verify whale_session / human_session JWT cryptographically.
+ *   1. Verify ledger_session / human_session JWT cryptographically.
  *   2. If JWT valid → session authentic. Heal system_handshake if missing.
  *   3. If JWT invalid/missing → check NextAuth session (Google OAuth).
  *   4. If NextAuth valid → authenticated. Heal system_handshake with email_ prefix.
@@ -22,10 +22,10 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 export async function GET(request: NextRequest) {
     try {
-        const whaleSession = request.cookies.get('whale_session')?.value;
+        const ledgerSession = request.cookies.get('ledger_session')?.value;
         const humanSession = request.cookies.get('human_session')?.value;
         const handshake    = request.cookies.get('system_handshake')?.value;
-        const primaryJwt   = whaleSession || humanSession;
+        const primaryJwt   = ledgerSession || humanSession;
 
         const isProd      = process.env.NODE_ENV === 'production';
         const appUrl      = process.env.NEXT_PUBLIC_APP_URL || '';
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
             const res = NextResponse.json({ authenticated: false }, { status: 401 });
             const expiredDate = 'Thu, 01 Jan 1970 00:00:00 GMT';
             const secure = isProd ? '; Secure' : '';
-            for (const name of ['whale_session', 'human_session']) {
+            for (const name of ['ledger_session', 'human_session']) {
                 res.headers.append('Set-Cookie', `${name}=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Strict`);
                 res.headers.append('Set-Cookie', `${name}=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax`);
             }

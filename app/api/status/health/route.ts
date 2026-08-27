@@ -119,14 +119,14 @@ export async function GET() {
     probe('Humanity Identity Registry', 'ZK & Privacy Layer', `${baseUrl}/registry`),
 
     // Humanity Ledger & Liquidity
-    probe('Whale Terminal Core', 'Humanity Ledger & Markets', `${baseUrl}/terminal`),
+    probe('Ledger Terminal Core', 'Humanity Ledger & Markets', `${baseUrl}/terminal`),
     probe('Mempool Synchronizer', 'Humanity Ledger & Markets', `${baseUrl}/api/network/mempool/recent`),
     probe('Polymarket Data Graph', 'Humanity Ledger & Markets', `${baseUrl}/predictions`),
     probe('Institutional Darkpools', 'Humanity Ledger & Markets', `${baseUrl}/gold-registry`),
     probe('Sovereign Intel Feed', 'Humanity Ledger & Markets', `${baseUrl}/sovereign-intel`),
 
     // Sentinel AI & Data Lake
-    probe('Sentinel AI Engine', 'Data Lake & Intelligence', `${baseUrl}/api/whale-events`),
+    probe('Sentinel AI Engine', 'Data Lake & Intelligence', `${baseUrl}/api/ledger-events`),
     probe('EVM Event Indexer', 'Data Lake & Intelligence', `${baseUrl}/api/network/evm/recent`),
     probe('Quantum Data Shards', 'Data Lake & Intelligence', `${baseUrl}/qds`),
 

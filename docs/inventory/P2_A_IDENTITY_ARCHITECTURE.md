@@ -58,7 +58,7 @@ To prevent creating abstractions for the sake of abstractions, these primitives 
 
 1. **`IdentityPrimitive`** (Consumers: Hub, Portfolio, Forum, Chat)
 2. **`PermissionPrimitive`** (Consumers: Admin, VIP Analytics, Studio)
-3. **`NetworkPrimitive`** (Consumers: Portfolio, Whale Intelligence)
+3. **`NetworkPrimitive`** (Consumers: Portfolio, Ledger Intelligence)
 
 ---
 

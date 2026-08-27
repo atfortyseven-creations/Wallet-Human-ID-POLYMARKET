@@ -17,7 +17,7 @@ import { isAddress } from 'viem';
  *     so the desktop poll can pick it up immediately.
  *
  * Auth Resolution (3 layers):
- *   LAYER 1: human_session / whale_session JWT  standard path for returning users
+ *   LAYER 1: human_session / ledger_session JWT  standard path for returning users
  *   LAYER 2: system_handshake cookie  set after wallet.connect() on mobile,
  *            before any JWT exists. This is the "first QR scan" path.
  *   LAYER 3: 401 if neither is present.
@@ -50,10 +50,10 @@ export async function POST(req: NextRequest) {
     }
 
     //  2. Verify mobile identity via secure JWT ONLY 
-    // We STRICTLY require a cryptographic SIWE JWT (human_session or whale_session).
+    // We STRICTLY require a cryptographic SIWE JWT (human_session or ledger_session).
     // The insecure 'system_handshake' cookie fallback has been entirely removed 
     // to prevent identity spoofing / authentication bypass vulnerabilities.
-    const humanSession = req.cookies.get('human_session')?.value || req.cookies.get('whale_session')?.value || fallbackJwt;
+    const humanSession = req.cookies.get('human_session')?.value || req.cookies.get('ledger_session')?.value || fallbackJwt;
 
     if (!humanSession) {
       console.error(`[QR:Handshake:FAILURE] No secure JWT session found for UUID: ${uuid}. IP: ${req.headers.get('x-forwarded-for')}`);

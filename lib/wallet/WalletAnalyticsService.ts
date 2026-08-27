@@ -28,7 +28,7 @@ export interface WalletAnalytics {
   change24h: number;
   networksActive?: string[];
   smartMoneyMetrics?: any;
-  whaleEvidence?: string[];
+  ledgerEvidence?: string[];
   influenceScore?: number;
   historicalBalance?: { date: string; balance: number }[];
   error?: string;
@@ -201,7 +201,7 @@ class WalletAnalyticsService {
     try {
       console.log(`[INTEL${deep ? '-DEEP' : ''}] Fetching fresh Moralis data for ${resolvedAddr}`);
       
-      //  [PERFORMANCE] Smart Money Analysis can be very slow for whales.
+      //  [PERFORMANCE] Smart Money Analysis can be very slow for ledgers.
       const smartMoneyTimeout = new Promise(resolve => setTimeout(() => resolve(null), 10000));
 
       const [portfolio, yieldPos, flows, stats, smartMoney] = await Promise.all([
@@ -235,7 +235,7 @@ class WalletAnalyticsService {
       const totalValue = portfolio?.totalValueUsd || 0;
       
       let rank = 100; // Default Unknown
-      if (totalValue > 1000000) rank = 1;      // Apex Whale 
+      if (totalValue > 1000000) rank = 1;      // Apex Ledger 
       else if (totalValue > 250000) rank = 10; // Elite Verifier
       else if (totalValue > 50000) rank = 50;  // High Activity
       else if (totalValue > 5000) rank = 100;  // Standard Human
@@ -297,7 +297,7 @@ class WalletAnalyticsService {
           strategicSummary: portfolio?.strategicInsight,
           networksActive: portfolio?.networksActive || [],
           smartMoneyMetrics: smartMoney,
-          whaleEvidence: this.generateWhaleEvidence(totalValue, txCountReal, portfolio, flows),
+          ledgerEvidence: this.generateLedgerEvidence(totalValue, txCountReal, portfolio, flows),
           influenceScore: smartMoney?.influenceScore || this.calculateInfluenceScore(totalValue, flows, stats),
           identityTier: isSystemEntity(resolvedAddr) ? 'PROTOCOL' : (user?.tier || 'GHOST'),
           entityInfo: getEntity(resolvedAddr) || undefined,
@@ -516,7 +516,7 @@ class WalletAnalyticsService {
       lastUpdated: db.lastUpdated instanceof Date ? db.lastUpdated.toISOString() : new Date(db.lastUpdated).toISOString(),
       strategicSummary: db.strategicSummary,
       breakdown: db.breakdown,
-      whaleEvidence: db.whaleEvidence || [],
+      ledgerEvidence: db.ledgerEvidence || [],
       influenceScore: db.influenceScore || 0,
       historicalBalance: db.historicalBalance || []
     };
@@ -533,7 +533,7 @@ class WalletAnalyticsService {
         txCount: number, 
         riskScore: number, 
         strategicSummary?: string, 
-        whaleEvidence?: string[], 
+        ledgerEvidence?: string[], 
         influenceScore?: number,
         category?: string,
         forensics?: ForensicAnalysis
@@ -648,7 +648,7 @@ class WalletAnalyticsService {
     }
   }
 
-  private generateWhaleEvidence(totalValue: number, txCount: number, portfolio: any, flows: any): string[] {
+  private generateLedgerEvidence(totalValue: number, txCount: number, portfolio: any, flows: any): string[] {
     const evidence: string[] = [];
     
     if (totalValue > 1000000) evidence.push(`Controls >$1.0M in real liquid assets.`);

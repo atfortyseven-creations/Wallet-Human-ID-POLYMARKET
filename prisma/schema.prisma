@@ -47,11 +47,11 @@ model Sector {
   description String?   @db.Text
   totalTvl    Float     @default(0.0)
   volume24h   Float     @default(0.0)
-  zScore      Float // Custom Whale Rotation Score
+  zScore      Float // Custom Ledger Rotation Score
   articles    Article[]
 
   //   INDEXACIÓN CÓSMICA: Rendimiento y ordenamiento dinámico
-  @@index([zScore(sort: Desc)]) // Top Sectors by Whale Rotation Score
+  @@index([zScore(sort: Desc)]) // Top Sectors by Ledger Rotation Score
   @@index([totalTvl(sort: Desc)]) // Ranking por TVL en tiempo real
 }
 
@@ -140,11 +140,11 @@ model User {
   //  Sonar Alerts 
   emailAlerts         Boolean @default(false)
   telegramAlerts      Boolean @default(false)
-  whaleAlertThreshold Float   @default(1000000)
+  ledgerAlertThreshold Float   @default(1000000)
   soundEffects        Boolean @default(true)
 
   //  Ledger Chat 
-  chatName    String  @default("Whale User")
+  chatName    String  @default("Ledger User")
   chatBio     String  @default("")
   qrLabel     String  @default("Scan My Wallet")
   chatPinHash String?
@@ -235,7 +235,7 @@ model ApiKey {
   id        String   @id @default(uuid())
   key       String   @unique
   userId    String
-  plan      String   @default("whale")
+  plan      String   @default("ledger")
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
@@ -303,7 +303,7 @@ model WatchedWallet {
   id            String   @id @default(uuid())
   userId        String
   address       String   @default("") // Normalized: 0x... or bc1... or SOL pubkey
-  label         String   @default("Anonymous Whale")
+  label         String   @default("Anonymous Ledger")
   tags          String[] @default([])
   lastValue     Float    @default(0)
   change24h     Float    @default(0)
@@ -311,12 +311,12 @@ model WatchedWallet {
   txCount       Int      @default(0)
   riskScore     Float    @default(50)
   activityScore Float    @default(0)
-  isWhale       Boolean  @default(false)
+  isLedger       Boolean  @default(false)
   isSmart       Boolean  @default(false)
   alertsEnabled Boolean  @default(false)
   metadata      Json? // Stats breakdown cache
   forensics     Json? // Forensic analysis result
-  category      String? // Exchange|Whale|MEV|Fund etc.
+  category      String? // Exchange|Ledger|MEV|Fund etc.
   identityTier  String? // LEGENDARY|ELITE|SOVEREIGN etc.
   lastCheck     DateTime @default(now())
   createdAt     DateTime @default(now())
@@ -414,7 +414,7 @@ model Watchlist {
 model Alert {
   id         String   @id @default(uuid())
   userId     String
-  targetType String // "PRICE", "GAS", "WHALE_TX", "LIQUIDATION"
+  targetType String // "PRICE", "GAS", "LEDGER_TX", "LIQUIDATION"
   condition  String // "ABOVE", "BELOW", "EQUALS"
   threshold  Float
   metric     String // e.g., "BTC", "ETH_GAS"
@@ -637,7 +637,7 @@ model OnChainEntity {
   id             String   @id @default(uuid())
   address        String   @unique
   label          String? // The identity of the entity
-  category       String? // Exchange, Whale, MEV, Fund
+  category       String? // Exchange, Ledger, MEV, Fund
   isZkShielded   Boolean  @default(false)
   neo4jNodeId    String?  @unique // Reference to local graph DB node
   totalVolumeUSD Float    @default(0.0)
@@ -713,12 +713,12 @@ model PrivacyDonation {
 }
 
 // 
-// WHALE TELEMETRY & ACTIVITY
+// LEDGER TELEMETRY & ACTIVITY
 // 
 
-model WhaleActivity {
+model LedgerActivity {
   id              String   @id @default(uuid())
-  immutableId     String?  @unique(map: "sov_whale_identity_idx_v3") // Reconciliación institucional de índice
+  immutableId     String?  @unique(map: "sov_ledger_identity_idx_v3") // Reconciliación institucional de índice
   walletAddress   String? // Opcional para BTC (usar toAddress)
   type            String   @default("TRANSFER") // 'TRANSFER', 'SWAP', 'MINT', 'BURN'
   token           String   @default("BTC")
@@ -853,7 +853,7 @@ model AIRebalancerPlan {
   updatedAt   DateTime  @updatedAt
 }
 
-model GlobalWhaleEvent {
+model GlobalLedgerEvent {
   id        String   @id @default(uuid())
   txHash    String   @unique
   amountUSD Float
@@ -1053,8 +1053,8 @@ model UserPrivacyProfile {
 
 model CosmicEntity {
   id                String   @id @default(uuid())
-  seedHash          String   @unique // SHA-256 del evento whale origen
-  whaleEventId      String? // FK a GlobalWhaleEvent
+  seedHash          String   @unique // SHA-256 del evento ledger origen
+  ledgerEventId      String? // FK a GlobalLedgerEvent
   tier              String // NARWHAL | KRAKEN | LEVIATHAN | MEGALODON
   amountUSD         Float
   chain             String
@@ -1234,7 +1234,7 @@ model ForumTelemetry {
 
 model BetaTelemetry {
   id          String   @id @default(uuid())
-  metricType  String // e.g., 'HANDSHAKE_LATENCY', 'WHALE_DETECTION_LATENCY', 'WS_UPTIME'
+  metricType  String // e.g., 'HANDSHAKE_LATENCY', 'LEDGER_DETECTION_LATENCY', 'WS_UPTIME'
   value       Float // Numeric value of the metric (e.g., milliseconds or percentage)
   p95         Float? // Pre-calculated P95 for aggregated flushes
   sampleSize  Int // Number of events aggregated in this record
@@ -1281,7 +1281,7 @@ model WalletAnalytics {
   id        String   @id @default(uuid())
   address   String   @unique
   forensics Json? // Risk signals, entity labels, etc.
-  category  String? // 'EXCHANGE', 'WHALE', 'DEFI', 'UNKNOWN'
+  category  String? // 'EXCHANGE', 'LEDGER', 'DEFI', 'UNKNOWN'
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 

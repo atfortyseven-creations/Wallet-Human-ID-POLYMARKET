@@ -46,9 +46,9 @@ app.prepare().then(() => {
             timestamp: Date.now()
         };
 
-        // Emit 'whale_tx' event down the pipe
+        // Emit 'ledger_tx' event down the pipe
         if (payload.amountUsd > 1000000) {
-            io.emit('whale_tx', payload);
+            io.emit('ledger_tx', payload);
         }
 
         // Emit generic mempool tick to stress UI (15-25 TPS simulation)

@@ -18,7 +18,7 @@
 
                     <section class="pro-section">
                         <h2>II. Seguridad Programable y Paymasters</h2>
-                        <p>La abstracción permite la <strong>Soberanía Lógica</strong>. La Whale Academy define la custodia institucional a través de AA con reglas como: límites de gasto diario, listas blancas de contratos aprobados (bloqueando interacciones con drainers), multi-firma jerárquica y <em>Session Keys</em> para gaming o dApps. Además, los <strong>Paymasters</strong> permiten que terceros patrocinen el gas o que se pague en stablecoins (USDC), eliminando la fricción de requerir ETH nativo para la seguridad operativa.</p>
+                        <p>La abstracción permite la <strong>Soberanía Lógica</strong>. La Ledger Academy define la custodia institucional a través de AA con reglas como: límites de gasto diario, listas blancas de contratos aprobados (bloqueando interacciones con drainers), multi-firma jerárquica y <em>Session Keys</em> para gaming o dApps. Además, los <strong>Paymasters</strong> permiten que terceros patrocinen el gas o que se pague en stablecoins (USDC), eliminando la fricción de requerir ETH nativo para la seguridad operativa.</p>
                     </section>
                 </div>`
         },
@@ -36,7 +36,7 @@
 
                     <section class="pro-section">
                         <h2>II. Matriz de Riesgos Institucional</h2>
-                        <p>Antes de exponer capital, un analista de la Whale Academy ejecuta una matriz de 4 ejes: <strong>1. Riesgo de Código</strong> (reentrancy, overflows matemáticos), <strong>2. Riesgo de Arquitectura</strong> (composabilidad rota, manipulación de AMM spot prices), <strong>3. Riesgo de Gobernanza</strong> (timelocks asimétricos, EOA controlando admin keys), y <strong>4. Riesgo de Contraparte/Dependencia</strong> (qué ocurre si USDC o Chainlink fallan). La confianza en DeFi no se otorga, se verifica criptográficamente.</p>
+                        <p>Antes de exponer capital, un analista de la Ledger Academy ejecuta una matriz de 4 ejes: <strong>1. Riesgo de Código</strong> (reentrancy, overflows matemáticos), <strong>2. Riesgo de Arquitectura</strong> (composabilidad rota, manipulación de AMM spot prices), <strong>3. Riesgo de Gobernanza</strong> (timelocks asimétricos, EOA controlando admin keys), y <strong>4. Riesgo de Contraparte/Dependencia</strong> (qué ocurre si USDC o Chainlink fallan). La confianza en DeFi no se otorga, se verifica criptográficamente.</p>
                     </section>
                 </div>`
         },
@@ -234,7 +234,7 @@
 
                     <section class="pro-section">
                         <h2>II. Spear Phishing de Alta Fidelidad y Spoofing</h2>
-                        <p>El engaño ataca el FOMO (Airdrop limitado a 15 min) o el FUD (Alerta falsa: "Tu wallet será liquidada"). Los atacantes compran cuentas de Twitter (X) verificadas, inyectan anuncios patrocinados de Google sobre interfaces oficiales (Zapper, Uniswap), y usan dominios con caracteres cirílicos idénticos al original (<code>апp.uniswap.org</code>). Para la Whale Academy, interactuar con cualquier enlace no guardado explícitamente en marcadores securizados es una violación de OPSEC Categoría 1.</p>
+                        <p>El engaño ataca el FOMO (Airdrop limitado a 15 min) o el FUD (Alerta falsa: "Tu wallet será liquidada"). Los atacantes compran cuentas de Twitter (X) verificadas, inyectan anuncios patrocinados de Google sobre interfaces oficiales (Zapper, Uniswap), y usan dominios con caracteres cirílicos idénticos al original (<code>апp.uniswap.org</code>). Para la Ledger Academy, interactuar con cualquier enlace no guardado explícitamente en marcadores securizados es una violación de OPSEC Categoría 1.</p>
                     </section>
                 </div>`
         },
@@ -306,7 +306,7 @@
 
                     <section class="pro-section">
                         <h2>II. Timelocks Inmutables y la Oción de Fuga de Ragequit</h2>
-                        <p>La Whale Academy clasifica a los protocolos por su resistencia a la tiranía administrativa. Un protocolo seguro de élite requiere obligatoriamente un <strong>Timelock Institucional</strong>: cualquier cambio de contrato propuesto por la gobernanza solo se ejecuta <em>después de X días</em>. Este retraso provee tiempo de análisis y permite la "Oción de Fuga" (<strong>Ragequit</strong>): si los usuarios o auditores detectan que la actualización tiene backdoors, pueden retirar sus fondos al puerto seguro antes que la actualización se instancie en Ethereum. Sin Timelock, el protocolo es un <em>honey-pot de custodia latente</em>.</p>
+                        <p>La Ledger Academy clasifica a los protocolos por su resistencia a la tiranía administrativa. Un protocolo seguro de élite requiere obligatoriamente un <strong>Timelock Institucional</strong>: cualquier cambio de contrato propuesto por la gobernanza solo se ejecuta <em>después de X días</em>. Este retraso provee tiempo de análisis y permite la "Oción de Fuga" (<strong>Ragequit</strong>): si los usuarios o auditores detectan que la actualización tiene backdoors, pueden retirar sus fondos al puerto seguro antes que la actualización se instancie en Ethereum. Sin Timelock, el protocolo es un <em>honey-pot de custodia latente</em>.</p>
                     </section>
                 </div>`
         },
@@ -324,7 +324,7 @@
 
                     <section class="pro-section">
                         <h2>II. El Riesgo Extremo de Validiums y Data Availability Committees (DACs)</h2>
-                        <p>Los <em>Validiums</em> mantienen la información de transferencias (DA) fuera de Ethereum para ahorrar costos. Si el DAC (Comité de Disponibilidad) se corrompe offline y se niega a publicar los datos de estado L2 actualizados, el usuario, incluso teniendo fondos legítimos on-chain, <em>carece de la información criptográfica (Merkle Proof) necesaria para retirar a Ethereum</em>. Según la Whale Academy, un Validium cambia el riesgo de fallo L1 por la <strong>confianza inherente en el comportamiento ético del comité off-chain</strong>, siendo inadecuado para la custodia generacional frente a un ZK-Rollup estricto.</p>
+                        <p>Los <em>Validiums</em> mantienen la información de transferencias (DA) fuera de Ethereum para ahorrar costos. Si el DAC (Comité de Disponibilidad) se corrompe offline y se niega a publicar los datos de estado L2 actualizados, el usuario, incluso teniendo fondos legítimos on-chain, <em>carece de la información criptográfica (Merkle Proof) necesaria para retirar a Ethereum</em>. Según la Ledger Academy, un Validium cambia el riesgo de fallo L1 por la <strong>confianza inherente en el comportamiento ético del comité off-chain</strong>, siendo inadecuado para la custodia generacional frente a un ZK-Rollup estricto.</p>
                     </section>
                 </div>`
         },
@@ -360,7 +360,7 @@
 
                     <section class="pro-section">
                         <h2>II. Verificación Etherscan y Verificabilidad Continua y Determinista</h2>
-                        <p>Para la Whale Academy, "Don't Trust, Verify" es un proceso binario absoluto. La firma institucional audita no solo el repositorio GitHub, sino la <strong>Verificación Determinista del Contrato (Source Code Matching)</strong> on-chain. La firma que generó el binario final debe cotejarse y validarse mediante infraestructura independiente (Exploradores como Etherscan / Sourcify). Adicionalmente, eventos como la "Desaparición de IPFS nodes" (Link-rot de URLs front-end) hacen obligatorio que la custodia corporativa hostee sus propios nodos de Front-End, comunicándose directo al contrato descentralizado del protocolo.</p>
+                        <p>Para la Ledger Academy, "Don't Trust, Verify" es un proceso binario absoluto. La firma institucional audita no solo el repositorio GitHub, sino la <strong>Verificación Determinista del Contrato (Source Code Matching)</strong> on-chain. La firma que generó el binario final debe cotejarse y validarse mediante infraestructura independiente (Exploradores como Etherscan / Sourcify). Adicionalmente, eventos como la "Desaparición de IPFS nodes" (Link-rot de URLs front-end) hacen obligatorio que la custodia corporativa hostee sus propios nodos de Front-End, comunicándose directo al contrato descentralizado del protocolo.</p>
                     </section>
                 </div>`
         }

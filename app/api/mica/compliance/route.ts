@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
                 // Wipe user profile, settings, and subscription ties
                 await prisma.user.deleteMany({ where: { walletAddress: address } });
                 
-                // Note: We DO NOT delete the blockchain thermodynamic event records (WhaleActivity)
+                // Note: We DO NOT delete the blockchain thermodynamic event records (LedgerActivity)
                 // because those are public on-chain deterministic facts, not PII.
                 
                 // Hash the address to verify the wipe in the future without storing the PII

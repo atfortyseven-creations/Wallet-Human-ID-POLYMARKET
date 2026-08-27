@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { LocalContact } from '@/lib/wallet/localAddressBook';
 
-interface WhaleStatus {
+interface LedgerStatus {
   peerAddress: string;
   text: string;
   emoji: string;
@@ -14,15 +14,15 @@ interface WhaleStatus {
 const STATUS_EMOJIS = ['😊','🔥','💡','👀','🐋','⚡','🎯','✅','🚀','💎','🌊','🦁'];
 
 function getStatusKey(address: string) {
-  return `whale_statuses_${address.toLowerCase()}`;
+  return `ledger_statuses_${address.toLowerCase()}`;
 }
 
-function loadStatuses(address: string): WhaleStatus[] {
+function loadStatuses(address: string): LedgerStatus[] {
   if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(getStatusKey(address));
     if (!raw) return [];
-    const all: WhaleStatus[] = JSON.parse(raw);
+    const all: LedgerStatus[] = JSON.parse(raw);
     const now = Date.now();
     return all.filter(s => s.expiresAt > now);
   } catch {
@@ -30,7 +30,7 @@ function loadStatuses(address: string): WhaleStatus[] {
   }
 }
 
-function saveMyStatus(address: string, status: WhaleStatus) {
+function saveMyStatus(address: string, status: LedgerStatus) {
   if (typeof window === 'undefined') return;
   try {
     const existing = loadStatuses(address);
@@ -72,9 +72,9 @@ interface LedgerChatStatusBarProps {
 }
 
 export function LedgerChatStatusBar({ address, contacts }: LedgerChatStatusBarProps) {
-  const [statuses, setStatuses] = useState<WhaleStatus[]>([]);
+  const [statuses, setStatuses] = useState<LedgerStatus[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showViewModal, setShowViewModal] = useState<WhaleStatus | null>(null);
+  const [showViewModal, setShowViewModal] = useState<LedgerStatus | null>(null);
   const [newStatusText, setNewStatusText] = useState('');
   const [selectedEmoji, setSelectedEmoji] = useState('🐋');
   const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -87,7 +87,7 @@ export function LedgerChatStatusBar({ address, contacts }: LedgerChatStatusBarPr
   const handlePostStatus = () => {
     if (!newStatusText.trim()) return;
     const now = Date.now();
-    const newStatus: WhaleStatus = {
+    const newStatus: LedgerStatus = {
       peerAddress: address.toLowerCase(),
       text: newStatusText.trim(),
       emoji: selectedEmoji,
@@ -100,7 +100,7 @@ export function LedgerChatStatusBar({ address, contacts }: LedgerChatStatusBarPr
     setNewStatusText('');
   };
 
-  const handleViewStatus = (status: WhaleStatus) => {
+  const handleViewStatus = (status: LedgerStatus) => {
     setShowViewModal(status);
     setViewProgress(0);
     let elapsed = 0;
@@ -128,7 +128,7 @@ export function LedgerChatStatusBar({ address, contacts }: LedgerChatStatusBarPr
 
   // Build the list: My status first, then contacts who have statuses
   const myStatuses = statuses.filter(s => s.peerAddress === address.toLowerCase());
-  const contactStatusMap = new Map<string, WhaleStatus>();
+  const contactStatusMap = new Map<string, LedgerStatus>();
   statuses.forEach(s => {
     if (s.peerAddress !== address.toLowerCase()) {
       contactStatusMap.set(s.peerAddress, s);

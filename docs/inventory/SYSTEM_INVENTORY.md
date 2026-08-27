@@ -8,7 +8,7 @@
 ## EXECUTIVE SUMMARY
 
 Humanity Ledger is a **Next.js 15 full-stack web application** deployed on Railway, functioning as:
-1. A **blockchain intelligence and whale-tracking platform** (primary production capability)
+1. A **blockchain intelligence and ledger-tracking platform** (primary production capability)
 2. A **multi-app hub** with aspirational Mini-App architecture
 3. A **ZK/Aztec integration layer** that is partially implemented and partially simulated
 
@@ -54,7 +54,7 @@ Files that should not exist at repo root:
 - `f.endsWith('.tsx')`, `k.includes('PXE')` — stray shell/JS expression files
 - `console.error(e.message.slice(0`, `t.address`, etc. — shell fragments as files
 - `tsc_out.txt`, `build_out.txt`, `diff_identity.txt` (99KB, 738KB dev artifacts)
-- Multiple stray HTML files (`whale_network_terminal_presentation.html`, etc.)
+- Multiple stray HTML files (`ledger_network_terminal_presentation.html`, etc.)
 
 ---
 
@@ -74,7 +74,7 @@ Files that should not exist at repo root:
 - `AIRebalancerPlan`, `VirtualCard`, `AirdropClaim`, `QdTransaction`
 
 **Intelligence:**
-- `WhaleActivity`, `GlobalWhaleEvent`, `AlertRule`, `IntelItem`
+- `LedgerActivity`, `GlobalLedgerEvent`, `AlertRule`, `IntelItem`
 - `OnChainEntity`, `EntityLabel`, `NeuralAgentConfig`
 
 **Platform:**
@@ -103,7 +103,7 @@ Files that should not exist at repo root:
 
 ### Redis (CONFIRMED LIVE — via Upstash)
 - Used by BullMQ workers (CosmicForgeWorker, SyndicateDaemon, indexer.ts)
-- Used for real-time pub/sub (whale events, mempool streams)
+- Used for real-time pub/sub (ledger events, mempool streams)
 - `lib/redis/` directory exists
 - **Classification: Cache + Ephemeral state**
 
@@ -157,9 +157,9 @@ Files that should not exist at repo root:
 | `AztecOracleL1.sol` | L1 Oracle for Aztec bridge | Solidity | Unknown | NO | NONE | NOT DEPLOYED |
 | `SystemForumAnchor.sol` | On-chain forum anchoring | Solidity | Unknown | NO | NONE | NOT DEPLOYED |
 | `SystemReputationSBT.sol` | Soulbound reputation token | Solidity | Unknown | NO | NONE | NOT DEPLOYED |
-| `WhaleKnowledgeGraph.sol` | On-chain knowledge graph | Solidity | Unknown | NO | NONE | NOT DEPLOYED |
-| `WhalePass.sol` | Whale membership pass | Solidity | Unknown | NO | NONE | NOT DEPLOYED |
-| `WhaleValidator.sol` | Validator contract | Solidity | Unknown | NO | NONE | NOT DEPLOYED |
+| `LedgerKnowledgeGraph.sol` | On-chain knowledge graph | Solidity | Unknown | NO | NONE | NOT DEPLOYED |
+| `LedgerPass.sol` | Ledger membership pass | Solidity | Unknown | NO | NONE | NOT DEPLOYED |
+| `LedgerValidator.sol` | Validator contract | Solidity | Unknown | NO | NONE | NOT DEPLOYED |
 
 ### contracts/quantum/
 | Contract | Purpose | Status |
@@ -213,10 +213,10 @@ Files that should not exist at repo root:
 | `qr_session_sync` | QR session |
 | `recursive-proof-aggregator` | Proof aggregation |
 | `sentient-sub-network` | Unknown |
-| `whale-alert-verification` | Whale alert ZK |
-| `whale_chat` | Chat ZK |
+| `ledger-alert-verification` | Ledger alert ZK |
+| `ledger_chat` | Chat ZK |
 | `zk-dna-biometrics` | Biometric ZK |
-| `zkml-whale-scoring` | ML-based whale scoring |
+| `zkml-ledger-scoring` | ML-based ledger scoring |
 
 - **None of these circuits are confirmed compiled, deployed, or connected to production**
 - The CI workflow (`.github/workflows/aztec-ci.yml`) only runs on branch `aztec-integration-v1` — not `main`
@@ -295,8 +295,8 @@ The platform has **multiple parallel identity systems**:
 | `test/portfolio-onchain.test.ts` | Integration | Portfolio | EXISTS |
 | `test/qd-economy.security.test.ts` | Security | QD token economy | EXISTS |
 | `test/qd-stress.test.ts` | Load | QD token | EXISTS |
-| `test/whale_chat_audit.test.ts` | Audit | Ledger Chat | EXISTS |
-| `test/WhaleDeadmanSwitch.test.ts` | Unit | Dead Man's Switch | EXISTS |
+| `test/ledger_chat_audit.test.ts` | Audit | Ledger Chat | EXISTS |
+| `test/LedgerDeadmanSwitch.test.ts` | Unit | Dead Man's Switch | EXISTS |
 | `test/unit/crypto/eip191-verify.test.ts` | Unit | EIP-191 signing | EXISTS |
 | `test/unit/resilience/circuit-breaker.test.ts` | Unit | Circuit breaker | EXISTS |
 | `test/unit/intelligence/zscore-engine.property.test.ts` | Property | Z-Score engine | EXISTS |
@@ -317,7 +317,7 @@ Categories identified:
 - **Auth** (~20 routes): SIWE, email, QR, KYC, session management
 - **Aztec** (~12 routes): balance, transfer, airdrop, identity, deploy
 - **Wallet** (~25 routes): send, swap, history, deadman, timelock, rebalance, recovery
-- **Whale Intelligence** (~15 routes): alerts, stream, multi-chain, mempool, SSE
+- **Ledger Intelligence** (~15 routes): alerts, stream, multi-chain, mempool, SSE
 - **Forum** (~20 routes): topics, posts, likes, notifications, telemetry
 - **Governance** (~3 routes): proposals, propose, vote
 - **ZK** (~6 routes): prove, verify, witness, compile, avs
@@ -353,7 +353,7 @@ Categories identified:
 | `README.md` | "L2 ZK-rollup ecosystem settled on Aztec" | No Aztec mainnet deployment exists | CONTRADICTORY |
 | `MASTER_ARCHITECTURE.md` | "Full system blueprint" | Dated 14/08/2026 — already partially stale | CONTRADICTORY |
 | `PRODUCTION_READINESS.md` | Lists contracts as NOT deployed | Matches reality | ACCURATE |
-| `WHALE_NETWORK_WHITEPAPER.md` | Describes Ledger Chat + Aztec PXE signaling | No confirmed PXE connection | PARTIALLY CONTRADICTORY |
+| `LEDGER_NETWORK_WHITEPAPER.md` | Describes Ledger Chat + Aztec PXE signaling | No confirmed PXE connection | PARTIALLY CONTRADICTORY |
 | `DEPLOYMENT.md` | Railway deployment | Matches reality | ACCURATE |
 | `SECURITY.md` | Security policy | Needs review | UNKNOWN |
 | `system_capabilities.md` | Lists capabilities | Not verified against code | UNVERIFIED |

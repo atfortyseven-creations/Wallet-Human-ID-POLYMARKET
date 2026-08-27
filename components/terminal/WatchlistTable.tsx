@@ -60,7 +60,7 @@ export function WatchlistTable() {
                             roi: ((d.current_price - (d.current_price * 0.9)) / (d.current_price * 0.9)) * 100,
                             mcap: d.market_cap,
                             vol24h: d.total_volume,
-                            whaleConcentration: null // Zero-Mock Mandate
+                            ledgerConcentration: null // Zero-Mock Mandate
                         }
                     }));
                     setServerTokens(mappedTokens);
@@ -81,7 +81,7 @@ export function WatchlistTable() {
     type WalletEntity = {
         address: string;
         label?: string;
-        isWhale?: boolean;
+        isLedger?: boolean;
         isSmart?: boolean;
         alertsEnabled?: boolean;
         analytics?: {
@@ -259,8 +259,8 @@ export function WatchlistTable() {
                                                             </div>
 
                                                             {/* Top10 holders */}
-                                                            <div className={`px-3 text-right text-[10px] font-black font-mono ${(md.whaleConcentration ?? 0) > 40 ? 'text-[#FF9500]' : 'text-[#050505]'}`}>
-                                                                {md.whaleConcentration != null ? `${md.whaleConcentration}%` : ''}
+                                                            <div className={`px-3 text-right text-[10px] font-black font-mono ${(md.ledgerConcentration ?? 0) > 40 ? 'text-[#FF9500]' : 'text-[#050505]'}`}>
+                                                                {md.ledgerConcentration != null ? `${md.ledgerConcentration}%` : ''}
                                                             </div>
 
                                                             {/* Delete / Save */}
@@ -337,7 +337,7 @@ export function WatchlistTable() {
                                                                 <div className="flex flex-col">
                                                                     <span className="text-[11px] font-black text-[#050505]">{w.label || 'Unknown Wallet'}</span>
                                                                     <div className="flex gap-1 mt-0.5">
-                                                                        {w.isWhale && <span className="text-[7px] px-1 py-0.5 rounded bg-[#627EEA]/10 text-[#627EEA] border border-[#627EEA]/20 font-black uppercase">Whale</span>}
+                                                                        {w.isLedger && <span className="text-[7px] px-1 py-0.5 rounded bg-[#627EEA]/10 text-[#627EEA] border border-[#627EEA]/20 font-black uppercase">Ledger</span>}
                                                                         {w.isSmart && <span className="text-[7px] px-1 py-0.5 rounded bg-[#00C076]/10 text-[#00C076] border border-[#00C076]/20 font-black uppercase">Smart</span>}
                                                                         {w.alertsEnabled && <span className="text-[7px] px-1 py-0.5 rounded bg-[#FF9500]/10 text-[#FF9500] border border-[#FF9500]/20 font-black uppercase">Alert</span>}
                                                                     </div>

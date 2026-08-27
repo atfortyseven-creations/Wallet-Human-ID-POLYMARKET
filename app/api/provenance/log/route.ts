@@ -4,7 +4,7 @@ import { logProvenanceEvent, ProvenanceEventType } from '@/lib/aztec/provenanceI
 
 export const dynamic = 'force-dynamic';
 
-const ALLOWED_TYPES: ProvenanceEventType[] = ['WHALE_CHAT_SYNC', 'PORTFOLIO_ACCESS', 'STUDIO_ACCESS'];
+const ALLOWED_TYPES: ProvenanceEventType[] = ['LEDGER_CHAT_SYNC', 'PORTFOLIO_ACCESS', 'STUDIO_ACCESS'];
 
 export async function POST(req: NextRequest) {
   try {

@@ -23,7 +23,7 @@ const AGGREGATION_KEYS = {
     SECTOR_RANKINGS:        'idx:sectors:rankings',          // TTL: 60s
     TOKEN_VOLUME_24H:       'idx:tokens:volume:24h',         // TTL: 60s
     CHAIN_SUMMARY:          'idx:chains:summary',            // TTL: 120s
-    TOP_WHALE_EVENTS_24H:   'idx:whaleevents:top:24h',       // TTL: 30s
+    TOP_LEDGER_EVENTS_24H:   'idx:ledgerevents:top:24h',       // TTL: 30s
     ZK_VERIFIED_FEED:       'idx:feed:zk-verified',          // TTL: 15s (sovereign)
 };
 
@@ -34,7 +34,7 @@ const AGGREGATION_KEYS = {
  * This replaces a GROUP BY query that was causing full table scans at scale.
  */
 async function aggregateGlobalLeaderboard() {
-    const rows = await prisma.whaleActivity.groupBy({
+    const rows = await prisma.ledgerActivity.groupBy({
         by: ['walletAddress'],
         _count: { id: true },
         orderBy: { _count: { id: 'desc' } },
@@ -54,13 +54,13 @@ async function aggregateGlobalLeaderboard() {
  * Computes per-chain leaderboards in parallel (Ethereum, Solana, Arbitrum).
  */
 async function aggregateLeaderboardByChain() {
-    const chains = await prisma.whaleActivity.findMany({
+    const chains = await prisma.ledgerActivity.findMany({
         distinct: ['chain'],
         select: { chain: true },
     });
 
     await Promise.all(chains.map(async ({ chain }) => {
-        const rows = await prisma.whaleActivity.groupBy({
+        const rows = await prisma.ledgerActivity.groupBy({
             by: ['walletAddress'],
             where: { chain },
             _count: { id: true },
@@ -98,32 +98,32 @@ async function aggregateSectorRankings() {
 }
 
 /**
- * Computes the largest whale events in the last 24h.
+ * Computes the largest ledger events in the last 24h.
  * Critical for the "Top Alerts" panel in MacroDashboard.
  */
-async function aggregateTopWhaleEvents24h() {
+async function aggregateTopLedgerEvents24h() {
     const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-    const events = await prisma.globalWhaleEvent.findMany({
+    const events = await prisma.globalLedgerEvent.findMany({
         where: { timestamp: { gte: since } },
         orderBy: { amountUSD: 'desc' },
         take: 50,
     });
 
     await safeRedisSet(
-        AGGREGATION_KEYS.TOP_WHALE_EVENTS_24H,
+        AGGREGATION_KEYS.TOP_LEDGER_EVENTS_24H,
         JSON.stringify({ updatedAt: new Date().toISOString(), data: events }),
         'EX', 30
     );
 
-    console.log(`[INDEXER]  Top Whale Events (24h): ${events.length} events indexed.`);
+    console.log(`[INDEXER]  Top Ledger Events (24h): ${events.length} events indexed.`);
 }
 
 /**
  * Chain-level activity summary for the global Bubble Map.
  */
 async function aggregateChainSummary() {
-    const summary = await prisma.whaleActivity.groupBy({
+    const summary = await prisma.ledgerActivity.groupBy({
         by: ['chain'],
         _count: { id: true },
         orderBy: { _count: { id: 'desc' } },
@@ -139,10 +139,10 @@ async function aggregateChainSummary() {
 }
 
 /**
- * Extracts the latest ZK-verified whale activity feed for sovereign tier.
+ * Extracts the latest ZK-verified ledger activity feed for sovereign tier.
  */
 async function aggregateZkVerifiedFeed() {
-    const events = await prisma.whaleActivity.findMany({
+    const events = await prisma.ledgerActivity.findMany({
         where: { isZkVerified: true },
         orderBy: { timestamp: 'desc' },
         take: 25,
@@ -176,7 +176,7 @@ export async function runAllAggregations(): Promise<void> {
         aggregateGlobalLeaderboard(),
         aggregateLeaderboardByChain(),
         aggregateSectorRankings(),
-        aggregateTopWhaleEvents24h(),
+        aggregateTopLedgerEvents24h(),
         aggregateChainSummary(),
         aggregateZkVerifiedFeed(),
     ]);
@@ -190,7 +190,7 @@ export {
     aggregateGlobalLeaderboard,
     aggregateLeaderboardByChain,
     aggregateSectorRankings,
-    aggregateTopWhaleEvents24h,
+    aggregateTopLedgerEvents24h,
     aggregateChainSummary,
     aggregateZkVerifiedFeed,
     AGGREGATION_KEYS,

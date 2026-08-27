@@ -61,7 +61,7 @@ class SystemNeuralSegregator extends EventEmitter {
 
     const latestVol = volumes[volumes.length - 1];
     
-    // Whale Formula
+    // Ledger Formula
     const zScore = standardDeviation === 0 ? 0 : (latestVol - mean) / standardDeviation;
     
     let signal = 'NEUTRAL';

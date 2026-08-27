@@ -18,7 +18,7 @@ export const defiModules = [
 
                     <section class="pro-section">
                         <h2>II. El Health Factor: Indicador Forense de Riesgo de Liquidación</h2>
-                        <p>El <strong>Health Factor (HF)</strong> es la métrica central del riesgo en Aave: <code>HF = (Colateral * Factor de Liquidación) / Total Prestado</code>. Cuando HF cae por debajo de 1.0, los <em>liquidadores</em> pueden adquirir hasta el 50% del colateral del usuario con un descuento del 5-15%. Esto crea un mecanismo de incentivos donde agentes externos mantienen la solvencia del protocolo, un diseño institucional de riesgo que la Whale Academy analiza como la base de todos los mercados monetarios DeFi.</p>
+                        <p>El <strong>Health Factor (HF)</strong> es la métrica central del riesgo en Aave: <code>HF = (Colateral * Factor de Liquidación) / Total Prestado</code>. Cuando HF cae por debajo de 1.0, los <em>liquidadores</em> pueden adquirir hasta el 50% del colateral del usuario con un descuento del 5-15%. Esto crea un mecanismo de incentivos donde agentes externos mantienen la solvencia del protocolo, un diseño institucional de riesgo que la Ledger Academy analiza como la base de todos los mercados monetarios DeFi.</p>
                         <div class="technical-table">
                             <table>
                                 <thead><tr><th>HF</th><th>Estado</th><th>Acción del Protocolo</th></tr></thead>
@@ -46,7 +46,7 @@ export const defiModules = [
 
                     <section class="pro-section">
                         <h2>II. Curve Wars y el Control de los Flujos de Emisión</h2>
-                        <p>La importancia de Curve va más allá del attesting. Los protocolos que obtienen más emisiones de CRV para sus pools atraen más liquidez, reduciendo el slippage de sus tokens y fortaleciendo sus pegs. Esto creó las famosas <strong>Curve Wars</strong>: una batalla de gobernanza donde Convex, Yearn y otros acumulaban veCRV para dirigir millones en incentivos. Para la Whale Academy, esta guerra es el primer ejemplo de <strong>Meta-Gobernanza DeFi</strong>: el control de la infraestructura de liquidez es equivalente al control del flujo de capital en TradFi.</p>
+                        <p>La importancia de Curve va más allá del attesting. Los protocolos que obtienen más emisiones de CRV para sus pools atraen más liquidez, reduciendo el slippage de sus tokens y fortaleciendo sus pegs. Esto creó las famosas <strong>Curve Wars</strong>: una batalla de gobernanza donde Convex, Yearn y otros acumulaban veCRV para dirigir millones en incentivos. Para la Ledger Academy, esta guerra es el primer ejemplo de <strong>Meta-Gobernanza DeFi</strong>: el control de la infraestructura de liquidez es equivalente al control del flujo de capital en TradFi.</p>
                     </section>
                 </div>`
         },
@@ -82,7 +82,7 @@ export const defiModules = [
 
                     <section class="pro-section">
                         <h2>II. Synthetix: El Modelo de Deuda Colectiva y Riesgo Global</h2>
-                        <p>Synthetix utiliza un modelo radicalmente diferente: los <em>stakers</em> de SNX actúan colectivamente como contraparte de todos los verifiers. Al abrir una posición en sETH o sBTC, el verifier no tiene una contraparte individual; tiene contra sí a todos los stakers. Esto permite liquidez teóricamente infinita pero introduce una <strong>cuenta de deuda dinámica</strong>: si los verifiers tienen éxito, los stakers asumen las pérdidas. Para la Whale Academy, este es el modelo de riesgo más sofisticado de DeFi: el <em>Delta Neto del Pool</em>.</p>
+                        <p>Synthetix utiliza un modelo radicalmente diferente: los <em>stakers</em> de SNX actúan colectivamente como contraparte de todos los verifiers. Al abrir una posición en sETH o sBTC, el verifier no tiene una contraparte individual; tiene contra sí a todos los stakers. Esto permite liquidez teóricamente infinita pero introduce una <strong>cuenta de deuda dinámica</strong>: si los verifiers tienen éxito, los stakers asumen las pérdidas. Para la Ledger Academy, este es el modelo de riesgo más sofisticado de DeFi: el <em>Delta Neto del Pool</em>.</p>
                     </section>
                 </div>`
         },
@@ -95,7 +95,7 @@ export const defiModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Convergencia: TradFi On-Chain</h2>
-                        <p>La siguiente frontera de DeFi es la tokenización de <strong>Activos del Mundo Real (RWA)</strong>. BlackRock, ya con su fondo BUIDL tokenizado en Ethereum, demuestra que el capital institucional TradFi está migrando hacia la infraestructura on-chain. Para la Whale Academy, esto puede signficar la última frontera del arbitraje intitucional: capitalizar sobre las diferencias de eficiencia entre los mercados financieros tradicionales (lunes-viernes, 9-17h) y los mercados cripto (24/7/365).</p>
+                        <p>La siguiente frontera de DeFi es la tokenización de <strong>Activos del Mundo Real (RWA)</strong>. BlackRock, ya con su fondo BUIDL tokenizado en Ethereum, demuestra que el capital institucional TradFi está migrando hacia la infraestructura on-chain. Para la Ledger Academy, esto puede signficar la última frontera del arbitraje intitucional: capitalizar sobre las diferencias de eficiencia entre los mercados financieros tradicionales (lunes-viernes, 9-17h) y los mercados cripto (24/7/365).</p>
                     </section>
 
                     <section class="pro-section">
@@ -154,7 +154,7 @@ export const defiModules = [
 
                     <section class="pro-section">
                         <h2>II. Recuperabilidad Total: El Mecanismo de Redención</h2>
-                        <p>Cualquier poseedor de LUSD puede en cualquier momento <strong>canjear (redimir) LUSD por ETH al valor de $1</strong>, quemando el LUSD y obteniendo ETH del vault con menor ratio de colateralización. Esto establece un <em>suelo de precio inviolable</em> para LUSD: nunca puede bajar significativamente de $1 porque habrá arbitrajistas que lo compren a descuento y lo canjeen por ETH. Para la Whale Academy, es el ejemplo más puro de estabilidad mecánica en DeFi.</p>
+                        <p>Cualquier poseedor de LUSD puede en cualquier momento <strong>canjear (redimir) LUSD por ETH al valor de $1</strong>, quemando el LUSD y obteniendo ETH del vault con menor ratio de colateralización. Esto establece un <em>suelo de precio inviolable</em> para LUSD: nunca puede bajar significativamente de $1 porque habrá arbitrajistas que lo compren a descuento y lo canjeen por ETH. Para la Ledger Academy, es el ejemplo más puro de estabilidad mecánica en DeFi.</p>
                     </section>
                 </div>`
         },
@@ -226,7 +226,7 @@ export const defiModules = [
 
                     <section class="pro-section">
                         <h2>II. El Proceso de Reclamación: Gobernanza Forense</h2>
-                        <p>Cuando ocurre un hack, los asegurados presentan una reclamación. Los <em>Claims Assessors</em> (poseedores de NXM que han bloqueado su token) votan si la reclamación es válida. Este mecanismo crea un sistema de <strong>Peritos de Seguros Descentralizados</strong> con incentivos económicos para ser honestos: votar en la minoría reduce las recompensas. Para la Whale Academy, el seguro DeFi es la capa final de gestión de riesgo institucional que convierte el capital on-chain en capital verdaderamente protegido.</p>
+                        <p>Cuando ocurre un hack, los asegurados presentan una reclamación. Los <em>Claims Assessors</em> (poseedores de NXM que han bloqueado su token) votan si la reclamación es válida. Este mecanismo crea un sistema de <strong>Peritos de Seguros Descentralizados</strong> con incentivos económicos para ser honestos: votar en la minoría reduce las recompensas. Para la Ledger Academy, el seguro DeFi es la capa final de gestión de riesgo institucional que convierte el capital on-chain en capital verdaderamente protegido.</p>
                     </section>
                 </div>`
         },
@@ -257,7 +257,7 @@ export const defiModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. T-Bills On-Chain: El $1.3T en la Blockchain</h2>
-                        <p>Los <strong>Real World Assets (RWA)</strong> son la categoría de mayor crecimiento en DeFi. <em>Ondo Finance</em> tokeniza T-Bills de EE.UU. como USDY, pagando rendimientos del ~5% en stablecoins. <em>BlackRock BUIDL</em> (en Ethereum) permite a inversores institucionales acceder a fondos del mercado monetario tokenizados. Para la Whale Academy, esto representa un cambio estructural: el capital institucional prefiere la eficiencia on-chain (24/7, liquidación en segundos, programmabilidad) incluso para los activos más conservadores del mundo.</p>
+                        <p>Los <strong>Real World Assets (RWA)</strong> son la categoría de mayor crecimiento en DeFi. <em>Ondo Finance</em> tokeniza T-Bills de EE.UU. como USDY, pagando rendimientos del ~5% en stablecoins. <em>BlackRock BUIDL</em> (en Ethereum) permite a inversores institucionales acceder a fondos del mercado monetario tokenizados. Para la Ledger Academy, esto representa un cambio estructural: el capital institucional prefiere la eficiencia on-chain (24/7, liquidación en segundos, programmabilidad) incluso para los activos más conservadores del mundo.</p>
                     </section>
 
                     <section class="pro-section">
@@ -275,7 +275,7 @@ export const defiModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. El Trilema de las Stablecoins: Estabilidad, Descentralización y Escalabilidad</h2>
-                        <p>Ninguna stablecoin puede maximizar simultáneamente las tres propiedades del trilema. <strong>USDT/USDC</strong> son estables y escalables pero completamente centralizadas (Tether/Circle pueden congelar cualquier dirección). <strong>DAI/LUSD</strong> son descentralizadas y relativamente estables pero con escalabilidad limitada por el requerimiento de sobrecolateralización. Las <strong>Algorítmicas puras</strong> son descentralizadas y escalables pero inherentemente inestables. Para la Whale Academy, el análisis de riesgo de stablecoins sigue esta jerarquía: riesgo de censura (fiat-backed) &lt; riesgo de liquidación (crypto-backed) &lt; riesgo de muerte espiral (algorítmicas).</p>
+                        <p>Ninguna stablecoin puede maximizar simultáneamente las tres propiedades del trilema. <strong>USDT/USDC</strong> son estables y escalables pero completamente centralizadas (Tether/Circle pueden congelar cualquier dirección). <strong>DAI/LUSD</strong> son descentralizadas y relativamente estables pero con escalabilidad limitada por el requerimiento de sobrecolateralización. Las <strong>Algorítmicas puras</strong> son descentralizadas y escalables pero inherentemente inestables. Para la Ledger Academy, el análisis de riesgo de stablecoins sigue esta jerarquía: riesgo de censura (fiat-backed) &lt; riesgo de liquidación (crypto-backed) &lt; riesgo de muerte espiral (algorítmicas).</p>
                     </section>
 
                     <section class="pro-section">
@@ -316,7 +316,7 @@ export const defiModules = [
 
                     <section class="pro-section">
                         <h2>II. El Riesgo de Composabilidad: Flash Loan Attack Surfaces</h2>
-                        <p>La composabilidad también amplifica los vectores de ataque. Los <strong>Flash Loans</strong> (préstamos sin colateral devueltos en el mismo bloque) permiten a un atacante controlar cientos de millones en capital por microsegundos, suficiente para manipular oráculos de precio, drenar pools de liquidez o explotar desequilibrios en múltiples protocolos en una sola transacción atómica. Para la Whale Academy, el análisis de composabilidad incluye siempre el mapa de superficies de ataque a través de las capas del stack.</p>
+                        <p>La composabilidad también amplifica los vectores de ataque. Los <strong>Flash Loans</strong> (préstamos sin colateral devueltos en el mismo bloque) permiten a un atacante controlar cientos de millones en capital por microsegundos, suficiente para manipular oráculos de precio, drenar pools de liquidez o explotar desequilibrios en múltiples protocolos en una sola transacción atómica. Para la Ledger Academy, el análisis de composabilidad incluye siempre el mapa de superficies de ataque a través de las capas del stack.</p>
                     </section>
                 </div>`
         },
@@ -334,7 +334,7 @@ export const defiModules = [
 
                     <section class="pro-section">
                         <h2>II. La Emergencia de los Meta-Gobernadores: Convex Finance</h2>
-                        <p><strong>Convex Finance</strong> emergió como el mayor acumulador de veCRV: permite a los usuarios depositar CRV y recibir cvxCRV (canjeable inmediatamente, sin lock) mientras Convex mantiene el veCRV bloqueado. Al agregar el poder de voto de millones de usuarios, Convex dirige la mayor parte de las emisiones de Curve, convirtiéndose en un <em>meta-gobernador</em>. Para la Whale Academy, el caso Convex ilustra cómo en la gobernanza on-chain, el capital que coordina vence siempre al capital disperso.</p>
+                        <p><strong>Convex Finance</strong> emergió como el mayor acumulador de veCRV: permite a los usuarios depositar CRV y recibir cvxCRV (canjeable inmediatamente, sin lock) mientras Convex mantiene el veCRV bloqueado. Al agregar el poder de voto de millones de usuarios, Convex dirige la mayor parte de las emisiones de Curve, convirtiéndose en un <em>meta-gobernador</em>. Para la Ledger Academy, el caso Convex ilustra cómo en la gobernanza on-chain, el capital que coordina vence siempre al capital disperso.</p>
                     </section>
                 </div>`
         },
@@ -365,12 +365,12 @@ export const defiModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. DeFi Summer 2020: La Explosión del Liquidity Mining</h2>
-                        <p>El <strong>Liquidity Mining</strong> nació cuando Compound comenzó a distribuir COMP a sus usuarios en junio de 2020. De pronto, usar DeFi generaba retornos adicionales en tokens de gobernanza. Esto encendió el <em>DeFi Summer</em>: el TVL (Total Value Locked) pasó de $1B a $15B en meses, con protocolos compitiendo por capital mediante emisiones de tokens cada vez más agresivas. Para la Whale Academy, este período fue el <strong>primer experimento global de Incentivos de Bootstrapping de Liquidez</strong>: el equivalente cripto de un producto que te paga por usarlo para ganar cuota de mercado.</p>
+                        <p>El <strong>Liquidity Mining</strong> nació cuando Compound comenzó a distribuir COMP a sus usuarios en junio de 2020. De pronto, usar DeFi generaba retornos adicionales en tokens de gobernanza. Esto encendió el <em>DeFi Summer</em>: el TVL (Total Value Locked) pasó de $1B a $15B en meses, con protocolos compitiendo por capital mediante emisiones de tokens cada vez más agresivas. Para la Ledger Academy, este período fue el <strong>primer experimento global de Incentivos de Bootstrapping de Liquidez</strong>: el equivalente cripto de un producto que te paga por usarlo para ganar cuota de mercado.</p>
                     </section>
 
                     <section class="pro-section">
                         <h2>II. La Sostenibilidad del Yield: APR Real vs. Nominal</h2>
-                        <p>El reto forense del Yield Farming es distinguir entre APR real y APR nominal. Un APR del 500% en tokens del protocolo implica que el token se deprecia un 80% en un año (dilución inflacionaria) si la demanda no absorbe la emisión. Para la Whale Academy, el <strong>Yield Sostenible</strong> es el generado por actividad económica real (comisiones de attesting, intereses de préstamos) y no por emisión inflacionaria. El ratio <code>Protocol Revenue / Token Emissions</code> es el indicador definitivo de si un protocolo DeFi tiene futuro o es un Ponzi de liquidez.</p>
+                        <p>El reto forense del Yield Farming es distinguir entre APR real y APR nominal. Un APR del 500% en tokens del protocolo implica que el token se deprecia un 80% en un año (dilución inflacionaria) si la demanda no absorbe la emisión. Para la Ledger Academy, el <strong>Yield Sostenible</strong> es el generado por actividad económica real (comisiones de attesting, intereses de préstamos) y no por emisión inflacionaria. El ratio <code>Protocol Revenue / Token Emissions</code> es el indicador definitivo de si un protocolo DeFi tiene futuro o es un Ponzi de liquidez.</p>
                     </section>
                 </div>`
         }

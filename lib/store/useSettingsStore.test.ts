@@ -74,11 +74,11 @@ describe('useSettingsStore (Quantum UX)', () => {
     const { updateSetting } = useSettingsStore.getState();
     await updateSetting('tickerWidgets', true);
     await updateSetting('contractScanner', true);
-    await updateSetting('whaleAlertThreshold', 50000);
+    await updateSetting('ledgerAlertThreshold', 50000);
 
     const state = useSettingsStore.getState();
     expect(state.tickerWidgets).toBe(true);
     expect(state.contractScanner).toBe(true);
-    expect(state.whaleAlertThreshold).toBe(50000);
+    expect(state.ledgerAlertThreshold).toBe(50000);
   });
 });

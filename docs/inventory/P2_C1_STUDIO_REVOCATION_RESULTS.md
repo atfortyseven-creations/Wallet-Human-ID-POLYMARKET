@@ -12,7 +12,7 @@
 | Mutation AFTER DB revoke | _PENDING_ |
 | Finding | _PENDING_ |
 
-**Expected finding:** Legacy `whale_session` has NO DB revocation lookup.  
+**Expected finding:** Legacy `ledger_session` has NO DB revocation lookup.  
 A revoked identity can continue executing mutations for up to 24h (JWT TTL).
 
 ---

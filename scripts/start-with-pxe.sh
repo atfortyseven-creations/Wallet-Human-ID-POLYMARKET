@@ -13,7 +13,7 @@
 set -e
 
 echo "══════════════════════════════════════════════════"
-echo " WHALE INTELLIGENCE — Aztec Testnet PXE Startup"
+echo " LEDGER INTELLIGENCE — Aztec Testnet PXE Startup"
 echo "══════════════════════════════════════════════════"
 
 AZTEC_NODE="${AZTEC_NODE_URL:-https://rpc.testnet.aztec-labs.com}"

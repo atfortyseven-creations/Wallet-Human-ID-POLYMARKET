@@ -65,7 +65,7 @@ export async function GET() {
     deploymentInstructions: {
       method: 'Railway One-Off Command',
       steps: [
-        '1. Open Railway Dashboard → your project → whale-wallet service',
+        '1. Open Railway Dashboard → your project → ledger-wallet service',
         '2. Click the "..." menu → "Run Command"',
         '3. Enter: npx tsx scripts/deploy_aztec_token.ts',
         '4. Copy the AZTEC_TOKEN_CONTRACT_ADDRESS from the output',

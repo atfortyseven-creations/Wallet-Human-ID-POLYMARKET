@@ -78,11 +78,11 @@ export async function POST(req: NextRequest) {
     if (redis) {
       try {
         // Persist last 100 messages per channel in Redis (sorted set by timestamp)
-        const key = `whale_chat:messages:${channelId}`;
+        const key = `ledger_chat:messages:${channelId}`;
         await redis.zadd(key, { score: Date.now(), member: JSON.stringify(message) });
         await redis.expire(key, 60 * 60 * 24 * 7); // 7 days TTL
         // Publish to channel for SSE subscribers
-        await redis.publish(`whale_chat:channel:${channelId}`, JSON.stringify(message));
+        await redis.publish(`ledger_chat:channel:${channelId}`, JSON.stringify(message));
       } catch (redisErr) {
         console.warn('[Ledger Chat] Redis write failed, falling back to memory:', redisErr);
       }
@@ -128,7 +128,7 @@ export async function GET(req: NextRequest) {
 
     if (redis) {
       try {
-        const key = `whale_chat:messages:${channelId}`;
+        const key = `ledger_chat:messages:${channelId}`;
         const since = req.nextUrl.searchParams.get('since');
         const sinceScore = since ? Number(since) : Date.now() - 5 * 60 * 1000;
         const raw = await redis.zrangebyscore(key, sinceScore, '+inf', { withScores: false });

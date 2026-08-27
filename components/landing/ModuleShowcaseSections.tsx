@@ -178,7 +178,7 @@ function DevelopersShowcase() {
                   <span className="ml-2 text-white/30 text-[11px]">aztec-terminal.ts</span>
                 </div>
                 <div className="text-white/40">{"// Initialize the sovereign application layer"}</div>
-                <div><span className="text-purple-400">import</span> <span className="text-yellow-200">{'{ AztecTerminal }'}</span> <span className="text-purple-400">from</span> <span className="text-green-300">{'@whale-network/aztec'}</span><span className="text-white/40">;</span></div>
+                <div><span className="text-purple-400">import</span> <span className="text-yellow-200">{'{ AztecTerminal }'}</span> <span className="text-purple-400">from</span> <span className="text-green-300">{'@ledger-network/aztec'}</span><span className="text-white/40">;</span></div>
                 <div className="mt-2"><span className="text-purple-400">const</span> <span className="text-white">terminal</span> <span className="text-purple-400">{'='}</span> <span className="text-purple-400">new</span> <span className="text-yellow-200">AztecTerminal()</span><span className="text-white/40">;</span></div>
                 <div className="mt-5 text-white/40">{"// Execute Noir circuit with maximum privacy"}</div>
                 <div><span className="text-purple-400">await</span> <span className="text-white">terminal.</span><span className="text-blue-300">executeShielded</span><span className="text-white/40">({'{'}</span></div>
@@ -340,11 +340,11 @@ function PortfolioShowcase() {
                 <span className="text-white/40">Invisible to the world.</span>
               </SectionTitle>
               <SectionBody>
-                The Humanity Ledger Terminal is the sovereign operating system for high-net-worth individuals navigating the on-chain economy. Portfolio balances, transaction history, whale movements, and liquidity flows are all tracked in real-time — and all encrypted. Your wealth management is your business alone.
+                The Humanity Ledger Terminal is the sovereign operating system for high-net-worth individuals navigating the on-chain economy. Portfolio balances, transaction history, ledger movements, and liquidity flows are all tracked in real-time — and all encrypted. Your wealth management is your business alone.
               </SectionBody>
               <motion.div variants={FADE_UP} className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 mb-10">
                 {[
-                  "Real-time whale movement alerts",
+                  "Real-time ledger movement alerts",
                   "Shielded portfolio tracking",
                   "Cross-chain asset aggregation",
                   "DeFi protocol analytics",

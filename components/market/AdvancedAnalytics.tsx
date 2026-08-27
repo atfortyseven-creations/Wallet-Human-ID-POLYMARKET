@@ -129,12 +129,12 @@ export function AdvancedAnalytics() {
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="font-bold text-sm flex items-center gap-2">
                                 <Globe size={14} className="text-blue-400" />
-                                Whale Radar
+                                Ledger Radar
                             </h3>
                         </div>
                         <div className="space-y-4 py-8 flex flex-col items-center justify-center">
                             <Activity size={24} className="text-blue-500/20 animate-pulse" />
-                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20">Establishing Whale Upstream</p>
+                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20">Establishing Ledger Upstream</p>
                         </div>
                     </div>
                 </div>
@@ -174,7 +174,7 @@ function Badge({ children, active }: { children: React.ReactNode, active?: boole
     )
 }
 
-function WhaleRow({ amount, action, time }: { amount: string, action: string, time: string }) {
+function LedgerRow({ amount, action, time }: { amount: string, action: string, time: string }) {
     const isSell = action === 'Sell';
     return (
         <div className="flex items-center justify-between text-xs border-b border-white/5 pb-2 last:border-0 last:pb-0">

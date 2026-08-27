@@ -3,7 +3,7 @@
 
 function openPersistenceDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('WhaleQuantumPersistence', 1);
+    const request = indexedDB.open('LedgerQuantumPersistence', 1);
     request.onupgradeneeded = (e: IDBVersionChangeEvent) => {
       const db = (e.target as IDBOpenDBRequest).result;
       if (!db.objectStoreNames.contains('keys')) {
@@ -66,7 +66,7 @@ export async function sealSessionKey(sessionEncryptionKey: string) {
     combined.set(new Uint8Array(ciphertext), iv.length);
     
     const base64 = btoa(String.fromCharCode.apply(null, Array.from(combined)));
-    localStorage.setItem('whale_hw_session_token', base64);
+    localStorage.setItem('ledger_hw_session_token', base64);
   } catch (error) {
     console.error('[Persistence] Failed to seal session', error);
   }
@@ -76,7 +76,7 @@ export async function sealSessionKey(sessionEncryptionKey: string) {
 export async function unsealSessionKey(): Promise<string | null> {
   if (typeof window === 'undefined') return null;
   try {
-    const base64 = localStorage.getItem('whale_hw_session_token');
+    const base64 = localStorage.getItem('ledger_hw_session_token');
     if (!base64) return null;
 
     const binaryString = atob(base64);
@@ -98,13 +98,13 @@ export async function unsealSessionKey(): Promise<string | null> {
     return new TextDecoder().decode(decryptedBuffer);
   } catch (error) {
     // If decryption fails (e.g. IDB was cleared but localStorage wasn't), clear the broken token
-    localStorage.removeItem('whale_hw_session_token');
+    localStorage.removeItem('ledger_hw_session_token');
     return null;
   }
 }
 
 export async function clearSessionKey() {
     if (typeof window !== 'undefined') {
-        localStorage.removeItem('whale_hw_session_token');
+        localStorage.removeItem('ledger_hw_session_token');
     }
 }

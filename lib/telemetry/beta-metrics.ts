@@ -7,7 +7,7 @@ import { prisma } from '@/lib/prisma';
  * to PostgreSQL securely. No PII, IP addresses, or wallet addresses are logged.
  */
 
-type MetricType = 'HANDSHAKE_LATENCY' | 'WHALE_DETECTION_LATENCY' | 'WS_UPTIME';
+type MetricType = 'HANDSHAKE_LATENCY' | 'LEDGER_DETECTION_LATENCY' | 'WS_UPTIME';
 
 interface AggregatedMetric {
   type: MetricType;
@@ -22,7 +22,7 @@ class TelemetryEngine {
 
   constructor() {
     this.buffer.set('HANDSHAKE_LATENCY', { type: 'HANDSHAKE_LATENCY', values: [], lastFlush: Date.now() });
-    this.buffer.set('WHALE_DETECTION_LATENCY', { type: 'WHALE_DETECTION_LATENCY', values: [], lastFlush: Date.now() });
+    this.buffer.set('LEDGER_DETECTION_LATENCY', { type: 'LEDGER_DETECTION_LATENCY', values: [], lastFlush: Date.now() });
     this.buffer.set('WS_UPTIME', { type: 'WS_UPTIME', values: [], lastFlush: Date.now() });
 
     // Ensure we flush periodically to prevent memory leaks in long-running edge nodes
@@ -91,7 +91,7 @@ class TelemetryEngine {
   public async flushAll() {
     await Promise.all([
       this.flush('HANDSHAKE_LATENCY'),
-      this.flush('WHALE_DETECTION_LATENCY'),
+      this.flush('LEDGER_DETECTION_LATENCY'),
       this.flush('WS_UPTIME')
     ]);
   }

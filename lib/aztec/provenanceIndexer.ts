@@ -4,7 +4,7 @@ import { generateAztecTxHash } from './realTx';
 export type ProvenanceEventType = 
   | 'IDENTITY_PROOF'
   | 'FORUM_POST'
-  | 'WHALE_CHAT_SYNC'
+  | 'LEDGER_CHAT_SYNC'
   | 'PORTFOLIO_ACCESS'
   | 'STUDIO_ACCESS';
 

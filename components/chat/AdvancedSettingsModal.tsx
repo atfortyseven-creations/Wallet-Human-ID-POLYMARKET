@@ -352,7 +352,7 @@ function AudioPanel({ s, u }: { s: SystemSettings; u: <K extends keyof SystemSet
           options={[
             { val: 'minimal', label: '💧 Minimal' },
             { val: 'arcade', label: '🕹 Arcade' },
-            { val: 'whale', label: '🐋 Whale' },
+            { val: 'ledger', label: '🐋 Ledger' },
             { val: 'asmr', label: '✨ ASMR' },
           ]}
           value={s.soundPack}
@@ -399,7 +399,7 @@ function AudioPanel({ s, u }: { s: SystemSettings; u: <K extends keyof SystemSet
 function DefiPanel({ s, u }: { s: SystemSettings; u: <K extends keyof SystemSettings>(k: K, v: SystemSettings[K]) => void }) {
   return (
     <div>
-      <SectionLabel>Whale Tools</SectionLabel>
+      <SectionLabel>Ledger Tools</SectionLabel>
       <Card>
         <Row>
           <RowLabel label="Ticker Widgets" sub="$BTC shows live price in chat bubbles" />
@@ -469,7 +469,7 @@ function AiPanel({ s, u }: { s: SystemSettings; u: <K extends keyof SystemSettin
                 onChange={(e) => u('ghostAutoReplyText', e.target.value)}
                 rows={3}
                 maxLength={280}
-                placeholder="The Whale is away..."
+                placeholder="The Ledger is away..."
                 className="w-full bg-transparent text-[14px] text-white/80 placeholder-white/20 resize-none outline-none leading-relaxed"
               />
               <p className="text-[11px] text-white/30 text-right mt-1">{s.ghostAutoReplyText.length}/280</p>
@@ -493,7 +493,7 @@ function IdentityPanel({ s, u }: { s: SystemSettings; u: <K extends keyof System
             onChange={(e) => u('chatName', e.target.value)}
             maxLength={30}
             className="bg-transparent text-right text-[15px] text-white/80 outline-none w-36 placeholder-white/25"
-            placeholder="Whale User"
+            placeholder="Ledger User"
           />
         </Row>
         <Row isLast>
@@ -551,7 +551,7 @@ function AlertsPanel({ s, u }: { s: SystemSettings; u: <K extends keyof SystemSe
       <SectionLabel>Channels</SectionLabel>
       <Card>
         <Row>
-          <RowLabel label="Audio Alerts" sub="Sound when a whale move is detected" />
+          <RowLabel label="Audio Alerts" sub="Sound when a ledger move is detected" />
           <Toggle value={s.audioAlerts} onChange={(v) => u('audioAlerts', v)} color="#f97316" />
         </Row>
         <Row>
@@ -567,7 +567,7 @@ function AlertsPanel({ s, u }: { s: SystemSettings; u: <K extends keyof SystemSe
       <SectionLabel>Thresholds</SectionLabel>
       <Card>
         <Row isLast>
-          <RowLabel label="Whale Alert" sub="Alert when move exceeds this value (USD)" />
+          <RowLabel label="Ledger Alert" sub="Alert when move exceeds this value (USD)" />
           <Chips
             options={[
               { val: 100000, label: '$100K' },
@@ -575,8 +575,8 @@ function AlertsPanel({ s, u }: { s: SystemSettings; u: <K extends keyof SystemSe
               { val: 1000000, label: '$1M' },
               { val: 10000000, label: '$10M' },
             ]}
-            value={s.whaleAlertThreshold}
-            onChange={(v) => u('whaleAlertThreshold', v)}
+            value={s.ledgerAlertThreshold}
+            onChange={(v) => u('ledgerAlertThreshold', v)}
             color="#f97316"
           />
         </Row>

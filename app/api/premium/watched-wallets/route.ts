@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
     const totalValue = stats?.totalValue || 0;
     const metadata = stats?.breakdown || {};
 
-    console.log(`[POST-WALLET] Adding wallet for userId: ${userId}, address: ${address}, label: ${label || 'Anonymous Whale'}`);
+    console.log(`[POST-WALLET] Adding wallet for userId: ${userId}, address: ${address}, label: ${label || 'Anonymous Ledger'}`);
 
     // 2. Persist with Advanced Resilience [SENIOR-LEVEL ATOMICITY]
     try {

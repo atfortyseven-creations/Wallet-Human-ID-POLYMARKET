@@ -99,7 +99,7 @@ export const config = createConfig({
                 name: 'Human ID',
                 description: 'Sovereign Grade Blockchain Intelligence',
                 url: CANONICAL_APP_URL,
-                icons: [`${CANONICAL_APP_URL}/official-whale-monochrome.png`],
+                icons: [`${CANONICAL_APP_URL}/official-ledger-monochrome.png`],
             },
             showQrModal: false, // AppKit handles the QR modal — avoid double modal
         }),

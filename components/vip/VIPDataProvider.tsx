@@ -19,43 +19,43 @@ const SYMBOLS = [
 
 // Staggered intervals  we avoid thundering-herd API abuse
 const INTERVALS = {
-    whaleEvents:  8_000,   // 8s   Etherscan
+    ledgerEvents:  8_000,   // 8s   Etherscan
     mempool:      10_000,  // 10s  mempool.space
     funding:      6_000,   // 6s   Binance+Bybit
     liquidations: 5_000,   // 5s   Binance Futures
     liveNetwork:  8_000,   // 8s   Network Oracle (ETH Block, Gas, Chainlink)
-    topWhales:    60_000,  // 60s  blockchain.info (heavy)
+    topLedgers:    60_000,  // 60s  blockchain.info (heavy)
     satoshi:      120_000, // 120s  Batch mode
     volume:       20_000,  // 20s  Inflow/Outflow
     activities:   12_000,  // 12s  Telegram Bot Feed
-    leaderboard:  60_000,  // 60s  500 Whale Leaderboard
+    leaderboard:  60_000,  // 60s  500 Ledger Leaderboard
 };
 
 export function VIPDataProvider({ children }: { children: React.ReactNode }) {
     const store = useVIPStore();
     const timers = useRef<ReturnType<typeof setInterval>[]>([]);
 
-    //  1. WHALE EVENTS (Etherscan/Alpha) 
-    const pollWhaleEvents = async () => {
+    //  1. LEDGER EVENTS (Etherscan/Alpha) 
+    const pollLedgerEvents = async () => {
         try {
-            const res = await fetch('/api/network/whale/alpha-events');
+            const res = await fetch('/api/network/ledger/alpha-events');
             const data = await res.json();
-            console.log(`[VIPData] Whale events fetched for symbols:`, data.events?.length);
+            console.log(`[VIPData] Ledger events fetched for symbols:`, data.events?.length);
             if (data.events?.length > 0) {
-                store.mergeWhaleEvents(parseAlphaEvents(data.events));
+                store.mergeLedgerEvents(parseAlphaEvents(data.events));
             }
         } catch (err) {
-            console.error('[VIPData] Whale events poll failed:', err);
+            console.error('[VIPData] Ledger events poll failed:', err);
         }
     };
 
-    //  2. WHALE ACTIVITIES (Telegram Bot Feed) 
-    const pollWhaleActivities = async () => {
+    //  2. LEDGER ACTIVITIES (Telegram Bot Feed) 
+    const pollLedgerActivities = async () => {
         try {
-            const res = await fetch('/api/whale/activities');
+            const res = await fetch('/api/ledger/activities');
             const data = await res.json();
             if (data.activities?.length > 0) {
-                store.setWhaleActivities(data.activities);
+                store.setLedgerActivities(data.activities);
             }
         } catch {}
     };
@@ -108,7 +108,7 @@ export function VIPDataProvider({ children }: { children: React.ReactNode }) {
     //  5. LIQUIDATION MAP (Binance Futures) 
     const pollLiquidations = async () => {
         try {
-            const res = await fetch('/api/network/whale/liquidations');
+            const res = await fetch('/api/network/ledger/liquidations');
             const d = await res.json();
             if (d.currentPrice && d.buckets) {
                 const buckets = d.buckets as any[];
@@ -139,24 +139,24 @@ export function VIPDataProvider({ children }: { children: React.ReactNode }) {
         } catch {}
     };
 
-    //  7. TOP WHALES PERSISTENCE (blockchain.info + our DB) 
-    const pollTopWhales = async () => {
+    //  7. TOP LEDGERS PERSISTENCE (blockchain.info + our DB) 
+    const pollTopLedgers = async () => {
         try {
-            const res = await fetch('/api/network/whale/top-whales');
+            const res = await fetch('/api/network/ledger/top-ledgers');
             const d = await res.json();
-            if (d.whales?.length > 0) {
-                store.setTopWhales(d.whales);
+            if (d.ledgers?.length > 0) {
+                store.setTopLedgers(d.ledgers);
             }
         } catch {}
     };
 
-    //  7.5 500-WHALE LEADERBOARD (Volume Based) 
+    //  7.5 500-LEDGER LEADERBOARD (Volume Based) 
     const pollLeaderboard = async () => {
         try {
-            const res = await fetch('/api/network/whale/leaderboard');
+            const res = await fetch('/api/network/ledger/leaderboard');
             const d = await res.json();
-            if (d.whales?.length > 0) {
-                store.setLeaderboard500(d.whales);
+            if (d.ledgers?.length > 0) {
+                store.setLeaderboard500(d.ledgers);
             }
         } catch {}
     };
@@ -164,7 +164,7 @@ export function VIPDataProvider({ children }: { children: React.ReactNode }) {
     //  8. SATOSHI DETECTOR (Batch) 
     const pollSatoshi = async () => {
         try {
-            const res = await fetch('/api/network/whale/satoshi-detector?mode=batch');
+            const res = await fetch('/api/network/ledger/satoshi-detector?mode=batch');
             const data = await res.json();
             if (data.results) store.setSatoshiWallets(data.results);
         } catch {}
@@ -173,7 +173,7 @@ export function VIPDataProvider({ children }: { children: React.ReactNode }) {
     //  9. VOLUME ON-CHAIN (Inflow/Outflow) 
     const pollVolume = async () => {
         try {
-            const res = await fetch('/api/network/whale/inflow-outflow');
+            const res = await fetch('/api/network/ledger/inflow-outflow');
             const data = await res.json();
             if (!data.error) store.setVolumeData(data);
         } catch {}
@@ -196,13 +196,13 @@ export function VIPDataProvider({ children }: { children: React.ReactNode }) {
         };
 
         // Boot independent async loops
-        runPoll(pollWhaleEvents, INTERVALS.whaleEvents);
-        runPoll(pollWhaleActivities, INTERVALS.activities);
+        runPoll(pollLedgerEvents, INTERVALS.ledgerEvents);
+        runPoll(pollLedgerActivities, INTERVALS.activities);
         runPoll(pollMempool, INTERVALS.mempool);
         runPoll(pollFunding, INTERVALS.funding);
         runPoll(pollLiquidations, INTERVALS.liquidations);
         runPoll(pollActiveNetwork, INTERVALS.liveNetwork);
-        runPoll(pollTopWhales, INTERVALS.topWhales);
+        runPoll(pollTopLedgers, INTERVALS.topLedgers);
         runPoll(pollLeaderboard, INTERVALS.leaderboard);
         runPoll(pollSatoshi, INTERVALS.satoshi);
         runPoll(pollVolume, INTERVALS.volume);

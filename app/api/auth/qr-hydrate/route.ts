@@ -11,7 +11,7 @@ import { verifyJWT } from '@/lib/jwt';
  * Sets the same cookie trio as /api/auth/system-verify so every auth
  * path (Humanity Ledger, MetaMask, Rainbow, QR scan) is fully equivalent:
  *
- *   whale_session    — HttpOnly JWT for server-side middleware validation
+ *   ledger_session    — HttpOnly JWT for server-side middleware validation
  *   human_session    — HttpOnly JWT for client-facing session reads
  *   system_handshake — JS-readable Ethereum address for TitaniumGate / MobileEnforcer
  *
@@ -53,10 +53,10 @@ export async function POST(req: NextRequest) {
       jwt,
     });
 
-    // [PARITY FIX] Set whale_session so middleware siweSessionValid = true.
+    // [PARITY FIX] Set ledger_session so middleware siweSessionValid = true.
     // Previously only human_session was set, causing middleware to fall back
     // to the system_handshake check which then failed after cookie wiping.
-    response.cookies.set('whale_session', jwt, secureCookieBase);
+    response.cookies.set('ledger_session', jwt, secureCookieBase);
 
     // human_session — read by verify-session and getSession() shims
     response.cookies.set('human_session', jwt, secureCookieBase);

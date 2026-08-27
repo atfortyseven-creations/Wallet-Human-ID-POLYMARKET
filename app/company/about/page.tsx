@@ -146,7 +146,7 @@ export default function AboutPage() {
                 <p className="mt-3 text-[13px] font-bold text-black text-center">Stefan Antonio Cirisanu</p>
                 <p className="text-[11px] text-black/45 text-center font-mono uppercase tracking-wider mt-0.5">CEO & Founder</p>
                 <div className="flex flex-col items-center gap-1 mt-2">
-                  <a href="https://x.com/whalecosystem" target="_blank" rel="noopener noreferrer" className="text-[11px] text-black/50 hover:text-black/80 transition-colors font-mono">@whalecosystem</a>
+                  <a href="https://x.com/humanityledger" target="_blank" rel="noopener noreferrer" className="text-[11px] text-black/50 hover:text-black/80 transition-colors font-mono">@humanityledger</a>
                   <a href="https://www.linkedin.com/in/stefan-antonio-cirisanu-40116140b/" target="_blank" rel="noopener noreferrer" className="text-[11px] text-black/50 hover:text-black/80 transition-colors font-mono">LinkedIn</a>
                 </div>
               </div>

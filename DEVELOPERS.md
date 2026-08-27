@@ -1,8 +1,8 @@
-# Whale Network SDK (Alpha)
+# Ledger Network SDK (Alpha)
 
-Welcome to the Whale Network SDK. This repository serves as the sovereign command center for privacy-preserving applications built on the Aztec Network.
+Welcome to the Ledger Network SDK. This repository serves as the sovereign command center for privacy-preserving applications built on the Aztec Network.
 
-By integrating with the Whale Network SDK, developers can interact with our 18 deep Noir circuits, leverage our Private Execution Environment (PXE), and build their own sovereign applications that plug seamlessly into our identity and portfolio dashboards.
+By integrating with the Ledger Network SDK, developers can interact with our 18 deep Noir circuits, leverage our Private Execution Environment (PXE), and build their own sovereign applications that plug seamlessly into our identity and portfolio dashboards.
 
 ## Why Build with Us?
 - **Zero-Knowledge Identity**: Leverage `Humanity Ledger` to gate access to your dApps without collecting user data.
@@ -11,34 +11,34 @@ By integrating with the Whale Network SDK, developers can interact with our 18 d
 - **Studio Provenance**: Utilize our E2EE chat and supply chain provenance tools directly via API.
 
 ## Core Architecture
-Whale Network operates entirely client-side. We use **Barretenberg** to compile Noir circuits to WebAssembly (WASM), ensuring that witness generation and proof construction never leave the user's browser.
+Ledger Network operates entirely client-side. We use **Barretenberg** to compile Noir circuits to WebAssembly (WASM), ensuring that witness generation and proof construction never leave the user's browser.
 
 ### 1. Installation
 The SDK requires an active Aztec Node. By default, it connects to the Aztec Alpha Testnet (`v5.testnet.rpc.aztec-labs.com`).
 
 ```bash
-npm install @whalenetwork/sdk
+npm install @ledgernetwork/sdk
 ```
 
 ### 2. Initialization
 
 ```typescript
-import { WhaleNetwork } from '@whalenetwork/sdk';
+import { LedgerNetwork } from '@ledgernetwork/sdk';
 
-const whale = new WhaleNetwork({
+const ledger = new LedgerNetwork({
   pxeUrl: 'http://localhost:8080',
   network: 'testnet'
 });
 
-await whale.init();
+await ledger.init();
 ```
 
 ### 3. Identity Verification (ZKPassport Integration)
-Whale Network is designed to interoperate seamlessly with Aztec ecosystem tools like ZKPassport.
+Ledger Network is designed to interoperate seamlessly with Aztec ecosystem tools like ZKPassport.
 
 ```typescript
 // Request a zero-knowledge proof of nationality without revealing the country
-const proof = await whale.identity.requestProof({
+const proof = await ledger.identity.requestProof({
   credentialType: 'ZKPassport',
   assertion: {
     attribute: 'nationality',
@@ -48,14 +48,14 @@ const proof = await whale.identity.requestProof({
 });
 
 // Verify the proof on-chain
-const isValid = await whale.identity.verify(proof);
+const isValid = await ledger.identity.verify(proof);
 ```
 
 ### 4. Bounties & Builder Program
-We are actively funding developers who build modules on top of the Whale Network.
+We are actively funding developers who build modules on top of the Ledger Network.
 Currently open bounties:
 - Integration with Azguard Wallet (Account Abstraction)
 - Private DeFi yield tracking within the Portfolio module
 - E2EE Chat extensions
 
-For more details on bounties, visit our [Discord / GitHub Issues](https://github.com/whalenetwork/whale-wallet/issues).
+For more details on bounties, visit our [Discord / GitHub Issues](https://github.com/ledgernetwork/ledger-wallet/issues).

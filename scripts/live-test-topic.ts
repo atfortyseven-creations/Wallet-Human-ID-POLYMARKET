@@ -72,7 +72,7 @@ async function run() {
     console.log(`Found ${transfers.transfers.length} transfers.`);
 
     // 3. Find significant one
-    let whaleTx = null;
+    let ledgerTx = null;
     let maxVal = 0;
 
     for (const tx of transfers.transfers) {
@@ -89,18 +89,18 @@ async function run() {
       if (usdValue > 1000) { 
         if (usdValue > maxVal) {
           maxVal = usdValue;
-          whaleTx = { ...tx, usdValue };
+          ledgerTx = { ...tx, usdValue };
         }
       }
     }
 
-    if (!whaleTx) {
+    if (!ledgerTx) {
       console.log("No significant transactions found in last 100 blocks.");
       return;
     }
 
     // 4. Send Alert
-    console.log(`Sending alert for ${whaleTx.usdValue.toFixed(2)} USD (${whaleTx.asset})...`);
+    console.log(`Sending alert for ${ledgerTx.usdValue.toFixed(2)} USD (${ledgerTx.asset})...`);
 
       const formatMoney = (val: number) => {
       const eurVal = val * 0.96;
@@ -108,18 +108,18 @@ async function run() {
       return `${millions} Millones de euros`;
     };
 
-    const shortFrom = `${whaleTx.from.slice(0, 4)}...${whaleTx.from.slice(-4)}`;
-    const shortTo = whaleTx.to ? `${whaleTx.to.slice(0, 4)}...${whaleTx.to.slice(-4)}` : 'Contract ';
+    const shortFrom = `${ledgerTx.from.slice(0, 4)}...${ledgerTx.from.slice(-4)}`;
+    const shortTo = ledgerTx.to ? `${ledgerTx.to.slice(0, 4)}...${ledgerTx.to.slice(-4)}` : 'Contract ';
       
     const msg = `
-${''} <b>ALERTA WHALE (PRUEBA EN VIVO)</b> | Base
+${''} <b>ALERTA LEDGER (PRUEBA EN VIVO)</b> | Base
 
- <b>${formatMoney(whaleTx.usdValue)}</b>
-Transferencia de <b>${parseFloat((whaleTx.value || 0).toFixed(2)).toLocaleString()} ${whaleTx.asset || 'Token'}</b> detectada AHORA MISMO.
+ <b>${formatMoney(ledgerTx.usdValue)}</b>
+Transferencia de <b>${parseFloat((ledgerTx.value || 0).toFixed(2)).toLocaleString()} ${ledgerTx.asset || 'Token'}</b> detectada AHORA MISMO.
 
  <code>${shortFrom}</code> ️ <code>${shortTo}</code>
 
- <a href="https://basescan.org/tx/${whaleTx.hash}">View Real Transaction</a>
+ <a href="https://basescan.org/tx/${ledgerTx.hash}">View Real Transaction</a>
 `.trim();
 
     await sendTelegram(msg);

@@ -7,7 +7,7 @@ import { useSystemAccount } from '@/hooks/useSystemAccount';
 
 const STATIC_SECTORS = [
   { id: 'general', name: 'General', slug: 'general', description: 'Network-wide announcements and discussion' },
-  { id: 'whale-network', name: 'Humanity Ledger', slug: 'whale-network', description: 'Sovereign architecture discussions' },
+  { id: 'ledger-network', name: 'Humanity Ledger', slug: 'ledger-network', description: 'Sovereign architecture discussions' },
   { id: 'applications', name: 'Applications', slug: 'applications', description: 'DApp integrations and deployment' },
   { id: 'testnets', name: 'Testnets', slug: 'testnets', description: 'Testnet node operations' },
   { id: 'noir', name: 'Noir', slug: 'noir', description: 'ZK programming and circuits' },

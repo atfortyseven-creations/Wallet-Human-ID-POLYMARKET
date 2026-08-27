@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   console.log('---------------------------------------------------------');
-  console.log('INITIATING MASS DEPLOYMENT: WHALE ALERT NETWORK V6.12.0');
+  console.log('INITIATING MASS DEPLOYMENT: LEDGER ALERT NETWORK V6.12.0');
   console.log('---------------------------------------------------------');
 
   try {
@@ -62,9 +62,9 @@ CONFIDENTIAL & TIME-SENSITIVE // EXECUTIVE CORRESPONDENCE...
       // In a real environment:
       /*
       await resend.emails.send({
-        from: 'The Infrastructure Council <council@whalealertnetwork.com>',
+        from: 'The Infrastructure Council <council@ledgeralertnetwork.com>',
         to: batch,
-        subject: 'DECLASSIFIED: Official Genesis of the Whale Alert Network (v6.12.0)  Sovereign Analytics Output',
+        subject: 'DECLASSIFIED: Official Genesis of the Ledger Alert Network (v6.12.0)  Sovereign Analytics Output',
         text: messagePayload
       });
       */

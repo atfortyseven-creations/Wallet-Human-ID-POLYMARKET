@@ -46,7 +46,7 @@ export interface CreateTransactionData {
   tokenSymbol?: string;
   metadata?: TransactionMetadata;
   //  SOVEREIGN INTELLIGENCE 
-  isWhale?: boolean;
+  isLedger?: boolean;
   institutional?: boolean;
   valueBTC?: string;
   logo?: string;

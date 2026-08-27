@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   // The original code returned { jwt: token } in plaintext, meaning any XSS
   // or network interception could steal the full session token and replay it.
   // We now verify the JWT server-side and return only the address it encodes.
-  const token = req.cookies.get('human_session')?.value || req.cookies.get('whale_session')?.value;
+  const token = req.cookies.get('human_session')?.value || req.cookies.get('ledger_session')?.value;
   if (!token) {
     return NextResponse.json({ error: 'No session' }, { status: 401 });
   }

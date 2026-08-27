@@ -80,10 +80,10 @@ function attributeTransaction(tx: MempoolTx) {
 
   const totalSats = tx.vout.reduce((sum, o) => sum + (o.value ?? 0), 0);
   if (totalSats > 1500 * 1e8 && tx.vout.length <= 3) {
-    return { entity: 'Unknown Sovereign Whale', institutional: true, metadata: { sector: 'UNKNOWN_INSTITUTIONAL' } };
+    return { entity: 'Unknown Sovereign Ledger', institutional: true, metadata: { sector: 'UNKNOWN_INSTITUTIONAL' } };
   }
 
-  return { entity: 'Unknown Whale', institutional: false, metadata: { sector: 'RETAIL' } };
+  return { entity: 'Unknown Ledger', institutional: false, metadata: { sector: 'RETAIL' } };
 }
 
 //  Processor 
@@ -106,7 +106,7 @@ export async function scanBlock(height: number, btcPrice: number) {
         const attribution = attributeTransaction(tx);
         const immutableId = generateSystemId(txid);
 
-        await db.whaleActivity.upsert({
+        await db.ledgerActivity.upsert({
           where: { transactionHash: txid },
           update: { confirmed: tx.status.confirmed },
           create: {

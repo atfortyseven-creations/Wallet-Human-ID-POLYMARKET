@@ -10,5 +10,5 @@ export interface ForensicAnalysis {
     summary: string;
     signals: ForensicSignal[];
     isElite: boolean;
-    label?: string; // e.g. "Whale", "Exchange", "Mixer-User"
+    label?: string; // e.g. "Ledger", "Exchange", "Mixer-User"
 }

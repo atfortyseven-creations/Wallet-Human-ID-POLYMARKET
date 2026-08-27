@@ -4,7 +4,7 @@
  * System Dune Query Catalog
  *
  * Returns the curated library of ready-to-deploy Dune Analytics SQL queries
- * for on-chain whale analytics. Each query can be copy-pasted directly
+ * for on-chain ledger analytics. Each query can be copy-pasted directly
  * into dune.com or imported via the Dune API.
  */
 
@@ -16,10 +16,10 @@ export const dynamic = 'force-dynamic';
 
 const Private_QUERIES = [
     {
-        id:          'whale-volume-by-chain',
-        title:       'Whale Volume by Chain (Last 30 Days)',
+        id:          'ledger-volume-by-chain',
+        title:       'Ledger Volume by Chain (Last 30 Days)',
         category:    'macro',
-        description: 'Aggregates total whale-grade USD volume per blockchain over the last 30 days. Ideal for cross-chain capital flow analysis.',
+        description: 'Aggregates total ledger-grade USD volume per blockchain over the last 30 days. Ideal for cross-chain capital flow analysis.',
         sql: `
 -- Humanity Ledger  System Dune Query: Volume by Chain
 SELECT
@@ -39,12 +39,12 @@ ORDER BY total_volume_usd DESC
         tags: ['volume', 'cross-chain', 'macro'],
     },
     {
-        id:          'mega-whale-timeline',
-        title:       'Mega Whale Events Timeline (>$10M)',
+        id:          'mega-ledger-timeline',
+        title:       'Mega Ledger Events Timeline (>$10M)',
         category:    'high-conviction',
         description: 'Chronological log of all transactions exceeding $10M USD. Raw sovereign-grade signals.',
         sql: `
--- Humanity Ledger  System Dune Query: Mega Whale Timeline
+-- Humanity Ledger  System Dune Query: Mega Ledger Timeline
 SELECT
     detected_at,
     chain,
@@ -59,13 +59,13 @@ WHERE usd_value_bucket = 'MEGA'
 ORDER BY detected_at DESC
 LIMIT 500
 `.trim(),
-        tags: ['mega-whale', 'high-conviction', 'monitoring'],
+        tags: ['mega-ledger', 'high-conviction', 'monitoring'],
     },
     {
         id:          'token-concentration',
-        title:       'Token Whale Concentration Heatmap',
+        title:       'Token Ledger Concentration Heatmap',
         category:    'tokenomics',
-        description: 'Ranks tokens by whale concentration score  high whale activity relative to total events signals sovereign accumulation pressure.',
+        description: 'Ranks tokens by ledger concentration score  high ledger activity relative to total events signals sovereign accumulation pressure.',
         sql: `
 -- Humanity Ledger  System Dune Query: Token Concentration
 SELECT
@@ -89,9 +89,9 @@ LIMIT 50
     },
     {
         id:          'hourly-flow-pattern',
-        title:       'Hourly Whale Flow Pattern (UTC)',
+        title:       'Hourly Ledger Flow Pattern (UTC)',
         category:    'timing',
-        description: 'Maps whale activity to UTC hour. Reveals sovereign attesting windows  critical for entry timing.',
+        description: 'Maps ledger activity to UTC hour. Reveals sovereign attesting windows  critical for entry timing.',
         sql: `
 -- Humanity Ledger  System Dune Query: Hourly Flow Pattern
 SELECT
@@ -107,12 +107,12 @@ ORDER BY utc_hour ASC
         tags: ['timing', 'sessions', 'pattern'],
     },
     {
-        id:          'wallet-repeat-whales',
-        title:       'Repeat Whale Wallets (Smart Money)',
+        id:          'wallet-repeat-ledgers',
+        title:       'Repeat Ledger Wallets (Smart Money)',
         category:    'wallets',
-        description: 'Identifies wallets that appear multiple times in whale-grade transactions. High-repeat wallets = sovereign smart money.',
+        description: 'Identifies wallets that appear multiple times in ledger-grade transactions. High-repeat wallets = sovereign smart money.',
         sql: `
--- Humanity Ledger  System Dune Query: Repeat Whale Wallets
+-- Humanity Ledger  System Dune Query: Repeat Ledger Wallets
 SELECT
     from_address,
     COUNT(*)                              AS tx_count,
@@ -136,7 +136,7 @@ LIMIT 200
         id:          'evm-thermodynamics-zscore',
         title:       'EVM Thermodynamics  Z-Score Spike Detection',
         category:    'research',
-        description: 'Academic-grade Z-score analysis. Detects statistical anomalies in whale volume that precede significant price movements. Based on the EVM Thermodynamics paper.',
+        description: 'Academic-grade Z-score analysis. Detects statistical anomalies in ledger volume that precede significant price movements. Based on the EVM Thermodynamics paper.',
         sql: `
 -- Humanity Ledger  EVM Thermodynamics Z-Score Query
 WITH daily_stats AS (

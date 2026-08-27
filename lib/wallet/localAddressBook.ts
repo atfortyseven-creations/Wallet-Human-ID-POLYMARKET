@@ -9,7 +9,7 @@ export interface LocalContact {
   createdAt: number;
 }
 
-const getStorageKey = (walletAddress: string) => `whale_contacts_${walletAddress.toLowerCase()}`;
+const getStorageKey = (walletAddress: string) => `ledger_contacts_${walletAddress.toLowerCase()}`;
 
 export const getLocalContacts = (walletAddress: string): LocalContact[] => {
   if (typeof window === 'undefined') return [];
@@ -45,7 +45,7 @@ export const saveLocalContact = (walletAddress: string, contact: Omit<LocalConta
   
   // Dispatch a custom event so the UI can update instantly across components
   if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('whale_contacts_updated', { detail: { walletAddress, contacts } }));
+    window.dispatchEvent(new CustomEvent('ledger_contacts_updated', { detail: { walletAddress, contacts } }));
   }
   
   return newContact;
@@ -63,6 +63,6 @@ export const deleteLocalContact = (walletAddress: string, peerAddress: string): 
   const filtered = contacts.filter(c => c.peerAddress.toLowerCase() !== peerAddress.toLowerCase());
   localStorage.setItem(getStorageKey(walletAddress), JSON.stringify(filtered));
   if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('whale_contacts_updated', { detail: { walletAddress, contacts: filtered } }));
+    window.dispatchEvent(new CustomEvent('ledger_contacts_updated', { detail: { walletAddress, contacts: filtered } }));
   }
 };

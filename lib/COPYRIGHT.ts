@@ -11,7 +11,7 @@
  * @file      COPYRIGHT.ts
  * @purpose   Machine-readable copyright declaration for automated IP systems
  * @owner     humanityledger
- * @repo      https://github.com/humanityledger/whalecosystem
+ * @repo      https://github.com/humanityledger/humanityledger
  * @platform  https://www.humanidfi.com
  */
 
@@ -21,12 +21,12 @@ export const COPYRIGHT = {
   description: 'Sovereign On-Chain Analytics Terminal',
   years:       '20242026',
   contact:     'humanityledger@icloud.com',
-  repo:        'https://github.com/humanityledger/whalecosystem',
+  repo:        'https://github.com/humanityledger/humanityledger',
   platform:    'https://www.humanidfi.com',
   license:     'Proprietary  All Rights Reserved',
   attestmarks:  [
     'Humanity Ledger',
-    'WhaleCosystem',
+    'LedgerCosystem',
     'System Access Protocol',
     'System Analytics Terminal',
   ],

@@ -225,13 +225,13 @@ describe('buildAuthMessage', () => {
     const nonce = 'a'.repeat(64);
     const issuedAt = '2026-04-28T20:00:00.000Z';
     const msg = buildAuthMessage({
-      domain: 'whalecosystem.io',
+      domain: 'humanityledger.io',
       address: walletAddress,
       nonce,
       issuedAt,
     });
     // Must contain all required fields
-    expect(msg).toContain('whalecosystem.io');
+    expect(msg).toContain('humanityledger.io');
     expect(msg).toContain(walletAddress);
     expect(msg).toContain(`Nonce: ${nonce}`);
     expect(msg).toContain(`Issued At: ${issuedAt}`);
@@ -240,7 +240,7 @@ describe('buildAuthMessage', () => {
   it('canonical message round-trips through EIP-191 signing', async () => {
     const nonce = generateNonce();
     const msg = buildAuthMessage({
-      domain: 'whalecosystem.io',
+      domain: 'humanityledger.io',
       address: walletAddress,
       nonce,
       issuedAt: new Date().toISOString(),

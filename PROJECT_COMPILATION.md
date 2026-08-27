@@ -1,7 +1,7 @@
-#  WHALE ALERT NETWORK  MASTER COMPILATION v3.0.0
+#  LEDGER ALERT NETWORK  MASTER COMPILATION v3.0.0
 ## System Analytics Terminal  Sovereign Hardening Edition
 
-> *"The most dangerous market participant is not the largest whale,*  
+> *"The most dangerous market participant is not the largest ledger,*  
 > *but the one whose capital trajectory is invisible to all observers except one."*
 
 **Version**: 3.0.0  Sovereign Hardening  
@@ -12,7 +12,7 @@
 
 ## ️ 1. ARCHITECTURAL OVERVIEW
 
-Whale Alert Network is a **System On-Chain Analytics Terminal**  a local-first, zero-trust platform that delivers sovereign-grade whale detection with sub-900ms latency across 5 blockchains, without storing user query patterns on any cloud server.
+Ledger Alert Network is a **System On-Chain Analytics Terminal**  a local-first, zero-trust platform that delivers sovereign-grade ledger detection with sub-900ms latency across 5 blockchains, without storing user query patterns on any cloud server.
 
 ### Core Pillars
 
@@ -20,8 +20,8 @@ Whale Alert Network is a **System On-Chain Analytics Terminal**  a local-first, 
 |--------|-----------|--------|
 | **System Identity** | WorldID ZK-SNARKs + WebAuthn Passkeys |  Production |
 | **Real-Time Detection** | EVM Thermodynamics v2.3 + Neo4j Graph |  Production |
-| **Streaming** | SSE (whale-stream) + Redis BLPOP |  Production |
-| **Governance** | WhaleDeadmanSwitch.sol + HumanTimeLock.sol |  Tested |
+| **Streaming** | SSE (ledger-stream) + Redis BLPOP |  Production |
+| **Governance** | LedgerDeadmanSwitch.sol + HumanTimeLock.sol |  Tested |
 | **CI/CD** | GitHub Actions (4-job pipeline + Slither) |  Production |
 | **Containerization** | Docker multi-stage + Kubernetes |  Production |
 | **API Marketplace** | HMAC-signed system signals |  Production |
@@ -67,7 +67,7 @@ Z(t) = (E(t) - μ_E(t-14..t-1)) / σ_E(t-14..t-1)
 
 ### Detection Chains
 `BASE` · `ETHEREUM` · `BSC` · `SOLANA` · `BITCOIN`  
-**Threshold**: $50,000 USD default (configurable via `WHALE_THRESHOLD_USD`)
+**Threshold**: $50,000 USD default (configurable via `LEDGER_THRESHOLD_USD`)
 
 ---
 
@@ -76,13 +76,13 @@ Z(t) = (E(t) - μ_E(t-14..t-1)) / σ_E(t-14..t-1)
 ```
 RPC Node (Alchemy/GetBlock)
     
-whale-worker.ts (EVM scanner)
+ledger-worker.ts (EVM scanner)
     
 Redis Queue (BLPOP)
        Primary path
-/api/whale-stream (SSE endpoint)    Prisma polling (fallback)
+/api/ledger-stream (SSE endpoint)    Prisma polling (fallback)
     
-WhaleStreamContext (React)
+LedgerStreamContext (React)
      RadarFeed.tsx (dual-source: WS + SSE)
      AlertsPanel.tsx ($500K+  auto TRIGGERED alert)
 ```
@@ -95,12 +95,12 @@ WhaleStreamContext (React)
 
 | Contract | File | Audit Status |
 |----------|------|--------------|
-| WhaleDeadmanSwitch | `contracts/security/WhaleDeadmanSwitch.sol` |  21 tests passing |
+| LedgerDeadmanSwitch | `contracts/security/LedgerDeadmanSwitch.sol` |  21 tests passing |
 | HumanTimeLock | `contracts/civilization/HumanTimeLock.sol` |  13 tests passing |
-| WhalePass (NFT) | `contracts/WhalePass.sol` | In review |
-| WhaleKnowledgeGraph | `contracts/WhaleKnowledgeGraph.sol` | In review |
+| LedgerPass (NFT) | `contracts/LedgerPass.sol` | In review |
+| LedgerKnowledgeGraph | `contracts/LedgerKnowledgeGraph.sol` | In review |
 
-### Security Stack (WhaleDeadmanSwitch)
+### Security Stack (LedgerDeadmanSwitch)
 - `Ownable2Step`  prevents single-tx ownership hijack
 - `ReentrancyGuard`  CEI pattern, non-custodial (holds zero assets)
 - `Pausable`  emergency halt
@@ -114,7 +114,7 @@ WhaleStreamContext (React)
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/api/health` | GET | K8s/Railway readiness probe |
-| `/api/whale-stream` | GET (SSE) | Real-time whale event stream |
+| `/api/ledger-stream` | GET (SSE) | Real-time ledger event stream |
 | `/api/contracts/status` | GET | Active on-chain DeadmanSwitch + TimeLock state |
 | `/api/market/signals` | GET | System API Marketplace (3-tier HMAC) |
 | `/api/analytics/dune/export` | GET | CSV/JSON Dune-ready export |
@@ -133,7 +133,7 @@ WhaleStreamContext (React)
 
 | Worker | File | Function |
 |--------|------|----------|
-| Whale Scanner | `scripts/whale-worker.ts` | EVM block scanning  Redis queue |
+| Ledger Scanner | `scripts/ledger-worker.ts` | EVM block scanning  Redis queue |
 | Telegram Notifier | `scripts/telegram-worker.ts` | BullMQ  Telegram alerts (env-var token only) |
 | Alert Engine | `scripts/alert-worker.ts` | User-defined trigger evaluation |
 | System Deploy | `scripts/deploy-system.ts` | Contract deployment (ethers v6 + verification) |
@@ -152,15 +152,15 @@ git push origin main
 
 ### Docker (Self-hosted)
 ```bash
-docker build -t whale-alert:3.0.0 .
-docker run -p 3000:3000 --env-file .env.production whale-alert:3.0.0
+docker build -t ledger-alert:3.0.0 .
+docker run -p 3000:3000 --env-file .env.production ledger-alert:3.0.0
 ```
 
 ### Kubernetes (Sovereign)
 ```bash
 kubectl apply -f k8s/           # All manifests (namespace  ingress)
 # OR one-command via Helm:
-npm run helm:install            # Equivalent to helm install whale-alert k8s/helm
+npm run helm:install            # Equivalent to helm install ledger-alert k8s/helm
 ```
 
 ### Key env vars required
@@ -170,7 +170,7 @@ REDIS_URL             # Redis connection string
 ALCHEMY_API_KEY       # RPC access (BASE + Ethereum)
 TELEGRAM_BOT_TOKEN    # Bot token (worker will exit(1) if missing)
 NEXTAUTH_SECRET       # Auth encryption key
-BASE_DEADMAN_ADDRESS  # Deployed WhaleDeadmanSwitch contract
+BASE_DEADMAN_ADDRESS  # Deployed LedgerDeadmanSwitch contract
 BASE_TIMELOCK_ADDRESS # Deployed HumanTimeLock contract
 ```
 
@@ -181,7 +181,7 @@ BASE_TIMELOCK_ADDRESS # Deployed HumanTimeLock contract
 ###  Completed (Q1Q2 2026)
 - [x] EVM Thermodynamics detection engine
 - [x] SSE real-time streaming with Redis
-- [x] WhaleDeadmanSwitch (100% test coverage)
+- [x] LedgerDeadmanSwitch (100% test coverage)
 - [x] HumanTimeLock (100% test coverage)
 - [x] System API Marketplace (HMAC-auth, 3-tier)
 - [x] Dune Analytics integration (export + 6 queries)
@@ -189,11 +189,11 @@ BASE_TIMELOCK_ADDRESS # Deployed HumanTimeLock contract
 - [x] Kubernetes + Helm chart
 - [x] Cryptographic Edition (4-tier, SLA guarantees)
 - [x] Academic paper (arXiv submitted)
-- [x] State of Whale Analytics 2026 report
+- [x] State of Ledger Analytics 2026 report
 
 ###  Q3 2026  Decentralized Analytics
 - [ ] Eigenlayer AVS  Detection nodes as Actively Validated Services
-- [ ] ZK-proof signal distribution (WhaleValidator.sol on-chain verification)
+- [ ] ZK-proof signal distribution (LedgerValidator.sol on-chain verification)
 - [ ] Solana SIMD-0109  sub-500ms Solana detection
 - [ ] Cross-chain pattern correlation (coordinated ETH+BASE+SOL operations)
 
@@ -221,7 +221,7 @@ BASE_TIMELOCK_ADDRESS # Deployed HumanTimeLock contract
 ---
 
 **[System Status: SOVEREIGN GRADE. Protocol v3.0.0 Active.]**  
-*Compiled by Whale Network Team  April 2026  Phase 6 Complete*
+*Compiled by Ledger Network Team  April 2026  Phase 6 Complete*
 
 ```
 npm run workers:start          # Start all detection workers

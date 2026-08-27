@@ -4,21 +4,21 @@ export type Locale = 'en';
 const en = {
   metadata: {
     title: 'Humanity Ledger',
-    description: 'The leading system identity and whale analytics platform.',
+    description: 'The leading system identity and ledger analytics platform.',
   },
   nav: {
     wallet: 'Wallet',
     portfolio: 'Portfolio',
     earn: 'Earn',
     activity: 'Activity',
-    whales: 'Whales',
+    ledgers: 'Ledgers',
     cards: 'Cards',
     nfc: 'NFC',
     referrals: 'Referrals',
     settings: 'Settings',
     functions: 'Features',
     developer: 'Developers',
-    human_card: 'Whale Card',
+    human_card: 'Ledger Card',
     support: 'Support',
     network: 'Network',
     vip: 'VIP MEMBER',
@@ -43,10 +43,10 @@ const en = {
     },
     visual: {
         badge: 'Monitoring Network Streams',
-        badgeDetected: 'Whale Detected in Mempool',
-        title: 'Whale Detection',
+        badgeDetected: 'Ledger Detected in Mempool',
+        title: 'Ledger Detection',
         precision: 'High-Precision',
-        description: 'Our low-latency architecture connects directly to global Bitcoin nodes to see whale flow before the market reacts.',
+        description: 'Our low-latency architecture connects directly to global Bitcoin nodes to see ledger flow before the market reacts.',
         latency: 'Low Latency',
         noiseFilter: 'Noise Filter',
         impactAlert: 'Impact Alert'
@@ -68,11 +68,11 @@ const en = {
         },
         items: [
           {
-            title: "Whale Movement Alerts",
+            title: "Ledger Movement Alerts",
             category: "Analytics",
             description: "Instant notifications for massive BTC transactions in the mempool.",
-            detailedInfo: "Track top holders, elite movements, and Satoshi-era wallets in real-time. Our system monitors every block and transaction to identify whale activity before it hits the exchanges.",
-            benefits: ["Custom BTC threshold triggers", "Real-time sonar audio alerts", "One-click address profiling", "Permanent whale watchlist"]
+            detailedInfo: "Track top holders, elite movements, and Satoshi-era wallets in real-time. Our system monitors every block and transaction to identify ledger activity before it hits the exchanges.",
+            benefits: ["Custom BTC threshold triggers", "Real-time sonar audio alerts", "One-click address profiling", "Permanent ledger watchlist"]
           },
           {
             title: "Real-Time Mempool Explorer",
@@ -82,7 +82,7 @@ const en = {
             benefits: ["Low-latency data feed", "Transaction values in satoshis", "Mining pool identification", "Active sync progress monitoring"]
           },
           {
-            title: "AI Whale Signals",
+            title: "AI Ledger Signals",
             category: "AI Analytics",
             description: "Neural-driven market sentiment based on transaction patterns.",
             detailedInfo: "Our proprietary AI models analyze the flow of funds into and out of exchanges, identifying 'Iceberg orders' and strategic accumulation phases of market makers.",
@@ -92,11 +92,11 @@ const en = {
             title: "BTC Flow Visualization",
             category: "Visualization",
             description: "Global flow of Bitcoin across networks and players.",
-            detailedInfo: "Visualize how Bitcoin moves between miners, exchanges, and private whale wallets using interactive Sankey and flow diagrams. Understand the velocity of the network at a glance.",
+            detailedInfo: "Visualize how Bitcoin moves between miners, exchanges, and private ledger wallets using interactive Sankey and flow diagrams. Understand the velocity of the network at a glance.",
             benefits: ["Interactive Sankey diagrams", "Node-based movement mapping", "Exchange inflow/outflow balance", "Miner distribution tracking"]
           },
           {
-            title: "Whale Leaderboard",
+            title: "Ledger Leaderboard",
             category: "Ranking",
             description: "Rank the top 100 most active BTC wallets by volume.",
             detailedInfo: "Identify the top 100 most influential players in the market. Filter by address type (SegWit, Taproot, Legacy) and track their cumulative received volume across history.",
@@ -113,9 +113,9 @@ const en = {
     },
     swap: {
         badge: 'Premium Network Analytics',
-        title: 'Whale Monitoring',
+        title: 'Ledger Monitoring',
         realtime: 'In Real Time',
-        description: 'Advanced detection of whale movements in the Bitcoin Mempool. We guarantee you will always be informed of big flows before anyone else.',
+        description: 'Advanced detection of ledger movements in the Bitcoin Mempool. We guarantee you will always be informed of big flows before anyone else.',
         features: {
             lowLatency: { title: 'Direct Mempool Feed', desc: 'Low-latency connection to global Bitcoin nodes for sub-second data' },
             volume: { title: 'Volume Analysis', desc: 'Intelligent tracking of Satoshi-era wallets and large flows' },
@@ -129,7 +129,7 @@ const en = {
             latency: 'Alert Latency'
         },
         ctaPrimary: 'Try Now',
-        ctaPrimaryActive: 'Go to Whale Tracker'
+        ctaPrimaryActive: 'Go to Ledger Tracker'
     }
   },
   common: {
@@ -144,15 +144,15 @@ const en = {
     confirm: 'Confirm',
     retry: 'Retry',
     language: 'Language',
-    autoLoad: 'Auto-loading top whale from Leaderboard  click any address to switch',
+    autoLoad: 'Auto-loading top ledger from Leaderboard  click any address to switch',
     loadingLeaderboard: 'Loading leaderboard data...',
   },
-  whale: {
+  ledger: {
     tabs: {
       liveFeed: 'Active Feed',
       liveFeedDesc: 'Real-time early warning system. Monitor large BTC transactions as they enter the mempool before they are even confirmed. This allows you to see massive market shifts seconds before the rest of the world.',
       alerts: 'Alerts',
-      alertsDesc: 'Personalized surveillance suite. Configure the specific threshold of BTC that triggers your "Whale Sonar" and never miss a critical elite move again with instant visual and audio feedback.',
+      alertsDesc: 'Personalized surveillance suite. Configure the specific threshold of BTC that triggers your "Ledger Sonar" and never miss a critical elite move again with instant visual and audio feedback.',
       aiSignals: 'AI Signals',
       aiSignalsDesc: 'Neural-network powered pattern recognition. Our proprietary AI scans thousands of transactions to detect complex market manipulation, wash-attesting, and hidden strategic accumulation phases.',
       leaderboard: 'Ranking',
@@ -160,15 +160,15 @@ const en = {
       watchlist: 'Watch List',
       watchlistDesc: 'Your private high-value analytics list. Track specific addresses of interest and receive targeted updates whenever these specific entities initiate any movement on the blockchain.',
       flowChart: 'Network Graph',
-      flowChartDesc: 'Visual mapping of the BTC ecosystem. See the complex web of interactions between whale wallets and major global exchanges to understand the path liquidity is taking across the entire grid.',
+      flowChartDesc: 'Visual mapping of the BTC ecosystem. See the complex web of interactions between ledger wallets and major global exchanges to understand the path liquidity is taking across the entire grid.',
       satoshi: 'Satoshi Detector',
-      satoshiDesc: 'The ultimate "Black Swan" event monitor. This tool scans for movements from wallets dormant for 8 years (Satoshi Era). When these ancient whales wake up, it usually signals the end of a cycle.',
+      satoshiDesc: 'The ultimate "Black Swan" event monitor. This tool scans for movements from wallets dormant for 8 years (Satoshi Era). When these ancient ledgers wake up, it usually signals the end of a cycle.',
       cascada: 'Cascade Liquidations',
       cascadaDesc: 'Real-time tracking of forced selling pressure. Watch as Longs and Shorts are liquidated on global futures exchanges, creating the "cascade" effect that drives sudden and violent price movements.',
       flujo: 'Exchange Cockpit',
       flujoDesc: 'Advanced pressure monitoring. Visualizes the net flow of Bitcoin: Inflow to exchanges signals high selling pressure, while Outflow to Cold Storage confirms strong accumulation.',
       nexo: 'Entity Nexus',
-      nexoDesc: 'Advanced entity clustering engine. Using complex heuristics, we link thousands of fragmented addresses to reveal the single massive entity operating behind them, exposing the true size of whale holdings.',
+      nexoDesc: 'Advanced entity clustering engine. Using complex heuristics, we link thousands of fragmented addresses to reveal the single massive entity operating behind them, exposing the true size of ledger holdings.',
       pulsoIA: 'AI Market Pulse',
       pulsoIADesc: 'The EKG of the entire market. A proprietary synthetic signal that fuses all our analytics layers into a single, real-time "heartbeat" to tell you instantly if the market mood is healthy or in distress.',
     },
@@ -178,7 +178,7 @@ const en = {
     noData: 'No data available',
     btc: 'BTC',
     megaLabel: 'MEGA',
-    whaleLabel: 'WHALE',
+    ledgerLabel: 'LEDGER',
     inflow: 'Exchange Inflow',
     outflow: 'Cold Storage',
     networkCalm: 'NETWORK CALM',
@@ -272,7 +272,7 @@ const en = {
       title: 'Backed By'
   },
   cards: {
-    title: 'The Whale Card',
+    title: 'The Ledger Card',
     subtitle: 'Spend your crypto instantly, anywhere.',
     designBtn: 'Design Your Card',
     features: {
@@ -283,10 +283,10 @@ const en = {
   },
   nfc: {
     title: 'Tap to Pair',
-    subtitle: 'Turn your Whale Card into a hardware key.',
+    subtitle: 'Turn your Ledger Card into a hardware key.',
     start: 'Start Pairing',
     scanning: 'Scanning...',
-    instruction: 'Hold your Whale Card against the back of your device.',
+    instruction: 'Hold your Ledger Card against the back of your device.',
     success: 'Paired',
   },
   vault: {
@@ -343,9 +343,9 @@ const en = {
   },
   vip: {
       heroTitle: 'Elite Analytics',
-      heroSubtitle: 'Advanced analytical tools to track whale wallets, predict on-chain liquidations, and measure token unlock pressure. Raw data presented without distractions.',
+      heroSubtitle: 'Advanced analytical tools to track ledger wallets, predict on-chain liquidations, and measure token unlock pressure. Raw data presented without distractions.',
       stats: {
-          activeWhales: 'Active Mega Whales',
+          activeLedgers: 'Active Mega Ledgers',
           tps: 'Current TPS (Active)',
           systemicRisk: 'Systemic Risk',
           baseFee: 'Base Fee (Gwei)'
@@ -426,9 +426,9 @@ const en = {
       searchPlaceholder: 'Search Block, Transaction, or Address...',
       invalidSearch: 'Invalid search query',
       view: 'View',
-      whaleWatch: {
-          title: 'Whale Watch',
-          scanning: 'Scanning for Whales...',
+      ledgerWatch: {
+          title: 'Ledger Watch',
+          scanning: 'Scanning for Ledgers...',
           live: 'LIVE',
           fee: 'Fee',
           noMovements: 'No major movements detected.',

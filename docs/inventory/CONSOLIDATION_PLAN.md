@@ -9,7 +9,7 @@
 | Claim | Source | Implementation | Conflict | Severity | Recommended Resolution |
 |---|---|---|---|---|---|
 | "Zero-Knowledge by Default... settled on Aztec" | `README.md` | `app/api/zk/prove/route.ts` uses HMAC-SHA256 to simulate proofs. No Aztec L2 deployment exists. | System claims cryptographic privacy but uses symmetric server signatures. | **CRITICAL** | Remove false claims from UI. Disable HMAC mock. Wait for actual Aztec v5 deployment. |
-| "Decentralized Registry... on-chain" | `Studio Provenance` | `ProductPassport` stored exclusively in PostgreSQL. | Assets are completely centralized in the SQL database. | **HIGH** | Update UI to state "Indexed/Local" until `WhaleKnowledgeGraph.sol` is deployed. |
+| "Decentralized Registry... on-chain" | `Studio Provenance` | `ProductPassport` stored exclusively in PostgreSQL. | Assets are completely centralized in the SQL database. | **HIGH** | Update UI to state "Indexed/Local" until `LedgerKnowledgeGraph.sol` is deployed. |
 | "E2E Encrypted P2P Chat" | `LedgerChat` | Uses XMTP (which is E2E), but identity binding relies on a mocked ZK proof. | Identity is not verifiable via ZK as claimed. | **HIGH** | Use standard SIWE for XMTP identity until ZK circuits are compiled and verified. |
 | "Neo4j Graph Database" | Architecture Map | Only `schema.cypher` exists. No live data flows to Neo4j. | Claiming a knowledge graph that isn't running. | **MEDIUM** | Remove Neo4j claims or implement the sync worker. |
 
@@ -35,7 +35,7 @@
 |---|---|---|
 | `README.md` | **REWRITE** | Remove claims of active ZK/Aztec deployments. Focus on intelligence & hub features. |
 | `MASTER_ARCHITECTURE.md` | **ARCHIVE** | Contradicts reality. Move to `docs/ADR/historical/`. |
-| `WHALE_NETWORK_WHITEPAPER.md`| **KEEP** | Mark as "Vision / Future State". |
+| `LEDGER_NETWORK_WHITEPAPER.md`| **KEEP** | Mark as "Vision / Future State". |
 | `PRODUCTION_READINESS.md` | **MERGE** | Merge into `docs/STATUS.md`. |
 | `DATABASE_FIX.md` | **DELETE** | Obsolete dev note. |
 | `ADMIN_SETUP.md` | **KEEP** | Move to `docs/OPERATIONS.md`. |
@@ -60,7 +60,7 @@
 - Define the `MiniApp` metadata standard (Manifests instead of hardcoded Hub tabs).
 
 ### P3 — Blockchain Anchoring (Target: November)
-- Deploy `SystemForumAnchor.sol` and `WhaleKnowledgeGraph.sol` to Base or Optimism to back up the SQL claims.
+- Deploy `SystemForumAnchor.sol` and `LedgerKnowledgeGraph.sol` to Base or Optimism to back up the SQL claims.
 - Wire the frontend to read from these deployed contracts.
 
 ### P4 — True ZK Integration (Target: December / 2027)

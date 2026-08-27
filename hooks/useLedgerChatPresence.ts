@@ -18,7 +18,7 @@ export interface PresenceBroadcastPayload {
   timestamp: number;
 }
 
-const PRESENCE_CHANNEL = 'whale-presence';
+const PRESENCE_CHANNEL = 'ledger-presence';
 const HEARTBEAT_INTERVAL_MS = 10_000; // 10s
 const AWAY_THRESHOLD_MS = 30_000;     // 30s of no heartbeats = away
 const OFFLINE_THRESHOLD_MS = 60_000;  // 60s = offline

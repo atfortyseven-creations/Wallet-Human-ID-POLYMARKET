@@ -9,4 +9,4 @@ echo "Compiling Noir Contract..."
 aztec-cli compile .
 
 echo "Deploying to Aztec Testnet..."
-aztec-cli deploy ./target/whale_circuits-QDsContract.json --rpc-url https://rpc.testnet.aztec-labs.com
+aztec-cli deploy ./target/ledger_circuits-QDsContract.json --rpc-url https://rpc.testnet.aztec-labs.com

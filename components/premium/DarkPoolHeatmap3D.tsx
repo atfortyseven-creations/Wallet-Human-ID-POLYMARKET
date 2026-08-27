@@ -50,13 +50,13 @@ function generateNodes(): NodeData[] {
 
 // --- INSTANCED MESH FOR PERFORMANCE ---
 function HeatmapGrid() {
-  const whaleEvents = useVIPStore(state => state.whaleEvents);
+  const ledgerEvents = useVIPStore(state => state.ledgerEvents);
   
   const nodes = useMemo(() => {
     const baseNodes = generateNodes(); // Base ambient liquidity
     
-    // Inject REAL $1M+ On-Chain Whale Movements 
-    whaleEvents.forEach(event => {
+    // Inject REAL $1M+ On-Chain Ledger Movements 
+    ledgerEvents.forEach(event => {
       // @ts-ignore
       const usdValue = event.rawUsd || event.usdNum || 0;
       if (usdValue >= 1_000_000) {
@@ -79,7 +79,7 @@ function HeatmapGrid() {
     });
     
     return baseNodes;
-  }, [whaleEvents]);
+  }, [ledgerEvents]);
 
   const groupRef = useRef<THREE.Group>(null);
   const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
@@ -87,7 +87,7 @@ function HeatmapGrid() {
   // Create a color scale
   // Cold (Low Volume) -> Deep Blue
   // Medium -> Purple
-  // Hot (High Volume / Whales) -> Neon Pink / Red
+  // Hot (High Volume / Ledgers) -> Neon Pink / Red
   const coldColor = new THREE.Color("#0f172a"); // slate-900
   const midColor = new THREE.Color("#7e22ce");  // purple-700
   const hotColor = new THREE.Color("#f43f5e");  // rose-500
@@ -200,7 +200,7 @@ export function DarkPoolHeatmap3D() {
             <div className="h-1 w-12 bg-purple-700 rounded-full" />
          </div>
          <div className="flex flex-col gap-1">
-            <span className="text-white/40 font-mono text-[9px] uppercase tracking-widest">Whale Hotspots</span>
+            <span className="text-white/40 font-mono text-[9px] uppercase tracking-widest">Ledger Hotspots</span>
             <div className="h-1 w-12 bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,1)] rounded-full" />
          </div>
       </div>

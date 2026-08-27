@@ -18,7 +18,7 @@ const PAGES = [
   { id: "newpairs",      label: "New Listings",    group: "Markets",        icon: null },
 
   //  On-Chain 
-  { id: "inst-ledger",   label: "Whale Ledger",    group: "On-Chain Data",  icon: null },
+  { id: "inst-ledger",   label: "Ledger Ledger",    group: "On-Chain Data",  icon: null },
   { id: "mass-transfer", label: "Mass Transfers",  group: "On-Chain Data",  icon: null },
   { id: "omniexplorer",  label: "Block Explorer",  group: "On-Chain Data",  icon: null },
 

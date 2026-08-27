@@ -5,12 +5,12 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 
 // Sticker images from public/models
 const STICKERS = [
-    { src: '/official-whale-legendary.png', alt: 'Whale', size: 60 },
-    { src: '/official-whale-legendary.png', alt: 'Whale', size: 50 },
-    { src: '/official-whale-legendary.png', alt: 'Whale', size: 40 },
-    { src: '/official-whale-legendary.png', alt: 'Whale', size: 70 },
-    { src: '/official-whale-legendary.png', alt: 'Whale', size: 55 },
-    { src: '/official-whale-legendary.png', alt: 'Whale', size: 45 },
+    { src: '/official-ledger-legendary.png', alt: 'Ledger', size: 60 },
+    { src: '/official-ledger-legendary.png', alt: 'Ledger', size: 50 },
+    { src: '/official-ledger-legendary.png', alt: 'Ledger', size: 40 },
+    { src: '/official-ledger-legendary.png', alt: 'Ledger', size: 70 },
+    { src: '/official-ledger-legendary.png', alt: 'Ledger', size: 55 },
+    { src: '/official-ledger-legendary.png', alt: 'Ledger', size: 45 },
 ];
 
 export function ParallaxStickers() {

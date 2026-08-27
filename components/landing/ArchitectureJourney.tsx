@@ -17,7 +17,7 @@ const ARCHITECTURE_NODES = [
   { icon: Shield, label: "Forensic Risk Scoring", desc: "Risk score assignment (0-100) based on exposure to mixers, hacks, and historical behavior." },
   { icon: Globe, label: "Dark Pool Detection", desc: "Radar for off-exchange movements and bridge transfers (Wormhole/LayerZero) in bulk." },
   { icon: AlertTriangle, label: "Anomaly Detection", desc: "Algorithmic scanning of Wash Attesting, Flash Loans, and cascade liquidation patterns." },
-  { icon: Zap, label: "Signal Generation", desc: "Confluence of Heikin-Ashi Signals with whale flows to generate high-conviction alerts." },
+  { icon: Zap, label: "Signal Generation", desc: "Confluence of Heikin-Ashi Signals with ledger flows to generate high-conviction alerts." },
   { icon: Database, label: "Analytics Archive", desc: "Persistence in Postgres/Prisma with 12 months of complete history for retroactive analysis." },
   { icon: Activity, label: "Real-Time Stream (SSE)", desc: "Event delivery via Server-Sent Events with sub-500ms latency after detection." },
   { icon: Terminal, label: "Cryptographic API Gateway", desc: "Dedicated REST and WebSocket infrastructure for mass access with IP Whitelisting." },

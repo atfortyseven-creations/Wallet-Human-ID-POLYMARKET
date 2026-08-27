@@ -4,7 +4,7 @@ import path from 'path';
 /**
  * PRODUCTION CLUSTER - TOTAL PERSISTENCE ENGINE
  * --------------------------------------------
- * This script unifies the Web UI (Next.js) and the Data Indexer (Whale Worker)
+ * This script unifies the Web UI (Next.js) and the Data Indexer (Ledger Worker)
  * into a single high-availability process for Railway.
  */
 
@@ -31,14 +31,14 @@ function startProcess(name: string, command: string, args: string[]) {
 console.log(" [Web] Starting Next.js Production Engine...");
 startProcess('WEB-UI', 'node', ['--max-old-space-size=512', '--import', 'tsx', 'server.ts']);
 
-// 2. Start the Whale Worker (Blockchain Indexer)
-console.log(" [Worker] Starting Whale Tracking Indexer...");
-startProcess('INDEXER', 'node', ['--max-old-space-size=512', '--import', 'tsx', 'scripts/whale-worker.ts']);
+// 2. Start the Ledger Worker (Blockchain Indexer)
+console.log(" [Worker] Starting Ledger Tracking Indexer...");
+startProcess('INDEXER', 'node', ['--max-old-space-size=512', '--import', 'tsx', 'scripts/ledger-worker.ts']);
 
-// 3. Start the Scheduled Sync Manager (Whale Vault - Every 24h)
-console.log(" [Sync] Whale Vault Scheduler Active.");
+// 3. Start the Scheduled Sync Manager (Ledger Vault - Every 24h)
+console.log(" [Sync] Ledger Vault Scheduler Active.");
 setInterval(async () => {
-    console.log(" [Sync] Triggering Whale Vault Garbage Collection...");
+    console.log(" [Sync] Triggering Ledger Vault Garbage Collection...");
     const payloadTypes = ['security_events', 'intel_items'];
     
     for (const payload_type of payloadTypes) {

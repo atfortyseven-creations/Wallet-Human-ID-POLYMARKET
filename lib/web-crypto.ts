@@ -83,7 +83,7 @@ export async function deriveSharedSecret(
   //
   // SECURITY PROOF:
   //   - ECDH gives us: Z = DH(priv_a, pub_b) = DH(priv_b, pub_a)  [shared secret]
-  //   - HKDF gives us: K = HKDF(Z, salt="whale-visual-pin", info=PIN_UTF8)
+  //   - HKDF gives us: K = HKDF(Z, salt="ledger-visual-pin", info=PIN_UTF8)
   //   - AES-GCM encrypts payload with K
   //   - An attacker who captures (encryptedPayload, iv) cannot decrypt without K
   //   - Getting K requires PIN, which only the legitimate user can see physically
@@ -102,7 +102,7 @@ export async function deriveSharedSecret(
     );
 
     // Salt: deterministic, protocol-specific, known to both parties
-    const salt = enc.encode('whale-network-visual-pin-v1');
+    const salt = enc.encode('ledger-network-visual-pin-v1');
     // Info: the PIN itself (application-specific context binding)
     const info = enc.encode(visualPin);
 

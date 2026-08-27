@@ -5,7 +5,7 @@ interface ZKStatement {
   institution: string;
   jurisdiction: 'Singapore' | 'EU' | 'MAS';
   AUM_threshold: bigint;
-  whale_score: number;
+  ledger_score: number;
   last_seen_zk: number;
 }
 

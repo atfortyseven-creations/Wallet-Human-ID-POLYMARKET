@@ -14,8 +14,8 @@ export interface VestingSchedule {
 }
 
 export const TOKEN_METRICS = {
-    ticker: 'WHALE',
-    name: 'Whale Alert Token',
+    ticker: 'LEDGER',
+    name: 'Ledger Alert Token',
     totalSupply: 100_000_000, // 100M
     tgeDate: '2025-Q4',
     stakingApy: 0.12, // 12% Base APY

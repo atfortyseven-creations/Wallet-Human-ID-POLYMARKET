@@ -5,7 +5,7 @@ const directories = ['app', 'components', 'lib'];
 const extensions = ['.tsx', '.ts', '.js', '.md'];
 
 const replacements = [
-    { search: /Whale Alert Network/g, replace: 'Whale Network' }
+    { search: /Ledger Alert Network/g, replace: 'Ledger Network' }
 ];
 
 function processDirectory(dirPath) {
@@ -43,4 +43,4 @@ directories.forEach(dir => {
         processDirectory(fullDirPath);
     }
 });
-console.log('Whale Alert Network replaced with Whale Network successfully.');
+console.log('Ledger Alert Network replaced with Ledger Network successfully.');

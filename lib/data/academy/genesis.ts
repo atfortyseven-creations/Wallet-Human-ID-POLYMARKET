@@ -18,7 +18,7 @@ export const genesisModules = [
 
                     <section class="pro-section">
                         <h2>II. El Linaje Intelectual: De Back a Nakamoto</h2>
-                        <p>Satoshi Nakamoto no inventó la rueda; la perfeccionó. Mientras que Hashcash era un sistema interactivo y no acumulativo, Satoshi integró el concepto de Back en una estructura de cadena (Blockchain) donde la dificultad se ajusta dinámicamente (DAA). Para la Whale Academy, Hashcash es el <strong>átomo primigenio</strong>: sin la validación de la firma de trabajo parcial de Adam Back, Bitcoin carecería de la seguridad termodinámica que hoy protege la riqueza global del arbitraje centralizado.</p>
+                        <p>Satoshi Nakamoto no inventó la rueda; la perfeccionó. Mientras que Hashcash era un sistema interactivo y no acumulativo, Satoshi integró el concepto de Back en una estructura de cadena (Blockchain) donde la dificultad se ajusta dinámicamente (DAA). Para la Ledger Academy, Hashcash es el <strong>átomo primigenio</strong>: sin la validación de la firma de trabajo parcial de Adam Back, Bitcoin carecería de la seguridad termodinámica que hoy protege la riqueza global del arbitraje centralizado.</p>
                         
                         <div class="technical-table">
                             <table>
@@ -85,7 +85,7 @@ export const genesisModules = [
 
                     <section class="pro-section">
                         <h2>II. El Catalizador de la Liquidez</h2>
-                        <p>Desde una perspectiva forense institucional, el "Pizza Day" es el punto cero de la curva de precios. Estableció un valor base de aproximadamente $0.0041 por BTC. Sin este "sacrificio" de Laszlo, Bitcoin habría carecido de un anclaje de mercado, imposibilitando el arbitraje posterior. En la Whale Academy, estudiamos este evento no como una pérdida de oportunidad, sino como el <strong>Gasto de Capital (CapEx)</strong> necesario para comprar la legitimidad del sistema financiero descentralizado.</p>
+                        <p>Desde una perspectiva forense institucional, el "Pizza Day" es el punto cero de la curva de precios. Estableció un valor base de aproximadamente $0.0041 por BTC. Sin este "sacrificio" de Laszlo, Bitcoin habría carecido de un anclaje de mercado, imposibilitando el arbitraje posterior. En la Ledger Academy, estudiamos este evento no como una pérdida de oportunidad, sino como el <strong>Gasto de Capital (CapEx)</strong> necesario para comprar la legitimidad del sistema financiero descentralizado.</p>
                         
                         <div class="technical-box">
                             <strong>Métrica de Inflación Histórica:</strong>
@@ -143,7 +143,7 @@ export const genesisModules = [
 
                     <section class="pro-section">
                         <h2>II. Consenso Social sobre Código de Emergencia</h2>
-                        <p>Satoshi Nakamoto y los usuarios no esperaron a una solución elegante; en menos de 5 horas, se publicó una bifurcación suave (Soft Fork) que invalidaba el bloque del atacante y devolvía a la red a su trayectoria de escasez. Para la Whale Academy, este evento es la prueba definitiva de la <strong>Soberanía del Consenso</strong>: el código puede tener fallos, pero la red es una entidad sociotécnica que decide colectivamente qué realidad es válida. La "cadena más larga" no es solo matemática; es una voluntad de hierro institucional.</p>
+                        <p>Satoshi Nakamoto y los usuarios no esperaron a una solución elegante; en menos de 5 horas, se publicó una bifurcación suave (Soft Fork) que invalidaba el bloque del atacante y devolvía a la red a su trayectoria de escasez. Para la Ledger Academy, este evento es la prueba definitiva de la <strong>Soberanía del Consenso</strong>: el código puede tener fallos, pero la red es una entidad sociotécnica que decide colectivamente qué realidad es válida. La "cadena más larga" no es solo matemática; es una voluntad de hierro institucional.</p>
                         
                         <div class="technical-table">
                             <table>
@@ -169,7 +169,7 @@ export const genesisModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Muerte del Autor: El Retiro de Nakamoto</h2>
-                        <p>En abril de 2011, Satoshi Nakamoto cesó toda comunicación pública con un mensaje lacónico: <em>"He pasado a otras cosas"</em>. Para la Whale Academy, este no fue un adiós emocional, sino un <strong>Componente Crítico de Seguridad</strong>. Al eliminar la figura del "dictador benévolo", Satoshi forzó a Bitcoin a convertirse en un organismo puramente descentralizado. Sin una cabeza que cortar, sin una entidad legal que demandar y sin un líder que corromper, el protocolo alcanzó la **Inmortalidad por Ausencia**.</p>
+                        <p>En abril de 2011, Satoshi Nakamoto cesó toda comunicación pública con un mensaje lacónico: <em>"He pasado a otras cosas"</em>. Para la Ledger Academy, este no fue un adiós emocional, sino un <strong>Componente Crítico de Seguridad</strong>. Al eliminar la figura del "dictador benévolo", Satoshi forzó a Bitcoin a convertirse en un organismo puramente descentralizado. Sin una cabeza que cortar, sin una entidad legal que demandar y sin un líder que corromper, el protocolo alcanzó la **Inmortalidad por Ausencia**.</p>
                     </section>
 
                     <section class="pro-section">
@@ -295,7 +295,7 @@ export const genesisModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Hal Finney: El Corredor del Primer Bloque</h2>
-                        <p>Hal Finney no solo fue el primer receptor de una transacción de Bitcoin de manos de Satoshi; fue el arquitecto que validó la viabilidad del código. Como eminente criptógrafo (autor de PGP 2.0 y RPOW), Finney aportó una rigurosidad técnica que permitió que Bitcoin sobreviviera a sus primeros meses de extrema vulnerabilidad. Para la Whale Academy, Finney es el **Héroe de la Disponibilidad**, habiendo mantenido nodos activos cuando la red se contaba por dedos de una mano.</p>
+                        <p>Hal Finney no solo fue el primer receptor de una transacción de Bitcoin de manos de Satoshi; fue el arquitecto que validó la viabilidad del código. Como eminente criptógrafo (autor de PGP 2.0 y RPOW), Finney aportó una rigurosidad técnica que permitió que Bitcoin sobreviviera a sus primeros meses de extrema vulnerabilidad. Para la Ledger Academy, Finney es el **Héroe de la Disponibilidad**, habiendo mantenido nodos activos cuando la red se contaba por dedos de una mano.</p>
                     </section>
 
                     <section class="pro-section">
@@ -325,7 +325,7 @@ export const genesisModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Transición a la Autonomía Total</h2>
-                        <p>A diferencia de la mayoría de los proyectos tecnológicos que dependen de un "visionario" central, Satoshi Nakamoto diseñó su propia obsolescencia. En abril de 2011, tras transferir las claves de alerta y el repositorio a Gavin Andresen, Satoshi desapareció. Para la Whale Academy, este fue el <strong>Último Acto de Diseño</strong>: al eliminar al creador, Bitcoin dejó de ser un producto para convertirse en un protocolo natural. Sin un líder que pudiera ser coaccionado por gobiernos o intereses corporativos, la legitimidad del sistema pasó a residir exclusivamente en el código y el consenso social.</p>
+                        <p>A diferencia de la mayoría de los proyectos tecnológicos que dependen de un "visionario" central, Satoshi Nakamoto diseñó su propia obsolescencia. En abril de 2011, tras transferir las claves de alerta y el repositorio a Gavin Andresen, Satoshi desapareció. Para la Ledger Academy, este fue el <strong>Último Acto de Diseño</strong>: al eliminar al creador, Bitcoin dejó de ser un producto para convertirse en un protocolo natural. Sin un líder que pudiera ser coaccionado por gobiernos o intereses corporativos, la legitimidad del sistema pasó a residir exclusivamente en el código y el consenso social.</p>
                     </section>
 
                     <section class="pro-section">
@@ -379,7 +379,7 @@ export const genesisModules = [
 
                     <section class="pro-section">
                         <h2>II. Del Debate al Despliegue</h2>
-                        <p>Para la Whale Academy, la lista de correo es la "Pre-Historia" de la Blockchain. Allí se resolvieron problemas críticos de teoría de juegos y sistemas distribuidos una década antes de que existiera Bitcoin. Entender estos hilos de conversación es fundamental para cualquier analista que quiera comprender el **Origen del Consenso** y por qué ciertas decisiones técnicas de Satoshi (como el límite de 21M) tienen profundas raíces en debates económicos y filosóficos de los años 90.</p>
+                        <p>Para la Ledger Academy, la lista de correo es la "Pre-Historia" de la Blockchain. Allí se resolvieron problemas críticos de teoría de juegos y sistemas distribuidos una década antes de que existiera Bitcoin. Entender estos hilos de conversación es fundamental para cualquier analista que quiera comprender el **Origen del Consenso** y por qué ciertas decisiones técnicas de Satoshi (como el límite de 21M) tienen profundas raíces en debates económicos y filosóficos de los años 90.</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 180" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -416,7 +416,7 @@ export const genesisModules = [
 
                     <section class="pro-section">
                         <h2>II. "This T-Shirt is a Munition"</h2>
-                        <p>Los activistas llegaron a vender camisetas con el código de RSA impreso, desafiando a las autoridades a arrestarlos por "exportación de armas". Para la Whale Academy, las Crypto Wars son el recordatorio de que la tecnología no es neutral; es el resultado de luchas por los derechos civiles. Un analista que desprecia la historia legal de la criptografía corre el riesgo de subestimar las amenazas regulatorias actuales contra la interoperabilidad y la privacidad (como los ataques a Tornado Cash).</p>
+                        <p>Los activistas llegaron a vender camisetas con el código de RSA impreso, desafiando a las autoridades a arrestarlos por "exportación de armas". Para la Ledger Academy, las Crypto Wars son el recordatorio de que la tecnología no es neutral; es el resultado de luchas por los derechos civiles. Un analista que desprecia la historia legal de la criptografía corre el riesgo de subestimar las amenazas regulatorias actuales contra la interoperabilidad y la privacidad (como los ataques a Tornado Cash).</p>
                     </section>
                 </div>`
         },
@@ -434,7 +434,7 @@ export const genesisModules = [
 
                     <section class="pro-section">
                         <h2>II. e-Gold y la Confiscación de Activos</h2>
-                        <p>e-Gold demostró que un activo digital con respaldo en oro físico atraería inevitablemente el martillo legal. Al tener un "punto único de fallo" (una oficina, un servidor, un CEO), e-Gold fue cerrado y sus activos confiscados. En la Whale Academy, analizamos estos sistemas como los "mártires" que probaron que cualquier forma de libertad financiera que requiera permiso o un servidor central es, en última instancia, una ilusión. Bitcoin es la síntesis de estas lecciones: un sistema sin cabeza que nadie puede apagar.</p>
+                        <p>e-Gold demostró que un activo digital con respaldo en oro físico atraería inevitablemente el martillo legal. Al tener un "punto único de fallo" (una oficina, un servidor, un CEO), e-Gold fue cerrado y sus activos confiscados. En la Ledger Academy, analizamos estos sistemas como los "mártires" que probaron que cualquier forma de libertad financiera que requiera permiso o un servidor central es, en última instancia, una ilusión. Bitcoin es la síntesis de estas lecciones: un sistema sin cabeza que nadie puede apagar.</p>
                         
                         <div class="technical-table">
                             <table>
@@ -483,7 +483,7 @@ export const genesisModules = [
 
                     <section class="pro-section">
                         <h2>II. Criptografía de Clave Pública como Escudo</h2>
-                        <p>El uso maestro de Satoshi de la criptografía de clave pública para firmar sus comunicaciones garantizó la integridad del mensaje sin revelar el origen. Para la Whale Academy, su OPSEC es el estándar de oro: utilizó Tor para anonimizar sus conexiones y nunca dejó un rastro digital que permitiera su desanonimización. Satoshi entendió que para que la libertad financiera existiera, el primer acto de rebeldía debía ser la **Huelga de Identidad**.</p>
+                        <p>El uso maestro de Satoshi de la criptografía de clave pública para firmar sus comunicaciones garantizó la integridad del mensaje sin revelar el origen. Para la Ledger Academy, su OPSEC es el estándar de oro: utilizó Tor para anonimizar sus conexiones y nunca dejó un rastro digital que permitiera su desanonimización. Satoshi entendió que para que la libertad financiera existiera, el primer acto de rebeldía debía ser la **Huelga de Identidad**.</p>
                         
                         <div class="technical-box">
                             <strong>Análisis de Transparencia:</strong>
@@ -506,7 +506,7 @@ export const genesisModules = [
 
                     <section class="pro-section">
                         <h2>II. Forense de Grafos y Clustering</h2>
-                        <p>En la Whale Academy, estudiamos el caso Silk Road para entender cómo la seudonimidad puede ser "rota" mediante técnicas de heurística de cambio (Change Address Detection) y balanceo de transacciones. La blockchain no olvida; lo que hoy parece privado, mañana puede ser desanonimizado si el analista tiene suficientes puntos de datos externos. Por eso, la verdadera privacidad no es un accidente, sino una arquitectura activa que requiere mixers, firmas de anillo o pruebas de conocimiento cero.</p>
+                        <p>En la Ledger Academy, estudiamos el caso Silk Road para entender cómo la seudonimidad puede ser "rota" mediante técnicas de heurística de cambio (Change Address Detection) y balanceo de transacciones. La blockchain no olvida; lo que hoy parece privado, mañana puede ser desanonimizado si el analista tiene suficientes puntos de datos externos. Por eso, la verdadera privacidad no es un accidente, sino una arquitectura activa que requiere mixers, firmas de anillo o pruebas de conocimiento cero.</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 200" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -542,7 +542,7 @@ export const genesisModules = [
 
                     <section class="pro-section">
                         <h2>II. La Influencia de Dai en la v0.1</h2>
-                        <p>Para la Whale Academy, b-money es el plano arquitectónico. Aunque Dai no resolvió el problema del doble gasto sin una autoridad central de la misma forma que Satoshi (con el encadenamiento de PoW), sus ideas sobre **Soberanía del Balance** y **Costo de Acuñación** son los pilares éticos de Bitcoin. El nombre "Wei", la unidad más pequeña de Ether, es un homenaje al legado de este pionero que visualizó la economía digital una década antes de su nacimiento real.</p>
+                        <p>Para la Ledger Academy, b-money es el plano arquitectónico. Aunque Dai no resolvió el problema del doble gasto sin una autoridad central de la misma forma que Satoshi (con el encadenamiento de PoW), sus ideas sobre **Soberanía del Balance** y **Costo de Acuñación** son los pilares éticos de Bitcoin. El nombre "Wei", la unidad más pequeña de Ether, es un homenaje al legado de este pionero que visualizó la economía digital una década antes de su nacimiento real.</p>
                     </section>
                 </div>`
         },

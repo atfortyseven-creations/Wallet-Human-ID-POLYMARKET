@@ -78,7 +78,7 @@ export async function POST(req: Request) {
                     data: {
                         level: "alert",
                         message: "DATA_NUKE",
-                        source: "WhaleFortress Nuke Core",
+                        source: "LedgerFortress Nuke Core",
                         metadata: {
                             deletionCommitment,
                             proofSignature: signature,
@@ -88,7 +88,7 @@ export async function POST(req: Request) {
                 });
             });
         } catch (dbError: any) {
-            console.error('[WhaleFortress:Nuke] Database Transaction Error:', dbError);
+            console.error('[LedgerFortress:Nuke] Database Transaction Error:', dbError);
             return NextResponse.json({ error: 'Failed to purge database records safely.' }, { status: 500 });
         }
 
@@ -106,7 +106,7 @@ export async function POST(req: Request) {
                     await redisClient.del(...kycKeys);
                 }
             } catch (e) {
-                console.error('[WhaleFortress:Nuke] Warning: Redis cleanup failed', e);
+                console.error('[LedgerFortress:Nuke] Warning: Redis cleanup failed', e);
             }
         }
 
@@ -126,7 +126,7 @@ export async function POST(req: Request) {
         return response;
 
     } catch (error: any) {
-        console.error(" [WhaleFortress:Nuke] Critical Failure:", error);
+        console.error(" [LedgerFortress:Nuke] Critical Failure:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

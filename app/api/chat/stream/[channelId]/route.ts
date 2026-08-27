@@ -93,7 +93,7 @@ export async function GET(
 
           if (redis) {
             //  Redis path 
-            const key = `whale_chat:messages:${channelId}`;
+            const key = `ledger_chat:messages:${channelId}`;
             const raw = await redis.zrangebyscore(key, lastScore + 1, '+inf', { withScores: false });
             if (raw && raw.length > 0) {
               newMessages = (raw as unknown[]).map((r) => {

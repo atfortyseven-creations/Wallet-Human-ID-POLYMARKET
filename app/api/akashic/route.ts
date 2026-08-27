@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 // The immutable, tamper-evident registry of system capital movements.
 //
 // ARCHITECTURE:
-//   1. PRIMARY: Query live WhaleActivity records > $50M from PostgreSQL (Railway)
+//   1. PRIMARY: Query live LedgerActivity records > $50M from PostgreSQL (Railway)
 //   2. FALLBACK: Curated historical registry if DB has no qualifying events yet
 //
 // Each entry carries a SHA-256 hash computed from all critical fields.
@@ -43,7 +43,7 @@ function computeAkashicHash(fields: {
   return createHash('sha256').update(canonical, 'utf8').digest('hex');
 }
 
-//  Format a live WhaleActivity row as an Akashic entry 
+//  Format a live LedgerActivity row as an Akashic entry 
 function formatActiveEntry(row: any, index: number) {
   const amountUsd = parseFloat(row.usdValue) || 0;
   const id = String(index + 1).padStart(5, '0');
@@ -89,7 +89,7 @@ export async function GET(req: NextRequest) {
     };
 
     // Fetch ALL qualifying rows to compute total, then paginate in memory
-    const allActive = await prisma.whaleActivity.findMany({
+    const allActive = await prisma.ledgerActivity.findMany({
       where,
       orderBy: { timestamp: 'desc' },
       take: 500, // Fetch up to 500 for pagination

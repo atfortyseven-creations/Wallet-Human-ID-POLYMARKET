@@ -4,8 +4,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '@/hooks/useIsMobile';
 
-const RAINBOW_ASSET = "official-whale-legendary.png";
-const KITTEN_ASSET = "official-whale-legendary.png"; 
+const RAINBOW_ASSET = "official-ledger-legendary.png";
+const KITTEN_ASSET = "official-ledger-legendary.png"; 
 
 // Only Rainbows allowed
 const ASSETS = [RAINBOW_ASSET];

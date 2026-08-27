@@ -30,7 +30,7 @@ export interface RenderableMessage {
   readAt?: number;           // unix ms (undefined = not read)
   reactions: Reaction[];
   replyToId?: string;
-  attestationScore?: number; // 0–100 whale score
+  attestationScore?: number; // 0–100 ledger score
 }
 
 export interface MessageEngineProps {

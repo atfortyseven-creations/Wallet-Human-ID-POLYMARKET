@@ -139,11 +139,11 @@ export const ecosystemFeatures: FeatureContent[] = [
   {
     id: 'tarjeta',
     category: 'productos',
-    title: 'Whale Card',
+    title: 'Ledger Card',
     subtitle: 'Fiat-Crypto Bridge',
     shortDesc: '0% markup FX, instant conversion',
     deepDive: [
-      'The Whale Card is not just plastic; it\'s a payment endpoint that resolves the off-ramp through an instant settlement protocol.',
+      'The Ledger Card is not just plastic; it\'s a payment endpoint that resolves the off-ramp through an instant settlement protocol.',
       'Visa payment rail integration, KYC/AML compliance, real-time cryptofiat conversion.',
       'Total fee transparency: 0% FX markup vs 2.99% on Crypto.com.',
       'Spend your cryptocurrencies at any merchant that accepts Visa, seamlessly.'

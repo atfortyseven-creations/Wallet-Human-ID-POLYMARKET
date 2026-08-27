@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
             
             return {
                 id: dep.id,
-                whale: dep.depositor,
+                ledger: dep.depositor,
                 volume_eth_est: amountNormalized,
                 origin: chainMap[parseInt(dep.originChainId)] || `Chain ${dep.originChainId}`,
                 destination: chainMap[parseInt(dep.destinationChainId)] || `Chain ${dep.destinationChainId}`,
@@ -59,13 +59,13 @@ export async function GET(request: NextRequest) {
             };
         });
 
-        // Filter out microscopic transfers to keep the "Whale" aesthetic
+        // Filter out microscopic transfers to keep the "Ledger" aesthetic
         const massiveMigrations = migrations.filter((m: any) => m.volume_eth_est > 0.5);
 
         return NextResponse.json({
             status: "success",
             source: "Across V2 Native",
-            migrations: massiveMigrations.length > 0 ? massiveMigrations : migrations // Fallback to all if no whales present perfectly
+            migrations: massiveMigrations.length > 0 ? massiveMigrations : migrations // Fallback to all if no ledgers present perfectly
         });
 
     } catch (error: any) {

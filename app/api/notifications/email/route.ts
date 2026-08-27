@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 
     // Format email based on type
     switch (type) {
-      case 'whale_alert':
+      case 'ledger_alert':
         subject = ` Humanity Ledger: $${safeToLocaleString(data.amount)} Movement`;
         html = formatHumanityLedgerEmail(data);
         break;
@@ -136,7 +136,7 @@ function formatHumanityLedgerEmail(data: {
       ${data.txHash ? `<a href="https://basescan.org/tx/${data.txHash}" class="button">View Transaction</a>` : ''}
     </div>
     <div class="footer">
-      Humanity Ledger VIP - Whale Tracking Platform<br>
+      Humanity Ledger VIP - Ledger Tracking Platform<br>
       <a href="/vip" style="color: #ffffff;">Manage Alerts</a>
     </div>
   </div>

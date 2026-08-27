@@ -5,8 +5,8 @@ export type GeneratorType = 'COSMIC_ART' | 'LIVING_MUSIC' | 'AUTO_CONTRACT' | 'W
 export type EntityStatus = 'DORMANT' | 'ACTIVE' | 'HIBERNATING' | 'EXTINCT' | 'MERGED';
 
 export interface CosmicSeed {
-  seedHash: string; // Deterministic SHA-256 of the origin whale event
-  eventId: string;  // Original Whale Event ID
+  seedHash: string; // Deterministic SHA-256 of the origin ledger event
+  eventId: string;  // Original Ledger Event ID
   amountUSD: number;
   chain: string;
   tier: EntityTier;
@@ -51,7 +51,7 @@ export interface AgentMetadata {
 export interface CosmicEntityBase {
   id: string;
   seedHash: string;
-  whaleEventId?: string;
+  ledgerEventId?: string;
   tier: EntityTier;
   amountUSD: number;
   chain: string;

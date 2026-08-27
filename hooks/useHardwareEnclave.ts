@@ -34,13 +34,13 @@ export function useHardwareEnclave() {
         publicKey: {
           challenge,
           rp: {
-            name: "Whale Network Turing-Shield",
+            name: "Ledger Network Turing-Shield",
             id: window.location.hostname,
           },
           user: {
             id: userIdBytes,
             name: userId,
-            displayName: "Whale Identity",
+            displayName: "Ledger Identity",
           },
           pubKeyCredParams: [
             { type: "public-key", alg: -7 }, // ES256

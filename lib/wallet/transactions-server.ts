@@ -29,7 +29,7 @@ export async function getTransactionHistory(authUserId: string, options?: any) {
   // [ZK-ISOLATION] authUserId is now the wallet address (SIWE session.userId).
   // The Transaction table no longer has an authUserId column — it uses fromAddress/toAddress.
   // We query all three sources by address for full fidelity.
-  const [legacy, whales, blockchain] = await Promise.all([
+  const [legacy, ledgers, blockchain] = await Promise.all([
     prisma.transaction.findMany({
       where: { 
         OR: [{ fromAddress: authUserId }, { toAddress: authUserId }],
@@ -39,7 +39,7 @@ export async function getTransactionHistory(authUserId: string, options?: any) {
       take: limit,
       skip: offset,
     }),
-    prisma.whaleActivity.findMany({
+    prisma.ledgerActivity.findMany({
       where: {
         OR: [
           { fromAddress: authUserId },
@@ -66,10 +66,10 @@ export async function getTransactionHistory(authUserId: string, options?: any) {
       to: t.toAddress,
       value: t.amount.toString(),
       tokenSymbol: t.token,
-      isWhale: false,
+      isLedger: false,
       source: 'LEDGER'
     })),
-    ...whales.map((w: any) => ({
+    ...ledgers.map((w: any) => ({
       ...w,
       hash: w.transactionHash,
       from: w.fromAddress,
@@ -79,10 +79,10 @@ export async function getTransactionHistory(authUserId: string, options?: any) {
       status: 'CONFIRMED',
       type: w.type,
       timestamp: w.timestamp,
-      isWhale: true,
+      isLedger: true,
       sovereign: w.sovereign,
       valueBTC: w.valueBTC,
-      source: 'WHALE_INTEL'
+      source: 'LEDGER_INTEL'
     })),
     ...blockchain.map((b: any) => ({
       ...b,
@@ -94,7 +94,7 @@ export async function getTransactionHistory(authUserId: string, options?: any) {
       status: b.status,
       type: b.type,
       timestamp: b.createdAt,
-      isWhale: false,
+      isLedger: false,
       source: 'BLOCKCHAIN_SYNC'
     }))
   ];

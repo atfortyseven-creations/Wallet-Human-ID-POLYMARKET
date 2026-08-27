@@ -196,7 +196,7 @@ export function NetworkMapPanel() {
                   </div>
 
                   <div className="text-[10px] font-mono font-black uppercase tracking-[0.3em] text-black/40 mb-3">Web Domain (PC)</div>
-                  <h3 className="text-2xl md:text-3xl font-black mb-1">Whale Web Client</h3>
+                  <h3 className="text-2xl md:text-3xl font-black mb-1">Ledger Web Client</h3>
                   <p className="text-xs text-black/50 font-mono mb-6">humanidfi.com • Browser Context</p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
@@ -523,7 +523,7 @@ export function NetworkMapPanel() {
                   tags={[
                     { text: "Neo4j AuraDB", color: "purple" },
                     { text: "Cypher Queries", color: "purple" },
-                    { text: "Whale Patterns", color: "purple" },
+                    { text: "Ledger Patterns", color: "purple" },
                   ]}
                 />
                 <NodeCard

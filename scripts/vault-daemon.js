@@ -4,15 +4,15 @@ const path = require('path');
 const crypto = require('crypto');
 
 /**
- * WHALE VAULT DAEMON (V1.0)
+ * LEDGER VAULT DAEMON (V1.0)
  * ----------------------------
- * This is the local receptor for the Whale Alert "Garbage Collector" system.
+ * This is the local receptor for the Ledger Alert "Garbage Collector" system.
  * It listens for encrypted payloads from the Railway-Production cloud
  * and secures them in your local D:\ or Windows file system.
  */
 
 const PORT = process.env.VAULT_PORT || 7007;
-const SECRET_KEY = process.env.WHALE_VAULT_SECRET || 'WHALE_QUANTUM_KEY_777';
+const SECRET_KEY = process.env.LEDGER_VAULT_SECRET || 'LEDGER_QUANTUM_KEY_777';
 const STORAGE_DIR = path.join(__dirname, '..', 'vault-storage');
 
 // Ensure storage directory exists
@@ -38,7 +38,7 @@ const server = http.createServer((req, res) => {
         if (!authHeader || authHeader !== `Bearer ${SECRET_KEY}`) {
             console.warn(`[Vault]  Unauthorized ingress attempt from ${req.socket.remoteAddress}`);
             res.writeHead(401, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Whale Key Invalid' }));
+            res.end(JSON.stringify({ error: 'Ledger Key Invalid' }));
             return;
         }
 
@@ -79,7 +79,7 @@ const server = http.createServer((req, res) => {
                     uhrp_metadata: {
                         hash: uhrp_hash,
                         algorithm: 'sha256',
-                        protocol: 'Whale-Vault-V1.1'
+                        protocol: 'Ledger-Vault-V1.1'
                     }
                 };
 
@@ -129,12 +129,12 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
     console.log(`\n=================================================`);
-    console.log(`️  WHALE VAULT DAEMON - ONLINE`);
+    console.log(`️  LEDGER VAULT DAEMON - ONLINE`);
     console.log(`=================================================`);
     console.log(` STATUS: ACTIVE & LISTENING`);
     console.log(` ADDRESS: http://localhost:${PORT}`);
     console.log(` STORAGE: ${STORAGE_DIR}`);
-    console.log(` ACCESS: RESTRICTED VIA WHALE SECRET`);
+    console.log(` ACCESS: RESTRICTED VIA LEDGER SECRET`);
     console.log(`-------------------------------------------------\n`);
     console.log(`Waiting for Railway production to teleport data...`);
 });

@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 // These old route names get redirected to the default
 const LEGACY_ROUTE_MAP = new Set([
     'watchlist', 'firehose', 'sov-intel', 'live-port',
-    'whale-port', 'graph', 'vault', 'attest', 'forensics',
+    'ledger-port', 'graph', 'vault', 'attest', 'forensics',
     'reputation', 'scanner'
 ]);
 

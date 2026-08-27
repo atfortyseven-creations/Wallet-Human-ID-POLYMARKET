@@ -9,7 +9,7 @@ export const translations = {
         'nav.bubbles': 'BUBBLES',
         'nav.start': 'START',
         'nav.wallet_settings': 'WALLET SETTINGS',
-        'nav.whale': 'Whale Tracker ',
+        'nav.ledger': 'Ledger Tracker ',
         'nav.settings': 'Config',
         'nav.hide': 'Hide',
         'nav.visible': 'Visible',
@@ -215,10 +215,10 @@ export const translations = {
 
         // VIP Section
         'vip.badge': 'LEGIONARY STATUS',
-        'vip.title_track': 'WHALE PrivateTY',
+        'vip.title_track': 'LEDGER PrivateTY',
         'vip.title_copy': 'CAPITAL STRATEGY',
-        'vip.desc': 'Professional-grade whale tracking with AI-powered insights, real-time alerts, and automated copy attesting. Join 10,000+ verifiers making smarter decisions.',
-        'vip.tab_tracker': 'Whale Tracker',
+        'vip.desc': 'Professional-grade ledger tracking with AI-powered insights, real-time alerts, and automated copy attesting. Join 10,000+ verifiers making smarter decisions.',
+        'vip.tab_tracker': 'Ledger Tracker',
         'vip.tab_analytics': 'Analytics',
         'vip.tab_alerts': 'Smart Alerts',
         'vip.tab_compare': 'Compare',

@@ -112,10 +112,10 @@ export function CommandPalette({ onNavigate, onBridgeOpen }: CommandPaletteProps
   const COMMANDS: CommandItem[] = useMemo(() => [
     // Navigation
     { id: "explorer",       label: "Block Explorer",      description: "Search blocks, addresses, transactions",   icon: <Search size={15}/>,         category: "Navigation", action: () => navigate("explorer", "Block Explorer"),       keywords: ["block", "search", "explorer"] },
-    { id: "alerts",         label: "Active Alerts",         description: "Real-time whale movement feed",            icon: <Activity size={15}/>,       category: "Navigation", action: () => navigate("alerts", "Active Alerts"),            keywords: ["alerts", "live", "feed"] },
+    { id: "alerts",         label: "Active Alerts",         description: "Real-time ledger movement feed",            icon: <Activity size={15}/>,       category: "Navigation", action: () => navigate("alerts", "Active Alerts"),            keywords: ["alerts", "live", "feed"] },
     { id: "live-txs",       label: "Active Transactions",   description: "Unconfirmed transaction stream",           icon: <RefreshCw size={15}/>,      category: "Navigation", action: () => navigate("live-txs", "Active Transactions"),   keywords: ["transactions", "mempool", "live"] },
     // Analytics
-    { id: "tracker",        label: "Whale Tracker",       description: "Track major wallet movements",             icon: <Globe size={15}/>,          category: "Analytics", action: () => navigate("tracker", "Whale Tracker"),       keywords: ["whale", "tracker", "wallet"] },
+    { id: "tracker",        label: "Ledger Tracker",       description: "Track major wallet movements",             icon: <Globe size={15}/>,          category: "Analytics", action: () => navigate("tracker", "Ledger Tracker"),       keywords: ["ledger", "tracker", "wallet"] },
     { id: "new-pairs",      label: "New Pairs",           description: "Newly launched token pairs on DEXs",       icon: <Plus size={15}/>,           category: "Analytics", action: () => navigate("new-pairs", "New Pairs"),         keywords: ["pairs", "dex", "new", "tokens"] },
     { id: "gainers-losers", label: "Gainers & Losers",    description: "24h market performance leaders",           icon: <TrendingUp size={15}/>,     category: "Analytics", action: () => navigate("gainers-losers", "Gainers & Losers"), keywords: ["gainers", "losers", "performance"] },
     { id: "topography",     label: "Visual Graph",        description: "Network topology visualization",           icon: <LayoutDashboard size={15}/>, category: "Analytics", action: () => navigate("topography", "Visual Graph"),    keywords: ["graph", "topology", "visual"] },
@@ -130,7 +130,7 @@ export function CommandPalette({ onNavigate, onBridgeOpen }: CommandPaletteProps
     { id: "support",        label: "Support Center",      description: "Documentation and help resources",         icon: <GraduationCap size={15}/>,  category: "Academy",      action: () => navigate("support", "Support Center"),    keywords: ["support", "help", "docs"] },
     { id: "exchange",       label: "Connect Exchange",    description: "Link centralised exchange accounts",       icon: <Link2 size={15}/>,          category: "Academy",      action: () => navigate("exchange", "Connect Exchange"), keywords: ["exchange", "cex", "connect", "binance"] },
     // Membership
-    { id: "gold-whale",     label: "Gold Humanity Ledger",  description: "Sovereign membership tier",            icon: <Zap size={15} style={{ color: "#D4AF37" }}/>, category: "Membership", action: () => navigate("gold-whale", "Gold Humanity Ledger"), keywords: ["gold", "membership", "premium", "vip"] },
+    { id: "gold-ledger",     label: "Gold Humanity Ledger",  description: "Sovereign membership tier",            icon: <Zap size={15} style={{ color: "#D4AF37" }}/>, category: "Membership", action: () => navigate("gold-ledger", "Gold Humanity Ledger"), keywords: ["gold", "membership", "premium", "vip"] },
     // Actions
     { id: "qr-bridge",      label: "Open Device Bridge",  description: "Scan QR to link mobile wallet",           icon: <QrCode size={15}/>,         category: "Actions",      action: () => { onBridgeOpen(); setOpen(false); },       keywords: ["qr", "bridge", "mobile", "scan"] },
   ], [navigate, onBridgeOpen, setOpen]);

@@ -151,7 +151,7 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                                 </div>
                                 <div className="mb-4">
                                     <h3 className="text-2xl font-black text-white mb-2 uppercase tracking-tight">{t.landing.hero.accessGranted}</h3>
-                                    <p className="text-white/40 font-medium">Welcome back, {address ? `${address.slice(0,6)}...${address.slice(-4)}` : 'System Whale'}.<br/>All systems online.</p>
+                                    <p className="text-white/40 font-medium">Welcome back, {address ? `${address.slice(0,6)}...${address.slice(-4)}` : 'System Ledger'}.<br/>All systems online.</p>
                                 </div>
                                 <div className="w-full flex justify-center pb-2">
                                      <button 

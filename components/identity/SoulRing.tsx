@@ -10,7 +10,7 @@ export function SoulRing({ children }: { children: React.ReactNode }) {
     // Color Logic based on Rank/Score
     const getColors = () => {
         if (totalScore >= 80) return { ring: '#ef4444', glow: '#ef4444', text: 'text-red-500' }; // Titan (Red)
-        if (totalScore >= 60) return { ring: '#facc15', glow: '#facc15', text: 'text-yellow-400' }; // Whale (Gold)
+        if (totalScore >= 60) return { ring: '#facc15', glow: '#facc15', text: 'text-yellow-400' }; // Ledger (Gold)
         if (totalScore >= 40) return { ring: '#00f2ea', glow: '#00f2ea', text: 'text-cyan-400' }; // Veteran (Cyan)
         return { ring: '#52525b', glow: '#52525b', text: 'text-zinc-500' }; // Novice (Gray)
     };

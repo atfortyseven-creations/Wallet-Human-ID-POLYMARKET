@@ -5,8 +5,8 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
     try {
-        // Query sovereign-grade whale movements from the real blockchain index
-        const activities = await prisma.whaleActivity.findMany({
+        // Query sovereign-grade ledger movements from the real blockchain index
+        const activities = await prisma.ledgerActivity.findMany({
             take: 100,
             where: {
                 institutional: true,
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
             orderBy: { timestamp: 'desc' }
         });
 
-        // Map WhaleActivity to UTXOEntry structure for the frontend
+        // Map LedgerActivity to UTXOEntry structure for the frontend
         let entries = activities.map(a => ({
             id: a.id,
             txid: a.transactionHash,
@@ -24,8 +24,8 @@ export async function GET(req: NextRequest) {
             usdValue: parseFloat(a.usdValue),
             timestamp: a.timestamp,
             confirmations: a.confirmed ? 12 : 0,
-            entityName: a.entityName || 'System Whale',
-            category: a.institutional ? 'INSTITUTIONAL' : 'WHALE',
+            entityName: a.entityName || 'System Ledger',
+            category: a.institutional ? 'INSTITUTIONAL' : 'LEDGER',
             status: a.confirmed ? 'UNSPENT' : 'PENDING'
         }));
 
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
         const confirmedCount = entries.filter(e => e.status === 'UNSPENT').length;
         const stats = {
             totalMonitored:       entries.length,
-            whaleConcentrationPct: entries.length > 0 ? parseFloat(((confirmedCount / entries.length) * 100).toFixed(1)) : 0,
+            ledgerConcentrationPct: entries.length > 0 ? parseFloat(((confirmedCount / entries.length) * 100).toFixed(1)) : 0,
             dormantSupplyBTC:     parseFloat(totalBTC.toFixed(4)),
             liquidityDelta24h:    parseFloat((totalBTC / 10).toFixed(4)),
             lastBlockIndex:       842000,
