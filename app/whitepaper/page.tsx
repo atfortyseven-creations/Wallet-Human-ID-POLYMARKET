@@ -107,7 +107,7 @@ export default function WhitepaperPage() {
             1. <strong>User Proof (App Circuit):</strong> The user generates a proof of their private execution on their local device (the PXE).<br/>
             2. <strong>Rollup Circuit:</strong> A decentralized prover aggregates 2 user proofs into a single proof verifying that both user proofs are valid.<br/>
             3. <strong>Merge Circuit:</strong> Provers recursively merge these proofs in a binary tree structure until a single proof remains representing an entire block of transactions.<br/>
-            4. <strong>L1 Verification:</strong> Ethereum verifies a single SNARK proof representing state transitions with <em>trillones de parametros</em> of compressed computation.
+            4. <strong>L1 Verification:</strong> Ethereum verifies a single SNARK proof representing state transitions with highly complex compressed computation.
           </p>
         </section>
 
@@ -118,7 +118,7 @@ export default function WhitepaperPage() {
             Current elliptic curve cryptography (ECC) is vulnerable to Shor's algorithm running on a sufficiently powerful quantum computer. The Humanity Ledger architecture is designed with cryptographic agility to facilitate a seamless transition to post-quantum (PQ) primitives.
           </p>
           <p className="mb-6">
-            Our multi-phase PQ migration strategy involves replacing the BN254 pairings with lattice-based commitment schemes (such as those based on the Module Learning With Errors (MLWE) problem) and transitioning the underlying proving system from Honk to a hash-based STARK or a lattice-based SNARK. This ensures the <strong>maxima capacidad cuantica</strong> required to secure the ledger for the next century.
+            Our multi-phase PQ migration strategy involves replacing the BN254 pairings with lattice-based commitment schemes (such as those based on the Module Learning With Errors (MLWE) problem) and transitioning the underlying proving system from Honk to a hash-based STARK or a lattice-based SNARK. This ensures the <strong>cryptographic resilience</strong> required to secure the ledger for the next century.
           </p>
         </section>
 

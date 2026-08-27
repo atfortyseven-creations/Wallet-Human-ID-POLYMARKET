@@ -477,7 +477,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   // Offline Queue State
   const [isOffline, setIsOffline] = useState(false);
   const [hasAcceptedEula, setHasAcceptedEula] = useState(false);
-  const [isOnboarded, setIsOnboarded] = useState(false);
+  const [isOnboarded, setIsOnboarded] = useState(() => typeof window !== 'undefined' ? localStorage.getItem('ledger_onboarded_' + (effectiveAddress || '0x0')) === 'true' : false);
   const [hasMediaPermission, setHasMediaPermission] = useState(false);
   const [pendingCallType, setPendingCallType] = useState<'audio' | 'video' | 'answer' | null>(null);
 
@@ -492,11 +492,9 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         const perm = await vault.getItem('ledger_media_perm');
         if (perm === 'true') setHasMediaPermission(true);
 
-        // [BUG FIX] "Create Your Identity" shown to returning users.
-        // The flag 'ledger_onboarded_' is written on first setup, but may be
-        // missing after clearing storage or switching devices. We cross-check
-        // with the actual ledgerSettings.displayName — if it already exists,
-        // the user clearly completed onboarding at some point. Never ask again.
+        // [BUG FIX] Re-registration shown to returning users.
+        // Check localStorage first (fastest path), then cross-check displayName.
+        // Runs whenever effectiveAddress resolves (e.g. wallet connects after mount).
         if (typeof window !== 'undefined') {
           const flagOnboarded = localStorage.getItem('ledger_onboarded_' + effectiveAddress) === 'true';
           const hasProfile = !!(ledgerSettings?.displayName && ledgerSettings.displayName.trim().length > 0);
@@ -515,7 +513,8 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }
-  }, [ledgerSettings?.displayName]);
+  }, [ledgerSettings?.displayName, effectiveAddress]);
+
 
   useEffect(() => {
     if (address) {
@@ -3329,7 +3328,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   if (isEmailUser) {
     const emailLabel = (address as string).replace('email_', '');
     return (
-      <div className="flex-1 flex flex-col h-full bg-white items-center justify-center p-6 gap-6 relative overflow-hidden">
+      <div className="flex-1 flex flex-col h-full bg-white items-center justify-center p-6 gap-6 relative overflow-hidden max-w-5xl mx-auto border-x border-black/10">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-black/5 blur-[100px] rounded-full pointer-events-none" />
         <div className="relative z-10 w-full max-w-md bg-white border border-[#EBEBEB] shadow-2xl rounded-3xl p-10 flex flex-col items-center gap-5">
           <div className="w-16 h-16 rounded-full bg-[#f5f5f7] border border-black/10 flex items-center justify-center">
@@ -3473,10 +3472,14 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     return (
       <LedgerChatOnboarding 
         address={effectiveAddress} 
-        onComplete={() => setIsOnboarded(true)} 
+        onComplete={() => {
+          try { localStorage.setItem('ledger_onboarded_' + effectiveAddress, 'true'); } catch {}
+          setIsOnboarded(true);
+        }} 
       />
     );
   }
+
 
   return (
     <TuringShieldGate>

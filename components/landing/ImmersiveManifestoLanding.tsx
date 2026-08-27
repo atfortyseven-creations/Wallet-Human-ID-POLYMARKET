@@ -144,46 +144,46 @@ function LandingNav() {
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 function HeroSection() {
   return (
-    <section className="relative w-full pt-36 pb-24 md:pt-52 md:pb-36 flex flex-col items-center text-center px-6 overflow-hidden bg-white">
-      <div aria-hidden="true" className="absolute inset-0 pointer-events-none opacity-50" style={{ backgroundImage: "radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px)", backgroundSize: "36px 36px", maskImage: "radial-gradient(ellipse 80% 70% at 50% 30%, black 40%, transparent 100%)", WebkitMaskImage: "radial-gradient(ellipse 80% 70% at 50% 30%, black 40%, transparent 100%)" }} />
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: EASE }} className="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center">
+    <section className="relative w-full min-h-[90vh] flex flex-col items-center justify-center bg-white px-6 overflow-hidden pt-20">
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#0000000a_1px,transparent_1px),linear-gradient(to_bottom,#0000000a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_40%,#000_70%,transparent_100%)]" />
+      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: EASE }} className="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center text-center">
         <div className="flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-zinc-50 border border-black/10">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-          <span className="text-[12px] font-bold uppercase tracking-[0.18em] text-black/55">Web2 Prototype (Aztec L2 Planned)</span>
+          <span className="text-[12px] font-bold uppercase tracking-[0.18em] text-black/55">El futuro de la comunicacion</span>
         </div>
         <h1 className="text-[50px] sm:text-[70px] md:text-[90px] lg:text-[110px] leading-[0.92] tracking-tight font-black text-black mb-8" style={{ fontFamily: "var(--font-aztec-serif), Georgia, serif" }}>
-          Privacy isn&apos;t<br /><span className="text-black/35">a feature.</span>
+          Privacidad<br /><span className="text-black/35">absoluta.</span>
         </h1>
         <p className="text-[18px] md:text-[21px] text-black/60 leading-relaxed font-medium max-w-[660px] mb-12">
-          Humanity Ledger is currently in early access. Enter the workspace with a wallet signature, and communicate via Ledger Chat — our encrypted messaging protocol powered by device keys and XMTP, with true zero knowledge execution on the Aztec roadmap.
+          Humanity Ledger presenta una nueva era donde la libertad de comunicacion es un derecho inquebrantable. Descubre Ledger Chat, un ecosistema donde ninguna corporacion puede rastrear o almacenar tu informacion personal. Todo esta encriptado nativamente desde tu dispositivo.
         </p>
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-          <Link href="/chat" className="w-full sm:w-auto px-9 py-4 bg-black text-white rounded-full text-[15px] font-bold hover:bg-black/80 active:scale-95 transition-all shadow-[0_6px_30px_rgba(0,0,0,0.15)] hover:-translate-y-0.5">Launch Ledger Chat →</Link>
-          <Link href="/connect" className="w-full sm:w-auto px-9 py-4 border-2 border-black/12 text-black rounded-full text-[15px] font-bold hover:bg-zinc-50 active:scale-95 transition-all">Connect Wallet</Link>
+          <Link href="/chat" className="w-full sm:w-auto px-9 py-4 bg-black text-white rounded-full text-[15px] font-bold hover:bg-black/80 active:scale-95 transition-all shadow-[0_6px_30px_rgba(0,0,0,0.15)] hover:-translate-y-0.5">Acceder a Ledger Chat</Link>
         </div>
       </motion.div>
     </section>
   );
 }
 
+
 function WhatIsSection() {
   return (
     <section className="w-full bg-zinc-50 text-black py-24 md:py-36 px-6 border-t border-black/[0.05]">
       <div className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.8, ease: EASE }}>
-          <span className="block text-[11px] font-mono uppercase tracking-[0.3em] text-black/40 mb-5">Current Status</span>
+          <span className="block text-[11px] font-mono uppercase tracking-[0.3em] text-black/40 mb-5">El Estandar Definitivo</span>
           <h2 className="text-[32px] md:text-[48px] font-black leading-tight tracking-tight text-black mb-6" style={{ fontFamily: "var(--font-aztec-serif), Georgia, serif" }}>
-            Early Access<br /><span className="text-black/35">Prototype.</span>
+            Superando a<br /><span className="text-black/35">la competencia.</span>
           </h2>
           <p className="text-[17px] text-black/60 leading-relaxed">
-            We are building towards a fully decentralized Aztec privacy architecture. Today, you can explore the interface and test Ledger Chat utilizing simulated authentication and Web2 relays.
+            Aplicaciones tradicionales como Telegram o WhatsApp requieren tu numero de telefono, comprometiendo tu identidad desde el primer segundo, almacenando metadatos y contactos en servidores centralizados expuestos a vulnerabilidades y censura global.
           </p>
         </motion.div>
         <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.8, ease: EASE, delay: 0.1 }} className="flex flex-col gap-5">
           {[
-            { n: "01", t: "Wallet Authentication", d: "Secure workspace login using standard SIWE signatures (Zero Knowledge auth planned)." },
-            { n: "02", t: "Encrypted Messaging", d: "Ledger Chat utilizes XMTP and local device keys to protect your communications." },
-            { n: "03", t: "Aztec Roadmap", d: "Noir circuits and private UTXO states are actively being developed for future releases." },
+            { n: "01", t: "Sin numeros telefonicos", d: "Tu identidad se protege utilizando identificadores nativos descentralizados que no dejan huellas en la red." },
+            { n: "02", t: "Encriptacion de extremo a extremo real", d: "Cada mensaje audio y archivo multimedia es encriptado en el dispositivo antes de transitar por la red, garantizando inmunidad total." },
+            { n: "03", t: "Soberania de datos", d: "No existen servidores centrales que acumulen tu informacion. Tu eres el unico custodio de tus conversaciones privadas." },
           ].map((item) => (
             <div key={item.n} className="flex gap-4 items-start p-5 bg-white rounded-2xl border border-black/[0.06]">
               <span className="font-mono text-[10px] text-black/30 tracking-widest mt-1 shrink-0">{item.n}</span>
@@ -193,25 +193,12 @@ function WhatIsSection() {
               </div>
             </div>
           ))}
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { label: "Auth", value: "SIWE", sub: "Web2 Fallback" },
-              { label: "Network", value: "Prototype", sub: "Aztec Planned" },
-              { label: "Focus", value: "LedgerChat", sub: "E2E Encrypted" },
-              { label: "Launch", value: "Jan 2027", sub: "Beta Release" },
-            ].map((stat) => (
-              <div key={stat.label} className="rounded-2xl bg-white border border-black/[0.06] p-5 flex flex-col gap-1">
-                <p className="text-[11px] font-mono uppercase tracking-widest text-black/30">{stat.label}</p>
-                <p className="text-[22px] font-black text-black tracking-tight">{stat.value}</p>
-                <p className="text-[12px] text-black/40">{stat.sub}</p>
-              </div>
-            ))}
-          </div>
         </motion.div>
       </div>
     </section>
   );
 }
+
 
 
 // ─── Ledger Chat Flagship ──────────────────────────────────────────────────────
