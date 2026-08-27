@@ -95,3 +95,9 @@ scripts/tls-probe.mjs
 scripts/ip-probe.mjs
 scripts/generate-relayer-key.mjs
 pgsql.zip  
+
+# [SECURITY] Local deployment scripts with testnet keys - never commit
+scripts/archive/
+scripts/*.sh
+scripts/wsl*.sh
+scripts/deploy*.sh

@@ -996,28 +996,9 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
               username: 'openrelayproject',
               credential: 'openrelayproject'
             },
-            // Metered.ca free TURN — excellent NAT traversal on mobile networks
-            { urls: 'stun:stun.relay.metered.ca:80' },
-            {
-              urls: 'turn:standard.relay.metered.ca:80',
-              username: 'e5cf5f7e04de1e1baaf0dce6',
-              credential: 'uYFf8G7BYrdLHxcS'
-            },
-            {
-              urls: 'turn:standard.relay.metered.ca:80?transport=tcp',
-              username: 'e5cf5f7e04de1e1baaf0dce6',
-              credential: 'uYFf8G7BYrdLHxcS'
-            },
-            {
-              urls: 'turn:standard.relay.metered.ca:443',
-              username: 'e5cf5f7e04de1e1baaf0dce6',
-              credential: 'uYFf8G7BYrdLHxcS'
-            },
-            {
-              urls: 'turns:standard.relay.metered.ca:443?transport=tcp',
-              username: 'e5cf5f7e04de1e1baaf0dce6',
-              credential: 'uYFf8G7BYrdLHxcS'
-            },
+            
+            
+            
           ],
           sdpSemantics: 'unified-plan',
           iceTransportPolicy: 'all' as RTCIceTransportPolicy,

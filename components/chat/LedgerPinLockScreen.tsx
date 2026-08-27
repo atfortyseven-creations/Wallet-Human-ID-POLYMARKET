@@ -103,7 +103,7 @@ export function LedgerPinLockScreen({ onVerify, lockError, isSetupMode = false, 
             {isIOS ? (
               <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m11-16v4m-2-2h4m-2 12v4m-2-2h4M9 9a3 3 0 1 0 6 0a3 3 0 0 0-6 0Z"/>
             ) : (
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              <><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4"/></>
             )}
           </svg>
         </div>

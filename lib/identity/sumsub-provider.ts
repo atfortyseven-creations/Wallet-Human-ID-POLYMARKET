@@ -65,12 +65,18 @@ export const sumsubProvider = {
      * CRITICAL for security - prevents spoofing of verification results
      */
     verifyWebhookSignature(payload: string, signature: string) {
+        const secret = process.env.SUMSUB_WEBHOOK_SECRET || SUMSUB_SECRET_KEY;
         const calculated = crypto
-            .createHmac('sha256', SUMSUB_SECRET_KEY)
+            .createHmac('sha256', secret)
             .update(payload)
             .digest('hex');
             
-        return calculated === signature;
+        try {
+            return crypto.timingSafeEqual(Buffer.from(calculated), Buffer.from(signature));
+        } catch {
+            return false;
+        }
     }
 };
+
 

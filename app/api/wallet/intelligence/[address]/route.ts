@@ -18,11 +18,11 @@ export async function GET(
       return NextResponse.json({ error: 'Address is required' }, { status: 400 });
     }
 
-    // Optional: Validate secure request for premium features
-    // const validation = await validateSecureRequest(req, 'PREMIUM');
-    // if (!validation.valid) {
-    //   return NextResponse.json({ error: validation.error }, { status: 401 });
-    // }
+    // [SECURITY] Wallet intelligence is premium/sensitive - require valid session
+    const validation = await validateSecureRequest(req, 'PREMIUM');
+    if (!validation.valid) {
+      return NextResponse.json({ error: validation.error }, { status: 401 });
+    }
 
     const forceRefresh = req.nextUrl.searchParams.get('refresh') === 'true';
     const deep = req.nextUrl.searchParams.get('deep') === 'true';
