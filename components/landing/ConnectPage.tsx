@@ -737,122 +737,185 @@ export default function ConnectPage() {
     </div>
   );
 
-  // ── LEFT PANEL (Branding & Info) — Desktop only ──
-  const renderInfoPanel = () => (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="flex flex-col justify-between h-full w-full z-10 p-4"
-    >
-      <div className="flex flex-col gap-6 w-full max-w-lg">
-        <Link href="/" className="flex items-center gap-2 mb-4">
-          <img src="/logo-text.png" alt="Humanity Ledger" style={{ height: 28, width: 'auto', objectFit: 'contain', filter: 'invert(1)' }} />
-        </Link>
-        
-        <h1 className="text-4xl lg:text-5xl font-black text-white leading-[1.1] tracking-tight">
-          Secure identity,<br/>private execution.
-        </h1>
-        
-        <p className="text-[16px] text-white/70 leading-relaxed max-w-md font-medium mt-2">
-          Connect your wallet to authenticate to the Humanity Ledger ecosystem. Your cryptographic identity operates seamlessly over the Aztec Network L2, providing privacy by default.
-        </p>
 
-        <div className="flex flex-col gap-4 mt-8">
-          <div className="flex items-center gap-4 text-white/90">
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-              <Shield size={18} />
-            </div>
-            <div>
-              <p className="text-[14px] font-bold">Zero-Knowledge Proofs</p>
-              <p className="text-[13px] text-white/50">Your data never leaves your device.</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4 text-white/90">
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-              <Smartphone size={18} />
-            </div>
-            <div>
-              <p className="text-[14px] font-bold">Cross-Device Sync</p>
-              <p className="text-[13px] text-white/50">Scan the QR to securely link your mobile.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer Info */}
-      <div className="max-w-md">
-        <p className="text-[11px] font-mono text-white/40 leading-relaxed uppercase tracking-widest">
-          Powered by Aztec Network Testnet<br/>
-          Institutional Ecosystem Launch — Jan 2027
-        </p>
-      </div>
-    </motion.div>
-  );
-
-  // ── MOBILE TOP HEADER (replaces the huge left panel on small screens) ──
-  const renderMobileHeader = () => (
-    <div className="flex items-center justify-between px-6 pt-safe-top pb-4 border-b border-black/10 bg-white" style={{ paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
-      <Link href="/" className="flex items-center gap-2 text-black">
-        <img src="/logo-text.png" alt="Humanity Ledger" style={{ height: 20, width: 'auto', objectFit: 'contain' }} />
-      </Link>
-    </div>
-  );
 
   if (!mounted) {
     return (
-      <div className="w-full min-h-screen bg-black" />
+      <div className="w-full min-h-screen bg-white" />
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-white flex flex-col shrink-0 relative text-black">
+    <div className="w-full min-h-screen bg-white text-black overflow-y-auto overflow-x-hidden selection:bg-black selection:text-white">
+      
+      {/* ── IMMERSIVE SCROLL SECTION 1: CORPORATE LOGO ── */}
+      <div className="w-full min-h-[100dvh] flex flex-col items-center justify-center p-8 relative">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          viewport={{ once: false, margin: "-100px" }}
+          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-5xl flex items-center justify-center"
+        >
+          <img src="/logo-corporate.png" alt="Humanity Ledger" className="w-full h-auto max-h-[40vh] object-contain" />
+        </motion.div>
+        
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 1 }}
+          className="absolute bottom-12 flex flex-col items-center gap-4 text-black/30"
+        >
+          <span className="text-[10px] uppercase tracking-widest font-mono font-bold">Scroll to initialize</span>
+          <div className="w-px h-16 bg-gradient-to-b from-black/30 to-transparent" />
+        </motion.div>
+      </div>
 
-      {/* ── MOBILE LAYOUT ── */}
-      <div className="flex flex-col lg:hidden min-h-screen">
-        {renderMobileHeader()}
-
-        <div className="flex-1 flex flex-col px-6 py-8 pb-safe-bottom overflow-y-auto">
-          <div className="w-full max-w-md mx-auto">
-            <h2 className="text-2xl font-black tracking-tight mb-2">Connect to continue</h2>
-            <p className="text-[14px] text-black/60 mb-8 font-medium">Use your self-custodial wallet or email to enter the secure environment.</p>
-            {renderLoginCard()}
-          </div>
-        </div>
-
-        <div className="px-6 py-6 border-t border-black/10 bg-zinc-50 flex flex-wrap justify-between gap-4 pb-safe-bottom text-center">
-          <span className="text-[10px] font-bold text-black/40 uppercase tracking-widest w-full">Aztec L2 / Zero-Knowledge Secure</span>
+      {/* ── IMMERSIVE SCROLL SECTION 2: LEDGER CHAT ── */}
+      <div className="w-full min-h-[100dvh] flex flex-col items-center justify-center p-8 bg-zinc-50 relative border-y border-black/10">
+        <div className="max-w-4xl mx-auto flex flex-col items-center text-center gap-8">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, margin: "-100px" }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <h2 className="text-5xl md:text-7xl font-serif font-black tracking-tight text-black mb-6">
+              Ledger Chat
+            </h2>
+            <p className="text-lg md:text-2xl font-serif font-medium text-black/60 leading-relaxed max-w-3xl mx-auto">
+              The Sovereign Communication Network. 
+              <br className="hidden md:block"/>
+              End-to-end encrypted, cryptographically verified, and completely private.
+            </p>
+          </motion.div>
+          
+          <motion.div
+             initial={{ opacity: 0, y: 20 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             viewport={{ once: false }}
+             transition={{ delay: 0.3, duration: 1 }}
+             className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 w-full max-w-4xl"
+          >
+            {[
+              { icon: <Lock size={20} strokeWidth={1.5} />, title: "Zero-Knowledge", desc: "Your keys and data never leave your physical device." },
+              { icon: <Shield size={20} strokeWidth={1.5} />, title: "E2E Encrypted", desc: "Military-grade communication via decentralized transport." },
+              { icon: <ScanLine size={20} strokeWidth={1.5} />, title: "Wallet Identity", desc: "Authenticate without email or phone numbers." }
+            ].map((feature, i) => (
+              <div key={i} className="flex flex-col items-center text-center gap-4 p-8 border border-black/10 bg-white hover:border-black transition-colors duration-500">
+                <div className="w-12 h-12 flex items-center justify-center border border-black text-black">
+                  {feature.icon}
+                </div>
+                <h3 className="font-bold text-[12px] uppercase tracking-widest font-mono text-black">{feature.title}</h3>
+                <p className="text-[13px] text-black/50 font-medium leading-relaxed">{feature.desc}</p>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </div>
 
-      {/* ── DESKTOP LAYOUT ── */}
-      <div className="hidden lg:flex w-full min-h-screen">
-        {/* Left Side: Info Canvas */}
-        <div className="w-[50%] flex flex-col px-20 py-20 bg-[#050505] text-white">
-          {renderInfoPanel()}
-        </div>
-
-        {/* Right Side: Auth */}
-        <div className="w-[50%] flex flex-col items-center justify-center px-16 py-20 bg-white">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-            className="w-full max-w-[420px]"
-          >
-            <h2 className="text-3xl font-black tracking-tight mb-2">Secure Login</h2>
-            <p className="text-[15px] text-black/60 mb-10 font-medium">Select your preferred method to authenticate.</p>
+      {/* ── IMMERSIVE SCROLL SECTION 3: LOGIN ── */}
+      <div className="w-full min-h-[100dvh] flex flex-col items-center justify-center p-4 md:p-8 bg-white relative">
+        <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, margin: "-100px" }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full max-w-[480px] bg-white p-6 md:p-10 border border-black shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)]"
+        >
+            <div className="flex flex-col items-center text-center mb-8 pb-8 border-b border-black/10">
+              <h2 className="text-3xl font-serif font-black tracking-tight text-black mb-2">Secure Authentication</h2>
+              <p className="text-[14px] text-black/50 font-medium">Select your preferred method to enter the network.</p>
+            </div>
+            
+            {/* The base text & connected states */}
             {renderLoginCard()}
-          </motion.div>
 
-          <p className="text-[10px] font-mono text-black/30 text-center mt-12 max-w-[360px] leading-relaxed uppercase tracking-widest">
-            By connecting you agree to our{" "}
-            <Link href="/legal/terms" className="underline hover:text-black/60 transition-colors">Terms</Link>
-            {" & "}
-            <Link href="/legal/privacy" className="underline hover:text-black/60 transition-colors">Privacy</Link>.
-            Not financial advice.
-          </p>
-        </div>
+            {/* The interactive wallet / QR sections (rendered if not verified and not waiting for signature) */}
+            {mounted && !isVerified && !(effectiveIsConnected && !isLinked) && (
+              <div className="mt-4">
+                {isMobile ? (
+                  /* Mobile wallet list */
+                  <div className="flex flex-col gap-3 flex-1">
+                    {renderWeb2Logins()}
+                    <div className="h-px w-full bg-black/10 my-4" />
+                    <WalletButton
+                      logo="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Logo/Blue%20(Default)/Logo.svg"
+                      name="Self-Custodial Wallet"
+                      badge="Connect via WalletConnect protocol"
+                      onClick={() => openAppKitSafe()}
+                      delay={0.35}
+                    />
+                    <button onClick={() => setShowMobileScanner(true)} className="w-full flex items-center justify-center gap-3 py-4 mt-4 border border-black text-black font-mono font-bold uppercase tracking-[0.2em] text-[10px] active:bg-black active:text-white transition-colors">
+                      <ScanLine size={13} /> Scan QR Code
+                    </button>
+                  </div>
+                ) : (
+                  /* Desktop QR + wallet list */
+                  <div className="flex flex-col gap-3 flex-1 w-full mt-4">
+                    {syncStatus === "AWAITING" && qrData ? (
+                      <motion.div key="qr-ready" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} className="flex justify-center mb-8">
+                        <div className="pb-6 border-b border-black/10 flex flex-col items-center gap-6 w-full">
+                          <div className="p-4 bg-white border border-black">
+                            <QRCodeSVG value={qrData} size={220} fgColor="#000000" bgColor="#FFFFFF" level="L" includeMargin={false} />
+                          </div>
+                          <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-black font-bold">Scan to Authenticate</span>
+                          {pinCode && (
+                            <div className="w-full border-t border-black/10 pt-6 mt-2">
+                              <div className="flex items-center justify-center mb-4 gap-2">
+                                <Shield size={12} className="text-black" />
+                                <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black">Security Checksum</span>
+                              </div>
+                              <div className="flex items-center justify-center gap-4">
+                                {pinCode.split('').map((digit, idx) => (
+                                  <motion.div key={idx} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.07, duration: 0.3 }} className="w-12 h-14 border border-black flex items-center justify-center bg-transparent">
+                                    <span className="text-xl font-serif font-black text-black select-none">{digit}</span>
+                                  </motion.div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    ) : syncStatus === "IDLE" || (syncStatus === "AWAITING" && !qrData) ? (
+                      <div className="flex justify-center mb-8">
+                        <div className="py-8 border-b border-black/10 flex flex-col items-center gap-6 w-full">
+                          <div className="w-full aspect-square max-w-[220px] border border-black/20 flex items-center justify-center bg-transparent">
+                            <Loader2 size={24} className="animate-spin text-black/40" />
+                          </div>
+                          <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/50 font-bold animate-pulse">Establishing Secure Connection...</span>
+                        </div>
+                      </div>
+                    ) : syncStatus === "ERROR" ? (
+                      <div className="flex justify-center mb-8">
+                        <div className="py-8 border-b border-black/10 flex flex-col items-center gap-4 w-full text-center">
+                          <Shield size={22} className="text-black" />
+                          <p className="text-[10px] font-mono text-black font-bold uppercase tracking-[0.2em]">Connection Failed</p>
+                          <button onClick={() => { setSyncStatus("IDLE"); setQrSession(null); setQrData(''); }} className="px-6 py-3 border border-black bg-black text-white text-[9px] font-mono font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-colors mt-2">Retry Link</button>
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {DESKTOP_WALLETS.map((w) => (
+                      <WalletButton key={w.id} logo={w.logo} name={w.name} badge={w.badge} onClick={() => handleDesktopWallet(w.id, w.rdns, w.installUrl)} loading={isPending && pendingId === w.id} delay={w.delay} />
+                    ))}
+                    
+                    <div className="h-px w-full bg-black/10 my-4" />
+                    {renderWeb2Logins()}
+                  </div>
+                )}
+              </div>
+            )}
+            
+            <div className="mt-8 pt-8 border-t border-black/10">
+              <p className="text-[10px] font-mono text-black/40 text-center leading-relaxed uppercase tracking-widest">
+                By connecting you agree to our{" "}
+                <Link href="/docs/terms" className="underline hover:text-black transition-colors">Terms</Link>
+                {" & "}
+                <Link href="/docs/privacy" className="underline hover:text-black transition-colors">Privacy</Link>.
+              </p>
+            </div>
+        </motion.div>
       </div>
 
       {/* Mobile QR Scanner modal */}
