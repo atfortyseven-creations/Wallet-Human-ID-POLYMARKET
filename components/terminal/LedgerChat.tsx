@@ -40,6 +40,7 @@ import { Search, Phone as PhoneIcon, Clock as ClockIcon } from 'lucide-react';
 
 import { LedgerChatSettings, useLedgerSettings } from './LedgerChatSettings';
 import { LottieSendButton } from '@/components/chat/LottieSendButton';
+import { useDynamicIsland } from '@/lib/store/dynamic-island-store';
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
 
@@ -400,6 +401,19 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     callStateRef.current = s;
     _setCallState(s);
   }, []);
+
+  useEffect(() => {
+    const island = useDynamicIsland.getState();
+    if (callState === 'active' || callState === 'calling' || callState === 'ringing' || callState === 'connecting') {
+      island.setState('calling', { title: getDisplayName(activePeer || '') });
+    } else if (isRecording) {
+      island.setState('recording', { title: getDisplayName(activePeer || '') });
+    } else {
+      if (island.activeState === 'calling' || island.activeState === 'recording') {
+        island.dismiss();
+      }
+    }
+  }, [callState, isRecording, activePeer, getDisplayName]);
 
   const [callType, setCallType] = useState<'audio'|'video'|null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
@@ -2599,13 +2613,18 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           } else {
             // Belongs to a different (background) conversation
             if (fromPeer && !content.startsWith('__')) {
-              // Phase 5: Push Notifications when receiving a message in background chat
+              // Phase 5: Push Notifications & Dynamic Island when receiving a message in background chat
               if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
                 new Notification(`Ledger Chat: ${shortAddr(msgConvPeer || 'Unknown')}`, {
                   body: formatMessagePreview(content),
                   icon: '/favicon.ico'
                 });
               }
+              // Trigger Dynamic Island
+              useDynamicIsland.getState().setState('notification', {
+                title: shortAddr(msgConvPeer || 'Unknown'),
+                subtitle: formatMessagePreview(content),
+              }, 4000);
             }
             setConversations(prev => {
               if (!msgConvPeer) return prev;

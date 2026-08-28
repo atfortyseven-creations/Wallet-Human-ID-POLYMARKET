@@ -1,4 +1,4 @@
-﻿// System layout  No Clerk provider needed (SIWE-native auth)
+// System layout  No Clerk provider needed (SIWE-native auth)
 
 import { headers } from 'next/headers'
 
@@ -23,6 +23,8 @@ import { ErrorSuppressor } from "@/components/ui/ErrorSuppressor";
 import { ReactNode } from "react";
 
 import { MobileEnforcer } from '@/components/layout/MobileEnforcer';
+
+import { DynamicIsland } from "@/components/ui/DynamicIsland";
 
 import { ClientOverlays } from "@/components/layout/ClientOverlays";
 
@@ -670,7 +672,7 @@ export default async function RootLayout({
 
         <ScrollProgressBar />
 
-
+        <DynamicIsland />
 
         <Providers cookies={cookies}>
 

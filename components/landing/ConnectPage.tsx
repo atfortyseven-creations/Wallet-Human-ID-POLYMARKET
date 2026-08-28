@@ -16,6 +16,7 @@ import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import { QRCodeSVG } from 'qrcode.react';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
 import { EmailLoginModal } from '@/components/auth/EmailLoginModal';
+import { useDynamicIsland } from '@/lib/store/dynamic-island-store';
 
 import {
   ArrowRight,
@@ -254,6 +255,7 @@ export default function ConnectPage() {
           }
 
           setSyncStatus("SYNCED");
+          useDynamicIsland.getState().setState('syncing', { title: 'Syncing Session' }, 3000);
 
           const hydrateRes = await fetch('/api/auth/qr-hydrate', {
             method: 'POST',
@@ -455,6 +457,8 @@ export default function ConnectPage() {
 
         setLinked(true);
         redirectingRef.current = true;
+        // Fire Dynamic Island: wallet linked!
+        useDynamicIsland.getState().setState('wallet_connected', { title: address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Wallet' }, 2500);
         const urlParams = new URLSearchParams(window.location.search);
         const returnUrl = urlParams.get('returnUrl') || urlParams.get('redirect_url');
         if (returnUrl && returnUrl !== '/portfolio' && !returnUrl.startsWith('/terminal')) {

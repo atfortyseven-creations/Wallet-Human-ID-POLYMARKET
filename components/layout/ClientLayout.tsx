@@ -11,7 +11,7 @@ import { useWalletStore } from '@/lib/store/wallet-store';
 import { TitaniumGate } from '@/components/layout/TitaniumGate';
 import { InstitutionalHeader } from '@/components/shared/InstitutionalHeader';
 import { ThemeApplier } from '@/components/layout/ThemeApplier';
-
+import { useDynamicIsland } from '@/lib/store/dynamic-island-store';
 
 import { ZoomWrapper } from './ZoomWrapper';
 import dynamic from 'next/dynamic';
@@ -113,6 +113,21 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   //  Axioma 350: Funnel tracking per navigation (non-blocking) 
+  React.useEffect(() => {
+    // Network connectivity Dynamic Island
+    const handleOffline = () => {
+      useDynamicIsland.getState().setState('syncing', { title: 'No Connection', subtitle: 'Reconnecting...' });
+    };
+    const handleOnline = () => {
+      useDynamicIsland.getState().setState('tx_success', { title: 'Back Online' }, 2000);
+    };
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', handleOnline);
+    return () => {
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('online', handleOnline);
+    };
+  }, []);
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       // Session log (existing)

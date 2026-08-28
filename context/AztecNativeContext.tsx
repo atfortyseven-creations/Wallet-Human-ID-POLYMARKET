@@ -57,6 +57,7 @@ import { useSignMessage, useAccount } from "wagmi";
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { keccak256, toBytes } from "viem";
 import { vault } from "@/lib/core/SecureVault";
+import { useDynamicIsland } from "@/lib/store/dynamic-island-store";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -735,6 +736,10 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     // Optimistic update: immediately show the deducted balance in the UI.
     // Clamped to >= 0 to prevent the counter ever showing a negative number.
     setBalance(prev => Math.max(0, Math.round((prev - amount) * 1_000_000) / 1_000_000));
+    
+    // Fire Dynamic Island: show tx processing pill
+    useDynamicIsland.getState().setState('tx_processing', { title: 'Generating Proof', subtitle: reason });
+    
     try {
       // [ZK-ISOLATION] Derive the identity hash from the active address for the transfer
       // This ensures the server can correlate the spend with a ZK-verified identity
@@ -764,6 +769,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       if (!res.ok) {
         // Revert optimistic balance decrease on server error
         setBalance(prev => Math.round((prev + amount) * 1_000_000) / 1_000_000);
+        useDynamicIsland.getState().dismiss();
         const errData = await res.json().catch(() => ({}));
         // [FIX] Surface identity gate errors once (not double-toast)
         // and return false without throwing so callers (LedgerChat) can continue.
@@ -783,6 +789,9 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
         return false; // Return false instead of throwing — callers handle gracefully
       }
 
+      // Fire Dynamic Island: tx_success
+      useDynamicIsland.getState().setState('tx_success', { title: 'Verified' }, 2000);
+      
       await fetchLedgerState(activeAddr); // reconcile with DB
       triggerCrossTabSync();
       return true;
@@ -790,6 +799,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       console.error("[Aztec Spend] Failed:", err);
       // Revert optimistic update on network error
       setBalance(prev => Math.round((prev + amount) * 1_000_000) / 1_000_000);
+      useDynamicIsland.getState().dismiss();
       // Don't toast on every network blip — Ledger Chat fire-and-forgets this
       return false;
     } finally {
