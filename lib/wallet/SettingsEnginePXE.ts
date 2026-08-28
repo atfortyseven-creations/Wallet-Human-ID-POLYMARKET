@@ -1,5 +1,4 @@
 import { vault } from '@/lib/core/SecureVault';
-import { encrypt, decrypt } from '@/lib/wallet/encryption';
 
 /**
  * ══════════════════════════════════════════════════════════════════════════════════
@@ -304,22 +303,18 @@ class SettingsEnginePXE {
         return fresh;
       }
 
-      // Decrypt the stored blob
-      let decryptedString: string;
+      // Vault already decrypts it for us, so rawData is the JSON string
+      let parsed: LedgerProtocolSettings;
       try {
-        decryptedString = decrypt(rawData);
+        parsed = JSON.parse(rawData) as LedgerProtocolSettings;
       } catch {
-        // Decryption failed (e.g. key rotation) — fall back to defaults
-        console.warn('[PXE ENGINE] Decryption failed, resetting to defaults');
-        // Re-initialize from defaults on decryption failure
+        console.warn('[PXE ENGINE] Parse failed, resetting to defaults');
         const fresh = { ...DEFAULT_PXE_SETTINGS, last_synced_at: Date.now() };
         this.cache[address] = fresh;
         await this.syncToPXE(address, fresh);
         this.broadcast(address, fresh);
         return fresh;
       }
-
-      const parsed = JSON.parse(decryptedString) as LedgerProtocolSettings;
 
       // Schema migration: merge any new fields from DEFAULT_PXE_SETTINGS
       const migrated = this.migrateSchema(parsed);
@@ -444,8 +439,7 @@ class SettingsEnginePXE {
     try {
       const updated = { ...settings, last_synced_at: Date.now() };
       const payload = JSON.stringify(updated);
-      const encryptedBlob = encrypt(payload);
-      await vault.setItem(`pxe_settings_${address}`, encryptedBlob);
+      await vault.setItem(`pxe_settings_${address}`, payload);
     } catch (error) {
       console.error('[PXE ENGINE] Vault sync error:', error);
     }

@@ -111,7 +111,7 @@ export function LedgerChatSettings({ onClose, address }: LedgerChatSettingsProps
   return (
     <div className="fixed inset-0 z-[50] flex items-center justify-center pointer-events-none">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto" onClick={onClose} />
-      <div className="relative w-full h-[100dvh] md:h-[90vh] md:w-[480px] bg-zinc-50 md:border-[3px] md:border-black pointer-events-auto flex flex-col font-mono overflow-hidden shadow-[12px_12px_0_0_rgba(0,0,0,1)] md:mr-8 md:self-end z-10">
+      <div className="relative w-full h-[100dvh] md:h-[85vh] md:w-[480px] bg-zinc-50 md:border-[3px] md:border-black pointer-events-auto flex flex-col font-mono overflow-hidden shadow-[12px_12px_0_0_rgba(0,0,0,1)] z-10 md:rounded-xl">
         <div className="flex items-center justify-between px-4 py-4 bg-white shrink-0 border-b-[3px] border-black z-10">
           <button onClick={goBack} className="text-black font-bold uppercase tracking-widest text-[13px] hover:bg-black hover:text-white px-2 py-1 transition-colors border-2 border-transparent hover:border-black">
             {view === 'root' ? '[ CLOSE ]' : '< BACK'}

@@ -1,4 +1,6 @@
-"use client";
+import os
+
+content = '''"use client";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -28,7 +30,7 @@ function LandingNav() {
 
   useEffect(() => {
     try {
-      const m = document.cookie.match(/system_handshake=(0x[a-fA-F0-9]{40}|email_[^;\s]+)/i);
+      const m = document.cookie.match(/system_handshake=(0x[a-fA-F0-9]{40}|email_[^;\\s]+)/i);
       if (m?.[1]) setConnectedAddress(m[1].toLowerCase());
     } catch {}
   }, []);
@@ -193,3 +195,7 @@ export function ImmersiveManifestoLanding({ onOpenScanner }: ImmersiveManifestoL
     </div>
   );
 }
+'''
+
+with open('components/landing/ImmersiveManifestoLanding.tsx', 'w', encoding='utf-8') as f:
+    f.write(content)
