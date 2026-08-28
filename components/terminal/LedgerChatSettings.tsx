@@ -21,6 +21,7 @@ import {
   DEFAULT_PXE_SETTINGS
 } from '@/lib/wallet/SettingsEnginePXE';
 import { useAppKit } from '@reown/appkit/react';
+import { useWalletStore } from '@/lib/store/wallet-store';
 
 // ─────────────────────────────────────────────────────────────────────────
 //  HOOK: useLedgerSettings
@@ -320,7 +321,7 @@ function EditProfileView({ address, s, update, updateBatch, goBack }: any) {
     } catch {}
 
     setSaving(false);
-    toast.success('Profile matrix updated.');
+    toast.success('Profile updated.');
     goBack();
   };
 
@@ -351,7 +352,7 @@ function EditProfileView({ address, s, update, updateBatch, goBack }: any) {
         <span className="text-[10px] text-zinc-400 text-right">{bio.length}/200</span>
       </div>
       <button onClick={handleSave} disabled={saving} className="w-full py-4 bg-black text-white font-black uppercase tracking-widest border-[3px] border-black hover:bg-zinc-800 shadow-[6px_6px_0_0_#000] active:translate-y-1 disabled:opacity-50">
-        {saving ? 'ENCRYPTING...' : 'SAVE PROTOCOL'}
+        {saving ? 'Saving...' : 'Save Changes'}
       </button>
     </div>
   );
@@ -411,7 +412,7 @@ function NotificationsView({ s, update }: any) {
         update('badge_count', true);
         toast.success('Alert system reset to defaults.');
       }} className="w-full py-4 bg-white text-red-600 font-black uppercase tracking-widest border-[3px] border-black shadow-[4px_4px_0_0_#000] active:translate-y-1">
-        RESET ALERT MATRIX
+        Reset to Defaults
       </button>
     </div>
   );
@@ -470,7 +471,7 @@ function PrivacyView({ s, update }: any) {
         <BItem icon={<Lock size={16}/>} label={`Blocked Addresses (${blocked.length})`} onClick={() => setShowBlocked(true)} noBorder />
       </BBlock>
 
-      <SH title="Visibility Matrix" />
+      <SH title="Visibility Settings" />
       <BBlock>
         <CycleRow label="Last Seen" value={s.privacy_last_seen} options={['nobody', 'contacts', 'everybody']} onChange={(v: boolean) => update('privacy_last_seen', v as any)} />
         <CycleRow label="Profile Photo" value={s.privacy_profile_photo} options={['nobody', 'contacts', 'everybody']} onChange={(v: boolean) => update('privacy_profile_photo', v as any)} />
@@ -564,7 +565,7 @@ function DataView({ s, update, address }: any) {
           <div className="h-full bg-[#1c7aff]" style={{ width: `${Math.min(70, stats.received / (stats.sent + stats.received + 1) * 100)}%` }} />
         </div>
         <button onClick={purgeCacheWithConfirm} className="w-full py-2 bg-white text-black font-black uppercase text-sm border-2 border-transparent hover:border-[#1c7aff] active:bg-zinc-200">
-          PURGE CACHE
+          Clear Cache
         </button>
       </div>
 
@@ -591,7 +592,7 @@ function DataView({ s, update, address }: any) {
           window.location.reload();
         }
       }} className="w-full py-4 bg-white text-red-600 font-black uppercase tracking-widest border-[3px] border-black shadow-[4px_4px_0_0_#000] active:translate-y-1">
-        NUCLEAR WIPE
+        Delete All Data
       </button>
     </div>
   );
@@ -604,7 +605,7 @@ function DataView({ s, update, address }: any) {
 function AppearanceView({ s, update }: any) {
   return (
     <div className="p-4 space-y-6 pb-20">
-      <SH title="Theme Matrix" />
+      <SH title="Theme" />
       <div className="grid grid-cols-2 gap-3">
         {(['brutalist', 'monochrome', 'neon_void', 'terminal'] as const).map(theme => (
           <div key={theme} onClick={() => update('theme', theme)} className={`border-[3px] p-4 cursor-pointer flex flex-col items-center gap-1 transition-all ${s.theme === theme ? 'bg-black text-white border-black shadow-[4px_4px_0_0_#1c7aff]' : 'bg-white border-black text-black hover:bg-zinc-100'}`}>
@@ -709,7 +710,7 @@ function PersonalVaultView({ address }: { address: string }) {
     setNotes(updated);
     await vault.setItem(`ledger_vault_notes_${address}`, JSON.stringify(updated));
     setDraft('');
-    toast.success('Fragment encrypted and stored in Vault.');
+    toast.success('Note saved to your vault.');
   };
 
   const deleteNote = async (id: string) => {
@@ -791,14 +792,37 @@ function ConnectionLogView({ address }: { address: string }) {
 // ─────────────────────────────────────────────────────────────────────────
 
 function DevicesView() {
-  const [sessions] = useState([
-    { name: 'Ledger Desktop Node', platform: 'Windows', network: 'Local Network', status: 'ONLINE (CURRENT)', isCurrent: true },
-  ]);
+  const [sessions, setSessions] = React.useState<{ name: string; platform: string; network: string; status: string; isCurrent: boolean; lastSeen: string }[]>([]);
+
+  useEffect(() => {
+    // Build session list from available browser/storage data
+    const now = new Date();
+    const ua = navigator.userAgent;
+    const platform = /iPhone|iPad/.test(ua) ? 'iOS' : /Android/.test(ua) ? 'Android' : /Mac/.test(ua) ? 'macOS' : /Win/.test(ua) ? 'Windows' : 'Unknown';
+    const browser = /Chrome/.test(ua) && !/Edge/.test(ua) ? 'Chrome' : /Firefox/.test(ua) ? 'Firefox' : /Safari/.test(ua) ? 'Safari' : /Edge/.test(ua) ? 'Edge' : 'Browser';
+    const current = { name: `${browser} on ${platform}`, platform, network: 'Current Browser Session', status: 'Active (This Device)', isCurrent: true, lastSeen: 'Just now' };
+
+    // Pull any stored sessions from localStorage
+    const stored: any[] = [];
+    try {
+      const raw = localStorage.getItem('hl_active_sessions');
+      if (raw) stored.push(...JSON.parse(raw));
+    } catch {}
+
+    setSessions([current, ...stored.filter((s: any) => !s.isCurrent)]);
+
+    // Write current session to localStorage so other devices can see it
+    try {
+      const existing: any[] = JSON.parse(localStorage.getItem('hl_active_sessions') || '[]');
+      const updated = [{ name: current.name, platform, network: 'Remote Session', status: 'Active', isCurrent: false, lastSeen: now.toLocaleString() }, ...existing.filter((s: any) => !s.isCurrent).slice(0, 4)];
+      localStorage.setItem('hl_active_sessions', JSON.stringify(updated));
+    } catch {}
+  }, []);
 
   return (
     <div className="p-4 space-y-6 pb-20">
-      <button onClick={() => toast.info('Biometric pairing requires a mobile device.')} className="w-full py-4 bg-[#1c7aff] text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[6px_6px_0_0_#000] active:translate-y-1">
-        LINK NEW TERMINAL
+      <button onClick={() => toast.info('To link a new device, open Ledger Chat on that device and sign in with the same wallet.')} className="w-full py-4 bg-[#1c7aff] text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[6px_6px_0_0_#000] active:translate-y-1">
+        Link New Device
       </button>
       <SH title="Active Sessions" />
       <BBlock>
@@ -807,11 +831,16 @@ function DevicesView() {
             <span className="font-black text-[15px]">{s.name}</span>
             <span className="text-[11px] font-bold text-zinc-500">{s.platform} • {s.network}</span>
             <span className={`text-[11px] font-black uppercase mt-1 ${s.isCurrent ? 'text-green-600' : 'text-yellow-600'}`}>{s.status}</span>
+            <span className="text-[10px] font-mono text-zinc-400 mt-0.5">Last seen: {s.lastSeen}</span>
           </div>
         ))}
       </BBlock>
-      <button onClick={() => toast.success('All other sessions terminated.')} className="w-full py-4 bg-white text-red-600 font-black uppercase tracking-widest border-[3px] border-black shadow-[4px_4px_0_0_#000] active:translate-y-1">
-        TERMINATE ALL OTHERS
+      <button onClick={() => {
+        try { localStorage.removeItem('hl_active_sessions'); } catch {}
+        toast.success('All other sessions removed from record.');
+        setSessions(prev => prev.filter(s => s.isCurrent));
+      }} className="w-full py-4 bg-white text-red-600 font-black uppercase tracking-widest border-[3px] border-black shadow-[4px_4px_0_0_#000] active:translate-y-1">
+        Sign Out Other Devices
       </button>
     </div>
   );
@@ -880,7 +909,7 @@ function GhostModeView({ s, update }: any) {
           <Bot size={24} className="text-[#1c7aff]" />
           <span className="text-white font-black text-lg uppercase">AI Ghost Mode</span>
         </div>
-        <p className="text-zinc-400 text-[12px] font-bold">Autonomous intelligence layer. Your digital ghost operates the network while you are away.</p>
+        <p className="text-zinc-400 text-[12px] font-bold">When enabled, Ledger Chat will automatically reply to incoming messages on your behalf while you are away.</p>
       </div>
 
       <SH title="Auto-Reply" />
@@ -932,6 +961,15 @@ function DefiToolsView({ s, update }: any) {
 // ─────────────────────────────────────────────────────────────────────────
 
 function NetworkView({ s, update }: any) {
+  const { setCustomRpcUrl } = useWalletStore();
+  const [rpcInput, setRpcInput] = React.useState(s.custom_rpc_url || '');
+
+  const saveRpc = async () => {
+    await update('custom_rpc_url', rpcInput);
+    if (typeof setCustomRpcUrl === 'function') setCustomRpcUrl(rpcInput);
+    toast.success(rpcInput ? 'Custom RPC endpoint saved.' : 'Reverted to default RPC.');
+  };
+
   return (
     <div className="p-4 space-y-6 pb-20">
       <SH title="Gas Fee Preset" />
@@ -950,17 +988,24 @@ function NetworkView({ s, update }: any) {
       </BBlock>
 
       <SH title="Custom RPC Endpoint" />
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-2">
         <input
           type="text"
           placeholder="https://your-rpc.example.com"
-          value={s.custom_rpc_url}
-          onChange={e => update('custom_rpc_url', e.target.value)}
+          value={rpcInput}
+          onChange={e => setRpcInput(e.target.value)}
           className="w-full bg-white border-[3px] border-black p-3 text-[13px] font-bold outline-none focus:bg-yellow-50"
         />
-        {s.custom_rpc_url && (
-          <button onClick={() => update('custom_rpc_url', '')} className="w-full py-2 bg-white text-red-600 font-black text-xs uppercase border-2 border-black hover:bg-red-50">RESET TO DEFAULT RPC</button>
-        )}
+        <div className="flex gap-2">
+          <button onClick={saveRpc} className="flex-1 py-3 bg-black text-white font-black text-xs uppercase border-[3px] border-black hover:bg-zinc-800 shadow-[4px_4px_0_0_#000] active:translate-y-1">
+            Save Endpoint
+          </button>
+          {rpcInput && (
+            <button onClick={() => { setRpcInput(''); update('custom_rpc_url', ''); if (typeof setCustomRpcUrl === 'function') setCustomRpcUrl(''); toast.success('Reverted to default RPC.'); }} className="flex-1 py-3 bg-white text-red-600 font-black text-xs uppercase border-[3px] border-black hover:bg-red-50">
+              Reset to Default
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

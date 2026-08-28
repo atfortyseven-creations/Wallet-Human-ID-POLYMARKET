@@ -5,49 +5,49 @@ import remarkGfm from 'remark-gfm';
 
 const POSTS: Record<string, { title: string; date: string; content: string }> = {
   'end-of-surveillance-capitalism': {
-    title: 'The End of Surveillance Capitalism: Why We Built Humanity Ledger',
+    title: 'Prioritizing Data Privacy: Why We Built Humanity Ledger',
     date: 'January 15, 2027',
     content: `
-For decades, our digital lives have been harvested and sold. Social networks map our relationships, messaging apps scan our intimate thoughts, and analytics companies build psychological profiles to sell our attention.
+For many years, our digital information has been collected and analyzed by third parties. Social networks map our relationships, messaging apps process our communications, and analytics companies build profiles based on our online behavior.
 
-Today, we are taking back control.
+Today, we are offering an alternative.
 
-Humanity Ledger is not a company in the traditional sense; it is a cryptographic protocol. We do not have servers that read your messages, nor do we have databases that store your profile. 
+Humanity Ledger is designed as a secure cryptographic protocol. We do not operate centralized servers that process your messages, nor do we maintain databases that store your profile information. 
 
-When you use Ledger Chat, your messages are encrypted on your device using the Double Ratchet algorithm. The keys to decrypt them exist only on the devices of the people involved in the conversation. Not even our engineers can see what you send.
+When you use Ledger Chat, your messages are encrypted on your device using established encryption standards. The keys to decrypt them exist only on the devices of the people involved in the conversation. Our team cannot access your communications.
 
-This is the end of surveillance capitalism, enforced by mathematics.
+This approach ensures strong data privacy, enforced by mathematics.
 `
   },
   'cryptographic-sovereignty': {
-    title: 'Cryptographic Sovereignty: How Your Wallet Secures Your Messages',
+    title: 'Digital Identity: How Your Wallet Secures Your Messages',
     date: 'February 2, 2027',
     content: `
-In a decentralized system, identity is the hardest problem to solve without a central authority. How do you prove you are who you say you are, without handing over a passport to a corporation?
+In a decentralized system, establishing identity securely without a central authority is a complex challenge. How do you verify your identity without relying on a centralized service provider?
 
-The answer is Cryptographic Sovereignty.
+The answer lies in cryptographic signatures.
 
-When you connect to Humanity Ledger, you sign a deterministic message using your Ethereum wallet. This signature generates an ephemeral session key. This key is used to establish your identity on the XMTP network.
+When you connect to Humanity Ledger, you sign a secure message using your digital wallet. This signature generates a temporary session key. This key is used to establish your identity on our network.
 
-### The Double Ratchet
+### Forward Secrecy
 Every message you send generates a new encryption key. Even if an attacker somehow compromised one of your keys, they could only read a single message. Past and future messages remain completely secure. This property is known as Perfect Forward Secrecy.
 
-You do not need a phone number to use Ledger Chat. Your cryptographic keypair is your absolute identity.
+You do not need a traditional account to use Ledger Chat. Your cryptographic keypair securely serves as your digital identity.
 `
   },
   'decentralized-routing-2027': {
-    title: 'Engineering for Privacy: Decentralized Routing in 2027',
+    title: 'Engineering for Privacy: Secure Routing in 2027',
     date: 'March 10, 2027',
     content: `
-End-to-End Encryption protects the *content* of your messages, but what about the *metadata*? Who you are talking to, when, and from where can reveal just as much about your life.
+End-to-End Encryption protects the content of your messages, but it is equally important to protect the metadata. Information about who you are communicating with, when, and from where can also be sensitive.
 
-### The Metadata Problem
-When you make a standard VoIP call, your IP address is exposed to the server facilitating the call. If it's a direct P2P connection, your IP is exposed to the person you are calling. 
+### The Metadata Challenge
+When you make a standard internet call, your IP address may be exposed to the server facilitating the call or to the person you are calling in a direct peer-to-peer connection. 
 
 ### Our Solution
-Humanity Ledger implements a decentralized routing protocol for WebRTC signaling. When you initiate a call, the request bounces through multiple independent relay nodes before reaching the recipient. 
+Humanity Ledger implements a secure routing protocol for network signaling. When you initiate a call, the request is routed through multiple independent relay nodes before reaching the recipient. 
 
-The first node knows who you are, but not what the payload is. The final node knows what the payload is, but not who sent it. This effectively blinds the network to your metadata, protecting your physical location from both the recipient and our infrastructure.
+This process helps protect your metadata, shielding your physical location from both the recipient and our infrastructure.
 `
   }
 };

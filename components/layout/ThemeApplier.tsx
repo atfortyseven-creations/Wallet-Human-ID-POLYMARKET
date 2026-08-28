@@ -11,10 +11,11 @@ export function ThemeApplier() {
     useEffect(() => {
         if (!address) return;
         
-        // Initial fetch
-        pxeEngine.getSettings(address).then(s => setTheme(s.theme));
-
-        // Subscribe to changes
+       if (typeof window !== 'undefined') {
+        pxeEngine.mountNode(address).then(s => setTheme(s.theme));
+      }
+      
+      // Subscribe to changes
         const unsubscribe = pxeEngine.subscribe(address, (newSettings) => {
             setTheme(newSettings.theme);
         });

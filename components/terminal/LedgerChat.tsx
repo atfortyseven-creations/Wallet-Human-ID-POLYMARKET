@@ -2563,7 +2563,9 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                 // We are focused on this chat, so send a read receipt!
                 if (!document.hidden) {
                   if (ledgerSettings?.notification_sound !== false) { playReceiveSound(); };
-                  sendMessage(client, msgConvPeer, `__READ__${realId}`, address).catch(e => console.warn('Failed to send read receipt', e));
+                  if (ledgerSettings?.show_read_receipts !== false) {
+                    sendMessage(client, msgConvPeer, `__READ__${realId}`, address).catch(e => console.warn('Failed to send read receipt', e));
+                  }
                 } else {
                   // Phase 5: Advanced Push Notifications when app is hidden
                   notificationEngine.notifyLocal(
@@ -2572,6 +2574,13 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                     msgConvPeer,
                     !!(ledgerSettings as any)?.hide_notification_content
                   );
+                }
+
+                if (ledgerSettings?.ghost_auto_reply && ledgerSettings?.ghost_auto_reply_text) {
+                  const replyText = ledgerSettings.ghost_auto_reply_text;
+                  setTimeout(() => {
+                     sendMessage(client, msgConvPeer, replyText, address).catch(e => console.warn('Ghost auto-reply failed', e));
+                  }, 1500);
                 }
               }
               return [...prev, mappedMsg].sort((a, b) => a.sentAtNs - b.sentAtNs);

@@ -2,22 +2,21 @@ import { vault } from '@/lib/core/SecureVault';
 
 /**
  * ══════════════════════════════════════════════════════════════════════════════════
- *  QUANTUM PXE SETTINGS ENGINE — FULL SOVEREIGN MATRIX
- *  Abyssal Complexity Level: MAXIMUM TRILLION PARAMETER INTEGRATION
+ *  Ledger Settings Engine
  *
  *  Architecture:
- *    1. LedgerProtocolSettings — The complete typed settings universe
+ *    1. LedgerProtocolSettings — The complete typed settings interface
  *    2. SettingsEnginePXE     — Singleton class with encrypted vault backing
  *    3. pxeEngine             — Singleton instance (import this into React components)
  *
  *  Every field in LedgerProtocolSettings maps to:
  *    a) A UI toggle/selector in LedgerChatSettings.tsx
  *    b) A runtime behaviour gate in LedgerChat.tsx
- *    c) An encrypted quantum blob in the PXE vault (key: pxe_settings_<address>)
+ *    c) An encrypted blob in the secure vault (key: pxe_settings_<address>)
  *
  *  Data flow:
  *    UI mutate -> pxeEngine.mutate() -> optimistic cache update -> broadcast() ->
- *    React re-render -> async AES-256-GCM re-encryption -> vault.setItem()
+ *    React re-render -> async re-encryption -> vault.setItem()
  * ══════════════════════════════════════════════════════════════════════════════════
  */
 
@@ -243,7 +242,7 @@ export const DEFAULT_PXE_SETTINGS: LedgerProtocolSettings = {
   // AI Ghost Mode
   tone_translator: false,
   ghost_auto_reply: false,
-  ghost_auto_reply_text: 'The Ledger is away. Message received by the sovereign network.',
+  ghost_auto_reply_text: 'I am currently away. I will reply as soon as possible.',
 
   // DeFi Tools
   ticker_widgets: true,

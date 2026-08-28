@@ -14,16 +14,16 @@ export const DOC_SECTIONS = [
     items: [
       { slug: "architecture", label: "Architecture Overview" },
       { slug: "cryptography", label: "Encryption Systems" },
-      { slug: "zero-knowledge", label: "Privacy Engine" },
-      { slug: "p2p-routing", label: "Decentralized Routing" },
+      { slug: "zero-knowledge", label: "Privacy Systems" },
+      { slug: "p2p-routing", label: "Secure Routing" },
     ]
   },
   {
     group: "Applications",
     items: [
       { slug: "ledger-chat", label: "Ledger Chat" },
-      { slug: "app-hub", label: "The App Hub" },
-      { slug: "identity", label: "Wallet Identity" },
+      { slug: "app-hub", label: "App Hub" },
+      { slug: "identity", label: "Digital Identity" },
     ]
   },
   {
