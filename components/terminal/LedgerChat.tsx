@@ -39,7 +39,7 @@ import { notificationEngine } from '@/lib/wallet/NotificationEngine';
 import { Search, Phone as PhoneIcon, Clock as ClockIcon } from 'lucide-react';
 
 import { LedgerChatSettings, useLedgerSettings } from './LedgerChatSettings';
-
+import { LottieSendButton } from '@/components/chat/LottieSendButton';
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
 
@@ -154,7 +154,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   const { reconnect } = useReconnect();
   const { open: openAppKit } = useAppKit();
   const effectiveAddress = (address || '0x0') as string;
-  const { settings: ledgerSettings } = useLedgerSettings(effectiveAddress);
+  const { settings: ledgerSettings, isLoaded: pxeLoaded } = useLedgerSettings(effectiveAddress);
 
   // [PHASE 2 - SILOING] Consume the sandboxed PXE context for Chat Operations
   // This strictly isolates Chat from the Portfolio state to prevent cross-contamination.
@@ -309,6 +309,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   const [inputText, setInputText] = useState('');
   const [peerInput, setPeerInput] = useState('');
   const [sending, setSending] = useState(false);
+  const [sendAnimKey, setSendAnimKey] = useState(0);
   // ── [FASE 16: Rate Limiting Anti-Spam] ───────────────────────────────
   // Prevents spam abuse: max 5 messages per 10 seconds (App Store Guideline 1.2)
   const rateLimitRef = useRef<{ timestamps: number[] }>({ timestamps: [] });
@@ -3176,6 +3177,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputText.trim()) return;
+    setSendAnimKey(k => k + 1);
     // ── [FASE 16: Rate-Limit Guard] ──────────────────────────────────────
     const now = Date.now();
     const rl = rateLimitRef.current;
@@ -3450,7 +3452,12 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     );
   }
 
+  // Wait for PXE settings to load before deciding to show onboarding,
+  // otherwise it briefly flickers for returning users while settings fetch.
   if (!isOnboarded) {
+    if (!pxeLoaded) {
+      return <div className="min-h-screen bg-[#F6F7F9] flex items-center justify-center font-mono text-xs text-black/30">LOADING PROTOCOL...</div>;
+    }
     return (
       <LedgerChatOnboarding 
         address={effectiveAddress} 
@@ -4268,6 +4275,18 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                         { id: 'poll', icon: <BarChart2 size={18} />, label: 'Polls', color: 'text-white', bg: 'bg-[#34C759]', onClick: () => { setShowPollCreator(true); setShowAppDrawer(false); } },
                         { id: 'qd', icon: <Wallet size={18} />, label: 'Pay', color: 'text-white', bg: 'bg-[#FF9500]', onClick: () => { setShowWalletTransfer(true); setShowAppDrawer(false); } },
                         { id: 'burn', icon: <Flame size={18} />, label: 'Burn Timer', color: 'text-white', bg: 'bg-[#FF3B30]', onClick: () => { setBurnTimer(burnTimer ? null : 60); setShowAppDrawer(false); } },
+                        { id: 'location', icon: <MapPin size={18} />, label: 'Location', color: 'text-white', bg: 'bg-[#32ADE6]', onClick: () => { 
+                          if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(
+                              (pos) => executeSendRef.current?.(`[LOCATION]${pos.coords.latitude},${pos.coords.longitude}`),
+                              () => toast.error('Location denied')
+                            );
+                          }
+                          setShowAppDrawer(false); 
+                        } },
+                        { id: 'secret', icon: <Lock size={18} />, label: isSecretChat ? 'Exit Secret Mode' : 'Secret Mode', color: 'text-white', bg: isSecretChat ? 'bg-[#FF3B30]' : 'bg-[#30D158]', onClick: () => { setIsSecretChat((s: boolean) => !s); setShowAppDrawer(false); } },
+                        { id: 'schedule', icon: <Clock size={18} />, label: 'Schedule Send', color: 'text-white', bg: 'bg-[#AF52DE]', onClick: () => { toast.info('Schedule feature coming soon'); setShowAppDrawer(false); } },
+                        { id: 'ai', icon: <span className="font-bold text-[10px]">AI</span>, label: 'AI Reply', color: 'text-white', bg: 'bg-[#000000]', onClick: () => { setInputText('Sure, sounds good to me.'); setShowAppDrawer(false); } },
                       ].map((app, idx) => (
                         <button 
                           key={app.id} 
@@ -4352,13 +4371,11 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                           {/* Inside input right-side actions */}
                           <div className="absolute right-1 bottom-[3px] flex items-center">
                             {inputText.trim() ? (
-                              <button
-                                type="submit"
+                              <LottieSendButton
                                 disabled={sending || isUploading}
-                                className="w-8 h-8 rounded-full bg-[#1c7aff] flex items-center justify-center text-white disabled:opacity-30 active:scale-90 transition-all shadow-sm"
-                              >
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="ml-0.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-                              </button>
+                                data-key={sendAnimKey}
+                                onTrigger={() => {}}
+                              />
                             ) : (
                               <button
                                 type="button"
@@ -4382,37 +4399,27 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
             {/* Ambient glows */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#1c7aff]/5 rounded-full blur-[120px] pointer-events-none" />
 
-            <div className="w-full max-w-2xl flex flex-col items-center text-center relative z-10 animate-in fade-in zoom-in-95 duration-700">
-              
-              {/* Main Typography - Accessible and Huge */}
-              <h1 className="text-5xl md:text-7xl font-black tracking-tight text-[#050505] mb-6 drop-shadow-sm">
-                Ledger Chat
-              </h1>
-              <h2 className="text-lg md:text-xl font-bold tracking-[0.1em] uppercase text-[#1c7aff] mb-12">
-                The Native Web3 Social Network
-              </h2>
-
-              {/* Marketing Banner - High Contrast */}
-              <div className="w-full bg-white border-2 border-black/10 rounded-3xl p-8 shadow-2xl mb-12">
-                <div className="flex items-center justify-center gap-3 mb-4">
-                  <div className="w-3 h-3 rounded-full bg-[#30d158] animate-pulse shadow-[0_0_10px_#30d158]" />
-                  <span className="text-[14px] font-black uppercase tracking-widest text-[#050505]">Global Release</span>
-                </div>
-                <p className="text-4xl md:text-5xl font-black text-[#050505] tracking-tight mb-6">01 / 01 / 2027</p>
-                <div className="flex flex-wrap items-center justify-center gap-4 text-[#050505] mt-6">
-                   <span className="text-[16px] font-black border-2 border-black/10 bg-[#f5f5f7] px-6 py-3 rounded-full shadow-sm">App Store</span>
-                   <span className="text-[16px] font-black border-2 border-black/10 bg-[#f5f5f7] px-6 py-3 rounded-full shadow-sm">Google Play</span>
-                </div>
+            <div className="w-full max-w-xl flex flex-col items-center text-center relative z-10">
+              <div className="w-20 h-20 rounded-[28px] bg-gradient-to-br from-[#1c7aff] to-[#5856D6] flex items-center justify-center mb-8 shadow-2xl">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
               </div>
-
-              {/* Action Call - Very Clear */}
-              <div className="w-full px-8 py-6 bg-[#050505] rounded-3xl shadow-xl hover:scale-105 transition-transform duration-300 cursor-default">
-                <span className="text-[18px] md:text-[22px] font-black text-white flex items-center justify-center gap-4">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#30d158]"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                  Select a contact on the left to start chatting
-                </span>
+              <h1 className="text-[32px] md:text-[42px] font-bold tracking-tight text-[#1C1C1E] mb-4">Select a conversation</h1>
+              <p className="text-[16px] md:text-[18px] text-[#1C1C1E]/50 font-medium leading-relaxed max-w-sm mb-10">
+                Choose from your existing contacts, or start a new conversation by entering a wallet address.
+              </p>
+              <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
+                {[
+                  { icon: '🔐', label: 'End-to-End Encrypted' },
+                  { icon: '🌐', label: 'Decentralized Network' },
+                  { icon: '🔥', label: 'Burn on Read' },
+                  { icon: '💎', label: 'Send QD Tokens' }
+                ].map((f) => (
+                  <div key={f.label} className="bg-white rounded-2xl p-4 border border-black/5 shadow-sm flex flex-col items-center gap-2 text-center">
+                    <span className="text-2xl">{f.icon}</span>
+                    <span className="text-[12px] font-bold text-[#1C1C1E]/70">{f.label}</span>
+                  </div>
+                ))}
               </div>
-
             </div>
           </div>
         )}

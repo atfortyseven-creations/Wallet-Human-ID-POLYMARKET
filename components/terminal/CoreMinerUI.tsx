@@ -162,7 +162,7 @@ export default function CoreMinerUI() {
 
     const toggleMining = () => {
         if (!address) {
-            toast.error('Conecta tu billetera primero para minar QDs.');
+            toast.error('Connect tu billetera primero para minar QDs.');
             return;
         }
         if (!isMining) {
@@ -209,7 +209,7 @@ export default function CoreMinerUI() {
             await toast.promise(txPromise(), {
                 loading: 'Enviando Prueba y confirmando bloque en la Mainnet...',
                 success: 'Bloque validado On-Chain. Has recibido tu recompensa en QDs.',
-                error: 'Error al enviar el bloque o nonce rechazado por la Mainnet.'
+                error: 'Error al send el bloque o nonce rechazado por la Mainnet.'
             });
 
             setBlockFound(false);

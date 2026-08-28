@@ -98,7 +98,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(data.error || "Error al enviar el código");
+        toast.error(data.error || "Error al send el código");
         return;
       }
 
@@ -138,7 +138,7 @@ export default function LoginPage() {
 
       // JWT cookies set by server. Now redirect.
       setStep("done");
-      toast.success(isNewUser ? "¡Bienvenido! Completa tu perfil." : "¡Bienvenido de vuelta!", {
+      toast.success(isNewUser ? "¡Welcome! Completa tu perfil." : "¡Welcome de vuelta!", {
         duration: 2000,
       });
 
@@ -241,7 +241,7 @@ export default function LoginPage() {
               {loading ? (
                 <Loader2 size={18} className="animate-spin" />
               ) : (
-                <>Enviar Código <ArrowRight size={16} /></>
+                <>send Código <ArrowRight size={16} /></>
               )}
             </button>
 

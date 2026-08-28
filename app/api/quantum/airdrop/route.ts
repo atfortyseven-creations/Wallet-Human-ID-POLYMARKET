@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     // 1. Authenticate  get the user's wallet address from session
     const session = await getSession();
     if (!session?.userId) {
-      return NextResponse.json({ error: 'No autenticado. Conecta tu billetera primero.' }, { status: 401 });
+      return NextResponse.json({ error: 'No autenticado. Connect tu billetera primero.' }, { status: 401 });
     }
     const userWallet = session.userId as `0x${string}`;
 

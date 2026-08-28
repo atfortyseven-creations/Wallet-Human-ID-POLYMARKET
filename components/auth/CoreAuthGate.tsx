@@ -61,7 +61,7 @@ const LANGS: Record<LangKey, Record<string, any>> = {
   },
   es: {
     flag: '', code: 'ES',
-    home_title: 'Portafolio', home_sub: 'Conecta tu wallet o crea una wallet local segura para rastrear tus activos.',
+    home_title: 'Portafolio', home_sub: 'Connect tu wallet o crea una wallet local segura para rastrear tus activos.',
     create_vault: 'Crear Wallet', create_vault_sub: 'Genera una frase de recuperación de 12 palabras',
     unlock_vault: 'Desbloquear Wallet', unlock_vault_sub: 'Introduce tu contraseña',
     mint: 'Login Cuenta Existente', mint_sub: 'Accede con tu contraseña',

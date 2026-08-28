@@ -3,10 +3,14 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useSystemSignOut } from "@/hooks/useSystemSignOut";
 import { HLLogo } from "@/components/shared/HLLogo";
 import { SystemFooter } from "./SystemFooter";
-import { ArrowRight, Lock, MessageCircle, Shield, EyeOff, Zap, Globe, Github, Twitter } from "lucide-react";
+import { RemoteLottie } from "@/components/ui/RemoteLottie";
+import {
+  Lock, Shield, EyeOff, Zap, Check, MessageCircle,
+  Fingerprint, Flame, Globe, Mic, Video, Bot, BarChart2,
+  Wallet, Users
+} from "lucide-react";
 
 export interface ImmersiveManifestoLandingProps {
   onOpenScanner?: () => void;
@@ -15,7 +19,16 @@ export interface ImmersiveManifestoLandingProps {
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-// ─── Minimal Nav ─────────────────────────────────────────────────────────────
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (d: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: EASE, delay: d },
+  }),
+};
+
+// ─── Nav ───────────────────────────────────────────────────────────────────────
 function LandingNav() {
   const [scrolled, setScrolled] = useState(false);
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
@@ -33,35 +46,59 @@ function LandingNav() {
     } catch {}
   }, []);
 
+  const fmtAddr = (a: string) =>
+    a.startsWith("email_") ? a.replace("email_", "").slice(0, 16) + "…" : `${a.slice(0, 6)}…${a.slice(-4)}`;
+
   return (
-    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-md border-b border-black/5 py-4' : 'bg-transparent py-6'}`}>
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-white/95 backdrop-blur-xl border-b border-black/[0.06] py-3"
+          : "bg-transparent py-5"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group">
-          <HLLogo variant="mark" theme="dark" size={32} />
-          <span className="font-sans font-bold text-[20px] tracking-tight text-black group-hover:opacity-80 transition-opacity">
+          <HLLogo variant="mark" theme="dark" size={30} />
+          <span className="font-bold text-[18px] tracking-tight text-[#1C1C1E] group-hover:opacity-70 transition-opacity">
             Humanity Ledger
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8 font-sans font-medium text-[15px] text-black/80">
-          <Link href="/docs/ledger-chat" className="hover:text-black transition-colors">Features</Link>
-          <Link href="/docs/architecture" className="hover:text-black transition-colors">Architecture</Link>
-          <Link href="/docs/zero-knowledge" className="hover:text-black transition-colors">Zero-Knowledge</Link>
-          <Link href="/docs/privacy" className="hover:text-black transition-colors">Privacy</Link>
+        <div className="hidden md:flex items-center gap-7">
+          {[
+            { label: "Features", href: "/docs/ledger-chat" },
+            { label: "Architecture", href: "/docs/architecture" },
+            { label: "Privacy", href: "/docs/privacy" },
+            { label: "Docs", href: "/docs/terms" },
+          ].map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="text-[15px] font-medium text-[#1C1C1E]/70 hover:text-[#1C1C1E] transition-colors"
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {connectedAddress ? (
-            <Link 
-              href="/hub"
-              className="bg-[#2C6BED] hover:bg-[#1A5AE3] text-white font-sans font-bold text-[15px] px-6 py-2.5 rounded-full transition-all shadow-sm"
-            >
-              Open Hub
-            </Link>
+            <>
+              <span className="hidden sm:block text-[13px] font-mono text-black/40 border border-black/10 rounded-full px-3 py-1">
+                {fmtAddr(connectedAddress)}
+              </span>
+              <Link
+                href="/hub"
+                className="bg-[#2C6BED] hover:bg-[#1A5AE3] text-white font-bold text-[14px] px-5 py-2.5 rounded-full transition-all shadow-sm"
+              >
+                Open Hub
+              </Link>
+            </>
           ) : (
-            <Link 
+            <Link
               href="/connect"
-              className="bg-[#2C6BED] hover:bg-[#1A5AE3] text-white font-sans font-bold text-[15px] px-6 py-2.5 rounded-full transition-all shadow-sm"
+              className="bg-[#2C6BED] hover:bg-[#1A5AE3] text-white font-bold text-[14px] px-5 py-2.5 rounded-full transition-all shadow-sm"
             >
               Get Ledger
             </Link>
@@ -72,123 +109,412 @@ function LandingNav() {
   );
 }
 
-// ─── Main Landing ─────────────────────────────────────────────────────────────
+// ─── Feature pill ────────────────────────────────────────────────────────────
+function FeatureCheck({ text }: { text: string }) {
+  return (
+    <div className="flex items-start gap-3">
+      <div className="w-5 h-5 rounded-full bg-[#2C6BED]/10 flex items-center justify-center shrink-0 mt-0.5">
+        <Check size={12} className="text-[#2C6BED]" strokeWidth={3} />
+      </div>
+      <span className="text-[16px] font-medium text-[#1C1C1E]/80 leading-snug">{text}</span>
+    </div>
+  );
+}
 
+// ─── Step item ───────────────────────────────────────────────────────────────
+function Step({ n, title, desc }: { n: string; title: string; desc: string }) {
+  return (
+    <div className="flex gap-5">
+      <div className="w-9 h-9 rounded-full bg-[#2C6BED] text-white font-black text-[15px] flex items-center justify-center shrink-0">
+        {n}
+      </div>
+      <div className="flex flex-col gap-1">
+        <h4 className="text-[17px] font-bold text-[#1C1C1E]">{title}</h4>
+        <p className="text-[15px] font-medium text-[#1C1C1E]/60 leading-relaxed">{desc}</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main ────────────────────────────────────────────────────────────────────
 export function ImmersiveManifestoLanding({ onOpenScanner }: ImmersiveManifestoLandingProps) {
   return (
-    <div className="min-h-screen bg-[#F6F7F9] font-sans selection:bg-[#2C6BED]/20">
+    <div className="min-h-screen bg-white font-sans selection:bg-[#2C6BED]/20 overflow-x-hidden">
       <LandingNav />
 
-      {/* HERO SECTION - SIGNAL STYLE */}
-      <section className="relative pt-40 pb-20 md:pt-52 md:pb-32 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE }}
-            className="flex flex-col items-start text-left z-10"
+      {/* ═══ SECTION 1 — HERO ══════════════════════════════════════════════════ */}
+      <section className="relative min-h-screen flex items-center bg-white pt-20 overflow-hidden">
+        {/* Ambient gradient */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_70%_40%,rgba(44,107,237,0.08),transparent)] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-5 md:px-10 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center py-20">
+          {/* Left: Copy */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            className="flex flex-col items-start"
           >
-            <h1 className="text-[52px] md:text-[76px] lg:text-[84px] font-bold leading-[1.05] tracking-tight text-[#1C1C1E] mb-6">
-              Speak Freely.
+            <div className="flex items-center gap-2 mb-6 bg-[#2C6BED]/8 rounded-full px-4 py-2">
+              <div className="w-2 h-2 rounded-full bg-[#30D158] animate-pulse shadow-[0_0_8px_#30D158]" />
+              <span className="text-[13px] font-bold text-[#2C6BED] uppercase tracking-wider">
+                Beta Live Since 2026
+              </span>
+            </div>
+
+            <h1 className="text-[52px] md:text-[72px] lg:text-[80px] font-bold leading-[1.02] tracking-tight text-[#1C1C1E] mb-6">
+              Say hello<br />to privacy.
             </h1>
-            <p className="text-[18px] md:text-[22px] leading-relaxed text-[#1C1C1E]/70 font-medium mb-10 max-w-lg">
-              Say "hello" to a different messaging experience. An unexpected focus on privacy, combined with all of the features you expect.
+            <p className="text-[18px] md:text-[20px] font-medium leading-relaxed text-[#1C1C1E]/60 mb-10 max-w-lg">
+              Ledger Chat is free, fast, and built for people who value their sovereignty.
+              End-to-end encrypted. Decentralized. Powered by your wallet.
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-              <Link 
+
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <Link
                 href="/connect"
-                className="bg-[#2C6BED] hover:bg-[#1A5AE3] text-white font-bold text-[16px] px-8 py-4 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
+                className="bg-[#2C6BED] hover:bg-[#1A5AE3] text-white font-bold text-[16px] px-8 py-4 rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2"
               >
-                Get Humanity Ledger
+                <MessageCircle size={18} />
+                Get Ledger Chat — Free
               </Link>
-              <Link 
-                href="/docs"
-                className="bg-white hover:bg-zinc-50 text-[#1C1C1E] border border-black/10 font-bold text-[16px] px-8 py-4 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
+              <Link
+                href="/docs/ledger-chat"
+                className="bg-[#F6F7F9] hover:bg-[#EBEBF0] text-[#1C1C1E] border border-black/8 font-bold text-[16px] px-8 py-4 rounded-2xl transition-all flex items-center justify-center gap-2"
               >
-                Read Documentation
+                Learn How It Works
               </Link>
             </div>
-            
-            <p className="text-sm font-medium text-black/40 mt-6 flex items-center gap-2">
-              <Lock size={14} /> End-to-End Encrypted & Zero-Knowledge
-            </p>
+
+            <div className="flex items-center gap-6 mt-8">
+              {[
+                { icon: <Lock size={14} />, label: "End-to-End Encrypted" },
+                { icon: <EyeOff size={14} />, label: "Zero Knowledge" },
+                { icon: <Globe size={14} />, label: "Decentralized" },
+              ].map((f) => (
+                <div key={f.label} className="flex items-center gap-1.5 text-[13px] font-medium text-[#1C1C1E]/50">
+                  {f.icon}
+                  <span>{f.label}</span>
+                </div>
+              ))}
+            </div>
           </motion.div>
 
-          {/* APP MOCKUP PLACEHOLDER FOR THE USER TO ADD IMAGES LATER */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
+          {/* Right: Lottie texting animation */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: EASE }}
-            className="relative w-full h-[500px] md:h-[700px] flex items-center justify-center"
+            transition={{ duration: 0.9, delay: 0.2, ease: EASE }}
+            className="relative w-full flex items-center justify-center"
           >
-            {/* The user will put their iPhone and Android UI images here */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#2C6BED]/20 to-purple-500/20 rounded-[3rem] blur-3xl opacity-50" />
-            <div className="relative w-[320px] h-[650px] bg-white rounded-[3rem] shadow-2xl border-8 border-zinc-100 overflow-hidden flex flex-col items-center justify-center text-center p-8">
-              <HLLogo variant="mark" theme="dark" size={48} className="mb-6 opacity-20" />
-              <p className="text-zinc-400 font-bold text-sm uppercase tracking-widest">[ iOS / ANDROID ]<br/>APP SCREENSHOT HERE</p>
-            </div>
-            {/* Secondary floating screen */}
-            <div className="absolute right-0 bottom-10 w-[450px] h-[300px] bg-white rounded-2xl shadow-2xl border border-black/5 overflow-hidden flex flex-col items-center justify-center text-center p-8 hidden md:flex translate-x-12">
-              <HLLogo variant="full" theme="dark" size={32} className="mb-6 opacity-20" />
-              <p className="text-zinc-400 font-bold text-sm uppercase tracking-widest">[ PC TERMINAL ]<br/>APP SCREENSHOT HERE</p>
+            <div className="relative w-full max-w-[520px] mx-auto">
+              {/* Frosted card */}
+              <div className="bg-white/80 backdrop-blur-2xl border border-black/[0.06] rounded-[40px] shadow-[0_40px_100px_rgba(44,107,237,0.15)] overflow-hidden aspect-square flex items-center justify-center p-4">
+                <RemoteLottie
+                  path="/lottie/texting.json"
+                  loop
+                  width="100%"
+                  height="100%"
+                />
+              </div>
+              {/* Floating badge */}
+              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white border border-black/5 rounded-2xl shadow-xl px-6 py-3 flex items-center gap-3 whitespace-nowrap">
+                <div className="w-2 h-2 rounded-full bg-[#30D158] animate-pulse" />
+                <span className="text-[14px] font-bold text-[#1C1C1E]">Global Release Jan 1, 2027</span>
+              </div>
             </div>
           </motion.div>
-          
         </div>
       </section>
 
-      {/* FEATURES SECTION - WHITE BACKGROUND */}
-      <section className="bg-white py-24 md:py-32 border-y border-black/5">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-[36px] md:text-[52px] font-bold tracking-tight text-[#1C1C1E] mb-6">
-              Why use Humanity Ledger?
+      {/* ═══ SECTION 2 — WHY LEDGER CHAT ═══════════════════════════════════════ */}
+      <section className="bg-[#F6F7F9] py-24 md:py-32">
+        <div className="max-w-7xl mx-auto px-5 md:px-10">
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            className="text-center mb-16"
+          >
+            <div className="flex items-center justify-center mb-6">
+              <div className="w-16 h-16 flex items-center justify-center">
+                <RemoteLottie path="/lottie/messaging-loader.json" loop width={64} height={64} />
+              </div>
+            </div>
+            <h2 className="text-[38px] md:text-[54px] font-bold tracking-tight text-[#1C1C1E] mb-5">
+              Why Ledger Chat?
             </h2>
-            <p className="text-[20px] text-[#1C1C1E]/60 font-medium leading-relaxed">
-              Explore below to see why humanity is choosing the sovereign network over legacy platforms.
+            <p className="text-[18px] md:text-[20px] font-medium text-[#1C1C1E]/55 max-w-2xl mx-auto leading-relaxed">
+              Because your messages belong to you, not to a corporation with investors to please.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            
-            <div className="flex flex-col items-start">
-              <div className="w-14 h-14 bg-blue-50 text-[#2C6BED] rounded-2xl flex items-center justify-center mb-6">
-                <EyeOff size={28} strokeWidth={2} />
-              </div>
-              <h3 className="text-2xl font-bold text-[#1C1C1E] mb-4">Share Without Insecurity</h3>
-              <p className="text-[17px] leading-relaxed text-[#1C1C1E]/70 font-medium">
-                State-of-the-art end-to-end encryption (powered by the open source XMTP protocol) keeps your conversations secure. We can't read your messages or listen to your calls, and no one else can either. Privacy isn't an optional mode — it's just the way that Humanity Ledger works.
-              </p>
-            </div>
-
-            <div className="flex flex-col items-start">
-              <div className="w-14 h-14 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-6">
-                <Shield size={28} strokeWidth={2} />
-              </div>
-              <h3 className="text-2xl font-bold text-[#1C1C1E] mb-4">No Ads. No Trackers.</h3>
-              <p className="text-[17px] leading-relaxed text-[#1C1C1E]/70 font-medium">
-                There are no ads, no affiliate marketers, and no creepy tracking in Humanity Ledger. So focus on sharing the moments that matter with the people who matter to you.
-              </p>
-            </div>
-
-            <div className="flex flex-col items-start">
-              <div className="w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-6">
-                <Zap size={28} strokeWidth={2} />
-              </div>
-              <h3 className="text-2xl font-bold text-[#1C1C1E] mb-4">Zero-Knowledge Architecture</h3>
-              <p className="text-[17px] leading-relaxed text-[#1C1C1E]/70 font-medium">
-                Unlike other platforms, we use Zero-Knowledge proofs and Onion Routing to guarantee your metadata is never stored. Your identity is your cryptographic wallet, and you retain absolute sovereignty over your social graph.
-              </p>
-            </div>
-
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: <EyeOff size={26} strokeWidth={2} />,
+                color: "text-[#2C6BED]",
+                bg: "bg-[#2C6BED]/8",
+                title: "No Ads. No Trackers. No Compromise.",
+                desc:
+                  "We earn zero revenue from your conversations. We do not sell your data. Ledger Chat is sustained by users who believe privacy is a right, not a product.",
+              },
+              {
+                icon: <Shield size={26} strokeWidth={2} />,
+                color: "text-purple-600",
+                bg: "bg-purple-500/8",
+                title: "Privacy Is Not a Feature. It Is the Foundation.",
+                desc:
+                  "Every single message is end-to-end encrypted using the XMTP protocol before it leaves your device. Not even Humanity Ledger can read your conversations.",
+              },
+              {
+                icon: <Fingerprint size={26} strokeWidth={2} />,
+                color: "text-[#30D158]",
+                bg: "bg-[#30D158]/10",
+                title: "Your Identity Is Your Wallet.",
+                desc:
+                  "No phone number. No email. No government ID. Your EVM wallet is your cryptographic passport. Absolute sovereignty guaranteed by mathematics, not promises.",
+              },
+            ].map((card, i) => (
+              <motion.div
+                key={card.title}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                custom={i * 0.1}
+                variants={fadeUp}
+                className="bg-white rounded-3xl p-8 border border-black/[0.05] shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className={`w-14 h-14 ${card.bg} ${card.color} rounded-2xl flex items-center justify-center mb-6`}>
+                  {card.icon}
+                </div>
+                <h3 className="text-[20px] font-bold text-[#1C1C1E] mb-4 leading-snug">{card.title}</h3>
+                <p className="text-[16px] font-medium text-[#1C1C1E]/60 leading-relaxed">{card.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* FOOTER */}
+      {/* ═══ SECTION 3 — HOW IT WORKS ══════════════════════════════════════════ */}
+      <section className="bg-white py-24 md:py-32">
+        <div className="max-w-7xl mx-auto px-5 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+          {/* Text */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            className="flex flex-col gap-10"
+          >
+            <div>
+              <h2 className="text-[38px] md:text-[52px] font-bold tracking-tight text-[#1C1C1E] mb-5 leading-tight">
+                Connecting the world,<br />privately.
+              </h2>
+              <p className="text-[17px] font-medium text-[#1C1C1E]/55 leading-relaxed">
+                Getting started takes under 60 seconds. No forms to fill. No verification emails.
+                Just your wallet and a world of sovereign conversations waiting for you.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-8">
+              <Step
+                n="1"
+                title="Connect your wallet."
+                desc="Your EVM wallet becomes your cryptographic passport. MetaMask, Rainbow, Coinbase Wallet — all supported."
+              />
+              <Step
+                n="2"
+                title="Set up your identity."
+                desc="Create a sovereign profile with a display name and avatar. No phone number. No email address. Ever."
+              />
+              <Step
+                n="3"
+                title="Start talking."
+                desc="Find anyone by wallet address. Every message is encrypted end-to-end before it leaves your device."
+              />
+              <Step
+                n="4"
+                title="Total control."
+                desc="Burn messages on read, set self-destruct timers, revoke sent messages, and send crypto payments in-chat."
+              />
+            </div>
+
+            <Link
+              href="/connect"
+              className="inline-flex items-center gap-2 bg-[#1C1C1E] hover:bg-black text-white font-bold text-[15px] px-7 py-3.5 rounded-xl transition-all self-start"
+            >
+              Start now — it is free
+            </Link>
+          </motion.div>
+
+          {/* Map Lottie */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: EASE }}
+            className="w-full aspect-square bg-[#F6F7F9] rounded-[40px] overflow-hidden flex items-center justify-center p-6"
+          >
+            <RemoteLottie path="/lottie/map-world.json" loop width="100%" height="100%" />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══ SECTION 4 — WHAT LEDGER CHAT HAS ════════════════════════════════════ */}
+      <section className="bg-[#F6F7F9] py-24 md:py-32">
+        <div className="max-w-7xl mx-auto px-5 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+          {/* Message Icon Lottie */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: EASE }}
+            className="w-full max-w-[480px] mx-auto aspect-square bg-white rounded-[40px] border border-black/[0.05] shadow-md overflow-hidden flex items-center justify-center p-8"
+          >
+            <RemoteLottie path="/lottie/message-icon.json" loop width="100%" height="100%" />
+          </motion.div>
+
+          {/* Feature list */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            className="flex flex-col gap-8"
+          >
+            <div>
+              <h2 className="text-[38px] md:text-[52px] font-bold tracking-tight text-[#1C1C1E] mb-5 leading-tight">
+                Beyond Messaging.
+              </h2>
+              <p className="text-[17px] font-medium text-[#1C1C1E]/55 leading-relaxed">
+                Ledger Chat includes everything you expect from the top messaging apps in the world,
+                and then it adds Web3 superpowers that no other app offers.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <FeatureCheck text="Cryptographic identity — no phone number required" />
+              <FeatureCheck text="In-chat Quantum Dot payments — built-in micro-transactions" />
+              <FeatureCheck text="ZK-proof message verification — mathematically guaranteed authenticity" />
+              <FeatureCheck text="Burn on Read — messages auto-destroy after viewing" />
+              <FeatureCheck text="Voice notes with a real-time waveform visualizer" />
+              <FeatureCheck text="Group chats with Zero-Knowledge membership verification" />
+              <FeatureCheck text="AI Ghost Mode — sovereign auto-replies protect your time" />
+              <FeatureCheck text="Polls, stickers, animated GIFs, and a personal file vault" />
+              <FeatureCheck text="WebRTC HD video and voice calls — no central server" />
+              <FeatureCheck text="Desktop QR session linking — start on mobile, continue on PC" />
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══ SECTION 5 — TYPING INDICATOR / COMPARISON ═══════════════════════════ */}
+      <section className="bg-white py-24 md:py-32">
+        <div className="max-w-7xl mx-auto px-5 md:px-10">
+          <div className="flex flex-col items-center text-center">
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: EASE }}
+              className="w-40 h-40 mb-10"
+            >
+              <RemoteLottie path="/lottie/typing.json" loop width={160} height={160} />
+            </motion.div>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="max-w-3xl"
+            >
+              <h2 className="text-[38px] md:text-[56px] font-bold tracking-tight text-[#1C1C1E] mb-6 leading-tight">
+                We built everything you know.<br />Then we went further.
+              </h2>
+              <p className="text-[18px] md:text-[20px] font-medium text-[#1C1C1E]/55 leading-relaxed mb-12">
+                Ledger Chat includes every feature you expect from the most popular messaging apps
+                in the world — then adds Web3 superpowers that no other app in the world offers today.
+              </p>
+            </motion.div>
+
+            {/* Feature grid */}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl"
+            >
+              {[
+                { icon: <MessageCircle size={22} />, label: "E2E Encrypted Messages", color: "text-[#2C6BED] bg-[#2C6BED]/8" },
+                { icon: <Mic size={22} />, label: "HD Voice Calls", color: "text-[#30D158] bg-[#30D158]/8" },
+                { icon: <Video size={22} />, label: "Video Calls", color: "text-purple-600 bg-purple-500/8" },
+                { icon: <Wallet size={22} />, label: "Crypto Payments", color: "text-orange-500 bg-orange-500/8" },
+                { icon: <Flame size={22} />, label: "Disappearing Messages", color: "text-red-500 bg-red-500/8" },
+                { icon: <Bot size={22} />, label: "AI Ghost Mode", color: "text-cyan-600 bg-cyan-500/8" },
+                { icon: <BarChart2 size={22} />, label: "Polls and Votes", color: "text-emerald-600 bg-emerald-500/8" },
+                { icon: <Users size={22} />, label: "Group Chats", color: "text-indigo-600 bg-indigo-500/8" },
+              ].map((item, i) => (
+                <motion.div
+                  key={item.label}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  custom={i * 0.05}
+                  variants={fadeUp}
+                  className="bg-[#F6F7F9] rounded-2xl p-5 flex flex-col items-center gap-3 text-center border border-black/[0.04] hover:border-black/10 transition-colors"
+                >
+                  <div className={`w-11 h-11 rounded-xl ${item.color} flex items-center justify-center`}>
+                    {item.icon}
+                  </div>
+                  <span className="text-[13px] font-bold text-[#1C1C1E]/80 leading-tight">{item.label}</span>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ SECTION 6 — BOTTOM CTA ════════════════════════════════════════════ */}
+      <section className="bg-[#1C1C1E] py-24 md:py-32">
+        <div className="max-w-7xl mx-auto px-5 md:px-10 flex flex-col items-center text-center">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+          >
+            <Zap size={40} className="text-[#2C6BED] mb-8 mx-auto" strokeWidth={2} />
+            <h2 className="text-[42px] md:text-[60px] font-bold tracking-tight text-white mb-6 leading-tight">
+              Ready to own your<br />conversations?
+            </h2>
+            <p className="text-[18px] font-medium text-white/50 mb-10 max-w-xl mx-auto leading-relaxed">
+              Join the sovereign messaging network. Free forever. No ads. No surveillance. Just you and the people you trust.
+            </p>
+
+            <Link
+              href="/connect"
+              className="inline-flex items-center gap-2 bg-[#2C6BED] hover:bg-[#1A5AE3] text-white font-bold text-[18px] px-10 py-5 rounded-2xl transition-all shadow-lg shadow-[#2C6BED]/30 mb-6"
+            >
+              <MessageCircle size={20} />
+              Get Ledger Chat
+            </Link>
+
+            <p className="text-[14px] font-medium text-white/30">
+              Available on iOS, Android, and Web. Free forever.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
       <SystemFooter />
     </div>
   );
