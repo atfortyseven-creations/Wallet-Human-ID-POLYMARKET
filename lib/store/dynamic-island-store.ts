@@ -13,7 +13,7 @@ export interface DynamicIslandPayload {
 
 interface DynamicIslandStore {
   activeState: DynamicIslandState;
-  payload: DynamicIslandPayload | null;
+  payload: DynamicIslandPayload | undefined;
   expanded: boolean;
   
   // Actions
@@ -24,16 +24,16 @@ interface DynamicIslandStore {
 
 export const useDynamicIsland = create<DynamicIslandStore>((set, get) => ({
   activeState: 'idle',
-  payload: null,
+  payload: undefined,
   expanded: false,
 
-  setState: (state, payload = null, autoDismiss) => {
+  setState: (state, payload, autoDismiss) => {
     set({ activeState: state, payload, expanded: true });
     if (autoDismiss) {
       setTimeout(() => {
         if (get().activeState === state) {
           set({ expanded: false });
-          setTimeout(() => set({ activeState: 'idle', payload: null }), 500); // Wait for collapse animation
+          setTimeout(() => set({ activeState: 'idle', payload: undefined }), 500);
         }
       }, autoDismiss);
     }
@@ -43,6 +43,6 @@ export const useDynamicIsland = create<DynamicIslandStore>((set, get) => ({
 
   dismiss: () => {
     set({ expanded: false });
-    setTimeout(() => set({ activeState: 'idle', payload: null }), 500);
+    setTimeout(() => set({ activeState: 'idle', payload: undefined }), 500);
   },
 }));
