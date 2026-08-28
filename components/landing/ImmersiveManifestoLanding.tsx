@@ -89,10 +89,10 @@ function LandingNav() {
                 {fmtAddr(connectedAddress)}
               </span>
               <Link
-                href="/hub"
+                href="/chat"
                 className="bg-[#2C6BED] hover:bg-[#1A5AE3] text-white font-bold text-[14px] px-5 py-2.5 rounded-full transition-all shadow-sm"
               >
-                Open Hub
+                Open Chat
               </Link>
             </>
           ) : (
@@ -144,83 +144,91 @@ export function ImmersiveManifestoLanding({ onOpenScanner }: ImmersiveManifestoL
 
       {/* ═══ SECTION 1 — HERO ══════════════════════════════════════════════════ */}
       <section className="relative min-h-[100dvh] flex items-center bg-white pt-20 overflow-hidden">
-        {/* Ambient gradient */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_70%_40%,rgba(44,107,237,0.08),transparent)] pointer-events-none" />
+        {/* Ambient premium gradient */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_100%_100%_at_50%_-20%,rgba(44,107,237,0.12),rgba(255,255,255,0))] pointer-events-none" />
+        <div className="absolute top-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#2C6BED]/20 to-transparent" />
 
-        <div className="max-w-7xl mx-auto px-5 md:px-10 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center py-20">
-          {/* Left: Copy */}
+        <div className="max-w-7xl mx-auto px-5 md:px-10 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center py-20 lg:py-0">
+          
+          {/* Left: Copy (spans 7 cols on desktop) */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="flex flex-col items-start"
+            className="flex flex-col items-center text-center lg:items-start lg:text-left lg:col-span-7 relative z-10"
           >
-            <div className="flex items-center gap-2 mb-6 bg-[#2C6BED]/8 rounded-full px-4 py-2">
-              <div className="w-2 h-2 rounded-full bg-[#30D158] animate-pulse shadow-[0_0_8px_#30D158]" />
-              <span className="text-[13px] font-bold text-[#2C6BED] uppercase tracking-wider">
-                Beta Live Since 2026
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1, duration: 0.5 }}
+              className="flex items-center gap-2.5 mb-8 bg-white border border-black/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] rounded-full px-5 py-2.5"
+            >
+              <div className="w-2.5 h-2.5 rounded-full bg-[#30D158] animate-pulse shadow-[0_0_12px_rgba(48,209,88,0.6)]" />
+              <span className="text-[13px] font-bold text-[#1C1C1E] uppercase tracking-[0.1em]">
+                Global Release Jan 2027
               </span>
-            </div>
+            </motion.div>
 
-            <h1 className="text-[52px] md:text-[72px] lg:text-[80px] font-bold leading-[1.02] tracking-tight text-[#1C1C1E] mb-6">
-              Say hello<br />to privacy.
+            <h1 className="text-[56px] md:text-[80px] lg:text-[96px] font-black leading-[0.95] tracking-[-0.04em] text-[#050505] mb-6">
+              Privacy<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2C6BED] to-[#6E95F5]">redefined.</span>
             </h1>
-            <p className="text-[18px] md:text-[20px] font-medium leading-relaxed text-[#1C1C1E]/60 mb-10 max-w-lg">
-              Ledger Chat is free, fast, and built for people who value their sovereignty.
-              End-to-end encrypted. Decentralized. Powered by your wallet.
+            
+            <p className="text-[19px] md:text-[22px] font-medium leading-[1.6] text-[#1C1C1E]/60 mb-10 max-w-[540px]">
+              Ledger Chat is free, instantly fast, and built for people who demand absolute sovereignty. End-to-end encrypted. Decentralized. Powered by your wallet.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mb-10">
               <Link
-                href="/connect"
-                className="bg-[#2C6BED] hover:bg-[#1A5AE3] text-white font-bold text-[16px] px-8 py-4 rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2"
+                href="/chat"
+                className="bg-[#050505] hover:bg-[#1A1A1A] text-white font-bold text-[16px] px-8 py-4.5 rounded-2xl transition-all shadow-[0_8px_24px_rgba(0,0,0,0.12)] flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95"
               >
-                <MessageCircle size={18} />
-                Get Ledger Chat — Free
+                <MessageCircle size={20} />
+                Open Ledger Chat
               </Link>
               <Link
                 href="/docs/ledger-chat"
-                className="bg-[#F6F7F9] hover:bg-[#EBEBF0] text-[#1C1C1E] border border-black/8 font-bold text-[16px] px-8 py-4 rounded-2xl transition-all flex items-center justify-center gap-2"
+                className="bg-white hover:bg-[#F6F7F9] text-[#050505] border border-black/10 font-bold text-[16px] px-8 py-4.5 rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95"
               >
                 Learn How It Works
               </Link>
             </div>
 
-            <div className="flex items-center gap-6 mt-8">
+            <div className="flex flex-wrap justify-center lg:justify-start items-center gap-x-8 gap-y-4">
               {[
-                { icon: <Lock size={14} />, label: "End-to-End Encrypted" },
-                { icon: <EyeOff size={14} />, label: "Zero Knowledge" },
-                { icon: <Globe size={14} />, label: "Decentralized" },
+                { icon: <Lock size={16} />, label: "End-to-End Encrypted" },
+                { icon: <EyeOff size={16} />, label: "Zero Knowledge" },
+                { icon: <Globe size={16} />, label: "Decentralized" },
               ].map((f) => (
-                <div key={f.label} className="flex items-center gap-1.5 text-[13px] font-medium text-[#1C1C1E]/50">
-                  {f.icon}
+                <div key={f.label} className="flex items-center gap-2 text-[14px] font-bold text-[#1C1C1E]/50">
+                  <span className="text-[#1C1C1E]">{f.icon}</span>
                   <span>{f.label}</span>
                 </div>
               ))}
             </div>
           </motion.div>
 
-          {/* Right: Lottie texting animation */}
+          {/* Right: Lottie animation (spans 5 cols) */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9, delay: 0.2, ease: EASE }}
-            className="relative w-full flex items-center justify-center"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2, ease: EASE }}
+            className="relative w-full flex items-center justify-center lg:col-span-5"
           >
-            <div className="relative w-full max-w-[520px] mx-auto">
-              {/* Frosted card */}
-              <div className="bg-white/80 backdrop-blur-2xl border border-black/[0.06] rounded-[40px] shadow-[0_40px_100px_rgba(44,107,237,0.15)] overflow-hidden aspect-square flex items-center justify-center p-4">
-                <RemoteLottie
-                  path="/lottie/texting.json"
-                  loop
-                  width="100%"
-                  height="100%"
-                />
-              </div>
-              {/* Floating badge */}
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white border border-black/5 rounded-2xl shadow-xl px-6 py-3 flex items-center gap-3 whitespace-nowrap">
-                <div className="w-2 h-2 rounded-full bg-[#30D158] animate-pulse" />
-                <span className="text-[14px] font-bold text-[#1C1C1E]">Global Release Jan 1, 2027</span>
+            <div className="relative w-full max-w-[460px] mx-auto lg:scale-110 xl:scale-125 transform origin-center">
+              {/* Premium Glow Behind Device */}
+              <div className="absolute inset-0 bg-[#2C6BED] blur-[100px] opacity-10 rounded-full" />
+              
+              {/* Frosted Glass Device Wrapper */}
+              <div className="relative bg-white/40 backdrop-blur-3xl border border-white/60 rounded-[48px] shadow-[0_40px_100px_rgba(44,107,237,0.12),inset_0_2px_10px_rgba(255,255,255,0.8)] p-2">
+                <div className="bg-white rounded-[40px] overflow-hidden aspect-[4/5] flex items-center justify-center border border-black/[0.04]">
+                  <RemoteLottie
+                    path="/lottie/texting.json"
+                    loop
+                    width="120%"
+                    height="120%"
+                  />
+                </div>
               </div>
             </div>
           </motion.div>

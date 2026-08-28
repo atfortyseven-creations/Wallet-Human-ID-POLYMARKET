@@ -192,32 +192,16 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
   }
 
 
-  // Redirect old /terminal to /hub
-  if (pathname === '/terminal' || pathname.startsWith('/terminal/')) {
-    return NextResponse.redirect(new URL('/hub', req.url));
+  // Strict enforcement: ONLY /chat and /portfolio are allowed for authenticated users.
+  // /terminal and /hub are now strictly redirected to /chat.
+  if (pathname === '/terminal' || pathname.startsWith('/terminal/') || pathname === '/hub' || pathname.startsWith('/hub/')) {
+    return NextResponse.redirect(new URL('/chat', req.url));
   }
+
   // [FASE 3: App Hub Lock]
   const LOCKED_ROUTES = ['/dashboard', '/markets', '/studio', '/governance', '/network', '/academy', '/qds'];
   if (LOCKED_ROUTES.some(r => pathname.startsWith(r))) {
-    return new NextResponse(
-      `<!DOCTYPE html><html><head><title>Module Unavailable</title>
-       <meta name="viewport" content="width=device-width, initial-scale=1">
-       <style>
-         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #fafafa; color: #111; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; padding: 20px; text-align: center; }
-         .card { max-w: 500px; padding: 40px; background: #fff; border: 1px solid #eaeaea; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-         h2 { margin-top: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
-         p { color: #666; line-height: 1.6; margin-bottom: 24px; }
-         a { display: inline-block; padding: 10px 20px; background: #111; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; }
-       </style>
-       </head><body>
-       <div class="card">
-         <h2>Module Unavailable</h2>
-         <p>This module is in development or under repair.</p>
-         <a href="/hub">Return to App Hub</a>
-       </div>
-       </body></html>`,
-      { status: 200, headers: { 'content-type': 'text/html' } }
-    );
+    return NextResponse.redirect(new URL('/chat', req.url));
   }
 
   // [FASE 18: OFAC / Restricted Jurisdiction Geofencing]

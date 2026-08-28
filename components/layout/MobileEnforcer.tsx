@@ -201,7 +201,7 @@ export function MobileEnforcer({ children }: { children: React.ReactNode }) {
             '/studio',
 
             // App hub + docs: same experience on mobile and desktop
-            '/hub',
+            '/chat',
             '/docs',
             '/settings',
             '/whitepaper',
@@ -220,7 +220,7 @@ export function MobileEnforcer({ children }: { children: React.ReactNode }) {
         // we redirect them to /hub instead of showing a fake mobile landing.
         // This ensures the App Hub is EXACTLY the same on Android/iOS/PC.
         if (typeof window !== 'undefined') {
-            window.location.replace('/hub');
+            window.location.replace('/chat');
             return null;
         }
     }

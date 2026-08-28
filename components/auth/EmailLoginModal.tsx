@@ -116,7 +116,7 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
         onSuccess?.();
         onClose();
         // Redirect to the authenticated terminal, not the public landing
-        window.location.replace("/hub");
+        window.location.replace("/chat");
       }, 1800);
     } catch (err: any) {
       setError(err.message || "Invalid or expired code.");

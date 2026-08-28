@@ -291,7 +291,7 @@ export default function ConnectPage() {
             await new Promise(r => setTimeout(r, 800));
             const urlParams = new URLSearchParams(window.location.search);
             const raw = urlParams.get('returnUrl') || urlParams.get('redirect_url') || '';
-            const safeReturn = (raw.startsWith('/') && !raw.startsWith('//') && raw !== '/portfolio' && !raw.startsWith('/terminal')) ? raw : '/hub';
+            const safeReturn = (raw.startsWith('/') && !raw.startsWith('//') && raw !== '/hub' && !raw.startsWith('/terminal')) ? raw : '/chat';
             window.location.replace(safeReturn);
           } else {
             const errData = await hydrateRes.json().catch(() => ({}));
@@ -348,7 +348,7 @@ export default function ConnectPage() {
             if (returnUrl && returnUrl !== '/portfolio' && !returnUrl.startsWith('/terminal')) {
                 if (returnUrl.startsWith('http')) { window.location.href = returnUrl; }
                 else { window.location.replace(returnUrl); }
-            } else { window.location.replace("/hub"); }
+            } else { window.location.replace("/chat"); }
             return;
           }
         }
@@ -460,7 +460,7 @@ export default function ConnectPage() {
         if (returnUrl && returnUrl !== '/portfolio' && !returnUrl.startsWith('/terminal')) {
             if (returnUrl.startsWith('http')) { window.location.href = returnUrl; }
             else { window.location.replace(returnUrl); }
-        } else { window.location.replace("/hub"); }
+        } else { window.location.replace("/chat"); }
       } catch (err: any) {
         const msg = err?.message || '';
         if (!msg.toLowerCase().includes('rejected') && !msg.toLowerCase().includes('denied')) {
@@ -582,7 +582,7 @@ export default function ConnectPage() {
       <div className="pb-6 border-b border-black/10 flex items-center gap-3 relative z-10">
         <div className="w-1.5 h-1.5 bg-black" />
         <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-black font-bold flex-1">Secure Entry</span>
-        <Link href="/hub" className="flex items-center gap-1.5 px-3 py-1.5 border border-black text-black font-mono font-bold text-[9px] uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-colors duration-300">
+        <Link href="/chat" className="flex items-center gap-1.5 px-3 py-1.5 border border-black text-black font-mono font-bold text-[9px] uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-colors duration-300">
           <QrCode size={12} /> Studio
         </Link>
       </div>
