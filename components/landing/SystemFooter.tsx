@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import { HLLogo } from "@/components/shared/HLLogo";
 
 export function SystemFooter() {
   return (
@@ -12,7 +11,13 @@ export function SystemFooter() {
           
           {/* Brand column */}
           <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
-            <HLLogo variant="full" theme="dark" size={24} />
+            <Link href="/" aria-label="Humanity Ledger home">
+              <img
+                src="/logo-text.png"
+                alt="Humanity Ledger"
+                style={{ height: 32, width: 'auto', objectFit: 'contain', display: 'block' }}
+              />
+            </Link>
             <p className="text-[14px] text-black/50 font-medium leading-relaxed max-w-[200px]">
               The sovereign, decentralized messaging network. Built for 2027.
             </p>
@@ -22,9 +27,9 @@ export function SystemFooter() {
           <div className="flex flex-col gap-3">
             <h4 className="text-[13px] font-black uppercase tracking-widest text-black/40 mb-1">Features</h4>
             <Link href="/docs/ledger-chat" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">Ledger Chat</Link>
-            <Link href="/docs/zero-knowledge" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">Zero-Knowledge</Link>
-            <Link href="/docs/cryptography" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">Cryptography</Link>
-            <Link href="/docs/identity" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">Sovereign Identity</Link>
+            <Link href="/docs/privacy" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">Privacy & Security</Link>
+            <Link href="/docs/cryptography" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">Encryption</Link>
+            <Link href="/docs/identity" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">Wallet Identity</Link>
           </div>
 
           {/* Company */}

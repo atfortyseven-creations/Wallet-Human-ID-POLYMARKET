@@ -19,11 +19,11 @@ export function HLLogo({ variant = 'full', theme = 'dark', className = '', size 
 
   if (variant === 'mark') {
     return (
-      <div className={`flex items-center justify-center overflow-hidden ${className}`} style={{ width: size, height: size }} role="img" aria-label="Humanity Ledger">
+      <div className={`flex items-center justify-center overflow-hidden ${className}`} style={{ height: size }} role="img" aria-label="Humanity Ledger">
         <img 
           src="/logo-mark.png" 
           alt="HL" 
-          style={{ width: '100%', height: '100%', objectFit: 'contain', ...filterStyle }} 
+          style={{ height: '100%', width: 'auto', objectFit: 'contain', ...filterStyle }} 
         />
       </div>
     );
