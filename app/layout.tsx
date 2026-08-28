@@ -82,7 +82,7 @@ export const metadata = {
     siteName: 'Humanity Ledger',
     images: [
       {
-        url: '/humanid_protocol_logo_1778714491433.png',
+        url: '/logo-mark.png',
         width: 1200,
         height: 1200,
         alt: 'Humanity Ledger Logo',
@@ -95,7 +95,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Humanity Ledger | Privacy Infrastructure on Aztec',
     description: 'Claim your decentralised identity, access Studio Provenance, and communicate securely via Ledger Chat using zero knowledge proofs.',
-    images: ['/humanid_protocol_logo_1778714491433.png'],
+    images: ['/logo-mark.png'],
     site: '@humanityledger',
     creator: '@humanityledger',
   },
@@ -146,7 +146,7 @@ export default async function RootLayout({
         "name": "Humanity Ledger",
         "alternateName": ["Humanity Ledger Ecosystem", "Humanity Ledger Protocol"],
         "url": "https://humanidfi.com",
-        "logo": "https://humanidfi.com/humanid_protocol_logo_1778714491433.png",
+        "logo": "https://humanidfi.com/logo-mark.png",
         "sameAs": [
           "https://github.com/humanityledger/Humanity-Ledger"
         ]

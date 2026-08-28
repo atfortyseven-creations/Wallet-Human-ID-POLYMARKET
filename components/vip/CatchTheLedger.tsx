@@ -78,7 +78,7 @@ export function CatchTheLedger() {
                     className="w-80 h-80 flex items-center justify-center mx-auto relative group"
                 >
                     <img 
-                        src="/official-ledger-legendary.png" 
+                        src="/logo-mark.png" 
                         alt="Humanity Ledger Logo"
                         className="w-full h-full object-contain p-4"
                     />

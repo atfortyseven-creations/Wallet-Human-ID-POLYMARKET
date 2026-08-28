@@ -176,7 +176,7 @@ export default function HumanityLedgerProWhite() {
         <div className="flex items-center gap-8 pointer-events-auto">
           <Link href="/" className="group flex items-center gap-4 bg-white/90 backdrop-blur-xl border border-slate-200 px-6 py-3 rounded-2xl hover:border-slate-300 transition-all shadow-sm">
             <div className="relative w-6 h-6">
-              <Image src="/official-ledger-monochrome.png" alt="System Ledger" fill className="object-contain" />
+              <Image src="/logo-mark.png" alt="System Ledger" fill className="object-contain" />
             </div>
             <div className="flex flex-col">
               <span className="text-[12px] font-black uppercase tracking-tight leading-none">Humanity Ledger</span>

@@ -155,7 +155,7 @@ const metadata = {
     name: 'Humanity Ledger',
     description: 'Zero-Knowledge Identity Infrastructure',
     url: CANONICAL_APP_URL,
-    icons: [`${CANONICAL_APP_URL}/official-ledger-monochrome.png`],
+    icons: [`${CANONICAL_APP_URL}/logo-mark.png`],
 }
 
 //  1-Click Auth (SIWE) Configuration 

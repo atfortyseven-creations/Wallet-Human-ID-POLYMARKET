@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         username: 'Humanity Ledger VIP',
-        avatar_url: 'https://sovereign.pro/official-ledger-legendary.png', // Optional
+        avatar_url: 'https://sovereign.pro/logo-mark.png', // Optional
         embeds: [embed],
       }),
     });

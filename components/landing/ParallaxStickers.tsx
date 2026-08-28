@@ -5,12 +5,12 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 
 // Sticker images from public/models
 const STICKERS = [
-    { src: '/official-ledger-legendary.png', alt: 'Ledger', size: 60 },
-    { src: '/official-ledger-legendary.png', alt: 'Ledger', size: 50 },
-    { src: '/official-ledger-legendary.png', alt: 'Ledger', size: 40 },
-    { src: '/official-ledger-legendary.png', alt: 'Ledger', size: 70 },
-    { src: '/official-ledger-legendary.png', alt: 'Ledger', size: 55 },
-    { src: '/official-ledger-legendary.png', alt: 'Ledger', size: 45 },
+    { src: '/logo-mark.png', alt: 'Ledger', size: 60 },
+    { src: '/logo-mark.png', alt: 'Ledger', size: 50 },
+    { src: '/logo-mark.png', alt: 'Ledger', size: 40 },
+    { src: '/logo-mark.png', alt: 'Ledger', size: 70 },
+    { src: '/logo-mark.png', alt: 'Ledger', size: 55 },
+    { src: '/logo-mark.png', alt: 'Ledger', size: 45 },
 ];
 
 export function ParallaxStickers() {

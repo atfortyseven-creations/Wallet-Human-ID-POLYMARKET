@@ -211,7 +211,7 @@ function NewsCard({
           src={article.imageUrl ? `/api/proxy-image?url=${encodeURIComponent(article.imageUrl)}` : `/api/proxy-image?seed=${index}`}
           alt={article.title}
           onError={(e) => {
-            e.currentTarget.src = "/official-ledger-monochrome.png";
+            e.currentTarget.src = "/logo-mark.png";
           }}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
         />

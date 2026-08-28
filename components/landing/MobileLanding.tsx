@@ -1466,7 +1466,7 @@ export function MobileLanding() {
             className="group w-full flex items-center gap-4 p-4 rounded-2xl border-2 border-[#5200FF]/30 bg-gradient-to-r from-[#5200FF]/5 to-[#5200FF]/10 hover:from-[#5200FF]/10 hover:to-[#5200FF]/15 hover:border-[#5200FF]/50 active:scale-[0.97] transition-all duration-150 shadow-sm"
           >
             <div className="w-11 h-11 rounded-xl bg-[#5200FF] flex items-center justify-center p-2.5 shrink-0 shadow-lg">
-              <img src="/official-ledger-monochrome.png" alt="Connect" className="w-full h-full object-contain invert" />
+              <img src="/logo-mark.png" alt="Connect" className="w-full h-full object-contain invert" />
             </div>
             <div className="flex-1 text-left">
               <p className="text-[14px] font-black uppercase tracking-tight text-[#050505]">Connect Wallet</p>

@@ -15,7 +15,7 @@ export default function StatusNavbar() {
       {/* Brand */}
       <div className="flex items-center gap-3">
         <Image 
-          src="/official-ledger-monochrome.png" 
+          src="/logo-mark.png" 
           alt="Humanity Ledger" 
           width={32} 
           height={32} 

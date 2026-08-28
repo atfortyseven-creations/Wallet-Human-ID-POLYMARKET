@@ -5,7 +5,7 @@ export function CorporateHLLogo({ className = "" }: { className?: string }) {
     return (
         <SplashContainer className={`${className}`}>
             <Image
-                src="/official-ledger-monochrome.png"
+                src="/logo-mark.png"
                 alt="Ledger Logo"
                 fill
                 className="object-contain"

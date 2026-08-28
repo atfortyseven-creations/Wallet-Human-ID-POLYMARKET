@@ -151,7 +151,7 @@ export function LedgerOfflineGame({ visible, onBack }: { visible: boolean; onBac
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const img = new Image(); img.src = '/official-ledger-monochrome.png';
+    const img = new Image(); img.src = '/logo-mark.png';
     img.onload = () => { imgRef.current = img; };
     try { const v=parseInt(localStorage.getItem('ledger_hs')||'0'); hsRef.current=v; setUiHi(v); } catch{}
   }, []);

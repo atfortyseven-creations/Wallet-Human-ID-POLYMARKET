@@ -336,7 +336,7 @@ export default function ScanPage() {
         {/* Logo mark */}
         <div className="w-8 h-8 rounded-lg border border-black/10 bg-black/[0.03] flex items-center justify-center overflow-hidden">
           <img
-            src="/official-ledger-monochrome.png"
+            src="/logo-mark.png"
             alt="HL"
             className="w-6 h-6 object-contain opacity-70 mix-blend-multiply"
           />

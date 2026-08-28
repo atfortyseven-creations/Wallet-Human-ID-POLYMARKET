@@ -32,7 +32,7 @@ export async function createWeb3Wallet() {
             name: 'Ledger Portfolio',
             description: 'Sovereign System Wallet',
             url: process.env.NEXT_PUBLIC_APP_URL || 'https://www.humanidfi.com',
-            icons: ['https://www.humanidfi.com/official-ledger-monochrome.png'],
+            icons: ['https://www.humanidfi.com/logo-mark.png'],
         },
     });
 

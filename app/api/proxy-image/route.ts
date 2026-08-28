@@ -48,6 +48,6 @@ export async function GET(request: NextRequest) {
     return new NextResponse(arrayBuffer, { status: 200, headers });
   } catch (err) {
     // If ultimate failure, redirect to a static local image that CANNOT fail.
-    return NextResponse.redirect(new URL('/official-ledger-monochrome.png', request.url));
+    return NextResponse.redirect(new URL('/logo-mark.png', request.url));
   }
 }

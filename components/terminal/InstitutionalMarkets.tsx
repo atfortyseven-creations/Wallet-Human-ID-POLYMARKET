@@ -446,7 +446,7 @@ function LedgerTransactionExplorer() {
                         className="w-40 h-40 flex items-center justify-center mx-auto relative group"
                     >
                         <SplashContainer className="w-full h-full transition-transform duration-700 scale-110 group-hover:scale-125 relative z-10 flex items-center justify-center">
-                            <img src="/official-ledger-monochrome.png" className="w-full h-full object-contain brightness-0 opacity-90" alt="Humanity Ledger" />
+                            <img src="/logo-mark.png" className="w-full h-full object-contain brightness-0 opacity-90" alt="Humanity Ledger" />
                         </SplashContainer>
                     </motion.div>
 

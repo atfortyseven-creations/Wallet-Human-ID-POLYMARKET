@@ -432,7 +432,7 @@ function AlertCard({ alert, index, onCopyAttest, onMarkRead }: {
       }`}
     >
       <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-          <img src="/official-ledger-legendary.png" alt="Logo" className="w-16 h-16 object-contain" />
+          <img src="/logo-mark.png" alt="Logo" className="w-16 h-16 object-contain" />
       </div>
 
       <div className="flex items-start justify-between gap-6 relative z-10">
