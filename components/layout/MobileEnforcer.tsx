@@ -216,15 +216,13 @@ export function MobileEnforcer({ children }: { children: React.ReactNode }) {
             return <>{children}</>;
         }
 
-        // Always show the System Landing:
-        // Pre-connection  wallet connect buttons
-        // Post-connection  connected state with navigation
-        return (
-            <React.Suspense fallback={null}>
-                {/* @ts-ignore */}
-                <MobileSystemLanding />
-            </React.Suspense>
-        );
+        // If it's a mobile device and they try to hit a non-direct access route,
+        // we redirect them to /hub instead of showing a fake mobile landing.
+        // This ensures the App Hub is EXACTLY the same on Android/iOS/PC.
+        if (typeof window !== 'undefined') {
+            window.location.replace('/hub');
+            return null;
+        }
     }
 
     //  PC ZONE 

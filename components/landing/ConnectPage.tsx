@@ -291,7 +291,7 @@ export default function ConnectPage() {
             await new Promise(r => setTimeout(r, 800));
             const urlParams = new URLSearchParams(window.location.search);
             const raw = urlParams.get('returnUrl') || urlParams.get('redirect_url') || '';
-            const safeReturn = (raw.startsWith('/') && !raw.startsWith('//') && raw !== '/portfolio') ? raw : '/hub';
+            const safeReturn = (raw.startsWith('/') && !raw.startsWith('//') && raw !== '/portfolio' && !raw.startsWith('/terminal')) ? raw : '/hub';
             window.location.replace(safeReturn);
           } else {
             const errData = await hydrateRes.json().catch(() => ({}));
@@ -345,7 +345,7 @@ export default function ConnectPage() {
             redirectingRef.current = true;
             const urlParams = new URLSearchParams(window.location.search);
             const returnUrl = urlParams.get('returnUrl') || urlParams.get('redirect_url');
-            if (returnUrl && returnUrl !== '/portfolio') {
+            if (returnUrl && returnUrl !== '/portfolio' && !returnUrl.startsWith('/terminal')) {
                 if (returnUrl.startsWith('http')) { window.location.href = returnUrl; }
                 else { window.location.replace(returnUrl); }
             } else { window.location.replace("/hub"); }
@@ -457,7 +457,7 @@ export default function ConnectPage() {
         redirectingRef.current = true;
         const urlParams = new URLSearchParams(window.location.search);
         const returnUrl = urlParams.get('returnUrl') || urlParams.get('redirect_url');
-        if (returnUrl && returnUrl !== '/portfolio') {
+        if (returnUrl && returnUrl !== '/portfolio' && !returnUrl.startsWith('/terminal')) {
             if (returnUrl.startsWith('http')) { window.location.href = returnUrl; }
             else { window.location.replace(returnUrl); }
         } else { window.location.replace("/hub"); }

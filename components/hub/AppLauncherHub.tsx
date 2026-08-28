@@ -9,7 +9,7 @@ import type { LucideIcon } from 'lucide-react';
 import {
   LayoutDashboard, MessageSquare, ShieldCheck, TrendingUp,
   Globe, BookOpen, Package, Fingerprint,
-  LogOut, ChevronRight, Coins, Vote,
+  LogOut, ChevronRight, Coins, Vote, ScanLine,
 } from 'lucide-react';
 
 // ─── App definitions ─────────────────────────────────────────────────────────
@@ -29,6 +29,7 @@ const APPS: {
   fg: string;
   colSpan: string;
   locked: boolean;
+  action?: () => void;
 }[] = [
   {
     id: 'chat',
@@ -39,6 +40,17 @@ const APPS: {
     bg: '#1C7AFF',
     fg: '#FFFFFF',
     colSpan: 'col-span-2 sm:col-span-2 lg:col-span-2',
+    locked: false,
+  },
+  {
+    id: 'link-session',
+    label: 'Link Session',
+    desc: 'Scan PC QR to link desktop',
+    href: '/scan',
+    icon: ScanLine,
+    bg: '#FFFFFF',
+    fg: '#0A0A0A',
+    colSpan: 'col-span-1',
     locked: false,
   },
   {
@@ -204,6 +216,10 @@ function AppCard({ app, index }: { app: typeof APPS[0]; index: number }) {
         <div className="block h-full" onClick={(e) => e.preventDefault()}>
           {CardContent}
         </div>
+      ) : app.action ? (
+        <button type="button" onClick={app.action} className="block h-full w-full text-left appearance-none">
+          {CardContent}
+        </button>
       ) : (
         <Link href={app.href} className="block h-full">
           {CardContent}
@@ -270,20 +286,21 @@ function IdentityPanel() {
       </div>
 
       {/* Actions */}
-      <div className="mt-5 pt-4 border-t border-black/[0.05] flex items-center gap-2.5">
-        <div
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-black/10 text-black/40 text-[12px] font-bold tracking-wide cursor-not-allowed"
+      <div className="mt-5 pt-4 border-t border-black/[0.05] flex items-center justify-between gap-2.5">
+        <Link
+          href="/docs"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-black/[0.04] text-black/60 text-[12px] font-bold tracking-wide hover:bg-black/[0.08] transition-all active:scale-95"
         >
-          <LayoutDashboard size={13} />
-          Dashboard Unavailable
-        </div>
+          <BookOpen size={13} />
+          Docs
+        </Link>
         <button
           onClick={() => {
             disconnect();
             try { localStorage.setItem('__disconnected__', '1'); sessionStorage.setItem('__disconnected__', '1'); } catch {}
             router.push('/');
           }}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-black/10 text-black/40 text-[12px] font-bold tracking-wide hover:text-red-500 hover:border-red-200 transition-all active:scale-95"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-black/10 text-black/40 text-[12px] font-bold tracking-wide hover:text-red-500 hover:border-red-200 transition-all active:scale-95 ml-auto"
         >
           <LogOut size={13} />
           Sign Out

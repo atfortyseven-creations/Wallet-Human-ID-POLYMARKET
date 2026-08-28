@@ -286,11 +286,19 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
   const requestId = crypto.randomUUID?.() ?? `req_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
   response.headers.set('x-request-id', requestId);
 
-  // [PRIVACY COMPLIANCE] Strict CSP to block GTM and external trackers
+  // [SECURITY] Strict CSP — unsafe-eval removed (was allowing arbitrary JS execution)
+  // unsafe-inline kept only for Next.js inline hydration scripts (required for App Router)
   response.headers.set(
     'Content-Security-Policy',
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; object-src 'none'; base-uri 'self';"
+    "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';"
   );
+
+  // [SECURITY] Additional hardening headers
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-XSS-Protection', '1; mode=block');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(self), geolocation=(self)');
 
   return response;
 }

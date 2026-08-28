@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 
 export default function HubPage() {
   return (
-    <div className="h-full bg-[#F6F7F9] flex flex-col overflow-hidden">
+    <div className="h-[100dvh] bg-[#F6F7F9] flex flex-col overflow-hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
       {/* Minimal header */}
       <header
         className="shrink-0 z-50 bg-white/90 backdrop-blur-xl border-b border-black/[0.06] flex items-center justify-between px-5 md:px-10"

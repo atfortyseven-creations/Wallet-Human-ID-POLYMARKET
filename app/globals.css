@@ -270,6 +270,9 @@ html, body {
        viewport but NOT the scroll extension area — white body fills that gap. */
     background-color: #FFFFFF;
     color: inherit;
+    /* CROSS-PLATFORM SYSTEM FONT: Resolves to SF Pro (iOS/macOS), Roboto (Android),
+       Segoe UI (Windows) — optimal native rendering on every platform */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   }
 
   /* 
@@ -341,34 +344,37 @@ html, body {
     max-width: 56rem !important;
   }
 
-  h1, .font-aztec-h1 {
+  /* DECORATIVE FONTS — Scoped to landing page sections only.
+     These MUST NOT bleed into Ledger Chat, Hub, or App UIs where
+     system-ui / Inter is required for readability and native feel. */
+  .font-aztec-h1 {
     font-family: 'Playfair Display', 'Arizona Serif', serif;
     font-weight: 300;
     line-height: 1.0;
     letter-spacing: -0.05em;
   }
 
-  h2, .font-aztec-h2 {
+  .font-aztec-h2 {
     font-family: 'Roboto Mono', 'Oracle Triple', monospace;
     font-weight: 500;
     line-height: 1.0;
     letter-spacing: -0.01em;
   }
 
-  h3, .font-aztec-h3 {
+  .font-aztec-h3 {
     font-family: 'Inter', 'MD Thermochrome', sans-serif;
     font-weight: 400;
     line-height: 0.95;
     letter-spacing: -0.01em;
   }
 
-  h4, .font-aztec-h4 {
+  .font-aztec-h4 {
     font-family: 'Garamond', 'Francesco', serif;
     font-weight: 400;
     line-height: 0.95;
   }
 
-  p, .font-aztec-body {
+  .font-aztec-body {
     font-family: 'Inter', 'Oracle Standard', sans-serif;
     font-weight: 500;
     line-height: 1.4;

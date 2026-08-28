@@ -958,7 +958,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
 
     import('peerjs').then((peerjsModule) => {
       if (destroyed) return; // component unmounted before import resolved
-      const Peer = peerjsModule.default?.Peer || peerjsModule.Peer || (peerjsModule.default as any);
+      const Peer = (peerjsModule as any).default?.Peer || (peerjsModule as any).Peer || (peerjsModule as any).default;
 
       // ─── DETERMINISTIC PEERID — CRITICAL FOR REVERSE-DIAL ARCHITECTURE ───
       // Both peers derive each other's ID from the wallet address alone.
@@ -1022,7 +1022,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         }, delayMs);
       };
 
-      peer.on('open', (id) => {
+      peer.on('open', (id: string) => {
         if (destroyed) return;
         console.log('[Ledger Chat:PeerJS] Open — PeerID:', id, '(key:', thisKey, ')');
         // Sync both state and ref immediately so calls can start without waiting
@@ -1038,7 +1038,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
       // gets peer.on('call') in 'ringing' state BEFORE they have a localStream.
       // In that case, save the connection in pendingConnectionRef so answerCall()
       // can answer it after obtaining the stream (user-gesture on Android).
-      peer.on('call', (connection) => {
+      peer.on('call', (connection: any) => {
         console.log('[Ledger Chat:PeerJS] Incoming PeerJS connection from:', connection.peer, '| callState:', callStateRef.current);
 
         if (callStateRef.current === 'ringing' || callStateRef.current === 'idle') {
@@ -1085,7 +1085,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         }
       });
 
-      peer.on('error', (err) => {
+      peer.on('error', (err: any) => {
         console.warn('[Ledger Chat:PeerJS] Error:', err.type, err.message);
         if (err.type === 'unavailable-id') {
           // The ID is taken by a lingering previous session (happens when quickly
@@ -4266,7 +4266,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.96 }}
                       transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                      className="absolute bottom-full left-3 mb-2 w-[240px] bg-white/90 backdrop-blur-xl border border-black/[0.08] shadow-[0_16px_40px_rgba(0,0,0,0.12)] rounded-[24px] overflow-hidden flex flex-col z-50"
+                      className="absolute bottom-full left-3 mb-2 w-[240px] max-h-[400px] bg-white/90 backdrop-blur-xl border border-black/[0.08] shadow-[0_16px_40px_rgba(0,0,0,0.12)] rounded-[24px] overflow-y-auto flex flex-col z-50"
                     >
                       {[
                         { id: 'attach', icon: <Paperclip size={18} />, label: 'Files', color: 'text-white', bg: 'bg-[#007AFF]', onClick: () => { fileRef.current?.click(); setShowAppDrawer(false); } },
