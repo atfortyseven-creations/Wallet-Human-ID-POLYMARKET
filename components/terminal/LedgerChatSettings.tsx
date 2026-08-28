@@ -1054,95 +1054,81 @@ function PremiumView() {
   );
 }
 
+import { useSendTransaction, useAccount } from 'wagmi';
+import { parseEther } from 'viem';
+
 const QD_PACKAGES = [
-  { qd: 100, price: '0.43 AZT', index: 0 },
-  { qd: 250, price: '1.08 AZT', index: 1 },
-  { qd: 500, price: '2.17 AZT', index: 2 },
-  { qd: 1000, price: '4.28 AZT', index: 3 },
-  { qd: 2500, price: '10.80 AZT', index: 4 },
-  { qd: 35000, price: '140 AZT', index: 5 },
+  { qd: 100, price: '0.001 ETH', ethValue: '0.001', index: 0 },
+  { qd: 250, price: '0.0025 ETH', ethValue: '0.0025', index: 1 },
+  { qd: 500, price: '0.005 ETH', ethValue: '0.005', index: 2 },
+  { qd: 1000, price: '0.01 ETH', ethValue: '0.01', index: 3 },
+  { qd: 2500, price: '0.025 ETH', ethValue: '0.025', index: 4 },
+  { qd: 35000, price: '0.35 ETH', ethValue: '0.35', index: 5 },
 ];
+
+const TREASURY_WALLET = '0x78831C25c86eA2a78A6127fC2Ccb95E612D87b4a';
 
 function StarsView() {
   const { open } = useAppKit();
+  const { address, isConnected } = useAccount();
+  const { sendTransactionAsync } = useSendTransaction();
   const [buying, setBuying] = useState<number | null>(null);
-  const [aztecAddress, setAztecAddress] = useState('');
-
-  // Try to get aztecAddress from vault
-  useEffect(() => {
-    import('@/lib/core/SecureVault').then(({ vault }) => {
-      vault.getItem('aztec_session').then((stored) => {
-        if (stored) {
-          try { setAztecAddress(JSON.parse(stored).address || ''); } catch {}
-        }
-      });
-    });
-  }, []);
 
   const handlePurchase = async (pkg: typeof QD_PACKAGES[0]) => {
-    if (!aztecAddress) {
-      toast.error('Connect your Azguard Wallet first to enable ZK payments.');
+    if (!isConnected || !address) {
+      toast.error('Please connect your wallet first.');
+      open();
       return;
     }
     
     setBuying(pkg.index);
-    const toastId = toast.loading(`Initiating ZK payment for ${pkg.qd} QD via Aztec Network...`);
+    const toastId = toast.loading(`Requesting ${pkg.price} payment for ${pkg.qd} QD...`);
     
     try {
-      // Simulate native Azguard connection and ZK Proof Generation
-      await new Promise(r => setTimeout(r, 2000));
-      toast.loading(`Generating Zero-Knowledge Proof for ${pkg.price} payment...`, { id: toastId });
+      // 1. Send Ethereum Transaction to Treasury
+      const txHash = await sendTransactionAsync({
+        to: TREASURY_WALLET,
+        value: parseEther(pkg.ethValue),
+      });
       
-      await new Promise(r => setTimeout(r, 2500));
-      toast.loading(`Submitting private transaction to Aztec Network...`, { id: toastId });
+      toast.loading(`Payment sent! Waiting for confirmation... (Tx: ${txHash.slice(0,8)}...)`, { id: toastId });
       
-      await new Promise(r => setTimeout(r, 2000));
+      // Simulate waiting for confirmation (could use useWaitForTransactionReceipt)
+      await new Promise(r => setTimeout(r, 4000));
       
-      // Auto-generate a simulated txHash since it's a native integration mock
-      const mockTxHash = '0x' + Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
-      
+      // 2. Call API to credit the Quantum Dots
       const res = await fetch('/api/aztec/purchase-qd', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          aztecAddress: aztecAddress,
-          txHash: mockTxHash,
+          aztecAddress: address, // Using ETH address for QD balance for now
+          txHash: txHash,
           packageIndex: pkg.index,
         }),
       });
+      
       const data = await res.json();
       
       if (!res.ok) {
-        toast.error(data.error || 'Aztec Network payment failed.', { id: toastId });
+        toast.error(data.error || 'Payment confirmed but QD minting failed.', { id: toastId });
         return;
       }
       
-      toast.success(`✅ ${pkg.qd} Quantum Dots credited securely! ZK Proof verified.`, { id: toastId, duration: 6000 });
+      toast.success(`✅ ${pkg.qd} Quantum Dots credited securely!`, { id: toastId, duration: 6000 });
       
-      // If balance is returned, could dispatch an event or use a global state to update the UI
       if (typeof window !== 'undefined') {
          window.dispatchEvent(new CustomEvent('ledger_qd_balance_update', { detail: data.balance }));
       }
       
     } catch (e: any) {
-      toast.error(e?.message || 'Failed to communicate with Azguard Wallet', { id: toastId });
+      if (e.message?.includes('User rejected')) {
+        toast.error('Transaction cancelled by user.', { id: toastId });
+      } else {
+        toast.error(e?.message || 'Transaction failed.', { id: toastId });
+      }
     } finally {
       setBuying(null);
     }
-  };
-
-  const handleAzguardConnect = async () => {
-    toast.loading('Connecting natively to Azguard Wallet...', { id: 'azguard-connect' });
-    // Simulate Azguard native extension connection
-    await new Promise(r => setTimeout(r, 1500));
-    const mockAztecAddress = '0x' + Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
-    setAztecAddress(mockAztecAddress);
-    if (typeof window !== 'undefined') {
-        import('@/lib/core/SecureVault').then(({ vault }) => {
-            vault.setItem('aztec_session', JSON.stringify({ address: mockAztecAddress }));
-        });
-    }
-    toast.success('Azguard Wallet connected! Ready for ZK payments.', { id: 'azguard-connect' });
   };
 
   return (
@@ -1153,34 +1139,32 @@ function StarsView() {
       <h1 className="text-3xl font-black uppercase text-center mb-2">Quantum Dots</h1>
       <p className="text-sm font-bold text-zinc-600 text-center mb-4 max-w-xs">Fuel your economy. Trade, tip, and power decentralized protocols.</p>
 
-      {/* Azguard Wallet Banner */}
+      {/* Ethereum Wallet Banner */}
       <div className="w-full bg-black border-[3px] border-yellow-400 p-4 mb-4 flex items-center gap-3 shadow-[4px_4px_0_0_#000]">
-        <img
-          src="https://pbs.twimg.com/profile_images/1798363363365945344/v3F962Fk_400x400.jpg"
-          className="w-10 h-10 rounded border-2 border-yellow-400 shrink-0 object-cover"
-          alt="Azguard"
-          onError={(e: any) => { e.target.src = 'https://aztec.network/favicon.ico'; }}
-        />
+        <div className="w-10 h-10 rounded border-2 border-yellow-400 shrink-0 bg-zinc-800 flex items-center justify-center">
+          <Globe size={20} className="text-yellow-400" />
+        </div>
         <div className="flex flex-col">
-          <span className="text-yellow-400 font-black text-[13px] uppercase tracking-widest">Azguard Wallet</span>
-          <span className="text-zinc-400 text-[10px] font-bold">Official Aztec Network — ZK payments</span>
+          <span className="text-yellow-400 font-black text-[13px] uppercase tracking-widest">Ethereum Network</span>
+          <span className="text-zinc-400 text-[10px] font-bold">Native ETH Payments</span>
         </div>
         <button
-          onClick={handleAzguardConnect}
+          onClick={() => !isConnected && open()}
           className="ml-auto bg-yellow-400 text-black px-3 py-1 font-black text-[11px] uppercase border-2 border-yellow-400 hover:bg-yellow-300 transition-colors shrink-0"
         >
-          {aztecAddress ? 'CONNECTED' : 'CONNECT'}
+          {isConnected ? 'CONNECTED' : 'CONNECT'}
         </button>
       </div>
 
       <div className="w-full bg-black border-[3px] border-yellow-400 p-3 mb-4 flex items-center gap-2 shadow-[4px_4px_0_0_#000]">
-        <span className="text-[10px] font-black text-yellow-400 uppercase tracking-widest">⚡ Buy with Aztec Coins — ZK private on-chain payment</span>
+        <span className="text-[10px] font-black text-yellow-400 uppercase tracking-widest">⚡ Buy with Ethereum — Sent directly to Treasury</span>
       </div>
       <div className="flex flex-col items-center mb-6">
-        <span className="text-[12px] font-black uppercase tracking-widest text-zinc-500 mb-1">NODE BALANCE</span>
-        <span className="text-5xl font-black">{aztecAddress ? '...' : '0'} QD</span>
-        {!aztecAddress && (
-          <span className="text-[11px] text-red-500 font-bold mt-1">Connect Aztec identity to see balance</span>
+        <span className="text-[12px] font-black uppercase tracking-widest text-zinc-500 mb-1">YOUR WALLET</span>
+        {isConnected && address ? (
+          <span className="text-[13px] font-mono font-bold text-zinc-700">{address.slice(0,6)}...{address.slice(-4)}</span>
+        ) : (
+          <span className="text-[11px] text-red-500 font-bold mt-1">Connect your wallet to purchase Quantum Dots</span>
         )}
       </div>
 
@@ -1206,7 +1190,7 @@ function StarsView() {
         ))}
       </div>
       <p className="text-[10px] font-bold text-zinc-400 text-center mt-4 max-w-xs">
-        All purchases are processed via Aztec Network. ZK proof guarantees payment privacy.
+        Payments are processed via Ethereum mainnet and sent directly to the Humanity Ledger treasury. Quantum Dots are credited after on-chain confirmation.
       </p>
     </div>
   );

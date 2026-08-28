@@ -87,7 +87,7 @@ export function ClientRootRouter() {
   }, [isConnected]);
 
   return (
-    <div className="w-full bg-white flex flex-col">
+    <div className="w-full bg-white flex flex-col min-h-[100dvh] overflow-y-auto overscroll-none">
       <ImmersiveManifestoLanding />
     </div>
   );

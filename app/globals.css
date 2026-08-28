@@ -110,13 +110,6 @@ main[class*="overflow-y-auto"] > * {
   /* Override the globals.css !important rule for min-h-screen within scroll
      containers. Scoped via parent selector so it doesn't affect normal pages. */
 }
-/* Specific override: within a bounded overflow-y-auto main, min-h-screen
-   should resolve to 100% of the scroll container, not 100dvh of the *document*.
-   This prevents ghost whitespace when content is short. */
-main[class*="overflow-y-auto"] .min-h-screen,
-main[class*="overflow-y-auto"] [class*="min-h-screen"] {
-  min-height: 100% !important;
-}
 /* CRITICAL: Direct children of bounded main that use h-full or min-h-full
    need the parent chain to have height set. Ensure the flex children fill. */
 main[class*="overflow-y-auto"] > div[class*="min-h-full"],

@@ -139,11 +139,11 @@ function Step({ n, title, desc }: { n: string; title: string; desc: string }) {
 // ─── Main ────────────────────────────────────────────────────────────────────
 export function ImmersiveManifestoLanding({ onOpenScanner }: ImmersiveManifestoLandingProps) {
   return (
-    <div className="min-h-screen bg-white font-sans selection:bg-[#2C6BED]/20 overflow-x-hidden">
+    <div className="w-full bg-white font-sans selection:bg-[#2C6BED]/20">
       <LandingNav />
 
       {/* ═══ SECTION 1 — HERO ══════════════════════════════════════════════════ */}
-      <section className="relative min-h-screen flex items-center bg-white pt-20 overflow-hidden">
+      <section className="relative min-h-[100dvh] flex items-center bg-white pt-20 overflow-hidden">
         {/* Ambient gradient */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_70%_40%,rgba(44,107,237,0.08),transparent)] pointer-events-none" />
 
