@@ -77,6 +77,9 @@ const PUBLIC_PREFIXES = [
   '/icons/',
   '/static/',
   '/opengraph',
+  '/scan',       // QR scanner — must be accessible on mobile without prior session (incognito QR link flow)
+  '/lottie/',    // Lottie animation JSON files (public assets)
+  '/sounds/',    // Audio assets
 ];
 
 function isPublicPath(pathname: string): boolean {

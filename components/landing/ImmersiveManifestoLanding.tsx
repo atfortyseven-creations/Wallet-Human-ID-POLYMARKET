@@ -32,6 +32,7 @@ const fadeUp = {
 function LandingNav() {
   const [scrolled, setScrolled] = useState(false);
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
+  const [disconnecting, setDisconnecting] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -48,6 +49,35 @@ function LandingNav() {
 
   const fmtAddr = (a: string) =>
     a.startsWith("email_") ? a.replace("email_", "").slice(0, 16) + "…" : `${a.slice(0, 6)}…${a.slice(-4)}`;
+
+  const handleDisconnect = async () => {
+    setDisconnecting(true);
+    try {
+      // 1. Call server to revoke session JWTs and clear HttpOnly cookies
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+    } catch { /* ignore network errors — still clear client state */ }
+    try {
+      // 2. Clear JS-accessible cookie manually (belt-and-suspenders)
+      document.cookie = 'system_handshake=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      document.cookie = 'wallet-auth=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    } catch {}
+    try {
+      // 3. Clear relevant localStorage keys
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && (k.startsWith('ledger_') || k.startsWith('system_') || k.startsWith('wc@') || k === 'humanid_session')) {
+          keysToRemove.push(k);
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+      // Mark as explicitly disconnected so ConnectPage auto-redirect doesn't fire
+      localStorage.setItem('__disconnected__', '1');
+      sessionStorage.setItem('__disconnected__', '1');
+    } catch {}
+    // 4. Reload to clear all in-memory state
+    window.location.replace('/');
+  };
 
   return (
     <nav
@@ -82,7 +112,7 @@ function LandingNav() {
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {connectedAddress ? (
             <>
               <span className="hidden sm:block text-[13px] font-mono text-black/40 border border-black/10 rounded-full px-3 py-1">
@@ -94,6 +124,13 @@ function LandingNav() {
               >
                 Open Chat
               </Link>
+              <button
+                onClick={handleDisconnect}
+                disabled={disconnecting}
+                className="border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[13px] px-4 py-2.5 rounded-full transition-all disabled:opacity-50"
+              >
+                {disconnecting ? "…" : "Disconnect"}
+              </button>
             </>
           ) : (
             <Link
