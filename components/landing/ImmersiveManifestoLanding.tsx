@@ -96,6 +96,7 @@ function LandingNav() {
             { label: "Features", href: "/docs/ledger-chat" },
             { label: "How It Works", href: "/docs/architecture" },
             { label: "Privacy", href: "/docs/privacy" },
+            { label: "Blog", href: "/blog" },
             { label: "Docs", href: "/docs/terms" },
           ].map((item) => (
             <Link

@@ -10,6 +10,7 @@ import { useSystemSessionLock } from '@/hooks/useSystemSessionLock';
 import { useWalletStore } from '@/lib/store/wallet-store';
 import { TitaniumGate } from '@/components/layout/TitaniumGate';
 import { InstitutionalHeader } from '@/components/shared/InstitutionalHeader';
+import { ThemeApplier } from '@/components/layout/ThemeApplier';
 
 
 import { ZoomWrapper } from './ZoomWrapper';
@@ -72,6 +73,7 @@ const BOUNDED_PREFIXES = [
   '/api-marketplace', '/directory', '/company', '/infrastructure',
   '/forum', '/chat', '/hub', '/whitepaper', '/manifesto',
   '/docs', // Added to prevent infinite scroll bugs
+  '/blog', // Blog posts are bounded pages
   '/', // Landing page — prevents white zone below footer
 ];
 
@@ -312,7 +314,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-
+      <ThemeApplier />
       <TitaniumGate>
         <UniversalEliteWallpaper />
 

@@ -746,14 +746,8 @@ export default function ConnectPage() {
       className="flex flex-col justify-between h-full w-full z-10 p-4"
     >
       <div className="flex flex-col gap-6 w-full max-w-lg">
-        {/* Simple elegant logo */}
-        <Link href="/" className="flex items-center gap-2 mb-4 text-white">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="2" y1="12" x2="22" y2="12"/>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-          </svg>
-          <span className="text-[16px] font-bold tracking-tight">Humanity Ledger</span>
+        <Link href="/" className="flex items-center gap-2 mb-4">
+          <img src="/logo-text.png" alt="Humanity Ledger" style={{ height: 28, width: 'auto', objectFit: 'contain', filter: 'invert(1)' }} />
         </Link>
         
         <h1 className="text-4xl lg:text-5xl font-black text-white leading-[1.1] tracking-tight">
@@ -800,12 +794,7 @@ export default function ConnectPage() {
   const renderMobileHeader = () => (
     <div className="flex items-center justify-between px-6 pt-safe-top pb-4 border-b border-black/10 bg-white" style={{ paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
       <Link href="/" className="flex items-center gap-2 text-black">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="2" y1="12" x2="22" y2="12"/>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-        </svg>
-        <span className="text-[15px] font-bold tracking-tight">Humanity Ledger</span>
+        <img src="/logo-text.png" alt="Humanity Ledger" style={{ height: 20, width: 'auto', objectFit: 'contain' }} />
       </Link>
     </div>
   );
@@ -817,10 +806,10 @@ export default function ConnectPage() {
   }
 
   return (
-    <div className="w-full min-h-[100dvh] bg-white flex flex-col shrink-0 relative text-black">
+    <div className="w-full min-h-screen bg-white flex flex-col shrink-0 relative text-black">
 
       {/* ── MOBILE LAYOUT ── */}
-      <div className="flex flex-col lg:hidden min-h-[100dvh]">
+      <div className="flex flex-col lg:hidden min-h-screen">
         {renderMobileHeader()}
 
         <div className="flex-1 flex flex-col px-6 py-8 pb-safe-bottom overflow-y-auto">
@@ -837,7 +826,7 @@ export default function ConnectPage() {
       </div>
 
       {/* ── DESKTOP LAYOUT ── */}
-      <div className="hidden lg:flex w-full min-h-[100dvh]">
+      <div className="hidden lg:flex w-full min-h-screen">
         {/* Left Side: Info Canvas */}
         <div className="w-[50%] flex flex-col px-20 py-20 bg-[#050505] text-white">
           {renderInfoPanel()}

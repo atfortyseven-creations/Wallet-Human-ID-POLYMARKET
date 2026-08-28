@@ -149,12 +149,11 @@ export function DocsShell({
       <header className="sticky top-0 z-50 h-16 bg-white/95 backdrop-blur-xl border-b border-slate-100 flex items-center px-6">
         <div className="w-full max-w-[1200px] mx-auto flex items-center justify-between gap-8">
           <Link href="/" className="flex items-center gap-2.5">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="2" y1="12" x2="22" y2="12" />
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-            </svg>
-            <span className="text-[14px] font-semibold tracking-tight text-slate-900">Humanity Ledger</span>
+            <img
+              src="/logo-text.png"
+              alt="Humanity Ledger"
+              style={{ height: 24, width: 'auto', objectFit: 'contain' }}
+            />
             <span className="text-slate-300">/</span>
             <span className="text-[13px] font-medium text-slate-400">Docs</span>
           </Link>

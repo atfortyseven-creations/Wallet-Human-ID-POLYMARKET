@@ -1,11 +1,7 @@
-import { ALL_DOC_SLUGS } from '@/components/docs/DocsData';
-import { DocsShell } from '@/components/docs/DocsShell';
-import { notFound } from 'next/navigation';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+const fs = require('fs');
+const path = require('path');
 
-// Pre-generated massive markdown content
-const CONTENT_MAP: Record<string, string> = {
+const contentMap = {
   "terms": `
 # Terms of Service
 
@@ -13,7 +9,7 @@ Last Updated: January 1, 2027
 
 Welcome to Humanity Ledger. By accessing or using our protocol, applications (including Ledger Chat and App Hub), or related services, you agree to be bound by these Terms of Service.
 
-## 1. Decentralization & Wallet Identity
+## 1. Decentralization & Sovereign Identity
 Humanity Ledger operates as a decentralized cryptographic protocol. You maintain sole ownership and control over your cryptographic keys, identity parameters, and data. We do not store, possess, or have access to your private keys or seed phrases. If you lose your keys, your data cannot be recovered by Humanity Ledger or any third party.
 
 ## 2. No Custody or Control
@@ -40,7 +36,7 @@ Your messages, calls, and interactions are secured using End-to-End Encryption (
 - Message contents or attachments (E2EE via XMTP).
 - Audio/Video call streams (E2EE via WebRTC DTLS/SRTP).
 - Your private keys or wallet balances.
-- Your physical location or IP addresses (mitigated via Decentralized Routing and TURN servers).
+- Your physical location or IP addresses (mitigated via Onion Routing and TURN servers).
 
 ## Data Required for Operation
 To facilitate peer discovery, temporary signaling metadata (such as ephemeral connection IDs) is processed by our relay servers. This data is strictly kept in memory and is automatically destroyed upon session termination. No logs are written to disk.
@@ -164,6 +160,15 @@ Since inception:
 `
 };
 
+const outputContent = \`import { ALL_DOC_SLUGS } from '@/components/docs/DocsData';
+import { DocsShell } from '@/components/docs/DocsShell';
+import { notFound } from 'next/navigation';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
+// Pre-generated massive markdown content
+const CONTENT_MAP: Record<string, string> = \${JSON.stringify(contentMap, null, 2)};
+
 export function generateStaticParams() {
   return ALL_DOC_SLUGS.map((doc) => ({
     slug: doc.slug,
@@ -177,7 +182,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
     notFound();
   }
 
-  const content = CONTENT_MAP[slug] || "# Content under construction\n\nThis section is currently being updated.";
+  const content = CONTENT_MAP[slug] || "# Content under construction\\n\\nThis section is currently being updated.";
 
   return (
     <DocsShell currentSlug={slug}>
@@ -189,3 +194,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
     </DocsShell>
   );
 }
+\`;
+
+fs.writeFileSync(path.join(__dirname, 'app/docs/[slug]/page.tsx'), outputContent);
+console.log('Docs generated.');

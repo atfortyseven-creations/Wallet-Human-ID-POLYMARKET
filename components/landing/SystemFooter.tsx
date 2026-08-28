@@ -37,6 +37,7 @@ export function SystemFooter() {
             <h4 className="text-[13px] font-black uppercase tracking-widest text-black/40 mb-1">Company</h4>
             <Link href="/company/about" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">About</Link>
             <Link href="/company/changelog" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">Changelog</Link>
+            <Link href="/blog" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">Blog</Link>
             <a href="https://github.com/humanityledger/Humanity-Ledger" target="_blank" rel="noopener noreferrer" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">GitHub</a>
           </div>
 

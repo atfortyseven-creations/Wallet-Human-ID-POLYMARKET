@@ -12,10 +12,10 @@ export const DOC_SECTIONS = [
   {
     group: "Protocol Architecture",
     items: [
-      { slug: "architecture", label: "System Architecture" },
-      { slug: "cryptography", label: "Cryptography Matrix" },
-      { slug: "zero-knowledge", label: "Zero-Knowledge Proofs" },
-      { slug: "p2p-routing", label: "P2P Onion Routing" },
+      { slug: "architecture", label: "Architecture Overview" },
+      { slug: "cryptography", label: "Encryption Systems" },
+      { slug: "zero-knowledge", label: "Privacy Engine" },
+      { slug: "p2p-routing", label: "Decentralized Routing" },
     ]
   },
   {
@@ -23,7 +23,7 @@ export const DOC_SECTIONS = [
     items: [
       { slug: "ledger-chat", label: "Ledger Chat" },
       { slug: "app-hub", label: "The App Hub" },
-      { slug: "identity", label: "Sovereign Identity" },
+      { slug: "identity", label: "Wallet Identity" },
     ]
   },
   {
