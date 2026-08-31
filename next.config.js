@@ -361,6 +361,10 @@ const nextConfig = {
         NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS || '0x1111111111111111111111111111111111111111',
         NEXT_PUBLIC_LEDGER_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_LEDGER_CONTRACT_ADDRESS || '0x2222222222222222222222222222222222222222',
         NEXT_PUBLIC_CHAIN_ID: process.env.NEXT_PUBLIC_CHAIN_ID || '8453',
+
+        // XMTP Network: MUST be 'production' so all wallets on the live app share the same network.
+        // Default to 'production' so Railway builds work without an explicit env var.
+        NEXT_PUBLIC_XMTP_ENV: process.env.NEXT_PUBLIC_XMTP_ENV || 'production',
     },
 
     // NOTE: CSP is handled exclusively by middleware.ts (per-request, nonce-based).

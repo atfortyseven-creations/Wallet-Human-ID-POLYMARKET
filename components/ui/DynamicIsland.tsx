@@ -19,6 +19,9 @@ export function DynamicIsland() {
   const isAppRoute = ISLAND_ALLOWLIST.some(r => pathname?.startsWith(r));
   if (!isAppRoute) return null;
 
+  // Don't render anything if idle so it doesn't block the UI
+  if (activeState === 'idle') return null;
+
   // Local timer for calls/recording
   const [timer, setTimer] = useState(0);
 
