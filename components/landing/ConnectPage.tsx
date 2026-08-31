@@ -308,20 +308,17 @@ export default function ConnectPage() {
 
         {/* LEFT: Branding */}
         <div className="hidden lg:flex flex-col justify-between bg-black text-white p-12 relative overflow-hidden">
-          {/* HIGH-QUALITY VIDEO BACKGROUND */}
+          {/* HIGH-QUALITY VIDEO BACKGROUND - full cover, no filters */}
           <video
             autoPlay
             loop
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-contain bg-black z-0"
+            className="absolute inset-0 w-full h-full object-cover z-0"
             src="/system-shots/72298-541981714.mp4"
           />
-          {/* OVERLAY TO ENSURE MAX TEXT VISIBILITY */}
-          <div className="absolute inset-0 bg-black/60 z-[1] backdrop-blur-[2px]" />
-          
-          <div className="absolute inset-0 opacity-[0.04] z-[2]"
-            style={{ backgroundImage: "linear-gradient(to right,white 1px,transparent 1px),linear-gradient(to bottom,white 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
+          {/* Subtle dark gradient ONLY at bottom for text legibility — NOT a solid overlay */}
+          <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.55) 100%)' }} />
           
           <div className="relative z-20">
             <img src="/logo-corporate.png" alt="Humanity Ledger" className="h-7 w-auto object-contain brightness-200" />
