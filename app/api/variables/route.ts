@@ -1,11 +1,12 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { encryptValue, decryptValue } from '@/lib/crypto';
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const wallet = searchParams.get('wallet');
+    const wallet = req.headers.get('x-verified-session-address') || searchParams.get('wallet');
+    if (wallet !== req.headers.get('x-verified-session-address')) return NextResponse.json({error: 'IDOR attempt'}, { status: 403 });
 
     if (!wallet) return NextResponse.json([], { status: 401 });
 
@@ -32,7 +33,8 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { key, value, description, wallet } = body;
+    const { key, value, description } = body;
+    const wallet = req.headers.get('x-verified-session-address');
 
     if (!key || !value || !wallet) {
       return new NextResponse("Key, Value, and Wallet identity are required", { status: 400 });

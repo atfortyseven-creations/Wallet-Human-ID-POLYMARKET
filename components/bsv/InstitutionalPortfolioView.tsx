@@ -220,7 +220,7 @@ export function InstitutionalPortfolioView() {
                         onRefresh={refreshBalance}
                         onSend={() => setView('SEND')}
                         onReceive={() => setMicaLockType('RECEIVE')}
-                        onCreate={() => setView('CREATE')}
+                        onCreate={() => toast.info('Feature coming soon.')}
                         onBuy={() => setView('BUY')}
                         onSwap={() => setMicaLockType('SWAP')}
                         onBridge={() => setMicaLockType('BRIDGE')}
@@ -229,12 +229,12 @@ export function InstitutionalPortfolioView() {
                         onAccountsClick={() => setShowAccounts(true)}
                         onScan={() => setShowScan(true)}
                         scannerBase={scannerBase}
-                        onShield={() => setView('SHIELD')}
-                        onSecurity={() => setView('SECURITY')}
-                        onSmartAccount={() => setView('SMART_ACCOUNT')}
-                        onDeploy={() => setView('DEPLOY')}
-                        onOmnichain={() => setView('OMNICHAIN')}
-                        onMempool={() => setView('MEMPOOL')}
+                        onShield={() => toast.info('Aztec Privacy Shield — Coming soon.')}
+                        onSecurity={() => toast.info('Security Allowances — Coming soon.')}
+                        onSmartAccount={() => toast.info('Smart Account Terminal — Coming soon.')}
+                        onDeploy={() => toast.info('Contract Deployer — Coming soon.')}
+                        onOmnichain={() => toast.info('Omnichain Bridge — Coming soon.')}
+                        onMempool={() => toast.info('Mempool Manager — Coming soon.')}
                         onQds={handleQds}
                         assets={assets || []}
                         totalBalance={totalBalance}
@@ -327,7 +327,7 @@ export function InstitutionalPortfolioView() {
 function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, loading, onRefresh, onSend, onReceive, onScan, onCreate, onBuy, onSwap, onBridge, onNetworkClick, onSettingsClick, onAccountsClick, scannerBase, onShield, onSecurity, onSmartAccount, onDeploy, onOmnichain, onMempool, onQds, assets, displayCurrency, setDisplayCurrency, rate, symbol, isEmailAuth }: any) {
     const [copied, setCopied] = useState(false);
     const [isDisconnecting, setIsDisconnecting] = useState(false);
-    const [activeTab, setActiveTab] = useState<'TOKENS'|'DEFI'|'ACTIVITY'|'AZTEC'>('TOKENS');
+    const [activeTab, setActiveTab] = useState<'TOKENS'|'ACTIVITY'|'AZTEC'>('TOKENS');
     const { nuclearDisconnect } = useSystemSignOut();
     const networkInfo = NETWORKS[activeNetwork as NetworkId] || NETWORKS.polygon;
 
@@ -479,7 +479,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                     {/* Minimalist Tabs Panel */}
                     <div className="bg-white border border-zinc-900/10 overflow-hidden flex flex-col shadow-sm rounded-sm">
                         <div className="flex border-b border-zinc-900/10 overflow-x-auto no-scrollbar snap-x">
-                            {(['TOKENS', 'DEFI', 'ACTIVITY', 'AZTEC'] as const).map(t => (
+                            {(['TOKENS', 'ACTIVITY', 'AZTEC'] as const).map(t => (
                                 <AztecAwareTabButton
                                     key={t}
                                     tab={t}
@@ -490,7 +490,6 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                         </div>
                         <div className="flex-1 bg-white flex flex-col p-4 md:p-8 min-h-[400px]">
                             {activeTab === 'TOKENS' && <QuantumHoldingsEngine address={address} activeNetwork={activeNetwork} scannerBase={scannerBase} userAssets={assets} displayCurrency={displayCurrency} rate={rate} symbol={symbol} onSwapRequest={onSwap} onBridgeRequest={onBridge} onQdsTransfer={onQds} />}
-                            {activeTab === 'DEFI' && <QuantumDeFiPositions address={address} activeNetwork={activeNetwork} />}
                             {activeTab === 'ACTIVITY' && <TransactionHistory address={address} scannerBase={scannerBase} activeNetwork={activeNetwork} />}
                             {activeTab === 'AZTEC' && <div className="w-full max-w-4xl mx-auto"><AztecIdentityCard /></div>}
                         </div>

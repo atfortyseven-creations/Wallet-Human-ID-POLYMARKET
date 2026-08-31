@@ -1,4 +1,4 @@
-/**
+﻿/**
  * middleware.ts — Ledger Network Identity Perimeter
  * ─────────────────────────────────────────────────
  * Edge Middleware (runs before EVERY request, on Vercel/Railway Edge runtime).
@@ -196,8 +196,8 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
 
 
   // Strict enforcement: ONLY /chat and /portfolio are allowed for authenticated users.
-  // /terminal and /hub are now strictly redirected to /chat.
-  if (pathname === '/terminal' || pathname.startsWith('/terminal/') || pathname === '/hub' || pathname.startsWith('/hub/')) {
+  // /terminal is strictly redirected to /chat. /hub is allowed.
+  if (pathname === '/terminal' || pathname.startsWith('/terminal/') ) {
     return NextResponse.redirect(new URL('/chat', req.url));
   }
 

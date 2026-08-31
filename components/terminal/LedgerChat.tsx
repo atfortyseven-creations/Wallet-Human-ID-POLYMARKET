@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings, Clock, Lock, PieChart } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
@@ -215,7 +215,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     (async () => {
       for (let i = 0; i < 3 && !cancelled; i++) {
         await new Promise(r => setTimeout(r, 800 + i * 600)); // 800ms, 1400ms, 2000ms
-        if (cancelled) break;
+        if (cancelled) { abortController.abort(); break; }
         try {
           reconnect();
           // Zombie-session recovery dispatched (attempt ${i + 1})
@@ -650,8 +650,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
       )) return false;
       return true;
     }));
-    // Also reset the dedup set so stream doesn't re-inject old messages
-    confirmedMsgIds.current.clear();
+    // Deduplication set is left intact to prevent stream from re-injecting them
     setShowClearConfirm(false);
     toast.success('✅ Chat cleared.');
   };
@@ -2403,9 +2402,10 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
       let streamRestarts = 0;
       while (!cancelled) {
         try {
-        const gen = streamMessages(client);
+        const abortController = new AbortController();
+          const gen = streamMessages(client, abortController.signal);
         for await (const msg of gen as any) {
-          if (cancelled) break;
+          if (cancelled) { abortController.abort(); break; }
           
           const fromPeer = msg.senderInboxId !== selfInboxId;
           const content = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
@@ -3090,10 +3090,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
       } else {
         try {
           await sendMessage(client, activePeer, finalContent, address);
-        } catch (err) {
-          console.error('[Ledger Chat] Message send failed:', err);
-          toast.error("Failed to send message");
-        }
+        } catch (err) { console.error('[Ledger Chat] Message send failed:', err); throw err; }
       }
 
       if (!isReaction) {
@@ -3109,6 +3106,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
       return;
 
     } catch (err: any) {
+      throw err;
       // On failure, keep the message but mark it as failed so the user knows what happened
       optimisticContentMap.current.delete(content);
       const errString = err?.message || String(err);

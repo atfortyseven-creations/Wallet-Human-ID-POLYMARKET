@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+﻿import { create } from 'zustand';
 
 export type DynamicIslandState = 'idle' | 'calling' | 'recording' | 'syncing' | 'notification' | 'wallet_connected' | 'tx_processing' | 'tx_success';
 
@@ -15,6 +15,7 @@ interface DynamicIslandStore {
   activeState: DynamicIslandState;
   payload: DynamicIslandPayload | undefined;
   expanded: boolean;
+  _gen: number;
   
   // Actions
   setState: (state: DynamicIslandState, payload?: DynamicIslandPayload, autoDismiss?: number) => void;
@@ -26,14 +27,16 @@ export const useDynamicIsland = create<DynamicIslandStore>((set, get) => ({
   activeState: 'idle',
   payload: undefined,
   expanded: false,
+  _gen: 0,
 
   setState: (state, payload, autoDismiss) => {
-    set({ activeState: state, payload, expanded: true });
+    const gen = get()._gen + 1;
+    set({ activeState: state, payload, expanded: true, _gen: gen });
     if (autoDismiss) {
       setTimeout(() => {
-        if (get().activeState === state) {
+        if (get()._gen === gen) {
           set({ expanded: false });
-          setTimeout(() => set({ activeState: 'idle', payload: undefined }), 500);
+          setTimeout(() => { if (get()._gen === gen) set({ activeState: 'idle', payload: undefined }); }, 500);
         }
       }, autoDismiss);
     }
@@ -42,7 +45,8 @@ export const useDynamicIsland = create<DynamicIslandStore>((set, get) => ({
   setExpanded: (expanded) => set({ expanded }),
 
   dismiss: () => {
-    set({ expanded: false });
-    setTimeout(() => set({ activeState: 'idle', payload: undefined }), 500);
+    const gen = get()._gen + 1;
+    set({ expanded: false, _gen: gen });
+    setTimeout(() => { if (get()._gen === gen) set({ activeState: 'idle', payload: undefined }); }, 500);
   },
 }));
