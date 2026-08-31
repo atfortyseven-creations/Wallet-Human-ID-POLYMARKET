@@ -304,20 +304,44 @@ export default function ConnectPage() {
 
   return (
     <div className="w-full min-h-screen bg-[#F7F7F6] text-black overflow-x-hidden selection:bg-black selection:text-white">
-      <div className="w-full min-h-screen flex flex-col lg:grid lg:grid-cols-[1fr_460px]">
+      {/* ────────────────────────────────────────────────────────────
+          MOBILE HERO: Full-width globe video, no borders, top 50vh
+          Hidden on desktop — desktop uses the left/right grid below
+      ──────────────────────────────────────────────────────────── */}
+      <div className="lg:hidden w-full relative overflow-hidden bg-black" style={{ height: '50dvh', minHeight: 220 }}>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+          className="absolute inset-0 w-full h-full object-cover"
+          src="/system-shots/72298-541981714.mp4"
+          style={{ objectPosition: 'center center' }}
+        />
+        {/* Gentle bottom fade so the video blends into the white form */}
+        <div className="absolute bottom-0 left-0 right-0 h-16 z-10" style={{ background: 'linear-gradient(to bottom, transparent, #ffffff)' }} />
+        {/* Logo top-left */}
+        <div className="absolute top-4 left-4 z-20" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
+          <img src="/logo-corporate.png" alt="Humanity Ledger" className="h-6 w-auto brightness-200 drop-shadow-lg" />
+        </div>
+      </div>
 
-        {/* LEFT: Branding */}
-        <div className="hidden lg:flex flex-col justify-between bg-black text-white p-12 relative overflow-hidden">
-          {/* HIGH-QUALITY VIDEO BACKGROUND - full cover, no filters */}
+      <div className="w-full flex flex-col lg:grid lg:grid-cols-[1fr_460px]" style={{ minHeight: 'calc(100dvh - 50dvh)' }}>
+
+        {/* LEFT: Branding — desktop only */}
+        <div className="hidden lg:flex flex-col justify-between bg-black text-white p-12 relative overflow-hidden" style={{ minHeight: '100dvh' }}>
+          {/* HIGH-QUALITY VIDEO BACKGROUND */}
           <video
             autoPlay
             loop
             muted
             playsInline
+            preload="auto"
             className="absolute inset-0 w-full h-full object-cover z-0"
             src="/system-shots/72298-541981714.mp4"
           />
-          {/* Subtle dark gradient ONLY at bottom for text legibility — NOT a solid overlay */}
           <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.55) 100%)' }} />
           
           <div className="relative z-20">
@@ -325,14 +349,14 @@ export default function ConnectPage() {
           </div>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }} className="relative z-20 flex flex-col gap-6">
             <div>
-              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30 mb-4">Humanity Ledger · Beta</p>
+              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30 mb-4">Humanity Ledger Beta</p>
               <h1 className="text-4xl xl:text-5xl font-black tracking-tight leading-[1.1] text-white">Your sovereign<br />digital workspace.</h1>
             </div>
             <p className="text-[15px] text-white/45 leading-relaxed max-w-[360px]">Authenticate once with your Ethereum wallet. Access encrypted messaging, portfolio sync, and on-chain identity.</p>
             <div className="flex flex-col gap-3 mt-2">
               {[
                 { icon: <Lock size={12} />,   label: "End-to-end encrypted via XMTP" },
-                { icon: <Shield size={12} />, label: "Wallet auth (SIWE) — no passwords" },
+                { icon: <Shield size={12} />, label: "Wallet authentication via SIWE. No passwords." },
                 { icon: <Wallet size={12} />, label: "Multi-chain portfolio sync" },
               ].map((f, i) => (
                 <div key={i} className="flex items-center gap-3">
@@ -344,24 +368,17 @@ export default function ConnectPage() {
           </motion.div>
         </div>
 
-        {/* RIGHT: Auth (single render) */}
-        <div className="flex flex-col items-center justify-start lg:justify-center min-h-screen overflow-y-auto py-8 px-6 md:px-10 bg-white relative border-l border-black/6" style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom, 2rem))' }}>
-            {/* Mobile: Video header banner */}
-          <div className="lg:hidden w-full rounded-2xl overflow-hidden mb-8 relative" style={{ height: 160 }}>
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover z-0"
-              src="/system-shots/72298-541981714.mp4"
-            />
-            <div className="absolute inset-0 bg-black/20 z-[1]" />
-            <div className="relative z-10 flex flex-col items-center justify-center h-full gap-2">
-              <img src="/logo-corporate.png" alt="Humanity Ledger" className="h-6 w-auto brightness-200" />
-              <p className="text-white/80 text-[10px] font-mono uppercase tracking-[0.2em]">Sovereign Workspace</p>
-            </div>
-          </div>
+        {/* RIGHT: Auth panel — full height on desktop, white bottom sheet on mobile */}
+        <div
+          className="flex flex-col items-center justify-start lg:justify-center overflow-y-auto bg-white relative border-l border-black/6"
+          style={{
+            minHeight: 'calc(100dvh - 50dvh)',
+            paddingTop: 'clamp(1.5rem, 4vw, 2.5rem)',
+            paddingBottom: 'max(2rem, env(safe-area-inset-bottom, 2rem))',
+            paddingLeft: '1.5rem',
+            paddingRight: '1.5rem',
+          }}
+        >
 
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="w-full max-w-[380px]">
             <div className="mb-7">
@@ -491,7 +508,7 @@ export default function ConnectPage() {
             <div className="mt-6 flex justify-center">
               <div className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-widest text-black/25">
                 <div className="w-1 h-1 rounded-full bg-emerald-400" />
-                Secured · SIWE · XMTP
+                Secured / SIWE / XMTP
               </div>
             </div>
           </motion.div>

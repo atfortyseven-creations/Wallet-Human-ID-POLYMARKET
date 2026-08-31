@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
@@ -496,7 +496,7 @@ function ConnectedScreen({
             className="mt-auto flex items-center justify-center gap-3 px-8 py-4 rounded-full border border-black/10 bg-white font-mono text-[9px] uppercase tracking-[0.25em] text-black/40 hover:text-black hover:border-black/30 hover:shadow-lg transition-all duration-300"
           >
             <LogOut size={14} strokeWidth={1.5} />
-            End Session · Change Wallet
+            End Session / Change Wallet
           </motion.button>
         )}
       </main>
@@ -1394,7 +1394,7 @@ export function MobileLanding() {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="mt-4 text-[10px] font-mono uppercase tracking-[0.25em] text-black/55"
         >
-          Humanity Ledger · ZK-Native · Sovereign
+          Humanity Ledger / ZK-Native / Sovereign
         </motion.p>
 
         {/* ── ANDROID/iOS RECOVERY BANNER ───────────────────────────────── */}
@@ -1471,7 +1471,7 @@ export function MobileLanding() {
             <div className="flex-1 text-left">
               <p className="text-[14px] font-black uppercase tracking-tight text-[#050505]">Connect Wallet</p>
               <p className="text-[10px] font-mono text-[#050505]/50 uppercase tracking-widest mt-0.5">
-                MetaMask · Trust · Rainbow · WalletConnect
+                MetaMask, Trust, Rainbow, WalletConnect
               </p>
             </div>
             <ArrowRight size={16} className="text-[#5200FF]/60 group-hover:text-[#5200FF] group-hover:translate-x-1 transition-all shrink-0" />
@@ -1488,7 +1488,7 @@ export function MobileLanding() {
           <WalletOption
             logo="https://www.svgrepo.com/show/513867/email-letter.svg"
             name="Sign in with Email"
-            badge="One-time code · No wallet needed"
+            badge="One-time code. No wallet needed."
             loading={false}
             onClick={() => setEmailModalOpen(true)}
             delay={0}
@@ -1509,7 +1509,7 @@ export function MobileLanding() {
         </div>
 
         <p className="text-center text-[9px] font-mono text-black/55 uppercase tracking-[0.2em] mt-3 mb-0.5">
-          Secured by Humanity Ledger · ZK-Native · End to End Encrypted
+          Secured by Humanity Ledger. ZK-Native. End-to-End Encrypted.
         </p>
       </motion.div>
 

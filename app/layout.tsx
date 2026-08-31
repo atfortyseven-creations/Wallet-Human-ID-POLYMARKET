@@ -105,7 +105,13 @@ export const metadata = {
   ],
 
   authors: [{ name: 'Humanity Ledger' }],
-  icons: { icon: '/favicon.jpg', shortcut: '/favicon.jpg', apple: '/favicon.jpg' },
+  icons: { 
+    icon: [
+      { url: '/system-shots/Globe-world-icon-Graphics-14972185-1.jpg', type: 'image/jpeg' },
+    ],
+    shortcut: '/system-shots/Globe-world-icon-Graphics-14972185-1.jpg',
+    apple: '/system-shots/Globe-world-icon-Graphics-14972185-1.jpg',
+  },
 
   creator: 'Humanity Ledger',
 

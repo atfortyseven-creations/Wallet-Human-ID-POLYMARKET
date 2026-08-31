@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 /**
  * MobileImmersiveGate
@@ -394,7 +394,7 @@ export function MobileImmersiveGate() {
                 </span>
               </div>
               <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-[#0A0A0A]/25">
-                Aztec · ZK-Native
+                Sovereign / ZK-Native
               </span>
             </div>
 
@@ -499,7 +499,7 @@ export function MobileImmersiveGate() {
                 </p>
               </div>
               <p className="text-[9px] font-mono text-[#0A0A0A]/20 uppercase tracking-[0.25em]">
-                Humanity Ledger · 2026
+                © 2026 Humanity Ledger
               </p>
             </div>
           </motion.div>

@@ -507,16 +507,34 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         const perm = await vault.getItem('ledger_media_perm');
         if (perm === 'true') setHasMediaPermission(true);
 
-        // [BUG FIX] Re-registration shown to returning users.
-        // Check localStorage first (fastest path), then cross-check displayName.
-        // Runs whenever effectiveAddress resolves (e.g. wallet connects after mount).
+        // [BUG FIX]
         if (typeof window !== 'undefined') {
           const flagOnboarded = localStorage.getItem('ledger_onboarded_' + effectiveAddress) === 'true';
           const hasProfile = !!(ledgerSettings?.displayName && ledgerSettings.displayName.trim().length > 0);
+          if (hasProfile && !flagOnboarded) { 
+            try { localStorage.setItem("ledger_onboarded_" + effectiveAddress, "true"); } catch {} 
+          } 
           if (flagOnboarded || hasProfile) {
             setIsOnboarded(true);
-            // Backfill the flag so future checks are instant
-            if (hasProfile && !flagOnboarded) { try { localStorage.setItem("ledger_onboarded_" + effectiveAddress, "true"); } catch {} } } else if (effectiveAddress && effectiveAddress !== "0x0") { try { const res = await fetch(`/api/user/profile?walletAddress=${effectiveAddress}`); if (res.ok) { const data = await res.json(); if (data.displayName || data.chatName) { localStorage.setItem("ledger_onboarded_" + effectiveAddress, "true"); setIsOnboarded(true); updateBatch({ displayName: data.displayName || data.chatName, username: data.chatName ? data.chatName : "", avatar_url: data.avatarUrl || "", bio: data.bio || "" }); } } } catch (e) {} }
+          } else if (effectiveAddress && effectiveAddress !== "0x0") { 
+            try { 
+              const res = await fetch(`/api/user/profile?walletAddress=${effectiveAddress}`); 
+              if (res.ok) { 
+                const resJson = await res.json(); 
+                const profile = resJson.data || resJson; // Handle both wrapped and unwrapped responses just in case
+                if (profile && (profile.displayName || profile.chatName)) { 
+                  localStorage.setItem("ledger_onboarded_" + effectiveAddress, "true"); 
+                  setIsOnboarded(true); 
+                  updateBatch({ 
+                    displayName: profile.displayName || profile.chatName, 
+                    username: profile.chatName ? profile.chatName : "", 
+                    avatar_url: profile.avatarUrl || "", 
+                    bio: profile.bio || "" 
+                  }); 
+                } 
+              } 
+            } catch (e) {} 
+          }
         }
       } catch {}
     };

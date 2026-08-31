@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -105,7 +105,7 @@ export const MobileLedgerLanding = () => {
 
             {/* Fine print */}
             <p className="text-center text-[10px] text-zinc-900/30 font-medium tracking-wide pt-2">
-              Non-custodial · Open source · Aztec L2
+              Non-custodial / Open source / Aztec L2
             </p>
           </motion.div>
         )}

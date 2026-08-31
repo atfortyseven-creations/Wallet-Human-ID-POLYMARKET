@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -374,7 +374,7 @@ export function ImmersiveManifestoLanding({ onOpenScanner }: ImmersiveManifestoL
               href="/connect"
               className="inline-flex items-center gap-2 bg-[#1C1C1E] hover:bg-black text-white font-bold text-[15px] px-7 py-3.5 rounded-xl transition-all self-start"
             >
-              Start now — it is free
+              Start now. Free forever.
             </Link>
           </motion.div>
 
@@ -427,16 +427,16 @@ export function ImmersiveManifestoLanding({ onOpenScanner }: ImmersiveManifestoL
             </div>
 
             <div className="flex flex-col gap-4">
-              <FeatureCheck text="Wallet identity — no phone number required" />
-              <FeatureCheck text="In-chat Quantum Dot payments — built-in micro-transactions" />
-              <FeatureCheck text="Cryptographic message signing — mathematically guaranteed authenticity" />
-              <FeatureCheck text="Burn on Read — messages auto-destroy after viewing" />
+              <FeatureCheck text="Wallet identity. No phone number required." />
+              <FeatureCheck text="In-chat Quantum Dot payments with built-in micro-transactions" />
+              <FeatureCheck text="Cryptographic message signing for mathematically guaranteed authenticity" />
+              <FeatureCheck text="Burn on Read: messages auto-destroy after viewing" />
               <FeatureCheck text="Voice notes with a real-time waveform visualizer" />
               <FeatureCheck text="Group chats with verified membership" />
-              <FeatureCheck text="AI Ghost Mode — smart auto-replies protect your time" />
+              <FeatureCheck text="AI Ghost Mode: smart auto-replies protect your time" />
               <FeatureCheck text="Polls, stickers, animated GIFs, and a personal file vault" />
-              <FeatureCheck text="HD video and voice calls — no central server" />
-              <FeatureCheck text="Desktop QR session linking — start on mobile, continue on PC" />
+              <FeatureCheck text="HD video and voice calls with no central server" />
+              <FeatureCheck text="Desktop QR session linking: start on mobile, continue on PC" />
             </div>
           </motion.div>
         </div>
