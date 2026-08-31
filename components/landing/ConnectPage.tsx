@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -314,7 +314,7 @@ export default function ConnectPage() {
             loop
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-cover z-0"
+            className="absolute inset-0 w-full h-full object-contain bg-black z-0"
             src="/system-shots/72298-541981714.mp4"
           />
           {/* OVERLAY TO ENSURE MAX TEXT VISIBILITY */}
@@ -360,7 +360,7 @@ export default function ConnectPage() {
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-contain bg-black"
               src="/system-shots/72298-541981714.mp4"
             />
             <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />

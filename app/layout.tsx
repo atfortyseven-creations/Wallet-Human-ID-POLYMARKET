@@ -1,4 +1,4 @@
-// System layout  No Clerk provider needed (SIWE-native auth)
+﻿// System layout  No Clerk provider needed (SIWE-native auth)
 
 import { headers } from 'next/headers'
 
@@ -105,6 +105,7 @@ export const metadata = {
   ],
 
   authors: [{ name: 'Humanity Ledger' }],
+  icons: { icon: '/favicon.png', shortcut: '/favicon.png', apple: '/favicon.png' },
 
   creator: 'Humanity Ledger',
 

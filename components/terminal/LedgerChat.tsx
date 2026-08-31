@@ -155,7 +155,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   const { reconnect } = useReconnect();
   const { open: openAppKit } = useAppKit();
   const effectiveAddress = (address || '0x0') as string;
-  const { settings: ledgerSettings, isLoaded: pxeLoaded } = useLedgerSettings(effectiveAddress);
+  const { settings: ledgerSettings, isLoaded: pxeLoaded, updateBatch } = useLedgerSettings(effectiveAddress);
 
   // [PHASE 2 - SILOING] Consume the sandboxed PXE context for Chat Operations
   // This strictly isolates Chat from the Portfolio state to prevent cross-contamination.
@@ -516,10 +516,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           if (flagOnboarded || hasProfile) {
             setIsOnboarded(true);
             // Backfill the flag so future checks are instant
-            if (hasProfile && !flagOnboarded) {
-              try { localStorage.setItem('ledger_onboarded_' + effectiveAddress, 'true'); } catch {}
-            }
-          }
+            if (hasProfile && !flagOnboarded) { try { localStorage.setItem("ledger_onboarded_" + effectiveAddress, "true"); } catch {} } } else if (effectiveAddress && effectiveAddress !== "0x0") { try { const res = await fetch(`/api/user/profile?walletAddress=${effectiveAddress}`); if (res.ok) { const data = await res.json(); if (data.displayName || data.chatName) { localStorage.setItem("ledger_onboarded_" + effectiveAddress, "true"); setIsOnboarded(true); updateBatch({ displayName: data.displayName || data.chatName, username: data.chatName ? data.chatName : "", avatar_url: data.avatarUrl || "", bio: data.bio || "" }); } } } catch (e) {} }
         }
       } catch {}
     };
