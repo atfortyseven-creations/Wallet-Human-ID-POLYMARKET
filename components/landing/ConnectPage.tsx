@@ -342,10 +342,6 @@ export default function ConnectPage() {
               ))}
             </div>
           </motion.div>
-          <div className="relative z-20 flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-white/25">Aztec Testnet · Live</span>
-          </div>
         </div>
 
         {/* RIGHT: Auth (single render) */}

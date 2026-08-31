@@ -66,13 +66,9 @@ export function SystemFooter() {
 
         {/* Bottom bar */}
         <div className="border-t border-black/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-[13px] text-black/40 font-medium">
+          <p className="text-[13px] text-black/40 font-medium text-center md:text-left">
             &copy; 2027 Humanity Ledger. Not a financial institution. Not affiliated with Humanity Protocol.
           </p>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#30D158] animate-pulse shadow-[0_0_6px_#30D158]" />
-            <span className="text-[13px] font-bold text-black/50">All systems operational</span>
-          </div>
         </div>
 
       </div>
