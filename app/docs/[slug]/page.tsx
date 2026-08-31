@@ -550,48 +550,64 @@ We maintain a responsible disclosure policy. If you discover a security vulnerab
   "bug-bounty": `
 # Bug Bounty Program
 
-We believe in the power of collaborative security. The Humanity Ledger Bug Bounty Program rewards researchers who responsibly discover and report valid security vulnerabilities.
+Last Updated: August 2026
+
+---
+
+## Program Status: Coming Soon
+
+We are currently finalizing our formal Bug Bounty Program. The program is **not yet active** and no paid rewards are being offered at this time.
+
+---
+
+## Responsible Disclosure (Active Now)
+
+While the formal bounty program is being established, we actively encourage responsible disclosure of security vulnerabilities.
+
+**How to report:**
+
+1. Send your findings to **security@humanityledger.com**
+2. Include a clear description of the vulnerability and steps to reproduce.
+3. Do **not** disclose publicly until we have confirmed resolution with you.
+4. We will acknowledge your report within 48 hours.
+
+---
+
+## What to Report
+
+We are particularly interested in:
+- Authentication bypass or session hijacking
+- Cryptographic implementation weaknesses
+- API endpoints exposing user data without authorization
+- Cross-site scripting (XSS) or injection attacks
+- Smart contract interaction vulnerabilities
 
 ---
 
 ## Scope
 
-The program covers:
-
-- **Ledger Chat** (web and mobile)
-- **Authentication and session management**
-- **Encryption implementations**
-- **Smart contract interactions**
-- **The Humanity Ledger API**
-
----
-
-## Reward Tiers
-
-| Severity | Description | Reward |
-|---|---|---|
-| **Critical** | Authentication bypass, key extraction, remote code execution | Up to $10,000 |
-| **High** | Data exposure, privilege escalation, significant privacy violation | Up to $2,500 |
-| **Medium** | Cross-site scripting (XSS), minor data leakage | Up to $500 |
-| **Low** | UI bugs with minor security impact | Recognition |
-
----
-
-## Reporting Process
-
-1. Send your report to security@humanityledger.com.
-2. Include a clear description of the vulnerability and steps to reproduce it.
-3. Do not disclose the vulnerability publicly until we have resolved it and given you permission.
-4. We will acknowledge your report within 48 hours and aim to resolve valid issues within 30 days.
+The following are in scope:
+- **Ledger Chat** (web application at humanidfi.com)
+- **Authentication and session management** (/api/auth/*)
+- **Encryption implementations** (lib/xmtp, lib/web-crypto)
+- **The Humanity Ledger public API**
 
 ---
 
 ## Out of Scope
 
-- Denial-of-service attacks.
-- Social engineering of Humanity Ledger staff.
-- Vulnerabilities in third-party services that we do not control.
-- Issues that require physical access to a user's device.
+- Denial-of-service attacks
+- Social engineering of Humanity Ledger staff
+- Vulnerabilities in third-party services we do not control
+- Issues requiring physical access to a user's device
+
+---
+
+## Future Program
+
+When the formal program launches, it will include structured reward tiers. Researchers who submitted valid reports during this pre-launch period will be recognized in the Hall of Fame.
+
+Follow our [GitHub](https://github.com/humanityledger/Humanity-Ledger) or [Changelog](/docs/changelog) for the official launch announcement.
 `,
   "transparency": `
 # Transparency Report

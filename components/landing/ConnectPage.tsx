@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -237,27 +237,34 @@ export default function ConnectPage() {
             setLinked(true); redirectingRef.current = true;
             const rp = new URLSearchParams(window.location.search);
             const rv = rp.get("returnUrl") || rp.get("redirect_url");
-            const safe = (rv && rv !== "/portfolio" && !rv.startsWith("/terminal")) ? rv : "/chat";
+            const safe = (rv && rv !== "/portfolio" && !rv.startsWith("/terminal")) ? rv : "/hub";
             window.location.replace(safe); return;
           }
         }
       } catch {}
       try {
-        const nonceRes = await fetch("/api/auth/nonce", { cache: "no-store" });
-        if (!nonceRes.ok) throw new Error("Failed to fetch cryptographic nonce");
-        const { nonce } = await nonceRes.json();
-        const msg = `Sign in to Humanity Ledger
-
-Address: ${address}
-Nonce: ${nonce}
-Chain: Ethereum`;
+        let nonce: string;
+        let nonceFromServer = false;
+        try {
+          const nonceRes = await fetch("/api/auth/nonce", { cache: "no-store", signal: AbortSignal.timeout(4000) });
+          if (nonceRes.ok) {
+            const nd = await nonceRes.json();
+            nonce = nd.nonce;
+            nonceFromServer = true;
+          } else {
+            nonce = `HL-${Date.now()}-${crypto.randomUUID ? crypto.randomUUID().replace(/-/g, "") : Math.random().toString(36).slice(2)}`;
+          }
+        } catch {
+          nonce = `HL-${Date.now()}-${crypto.randomUUID ? crypto.randomUUID().replace(/-/g, "") : Math.random().toString(36).slice(2)}`;
+        }
+        const msg = `Sign in to Humanity Ledger\n\nAddress: ${address}\nNonce: ${nonce}\nChain: Ethereum`;
         const signature = await signMessageAsync({ message: msg });
-        const vr = await fetch("/api/auth/system-verify", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify({ address, message: msg, signature, nonce }) });
+        const vr = await fetch("/api/auth/system-verify", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify({ address, message: msg, signature, nonce, _clientNonce: !nonceFromServer }) });
         if (vr.ok) {
           setLinked(true); redirectingRef.current = true;
           const rp = new URLSearchParams(window.location.search);
           const rv = rp.get("returnUrl") || rp.get("redirect_url");
-          window.location.replace((rv && !rv.startsWith("/terminal")) ? rv : "/chat");
+          window.location.replace((rv && !rv.startsWith("/terminal")) ? rv : "/hub");
         } else { setAuthStatus("failed"); signingRef.current = false; }
       } catch (e: any) {
         if (e?.message?.toLowerCase().includes("rejected") || e?.message?.toLowerCase().includes("cancelled")) toast.error("Signature declined");
@@ -346,8 +353,21 @@ Chain: Ethereum`;
 
         {/* RIGHT: Auth (single render) */}
         <div className="flex flex-col items-center justify-center min-h-screen p-6 md:p-10 bg-white relative border-l border-black/6">
-          <div className="lg:hidden w-full flex justify-center mb-10">
-            <img src="/logo-text.png" alt="Humanity Ledger" className="h-6 w-auto" />
+          {/* Mobile: Video header banner */}
+          <div className="lg:hidden w-full rounded-2xl overflow-hidden mb-8 relative" style={{ height: 160 }}>
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              src="/system-shots/72298-541981714.mp4"
+            />
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+            <div className="relative z-10 flex flex-col items-center justify-center h-full gap-2">
+              <img src="/logo-text.png" alt="Humanity Ledger" className="h-6 w-auto brightness-200" />
+              <p className="text-white/60 text-[10px] font-mono uppercase tracking-[0.2em]">Sovereign Workspace</p>
+            </div>
           </div>
 
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="w-full max-w-[380px]">
