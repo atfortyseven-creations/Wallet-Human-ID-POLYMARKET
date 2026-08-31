@@ -345,21 +345,21 @@ export default function ConnectPage() {
         </div>
 
         {/* RIGHT: Auth (single render) */}
-        <div className="flex flex-col items-center justify-center min-h-screen p-6 md:p-10 bg-white relative border-l border-black/6">
-          {/* Mobile: Video header banner */}
+        <div className="flex flex-col items-center justify-start lg:justify-center min-h-screen overflow-y-auto py-8 px-6 md:px-10 bg-white relative border-l border-black/6" style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom, 2rem))' }}>
+            {/* Mobile: Video header banner */}
           <div className="lg:hidden w-full rounded-2xl overflow-hidden mb-8 relative" style={{ height: 160 }}>
             <video
               autoPlay
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-contain bg-black"
+              className="absolute inset-0 w-full h-full object-cover z-0"
               src="/system-shots/72298-541981714.mp4"
             />
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+            <div className="absolute inset-0 bg-black/20 z-[1]" />
             <div className="relative z-10 flex flex-col items-center justify-center h-full gap-2">
               <img src="/logo-corporate.png" alt="Humanity Ledger" className="h-6 w-auto brightness-200" />
-              <p className="text-white/60 text-[10px] font-mono uppercase tracking-[0.2em]">Sovereign Workspace</p>
+              <p className="text-white/80 text-[10px] font-mono uppercase tracking-[0.2em]">Sovereign Workspace</p>
             </div>
           </div>
 
@@ -487,14 +487,14 @@ export default function ConnectPage() {
                 </motion.div>
               )}
             </AnimatePresence>
-          </motion.div>
-
-          <div className="absolute bottom-5 left-0 right-0 flex justify-center pointer-events-none">
-            <div className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-widest text-black/18">
-              <div className="w-1 h-1 rounded-full bg-emerald-400" />
-              Secured · SIWE · XMTP
+            
+            <div className="mt-6 flex justify-center">
+              <div className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-widest text-black/25">
+                <div className="w-1 h-1 rounded-full bg-emerald-400" />
+                Secured · SIWE · XMTP
+              </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 

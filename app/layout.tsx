@@ -105,7 +105,7 @@ export const metadata = {
   ],
 
   authors: [{ name: 'Humanity Ledger' }],
-  icons: { icon: '/favicon.png', shortcut: '/favicon.png', apple: '/favicon.png' },
+  icons: { icon: '/favicon.jpg', shortcut: '/favicon.jpg', apple: '/favicon.jpg' },
 
   creator: 'Humanity Ledger',
 

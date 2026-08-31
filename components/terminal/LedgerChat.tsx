@@ -4311,7 +4311,26 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                           setShowAppDrawer(false); 
                         } },
                         { id: 'secret', icon: <Lock size={18} />, label: isSecretChat ? 'Exit Secret Mode' : 'Secret Mode', color: 'text-white', bg: isSecretChat ? 'bg-[#FF3B30]' : 'bg-[#30D158]', onClick: () => { setIsSecretChat((s: boolean) => !s); setShowAppDrawer(false); } },
-                        { id: 'schedule', icon: <Clock size={18} />, label: 'Schedule Send', color: 'text-white', bg: 'bg-[#AF52DE]', onClick: () => { toast.info('Schedule feature coming soon'); setShowAppDrawer(false); } },
+                        { id: 'schedule', icon: <Clock size={18} />, label: 'Schedule Send', color: 'text-white', bg: 'bg-[#AF52DE]', onClick: () => {
+                            setShowAppDrawer(false);
+                            // Open a native datetime-local picker via a temporary hidden input
+                            const inp = document.createElement('input');
+                            inp.type = 'datetime-local';
+                            // Set min to now + 1 minute
+                            const minDate = new Date(Date.now() + 60000);
+                            inp.min = minDate.toISOString().slice(0, 16);
+                            inp.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+                            document.body.appendChild(inp);
+                            inp.onchange = () => {
+                              const picked = new Date(inp.value);
+                              if (!isNaN(picked.getTime()) && picked > new Date()) {
+                                setScheduledAt(picked);
+                                toast.success(`Message scheduled for ${picked.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
+                              }
+                              document.body.removeChild(inp);
+                            };
+                            inp.click();
+                          } },
                         { id: 'ai', icon: <span className="font-bold text-[10px]">AI</span>, label: 'AI Reply', color: 'text-white', bg: 'bg-[#000000]', onClick: () => { setInputText('Sure, sounds good to me.'); setShowAppDrawer(false); } },
                       ].map((app, idx) => (
                         <button 
