@@ -113,11 +113,12 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[999999] bg-[#050505] flex flex-col items-center justify-center p-6 sm:p-12 font-sans overflow-y-auto">
+    <div className="fixed inset-0 z-[999999] bg-[#050505] overflow-y-auto font-sans">
+      <div className="min-h-full flex flex-col items-center justify-center py-8 px-4 sm:px-6">
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-lg bg-white rounded-[32px] p-8 sm:p-12 shadow-2xl relative overflow-hidden"
+        className="w-full max-w-lg bg-white rounded-[32px] p-8 sm:p-10 shadow-2xl relative"
       >
         <div className="absolute top-0 left-0 w-full h-2 bg-[#f5f5f7]">
           <motion.div 
@@ -137,14 +138,14 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
               exit={{ opacity: 0, x: -20 }}
               className="flex flex-col items-center"
             >
-              <h2 className="text-3xl font-black text-[#050505] mb-2 text-center tracking-tight">Create your Identity</h2>
-              <p className="text-[#050505]/50 text-[15px] font-medium text-center mb-8">
+              <h2 className="text-2xl font-black text-[#050505] mb-1 text-center tracking-tight">Create your Identity</h2>
+              <p className="text-[#050505]/50 text-[14px] font-medium text-center mb-5">
                 Set up your profile to connect with others.
               </p>
 
               {/* Avatar Upload */}
               <div 
-                className="w-32 h-32 rounded-full bg-[#f5f5f7] border-[3px] border-dashed border-black/10 flex items-center justify-center relative cursor-pointer hover:border-[#1c7aff] transition-colors mb-8 overflow-hidden shadow-sm"
+                className="w-24 h-24 rounded-full bg-[#f5f5f7] border-[3px] border-dashed border-black/10 flex items-center justify-center relative cursor-pointer hover:border-[#1c7aff] transition-colors mb-6 overflow-hidden shadow-sm"
                 onClick={() => fileRef.current?.click()}
               >
                 {avatar ? (
@@ -189,7 +190,7 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
               </div>
 
               {/* Country Selection */}
-              <div className="w-full mb-10">
+              <div className="w-full mb-7">
                 <label className="block text-[13px] font-bold text-[#050505] mb-2">Country / Region</label>
                 <div className="relative">
                   <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-black/30" />
@@ -276,6 +277,7 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
           )}
         </AnimatePresence>
       </motion.div>
+      </div>
     </div>
   );
 }

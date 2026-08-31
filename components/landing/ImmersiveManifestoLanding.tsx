@@ -85,9 +85,9 @@ function LandingNav() {
       <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between">
         <Link href="/" className="flex items-center" aria-label="Humanity Ledger home">
           <img
-            src="/logo-text.png"
-            alt="Humanity Ledger"
-            style={{ height: 28, width: 'auto', objectFit: 'contain', display: 'block' }}
+            src="/logo-corporate.png"
+              alt="Humanity Ledger"
+              style={{ height: 56, width: 'auto', objectFit: 'contain', display: 'block' }}
           />
         </Link>
 
@@ -191,17 +191,6 @@ export function ImmersiveManifestoLanding({ onOpenScanner }: ImmersiveManifestoL
             variants={fadeUp}
             className="flex flex-col items-center text-center lg:items-start lg:text-left lg:col-span-7 relative z-10"
           >
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              className="flex items-center gap-2.5 mb-8 bg-white border border-black/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] rounded-full px-5 py-2.5"
-            >
-              <div className="w-2.5 h-2.5 rounded-full bg-[#30D158] animate-pulse shadow-[0_0_12px_rgba(48,209,88,0.6)]" />
-              <span className="text-[13px] font-bold text-[#1C1C1E] uppercase tracking-[0.1em]">
-                Global Release Jan 2027
-              </span>
-            </motion.div>
 
             <h1 className="text-[56px] md:text-[80px] lg:text-[96px] font-black leading-[0.95] tracking-[-0.04em] text-[#050505] mb-6">
               Privacy<br />

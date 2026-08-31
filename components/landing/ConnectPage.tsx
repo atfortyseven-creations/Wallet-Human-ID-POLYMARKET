@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -324,7 +324,7 @@ export default function ConnectPage() {
             style={{ backgroundImage: "linear-gradient(to right,white 1px,transparent 1px),linear-gradient(to bottom,white 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
           
           <div className="relative z-20">
-            <img src="/logo-text.png" alt="Humanity Ledger" className="h-7 w-auto object-contain brightness-200" />
+            <img src="/logo-corporate.png" alt="Humanity Ledger" className="h-7 w-auto object-contain brightness-200" />
           </div>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }} className="relative z-20 flex flex-col gap-6">
             <div>
@@ -347,7 +347,7 @@ export default function ConnectPage() {
           </motion.div>
           <div className="relative z-20 flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-white/25">Aztec Testnet · Jan 2027</span>
+            <span className="text-[10px] font-mono uppercase tracking-widest text-white/25">Aztec Testnet · Live</span>
           </div>
         </div>
 
@@ -365,7 +365,7 @@ export default function ConnectPage() {
             />
             <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
             <div className="relative z-10 flex flex-col items-center justify-center h-full gap-2">
-              <img src="/logo-text.png" alt="Humanity Ledger" className="h-6 w-auto brightness-200" />
+              <img src="/logo-corporate.png" alt="Humanity Ledger" className="h-6 w-auto brightness-200" />
               <p className="text-white/60 text-[10px] font-mono uppercase tracking-[0.2em]">Sovereign Workspace</p>
             </div>
           </div>
