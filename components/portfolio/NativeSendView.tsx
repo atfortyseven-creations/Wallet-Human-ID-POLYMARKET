@@ -245,7 +245,7 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
                     throw new Error('Invalid recipient — enter an Aztec address (0x + 64 hex chars) or an EVM address.');
                 }
                 if (!aztecAddress) {
-                    throw new Error('Aztec Identity not initialized. Please connect your wallet to Aztec first.');
+                    throw new Error('Sovereign Identity not initialized. Please connect your wallet to Aztec first.');
                 }
 
                 const res = await fetch('/api/aztec/transfer', {
@@ -444,3 +444,4 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
         </motion.div>
     );
 }
+

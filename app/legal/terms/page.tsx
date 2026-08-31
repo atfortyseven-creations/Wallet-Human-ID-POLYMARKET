@@ -208,7 +208,7 @@ export default function TermsOfService() {
 
         <Article number="7" title="Decentralized Identity & Sybil Resistance">
           <Clause id="id-mechanism" title="7.1 Identity Mechanism">
-            <p>The Protocol employs zero-knowledge proof-based identity verification to establish uniqueness without revealing personal data. Your Aztec Identity is derived deterministically from your Ethereum keypair and is represented as a cryptographic commitment on the Aztec network. By using the Protocol&apos;s identity features, you agree that your identity commitment is accurate and that you are the sole controller of the associated private keys.</p>
+            <p>The Protocol employs zero-knowledge proof-based identity verification to establish uniqueness without revealing personal data. Your Sovereign Identity is derived deterministically from your Ethereum keypair and is represented as a cryptographic commitment on the Aztec network. By using the Protocol&apos;s identity features, you agree that your identity commitment is accurate and that you are the sole controller of the associated private keys.</p>
           </Clause>
           <Clause id="id-sybil" title="7.2 Anti-Sybil Obligations">
             <p>You agree not to: (a) attempt to register or operate multiple identities using the same underlying real-world identity; (b) sell, transfer, or license access to your identity credentials or private keys to third parties; (c) use automated tools to generate artificial identity proofs; or (d) engage in any activity designed to circumvent the Protocol&apos;s uniqueness guarantees. Violation of this clause may result in nullification of staked assets and permanent exclusion from identity-gated Protocol features.</p>
@@ -233,7 +233,7 @@ export default function TermsOfService() {
         <Article number="9" title="Cryptographic Risk Disclosures">
           <p>YOU EXPRESSLY ACKNOWLEDGE AND ACCEPT THE FOLLOWING RISKS:</p>
           <Clause id="risk-key-loss" title="9.1 Irreversible Key Loss">
-            <p>If you lose access to your private key, seed phrase, or the Ethereum wallet used to derive your Aztec Identity, you will permanently lose access to your Cryptographic Assets held in Aztec private notes. There is no key recovery mechanism. The Foundation cannot recover your keys under any circumstances.</p>
+            <p>If you lose access to your private key, seed phrase, or the Ethereum wallet used to derive your Sovereign Identity, you will permanently lose access to your Cryptographic Assets held in Aztec private notes. There is no key recovery mechanism. The Foundation cannot recover your keys under any circumstances.</p>
           </Clause>
           <Clause id="risk-smart-contract" title="9.2 Smart Contract Vulnerabilities">
             <p>The Protocol&apos;s smart contracts may contain undiscovered vulnerabilities. Despite undergoing multiple third-party security audits, no software system can be guaranteed free of all defects. A critical vulnerability could result in partial or total loss of Cryptographic Assets.</p>
@@ -396,3 +396,4 @@ export default function TermsOfService() {
     </div>
   );
 }
+

@@ -2,7 +2,7 @@
 /**
  * AztecNativeContext.tsx
  * ─────────────────────────────────────────────────────────────────────────────
- * NATIVE AZTEC IDENTITY LAYER — ZERO MOCKDATA ARCHITECTURE
+ * NATIVE Sovereign Identity LAYER — ZERO MOCKDATA ARCHITECTURE
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * The sole source of truth for all QDs state is the PostgreSQL ledger, which
@@ -432,11 +432,11 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   // without user consent. This was:
   //   1. A Sybil attack vector — bots could drain all 200 genesis identities
   //      by connecting wallets in a loop.
-  //   2. A UX violation — users never agreed to create an Aztec identity.
+  //   2. A UX violation — users never agreed to create an Sovereign Identity.
   //   3. Misleading — showed "Identity Deployed" toast without any user action.
   //
   // Identity connection is now 100% EXPLICIT. Users must click
-  // "Authenticate to Enter" in the Aztec Identity tab (AztecIdentityCard.tsx).
+  // "Authenticate to Enter" in the Sovereign Identity tab (AztecIdentityCard.tsx).
   // If spendQDs is called while aztecAddress is null, it returns false and the
   // calling component should gate the action behind an identity-connect CTA.
 
@@ -480,7 +480,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       } catch {}
 
       if (evmForRestore || localSession?.address) {
-        toast.loading("Checking existing Aztec identity...", { id: "az-connect" });
+        toast.loading("Checking existing Sovereign Identity...", { id: "az-connect" });
         try {
           const restoreRes = await fetch('/api/aztec/restore-session', {
             method: 'POST',
@@ -524,7 +524,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       let signature: string | null = null;
 
       if (activeSigner) {
-        toast.loading("Sign message in your wallet to generate Aztec identity...", { id: "az-connect" });
+        toast.loading("Sign message in your wallet to generate Sovereign Identity...", { id: "az-connect" });
         try {
           signature = await activeSigner({
             message: "Welcome to Aztec Testnet.\n\nSign this message to derive your zero-knowledge private key for the local PXE."
@@ -543,7 +543,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
           }
         }
       } else {
-        toast.loading("Deriving Aztec identity from wallet address...", { id: "az-connect" });
+        toast.loading("Deriving Sovereign Identity from wallet address...", { id: "az-connect" });
       }
 
       // Step 2: Derive entropy
@@ -553,13 +553,13 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       } else {
         const seedInput = rawSeed.startsWith('0x') ? rawSeed.toLowerCase() : rawSeed;
         entropy = keccak256(toBytes(seedInput));
-        toast.loading("Deriving Aztec identity from wallet address...", { id: "az-connect" });
+        toast.loading("Deriving Sovereign Identity from wallet address...", { id: "az-connect" });
       }
 
       // Step 2b: Server-side derivation
       let derived = "";
       try {
-        toast.loading("Deriving Aztec identity...", { id: "az-connect" });
+        toast.loading("Deriving Sovereign Identity...", { id: "az-connect" });
         const deriveRes = await fetch('/api/aztec/derive-address', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -616,7 +616,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       // Step 3 — Trigger genesis airdrop (truly first-time user only)
       let airdropGranted = false;
       if (claimAirdrop) {
-        toast.loading("Deploying Aztec Identity & funding genesis...", { id: "az-connect" });
+        toast.loading("Deploying Sovereign Identity & funding genesis...", { id: "az-connect" });
         try {
           const airdropRes = await fetch("/api/aztec/airdrop", {
             method:  "POST",
@@ -774,8 +774,8 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
         // [FIX] Surface identity gate errors once (not double-toast)
         // and return false without throwing so callers (LedgerChat) can continue.
         if (errData?.code === 'NOT_VERIFIED_IDENTITY') {
-          toast.info("Claim your Aztec Identity to earn QDs", { 
-            description: "Messages send for free until you claim. Aztec Identity tab → Claim.",
+          toast.info("Claim your Sovereign Identity to earn QDs", { 
+            description: "Messages send for free until you claim. Sovereign Identity tab → Claim.",
             duration: 5000,
           });
           return false; // Non-fatal — message still sends
@@ -829,3 +829,4 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     </AztecNativeContext.Provider>
   );
 }
+

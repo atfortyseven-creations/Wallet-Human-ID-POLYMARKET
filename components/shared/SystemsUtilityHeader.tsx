@@ -111,7 +111,7 @@ export function SystemsUtilityHeader() {
                         background: aztecAddress ? 'rgba(0,0,0,0.05)' : 'rgba(255,165,0,0.08)',
                         borderColor: aztecAddress ? 'rgba(0,0,0,0.1)' : 'rgba(255,140,0,0.25)',
                     }}
-                    title={aztecAddress ? `${balance.toFixed(2)} QDs available` : 'Claim your QDs → Aztec Identity'}
+                    title={aztecAddress ? `${balance.toFixed(2)} QDs available` : 'Claim your QDs → Sovereign Identity'}
                 >
                     <Zap
                         size={10}
@@ -161,3 +161,4 @@ export function SystemsUtilityHeader() {
         </div>
     );
 }
+

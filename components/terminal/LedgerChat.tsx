@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings, Clock, Lock, PieChart } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
@@ -2217,7 +2217,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                         const airdropData = await airdropRes.json();
                         if (airdropData.success) {
                             // Only show the welcome toast on the very first successful claim
-                            console.log('⚡ Aztec Identity Active: 10 QDs received!', { 
+                            console.log('⚡ Sovereign Identity Active: 10 QDs received!', { 
                                 description: 'Transaction confirmed on Aztec Testnet.',
                                 explorerUrl: airdropData.explorerUrl
                             });
@@ -3008,16 +3008,16 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     }
 
     // --- QD DEDUCTION LOGIC ---
-    // [FIX] Only gate on QDs if the user has an Aztec identity connected.
+    // [FIX] Only gate on QDs if the user has an Sovereign Identity connected.
     // If aztecAddress is null (user hasn't claimed yet), balance = 0 is expected
     // and we should NOT block messaging — they can claim their identity later.
     // The tiny 0.0001 QD cost per message is essentially free and serves as
     // spam prevention only for users who already have an identity.
     const { aztecAddress: userAztecAddr } = aztecNative;
     if (!isSystemSignal && !isLocalSystemWallet && userAztecAddr) {
-      // Only enforce QD balance if the user has a loaded Aztec identity
+      // Only enforce QD balance if the user has a loaded Sovereign Identity
       if (balance < 0.0001) {
-        toast.error("Insufficient QDs to send message.", { description: "Top up via the Aztec Identity tab." });
+        toast.error("Insufficient QDs to send message.", { description: "Top up via the Sovereign Identity tab." });
         setSending(false);
         return;
       }
@@ -5238,3 +5238,4 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     </TuringShieldGate>
   );
 }
+

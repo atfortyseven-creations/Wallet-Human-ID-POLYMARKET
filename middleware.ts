@@ -1,4 +1,4 @@
-﻿/**
+/**
  * middleware.ts — Ledger Network Identity Perimeter
  * ─────────────────────────────────────────────────
  * Edge Middleware (runs before EVERY request, on Vercel/Railway Edge runtime).
@@ -244,7 +244,7 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
         {
           error: 'Authentication required.',
           code: 'NO_SESSION',
-          hint: 'Connect your wallet and claim your Aztec identity at /sign-in',
+          hint: 'Connect your wallet and claim your Sovereign Identity at /sign-in',
         },
         { status: 401 }
       );
@@ -299,3 +299,4 @@ export const config = {
     '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.json|fonts|images|icons).*)',
   ],
 };
+

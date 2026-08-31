@@ -29,7 +29,7 @@ export default function SandboxPage() {
           Noir Circuit Lab
           <div className="flex flex-col items-center gap-3 text-lg md:text-xl text-slate-500 font-medium tracking-wide uppercase mt-4">
             <span>powered by</span>
-            <img src="/aztec-logo-black.png" alt="Aztec Network" className="h-32 md:h-48 lg:h-56 object-contain" />
+            <img src="/logo-mark.png" alt="Aztec Network" className="h-32 md:h-48 lg:h-56 object-contain" />
           </div>
         </h1>
 
@@ -88,3 +88,4 @@ export default function SandboxPage() {
     </main>
   );
 }
+

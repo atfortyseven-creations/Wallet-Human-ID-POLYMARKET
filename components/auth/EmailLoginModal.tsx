@@ -213,17 +213,17 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
             {/* Header */}
             <div className="px-8 pt-8 pb-6 border-b border-black/8">
                 <div className="flex items-start justify-between">
-                  <div>
-                    <div className="flex items-center gap-2.5 mb-3">
-                      <img
-                        src="/atom_3d_silver.jpg"
-                        alt="Humanity Ledger"
-                        className="w-5 h-5 object-contain mix-blend-multiply"
-                      />
-                      <span className="text-[11px] font-black uppercase tracking-[0.2em] text-black/40">
-                        Humanity Ledger
-                      </span>
-                    </div>
+                    <div>
+                      <div className="flex items-center gap-2.5 mb-3">
+                        <img
+                          src="/logo-mark.png"
+                          alt="Humanity Ledger"
+                          className="w-5 h-5 object-contain"
+                        />
+                        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-black/40">
+                          Humanity Ledger
+                        </span>
+                      </div>
                     <h2 className="text-[22px] font-black tracking-tight text-black leading-tight">
                       {step === "email" && "Sign in with Email"}
                       {step === "code" && "Check your inbox"}
@@ -413,21 +413,9 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
-
-              {/* Aztec Footer Strip */}
-              <div className="px-8 py-4 border-t border-black/5 flex items-center gap-2.5">
-                <img
-                  src="/aztec-logo-black.png"
-                  alt="Aztec"
-                  className="h-4 object-contain mix-blend-multiply opacity-25"
-                />
-                <span className="text-[11px] font-medium text-black/30 uppercase tracking-wider">
-                  Secured by Aztec Network ZK Architecture
-                </span>
-              </div>
+                </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
       )}
     </AnimatePresence>
   );

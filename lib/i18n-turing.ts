@@ -15,7 +15,7 @@ export const turingTranslations = {
     analyzeBtn: "Perform Forensic Analysis",
     
     // Errors
-    errConnect: "You must connect your Aztec Identity to perform an analysis.",
+    errConnect: "You must connect your Sovereign Identity to perform an analysis.",
     errBalance: "Insufficient balance. You need 500 QDs for the analysis.",
     errShort: "Document is too short. Enter at least 100 characters for a reliable forensic analysis.",
     errDebit: "Failed to debit 500 QDs from the Aztec network. Check your connection.",
@@ -95,7 +95,7 @@ export const turingTranslations = {
     wordCount: "palabras",
     analyzeBtn: "Realizar Análisis Forense",
     
-    errConnect: "Debes conectar tu Aztec Identity para realizar un análisis.",
+    errConnect: "Debes conectar tu Sovereign Identity para realizar un análisis.",
     errBalance: "Saldo insuficiente. Necesitas 500 QDs para realizar el análisis.",
     errShort: "El documento es demasiado corto. Introduce al menos 100 caracteres para un análisis forense confiable.",
     errDebit: "Fallo al debitar 500 QDs de la red Aztec. Verifica tu conexión e intenta de nuevo.",
@@ -225,7 +225,7 @@ export const turingTranslations = {
     textareaPlaceholder: "Fügen Sie den Aufsatz, die Arbeit oder das akademische Dokument hier ein...",
     wordCount: "Wörter",
     analyzeBtn: "Forensische Analyse durchführen",
-    errConnect: "Sie müssen Ihre Aztec Identity verbinden, um eine Analyse durchzuführen.",
+    errConnect: "Sie müssen Ihre Sovereign Identity verbinden, um eine Analyse durchzuführen.",
     errBalance: "Unzureichendes Guthaben. Sie benötigen 500 QDs.",
     errShort: "Dokument ist zu kurz. Geben Sie mindestens 100 Zeichen ein.",
     errDebit: "Fehler beim Abbuchen von 500 QDs. Überprüfen Sie Ihre Verbindung.",
@@ -285,7 +285,7 @@ export const turingTranslations = {
     textareaPlaceholder: "Cole o ensaio, tese ou documento acadêmico aqui...",
     wordCount: "palavras",
     analyzeBtn: "Realizar Análise Forense",
-    errConnect: "Você deve conectar sua Aztec Identity para realizar uma análise.",
+    errConnect: "Você deve conectar sua Sovereign Identity para realizar uma análise.",
     errBalance: "Saldo insuficiente. Você precisa de 500 QDs.",
     errShort: "Documento muito curto. Insira pelo menos 100 caracteres.",
     errDebit: "Falha ao debitar 500 QDs. Verifique sua conexão.",
@@ -395,3 +395,4 @@ export const turingTranslations = {
     usp3Desc: "每次分析都会在区块链上生成一个零知识承诺。以数学方式证明文档在任何时间点的确切状态，防止成绩纠纷。",
   }
 };
+

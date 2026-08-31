@@ -738,7 +738,7 @@ export function AztecIdentityCard() {
                   className="w-full bg-black text-white py-3 font-black text-[10px] uppercase tracking-widest hover:bg-black/80 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isBusy ? <><Loader2 size={12} className="animate-spin" /> Authenticating...</> : 
-                    isSystemHandshake ? 'Connect Aztec Identity' : 'Authenticate to Enter'}
+                    isSystemHandshake ? 'Connect Sovereign Identity' : 'Authenticate to Enter'}
                 </button>
               </div>
             ) : null}
@@ -826,10 +826,10 @@ export function AztecIdentityCard() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-4 md:px-6 py-4 border-b border-zinc-900/10 bg-zinc-900/[0.015]">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <img src="/system-shots/aztec-logo.png" className="w-10 h-10 object-contain" alt="Aztec" />
+            <div className="w-10 h-10 bg-black flex items-center justify-center rounded-sm"><Shield className="text-white" size={20} /></div>
           </div>
           <div>
-            <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-900 leading-none">Aztec Identity</h3>
+            <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-900 leading-none">Sovereign Identity</h3>
             <p className="text-[8px] text-zinc-900/40 uppercase tracking-widest mt-0.5">Testnet · Zero Knowledge L2</p>
           </div>
         </div>
@@ -1068,3 +1068,4 @@ export function AztecIdentityCard() {
     </motion.div>
   );
 }
+

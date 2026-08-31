@@ -208,7 +208,7 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
     // Charge 5 QDs for ZK Passport issuance
     const paid = await spendQDs(5, 'ZK Passport Issuance');
     if (!paid) {
-      toast.error('Insufficient QDs', { description: 'You need 5 QDs to issue a ZK Passport. Visit Aztec Identity to claim your QDs.' });
+      toast.error('Insufficient QDs', { description: 'You need 5 QDs to issue a ZK Passport. Visit Sovereign Identity to claim your QDs.' });
       return;
     }
     setCreating(true);
@@ -1693,3 +1693,4 @@ export function ProvenanceStudioContent({
     </TuringShieldGate>
   );
 }
+

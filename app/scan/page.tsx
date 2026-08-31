@@ -330,7 +330,7 @@ export default function ScanPage() {
 
         <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center leading-none py-3">
           <span className="font-mono text-[11px] font-black uppercase tracking-[0.22em] text-[#050505]">Scan QR</span>
-          <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-black/30 mt-0.5">Aztec Identity Portal</span>
+          <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-black/30 mt-0.5">Sovereign Identity Portal</span>
         </div>
 
         {/* Logo mark */}
@@ -583,3 +583,4 @@ export default function ScanPage() {
     </div>
   );
 }
+

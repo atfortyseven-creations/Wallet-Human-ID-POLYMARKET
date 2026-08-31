@@ -272,7 +272,7 @@ The platform has **multiple parallel identity systems**:
 |---|---|---|---|
 | SIWE (Sign-In with Ethereum) | `lib/auth/session.ts`, `hooks/useSIWE.ts` | Wallet address + JWT | LIVE |
 | NextAuth | `app/api/auth/[...nextauth]` | Email/OAuth sessions | LIVE |
-| Aztec Identity | `lib/aztec-zk-engine.ts`, `app/api/aztec/identity-status` | Aztec account address | PARTIAL |
+| Sovereign Identity | `lib/aztec-zk-engine.ts`, `app/api/aztec/identity-status` | Aztec account address | PARTIAL |
 | ZK Nullifier | `prisma/schema.prisma > ZkNullifier` | Server-side nullifier tracking | PARTIAL |
 | KYC / Sumsub | `app/api/auth/kyc-*`, `lib/auth/sumsub-provider.ts` | Identity verification | PARTIAL |
 | Biometric / WebAuthn | `lib/auth/webauthn-config.ts`, `lib/biometrics/` | Passkeys | PARTIAL |
@@ -385,4 +385,5 @@ Categories identified:
 | `mongoose` | MongoDB ODM | MongoDB is unclear status |
 | `peerjs` | WebRTC | P2P video/voice |
 | GitHub reports **176 vulnerabilities** (3 critical, 76 high) | Security | UNRESOLVED |
+
 

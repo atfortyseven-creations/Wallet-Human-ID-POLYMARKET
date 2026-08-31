@@ -473,7 +473,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                         </div>
                     </div>
 
-                    {/* ── Aztec Identity Banner (for non-connected identities) ── */}
+                    {/* ── Sovereign Identity Banner (for non-connected identities) ── */}
                     <AztecIdentityBanner onOpenAztec={() => setActiveTab('AZTEC')} />
 
                     {/* Minimalist Tabs Panel */}
@@ -543,7 +543,7 @@ function QDBadgeInline({ onClickAztec }: { onClickAztec: () => void }) {
     );
 }
 
-/** Prominent Aztec Identity banner shown above the tabs when identity is not connected */
+/** Prominent Sovereign Identity banner shown above the tabs when identity is not connected */
 function AztecIdentityBanner({ onOpenAztec }: { onOpenAztec: () => void }) {
     const { aztecAddress, balance } = useAztecNative();
     if (aztecAddress) return null; // Already connected — no banner needed
@@ -559,7 +559,7 @@ function AztecIdentityBanner({ onOpenAztec }: { onOpenAztec: () => void }) {
                 <div>
                     <div className="font-black text-[11px] uppercase tracking-[0.2em] text-amber-800">Claim Your 10 QD Genesis Airdrop</div>
                     <div className="text-[10px] text-amber-700/70 mt-0.5 font-mono">
-                        Connect your Aztec Identity to unlock Chat, Studio Passports &amp; Noir Sandbox.
+                        Connect your Sovereign Identity to unlock Chat, Studio Passports &amp; Noir Sandbox.
                     </div>
                 </div>
             </div>
@@ -573,14 +573,14 @@ function AztecIdentityBanner({ onOpenAztec }: { onOpenAztec: () => void }) {
     );
 }
 
-/** Tab button that's visually upgraded for Aztec Identity */
+/** Tab button that's visually upgraded for Sovereign Identity */
 function AztecAwareTabButton({ tab, activeTab, onClick }: { tab: string; activeTab: string; onClick: () => void }) {
     const { aztecAddress, balance } = useAztecNative();
     const isAztec = tab === 'AZTEC';
     const isActive = activeTab === tab;
     const hasIdentity = !!aztecAddress;
 
-    const label = tab === 'TOKENS' ? 'Assets' : tab === 'DEFI' ? 'DeFi' : tab === 'ACTIVITY' ? 'History' : 'Aztec Identity';
+    const label = tab === 'TOKENS' ? 'Assets' : tab === 'DEFI' ? 'DeFi' : tab === 'ACTIVITY' ? 'History' : 'Sovereign Identity';
 
     return (
         <button
@@ -659,3 +659,4 @@ function NetworkView({ onBack }: any) {
         </ModalView>
     );
 }
+

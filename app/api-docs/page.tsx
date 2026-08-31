@@ -142,7 +142,7 @@ export default function ApiDocsPage() {
           <div className="bg-slate-900 border border-slate-800 p-6 rounded-xl mb-6">
             <h4 className="text-white font-bold mb-2">The Derivation Path</h4>
             <ol className="list-decimal pl-5 space-y-2 text-slate-400 text-sm">
-              <li>Request a personal_sign on the string: <code className="bg-slate-800 px-1 rounded text-pink-400">"Humanity Ledger: Aztec Identity v1.0"</code></li>
+              <li>Request a personal_sign on the string: <code className="bg-slate-800 px-1 rounded text-pink-400">"Humanity Ledger: Sovereign Identity v1.0"</code></li>
               <li>Hash the 65-byte ECDSA signature using <code className="bg-slate-800 px-1 rounded text-pink-400">Poseidon2</code> to produce a 254-bit scalar.</li>
               <li>This scalar acts as the Master Secret for the Grumpkin HD derivation tree.</li>
               <li>Derive: <strong>Signing Key</strong>, <strong>Nullifier Key</strong>, <strong>Incoming Viewing Key</strong>, and <strong>Outgoing Viewing Key</strong>.</li>
@@ -194,3 +194,4 @@ export default function ApiDocsPage() {
     </DocLayout>
   );
 }
+

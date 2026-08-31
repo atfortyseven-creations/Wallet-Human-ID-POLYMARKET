@@ -6,7 +6,7 @@ import { keccak256, toBytes } from 'viem';
  * [ZK-ALIGNMENT PHASE 4] Zero Knowledge Identity Utilities
  * ─────────────────────────────────────────────────────────────────────────────
  *
- * Provides deterministic, one-way cryptographic utilities for Aztec identity
+ * Provides deterministic, one-way cryptographic utilities for Sovereign Identity
  * correlation WITHOUT exposing raw wallet addresses in any DB or log.
  *
  * Identity Hash Architecture:
@@ -101,3 +101,4 @@ export function hashIpAddress(rawIp: string): string {
     .update(cleanIp + secret)
     .digest('hex');
 }
+

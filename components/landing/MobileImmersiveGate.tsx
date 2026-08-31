@@ -480,7 +480,7 @@ export function MobileImmersiveGate() {
 
 
                       <p className="text-center text-[10px] font-mono text-[#0A0A0A]/25 uppercase tracking-widest pt-1">
-                        Secured by Aztec · ZK-Native
+                        Secured by Sovereign ZK Architecture
                       </p>
                     </div>
                   )}

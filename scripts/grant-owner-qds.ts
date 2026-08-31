@@ -1,5 +1,5 @@
 // scripts/grant-owner-qds.ts
-// One-shot script to credit 21,000,000 QDs to the owner's Aztec identity.
+// One-shot script to credit 21,000,000 QDs to the owner's Sovereign Identity.
 // Run with: npx tsx scripts/grant-owner-qds.ts
 
 import { PrismaClient } from '@prisma/client';
@@ -62,3 +62,4 @@ main()
     process.exit(1);
   })
   .finally(() => prisma.$disconnect());
+

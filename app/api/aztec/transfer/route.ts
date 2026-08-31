@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
     const fromVerified = await isVerifiedIdentity(fromAddr).catch(() => false);
     if (!sessionVerified && !fromVerified) {
       return NextResponse.json(
-        { error: 'Access denied: Claim your genesis airdrop (Aztec Identity tab) to use QDs.', code: 'NOT_VERIFIED_IDENTITY' },
+        { error: 'Access denied: Claim your genesis airdrop (Sovereign Identity tab) to use QDs.', code: 'NOT_VERIFIED_IDENTITY' },
         { status: 403 }
       );
     }
@@ -481,3 +481,4 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+

@@ -179,7 +179,7 @@ export function NoirCircuitSandbox() {
 
   const simulateCompilation = useCallback(async () => {
     if (!aztecAddress) {
-      toast.error("Aztec Identity Required", { description: "You must claim your Aztec Identity to interact with the ZK Sandbox." });
+      toast.error("Sovereign Identity Required", { description: "You must claim your Sovereign Identity to interact with the ZK Sandbox." });
       return;
     }
     if (balance < 1) {
@@ -575,3 +575,4 @@ contract ZKVerifier {
     </section>
   );
 }
+

@@ -163,7 +163,7 @@ export default function PortfolioDashboard({ walletAddress }: { walletAddress?: 
                             activeTab === 'aztec' ? "text-black border-black" : "text-slate-400 border-transparent hover:text-black"
                         )}
                     >
-                        AZTEC IDENTITY
+                        Sovereign Identity
                     </button>
                     <button
                         onClick={() => setActiveTab('passports')}
@@ -264,3 +264,4 @@ export default function PortfolioDashboard({ walletAddress }: { walletAddress?: 
         </div>
     );
 }
+

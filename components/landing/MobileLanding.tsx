@@ -389,7 +389,7 @@ function ConnectedScreen({
           
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
              <img
-               src="/system-shots/aztec-logo.png"
+               src="/logo-mark.png"
                className="h-20 w-auto object-contain"
                alt="Humanity Ledger"
              />
@@ -1496,7 +1496,7 @@ export function MobileLanding() {
 
           {/* QR Code Scanner */}
           <WalletOption
-            logo="/system-shots/aztec-logo.png"
+            logo="/logo-mark.png"
             name="Scan QR Code"
             badge="Link your desktop session via camera"
             loading={false}
@@ -1537,3 +1537,4 @@ export function MobileLanding() {
     </div>
   );
 }
+

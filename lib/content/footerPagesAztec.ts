@@ -378,7 +378,7 @@ export const ROADMAP_SECTIONS: AztecDocSection[] = [
       'The focus shifts to rigorous auditing and mathematical proofs.'
     ],
     bullets: [
-      'Security Audits: Comprehensive third-party audits of Ledger Chat encryption bridges and the Aztec Identity logic.',
+      'Security Audits: Comprehensive third-party audits of Ledger Chat encryption bridges and the Sovereign Identity logic.',
       'Formal Verification: Mathematical proofs of the `mint_private_license` Noir circuit to guarantee sound constraint execution.',
       'Private Portfolio Integration: Connecting the frontend Identity interface with live on-chain private state transitions.'
     ]
@@ -528,3 +528,4 @@ export const COMMUNITY_FORUM_INTRO: AztecDocSection[] = [
     ],
   },
 ];
+

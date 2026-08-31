@@ -20,7 +20,7 @@ export const MobileLedgerLanding = () => {
         <div className="flex items-center gap-2">
           <div className="w-4 h-4">
             <img
-              src="/atom_3d_silver.jpg"
+              src="/logo-mark.png"
               alt="Humanity Ledger"
               className="w-full h-full object-contain mix-blend-darken contrast-[1.15] brightness-[1.05]"
             />
@@ -114,3 +114,4 @@ export const MobileLedgerLanding = () => {
     </div>
   );
 };
+

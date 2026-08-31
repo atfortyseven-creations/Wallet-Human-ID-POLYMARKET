@@ -1,4 +1,4 @@
-﻿// System layout  No Clerk provider needed (SIWE-native auth)
+// System layout  No Clerk provider needed (SIWE-native auth)
 
 import { headers } from 'next/headers'
 
@@ -98,7 +98,7 @@ export const metadata = {
 
   keywords: [
 
-    'humanity ledger', 'aztec identity', 'studio provenance', 'LedgerChat', 'decentralised identity',
+    'humanity ledger', 'Sovereign Identity', 'studio provenance', 'LedgerChat', 'decentralised identity',
 
     'zero knowledge proofs', 'privacy', 'noir language', 'verifiable credentials'
 
@@ -724,4 +724,5 @@ export default async function RootLayout({
   )
 
 }
+
 

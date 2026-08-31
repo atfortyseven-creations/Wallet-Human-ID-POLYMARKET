@@ -44,7 +44,7 @@ add_bulleted_section('What is already built', [
     'Core user platform built in Next.js, React, and Tailwind.',
     'Real Aztec integration through context/AztecContext.tsx and context/AztecNativeContext.tsx.',
     'Internal Aztec APIs for address derivation, identity airdrops, QD balance queries, transaction history, and transfers between Aztec addresses.',
-    'Operational modules: Whale Chat, Humanity Ledger, Portfolio, QR synchronization, and Aztec Identity.',
+    'Operational modules: Whale Chat, Humanity Ledger, Portfolio, QR synchronization, and Sovereign Identity.',
     'ZK sandbox implementation for any user to compile circuits such as Balance Commitment (Pedersen), Merkle Membership Proof, SHA-256 Preimage, ECDSA Signature Verifier, Range Proof (u64 bounds), Multi-Input + Struct, Keccak-256 Hash Gate, Blake2s Hash Gate, Boolean Logic Gate, and Array Sum Constraint.',
     'Technical documentation and compliance embedded in the application: Aztec architecture, Noir circuits, $QD token model, and security policies.'
 ])
@@ -62,7 +62,7 @@ add_bulleted_section('Functional modules', [
     'Portfolio: private asset management with full actions.',
     'Humanity Ledger: privacy-preserving analytics and insights.',
     'QR Sync: reliable cross-device access.',
-    'Aztec Identity: account derivation and QD balance operations.'
+    'Sovereign Identity: account derivation and QD balance operations.'
 ])
 
 add_bulleted_section('Architecture and documentation', [
@@ -146,3 +146,4 @@ doc = SimpleDocTemplate(str(output_path), pagesize=A4,
                         topMargin=20*mm, bottomMargin=20*mm)
 doc.build(content)
 print(f'PDF generado en: {output_path}')
+

@@ -7,7 +7,7 @@
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * This component visualizes the Private Note (UTXO) state of the connected
- * Aztec identity. Every note, commitment, and nullifier displayed is derived
+ * Sovereign Identity. Every note, commitment, and nullifier displayed is derived
  * deterministically from the REAL transaction hashes stored in the PostgreSQL
  * ledger — not from random numbers or simulated values.
  *
@@ -389,7 +389,7 @@ export function AztecPXEVisualizer() {
     return (
       <div className="border border-zinc-900/8 bg-zinc-900/[0.015] p-8 text-center">
         <div className="text-[9px] font-black uppercase tracking-widest text-zinc-900/30">
-          Connect to Aztec Identity to visualize your Private Note Tree
+          Connect to Sovereign Identity to visualize your Private Note Tree
         </div>
       </div>
     );
@@ -575,3 +575,4 @@ fn mint_license(
     </div>
   );
 }
+
