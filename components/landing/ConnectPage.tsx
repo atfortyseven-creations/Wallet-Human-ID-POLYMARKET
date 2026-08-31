@@ -243,8 +243,14 @@ export default function ConnectPage() {
         }
       } catch {}
       try {
-        const nonce = `HL-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-        const msg = `Sign in to Humanity Ledger\n\nAddress: ${address}\nNonce: ${nonce}\nChain: Ethereum`;
+        const nonceRes = await fetch("/api/auth/nonce", { cache: "no-store" });
+        if (!nonceRes.ok) throw new Error("Failed to fetch cryptographic nonce");
+        const { nonce } = await nonceRes.json();
+        const msg = `Sign in to Humanity Ledger
+
+Address: ${address}
+Nonce: ${nonce}
+Chain: Ethereum`;
         const signature = await signMessageAsync({ message: msg });
         const vr = await fetch("/api/auth/system-verify", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify({ address, message: msg, signature, nonce }) });
         if (vr.ok) {
@@ -295,12 +301,25 @@ export default function ConnectPage() {
 
         {/* LEFT: Branding */}
         <div className="hidden lg:flex flex-col justify-between bg-black text-white p-12 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-[0.04]"
+          {/* HIGH-QUALITY VIDEO BACKGROUND */}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover z-0"
+            src="/system-shots/72298-541981714.mp4"
+          />
+          {/* OVERLAY TO ENSURE MAX TEXT VISIBILITY */}
+          <div className="absolute inset-0 bg-black/60 z-[1] backdrop-blur-[2px]" />
+          
+          <div className="absolute inset-0 opacity-[0.04] z-[2]"
             style={{ backgroundImage: "linear-gradient(to right,white 1px,transparent 1px),linear-gradient(to bottom,white 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
-          <div className="relative z-10">
+          
+          <div className="relative z-20">
             <img src="/logo-text.png" alt="Humanity Ledger" className="h-7 w-auto object-contain brightness-200" />
           </div>
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }} className="relative z-10 flex flex-col gap-6">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }} className="relative z-20 flex flex-col gap-6">
             <div>
               <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30 mb-4">Humanity Ledger · Beta</p>
               <h1 className="text-4xl xl:text-5xl font-black tracking-tight leading-[1.1] text-white">Your sovereign<br />digital workspace.</h1>
@@ -319,7 +338,7 @@ export default function ConnectPage() {
               ))}
             </div>
           </motion.div>
-          <div className="relative z-10 flex items-center gap-2">
+          <div className="relative z-20 flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-[10px] font-mono uppercase tracking-widest text-white/25">Aztec Testnet · Jan 2027</span>
           </div>
