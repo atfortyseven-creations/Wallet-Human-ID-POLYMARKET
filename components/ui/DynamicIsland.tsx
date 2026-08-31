@@ -11,6 +11,14 @@ export function DynamicIsland() {
   const pathname = usePathname();
   const router = useRouter();
   
+  // L3 enforcement: Island lives in App layer only.
+  const ISLAND_ALLOWLIST = [
+    '/chat', '/portfolio', '/studio', '/settings', 
+    '/hub', '/ledger', '/terminal', '/scan', '/passport'
+  ];
+  const isAppRoute = ISLAND_ALLOWLIST.some(r => pathname?.startsWith(r));
+  if (!isAppRoute) return null;
+
   // Local timer for calls/recording
   const [timer, setTimer] = useState(0);
 

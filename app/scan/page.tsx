@@ -577,7 +577,7 @@ export default function ScanPage() {
         style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}
       >
         <p className="text-[9px] font-mono text-black/25 uppercase tracking-[0.25em]">
-          humanidfi.com · Powered by Aztec Network
+          humanidfi.com • Aztec Integration Planned
         </p>
       </div>
     </div>

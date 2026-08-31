@@ -209,7 +209,7 @@ export function ImmersiveManifestoLanding({ onOpenScanner }: ImmersiveManifestoL
             </h1>
             
             <p className="text-[19px] md:text-[22px] font-medium leading-[1.6] text-[#1C1C1E]/60 mb-10 max-w-[540px]">
-              Ledger Chat is free, instantly fast, and built for people who want to own their conversations completely. End-to-end encrypted. Decentralized. Powered by your wallet.
+              Ledger Chat is free, instantly fast, and built for people who want to own their conversations completely. End-to-end encrypted and powered by your wallet.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mb-10">
@@ -232,7 +232,7 @@ export function ImmersiveManifestoLanding({ onOpenScanner }: ImmersiveManifestoL
               {[
                 { icon: <Lock size={16} />, label: "End-to-End Encrypted" },
                 { icon: <EyeOff size={16} />, label: "No Trackers" },
-                { icon: <Globe size={16} />, label: "Decentralized" },
+                { icon: <Wallet size={16} />, label: "Wallet Auth" },
               ].map((f) => (
                 <div key={f.label} className="flex items-center gap-2 text-[14px] font-bold text-[#1C1C1E]/50">
                   <span className="text-[#1C1C1E]">{f.icon}</span>
