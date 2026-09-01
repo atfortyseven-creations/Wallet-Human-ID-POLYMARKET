@@ -61,7 +61,7 @@ export function InstitutionalHeader({ fixed = true, theme = 'dark' }: { fixed?: 
     const { t } = useSystemTranslation();
     const pathname = usePathname() ?? '/';
 
-    const MENU_ITEMS = [
+    const MENU_ITEMS: Array<{ label: string; href: string; subItems?: Array<{ label: string; href: string }> }> = [
       { label: 'App Hub', href: "/hub" },
       { label: 'Portfolio', href: "/portfolio" },
       { label: 'LedgerChat', href: "/chat" }

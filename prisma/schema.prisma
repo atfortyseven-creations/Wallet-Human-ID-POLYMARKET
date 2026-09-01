@@ -357,6 +357,20 @@ model ChatContact {
   @@index([owner])
 }
 
+// Instagram-style friend request system
+model ChatContactRequest {
+  id          String   @id @default(uuid())
+  fromAddress String   // wallet address of requester
+  toAddress   String   // wallet address of recipient
+  status      String   @default("PENDING") // PENDING | ACCEPTED | REJECTED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([fromAddress, toAddress])
+  @@index([toAddress, status])
+  @@index([fromAddress, status])
+}
+
 model PendingChatMessage {
   id        String   @id @default(uuid())
   sender    String

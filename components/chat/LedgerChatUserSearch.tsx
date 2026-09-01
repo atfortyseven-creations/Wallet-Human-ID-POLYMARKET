@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, UserPlus, ShieldCheck, MapPin, Star } from 'lucide-react';
+import { Search, X, UserPlus, ShieldCheck, MapPin, Check, Clock, MessageCircle } from 'lucide-react';
 import { getLocalContacts, saveLocalContact } from '@/lib/wallet/localAddressBook';
+import { toast } from 'sonner';
 
 interface LedgerChatUserSearchProps {
   myAddress: string;
@@ -20,6 +21,8 @@ interface SearchUser {
   tier?: string;
 }
 
+type RequestStatus = 'none' | 'sending' | 'pending' | 'accepted';
+
 const TIER_BADGE: Record<string, { label: string; color: string }> = {
   GENESIS:    { label: 'Genesis',    color: 'text-purple-600 bg-purple-50 border-purple-200' },
   SOVEREIGN:  { label: 'Sovereign',  color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
@@ -33,6 +36,7 @@ export function LedgerChatUserSearch({ myAddress, onClose, onAddContact }: Ledge
   const [results, setResults] = useState<SearchUser[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [requestStatuses, setRequestStatuses] = useState<Record<string, RequestStatus>>({});
   const inputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -47,7 +51,6 @@ export function LedgerChatUserSearch({ myAddress, onClose, onAddContact }: Ledge
       return;
     }
 
-    // Cancel previous pending request
     abortRef.current?.abort();
     abortRef.current = new AbortController();
 
@@ -69,7 +72,7 @@ export function LedgerChatUserSearch({ myAddress, onClose, onAddContact }: Ledge
       );
       setResults(filtered);
     } catch (err: any) {
-      if (err.name === 'AbortError') return; // Ignore cancelled
+      if (err.name === 'AbortError') return;
       setError('Search unavailable — check your connection.');
       setResults([]);
     } finally {
@@ -82,14 +85,44 @@ export function LedgerChatUserSearch({ myAddress, onClose, onAddContact }: Ledge
     return () => clearTimeout(timer);
   }, [query, performSearch]);
 
-  const handleAdd = (user: SearchUser) => {
-    saveLocalContact(myAddress, {
-      peerAddress: user.address,
-      name: user.nickname || user.name,
-      avatar: '',
-    });
-    onAddContact(user.address);
-    onClose();
+  // Send a contact request (Instagram-style)
+  const handleSendRequest = async (user: SearchUser) => {
+    const addr = user.address.toLowerCase();
+    setRequestStatuses(prev => ({ ...prev, [addr]: 'sending' }));
+
+    try {
+      const res = await fetch('/api/chat/contacts/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-web3-address': myAddress },
+        body: JSON.stringify({ toAddress: addr }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.error || 'Could not send request');
+        setRequestStatuses(prev => ({ ...prev, [addr]: 'none' }));
+        return;
+      }
+
+      if (data.status === 'ALREADY_CONNECTED') {
+        // Already contacts — open chat immediately
+        saveLocalContact(myAddress, { peerAddress: addr, name: user.nickname || user.name, avatar: '' });
+        onAddContact(addr);
+        onClose();
+        return;
+      }
+
+      if (data.status === 'SENT' || data.status === 'ALREADY_PENDING') {
+        setRequestStatuses(prev => ({ ...prev, [addr]: 'pending' }));
+        toast.success(data.status === 'ALREADY_PENDING'
+          ? 'Request already sent — waiting for them to accept.'
+          : `Request sent to ${user.nickname || user.name}!`
+        );
+      }
+    } catch {
+      toast.error('Network error — please try again.');
+      setRequestStatuses(prev => ({ ...prev, [addr]: 'none' }));
+    }
   };
 
   const tierInfo = (tier?: string) => TIER_BADGE[tier ?? 'EXPLORER'] ?? TIER_BADGE.EXPLORER;
@@ -203,6 +236,9 @@ export function LedgerChatUserSearch({ myAddress, onClose, onAddContact }: Ledge
                   const tier = tierInfo(user.tier);
                   const initials = user.nickname.replace('@', '').slice(0, 2).toUpperCase();
                   const hue = parseInt(user.address.slice(2, 8), 16) % 360;
+                  const addr = user.address.toLowerCase();
+                  const reqStatus = requestStatuses[addr] ?? 'none';
+
                   return (
                     <div
                       key={user.address}
@@ -239,13 +275,34 @@ export function LedgerChatUserSearch({ myAddress, onClose, onAddContact }: Ledge
                         </div>
                       </div>
 
-                      <button
-                        onClick={() => handleAdd(user)}
-                        className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1c7aff] hover:bg-blue-600 text-white rounded-full font-bold text-[12px] transition-colors shadow-sm shrink-0 ml-2"
-                      >
-                        <UserPlus size={14} />
-                        <span>Connect</span>
-                      </button>
+                      {/* Dynamic action button */}
+                      {reqStatus === 'accepted' ? (
+                        <button
+                          onClick={() => { onAddContact(user.address); onClose(); }}
+                          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#30d158] text-white rounded-full font-bold text-[12px] shadow-sm shrink-0 ml-2"
+                        >
+                          <MessageCircle size={14} />
+                          <span>Message</span>
+                        </button>
+                      ) : reqStatus === 'pending' ? (
+                        <div className="flex items-center gap-1.5 px-3.5 py-2 bg-zinc-100 text-zinc-500 rounded-full font-bold text-[12px] shrink-0 ml-2">
+                          <Clock size={14} />
+                          <span>Pending</span>
+                        </div>
+                      ) : reqStatus === 'sending' ? (
+                        <div className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1c7aff]/10 text-[#1c7aff] rounded-full font-bold text-[12px] shrink-0 ml-2">
+                          <div className="w-3 h-3 border-2 border-[#1c7aff]/30 border-t-[#1c7aff] rounded-full animate-spin" />
+                          <span>Sending...</span>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => handleSendRequest(user)}
+                          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1c7aff] hover:bg-blue-600 text-white rounded-full font-bold text-[12px] transition-colors shadow-sm shrink-0 ml-2"
+                        >
+                          <UserPlus size={14} />
+                          <span>Connect</span>
+                        </button>
+                      )}
                     </div>
                   );
                 })}

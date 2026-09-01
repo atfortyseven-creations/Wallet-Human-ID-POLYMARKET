@@ -1,5 +1,5 @@
 "use client";
-import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings, Clock, Lock, PieChart } from 'lucide-react';
+import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings, Clock, Lock, PieChart, Bell } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Video, VideoOff, Phone, PhoneOff, Mic, MicOff, Volume2, Smile, Paperclip, BarChart2, Wallet, Flame } from 'lucide-react';
@@ -28,6 +28,7 @@ import { LedgerChatProfile } from '@/components/chat/LedgerChatProfile';
 import { LedgerChatVaultManager } from '@/components/chat/LedgerChatVaultManager';
 import { LedgerChatOnboarding } from '@/components/chat/LedgerChatOnboarding';
 import { LedgerChatUserSearch } from '@/components/chat/LedgerChatUserSearch';
+import { ContactRequestsPanel } from '@/components/chat/ContactRequestsPanel';
 import { LedgerChatStatusBar } from '@/components/chat/LedgerChatStatusBar';
 import { useLedgerChatPresence } from '@/hooks/useLedgerChatPresence';
 import { LedgerChatSearchModal } from '@/components/chat/LedgerChatSearchModal';
@@ -238,7 +239,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     (async () => {
       for (let i = 0; i < 3 && !cancelled; i++) {
         await new Promise(r => setTimeout(r, 800 + i * 600)); // 800ms, 1400ms, 2000ms
-        if (cancelled) { abortController.abort(); break; }
+        if (cancelled) { break; }
         try {
           reconnect();
           // Zombie-session recovery dispatched (attempt ${i + 1})
@@ -397,6 +398,8 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   const [showSettings, setShowSettings] = useState(false);
   const [showVault, setShowVault] = useState(false);
   const [showUserSearch, setShowUserSearch] = useState(false);
+  const [showContactRequests, setShowContactRequests] = useState(false);
+  const [pendingRequestCount, setPendingRequestCount] = useState(0);
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [blockedPeers, setBlockedPeers] = useState<Set<string>>(new Set());
 
@@ -592,6 +595,23 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
       } catch {}
     };
     loadBlocked();
+
+    // Poll for contact requests count
+    if (address && !isSystemHandshake) {
+      const pollRequests = () => {
+        fetch('/api/notifications/inbox', { headers: { 'x-web3-address': address } })
+          .then(r => r.json())
+          .then(data => {
+            if (data?.unreadCount !== undefined) {
+              setPendingRequestCount(data.unreadCount);
+            }
+          })
+          .catch(() => {});
+      };
+      pollRequests();
+      const interval = setInterval(pollRequests, 30000); // every 30s
+      return () => clearInterval(interval);
+    }
     // Phase 5: Request push notifications
     if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
@@ -3722,11 +3742,19 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
               My QR
             </button>
+            <button onClick={() => setShowContactRequests(true)} className="relative flex items-center justify-center gap-1.5 py-2 px-3 rounded-[10px] bg-[#F2F2F7] text-[#000000] hover:bg-[#E5E5EA] transition-all text-[12px] font-semibold active:scale-95">
+              <Bell size={13} />
+              {pendingRequestCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white shadow-sm ring-2 ring-white">
+                  {pendingRequestCount}
+                </span>
+              )}
+            </button>
             <button onClick={() => setShowVault(true)} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-[10px] bg-[#F2F2F7] text-[#000000] hover:bg-[#E5E5EA] transition-all text-[12px] font-semibold active:scale-95">
-              <Lock size={13} /> Vault
+              <Lock size={13} />
             </button>
             <button onClick={() => window.location.href = '/portfolio'} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-[10px] bg-[#F2F2F7] text-[#000000] hover:bg-[#E5E5EA] transition-all text-[12px] font-semibold active:scale-95">
-              <PieChart size={13} /> Portfolio
+              <PieChart size={13} />
             </button>
             <button onClick={() => setShowSettings(true)} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-[10px] bg-[#F2F2F7] text-[#000000] hover:bg-[#E5E5EA] transition-all text-[12px] font-semibold active:scale-95">
               <Settings size={13} />
@@ -5387,6 +5415,21 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
             </div>
           </div>
         </div>,
+        document.body
+      )}
+
+      {/* Contact Requests Panel */}
+      {showContactRequests && isMounted && address && typeof document !== 'undefined' && createPortal(
+        <ContactRequestsPanel
+          myAddress={address}
+          onClose={() => {
+            setShowContactRequests(false);
+            setPendingRequestCount(0); // optimistically clear badge on close
+          }}
+          onAccepted={(peer) => {
+            handleStartConversationWithPeer(peer);
+          }}
+        />,
         document.body
       )}
 

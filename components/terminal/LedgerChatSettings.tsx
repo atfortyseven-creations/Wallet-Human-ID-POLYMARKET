@@ -149,7 +149,6 @@ export function LedgerChatSettings({ onClose, address }: LedgerChatSettingsProps
               {view === 'workspaces' && <WorkspacesView s={settings} update={updateSetting} />}
               {view === 'ghost_mode' && <GhostModeView s={settings} update={updateSetting} />}
               {view === 'defi_tools' && <DefiToolsView s={settings} update={updateSetting} />}
-              {view === 'network' && <NetworkView s={settings} update={updateSetting} />}
               {view === 'premium' && <PremiumView />}
               {view === 'stars' && <StarsView />}
             </motion.div>
@@ -202,8 +201,7 @@ function RootView({ onNavigate, address, s }: any) {
 
         <BBlock>
           <BItem icon={<Bot size={18}/>} label="AI Ghost Mode" onClick={() => onNavigate('ghost_mode')} />
-          <BItem icon={<Activity size={18}/>} label="Ledger Intelligence Tools" onClick={() => onNavigate('defi_tools')} />
-          <BItem icon={<Radio size={18}/>} label="Network Protocol" onClick={() => onNavigate('network')} noBorder />
+          <BItem icon={<Activity size={18}/>} label="Ledger Intelligence Tools" onClick={() => onNavigate('defi_tools')} noBorder />
         </BBlock>
 
         <div onClick={() => onNavigate('premium')} className="w-full border-[3px] border-black bg-black text-white p-4 flex items-center gap-4 cursor-pointer hover:bg-zinc-900 transition-colors shadow-[6px_6px_0_0_#1c7aff]">
@@ -968,56 +966,7 @@ function DefiToolsView({ s, update }: any) {
 //  NETWORK PROTOCOL VIEW
 // ─────────────────────────────────────────────────────────────────────────
 
-function NetworkView({ s, update }: any) {
-  const { setCustomRpcUrl } = useWalletStore();
-  const [rpcInput, setRpcInput] = React.useState(s.custom_rpc_url || '');
 
-  const saveRpc = async () => {
-    await update('custom_rpc_url', rpcInput);
-    if (typeof setCustomRpcUrl === 'function') setCustomRpcUrl(rpcInput);
-    toast.success(rpcInput ? 'Custom RPC endpoint saved.' : 'Reverted to default RPC.');
-  };
-
-  return (
-    <div className="p-4 space-y-6 pb-20">
-      <SH title="Gas Fee Preset" />
-      <BBlock>
-        {(['ECONOMY', 'STANDARD', 'FAST', 'INSTANT'] as const).map((preset, i, arr) => (
-          <div key={preset} onClick={() => update('gas_preset', preset)} className={`flex items-center justify-between p-4 cursor-pointer hover:bg-zinc-100 ${i !== arr.length - 1 ? 'border-b-[3px] border-black' : ''}`}>
-            <span className="font-black uppercase text-sm">{preset}</span>
-            {s.gas_preset === preset && <Check size={18} />}
-          </div>
-        ))}
-      </BBlock>
-
-      <SH title="Security" />
-      <BBlock>
-        <TRow label="MEV Protection" checked={s.mev_protection} onChange={(v: boolean) => update('mev_protection', v)} noBorder />
-      </BBlock>
-
-      <SH title="Custom RPC Endpoint" />
-      <div className="flex flex-col gap-2">
-        <input
-          type="text"
-          placeholder="https://your-rpc.example.com"
-          value={rpcInput}
-          onChange={e => setRpcInput(e.target.value)}
-          className="w-full bg-white border-[3px] border-black p-3 text-[13px] font-bold outline-none focus:bg-yellow-50"
-        />
-        <div className="flex gap-2">
-          <button onClick={saveRpc} className="flex-1 py-3 bg-black text-white font-black text-xs uppercase border-[3px] border-black hover:bg-zinc-800 shadow-[4px_4px_0_0_#000] active:translate-y-1">
-            Save Endpoint
-          </button>
-          {rpcInput && (
-            <button onClick={() => { setRpcInput(''); update('custom_rpc_url', ''); if (typeof setCustomRpcUrl === 'function') setCustomRpcUrl(''); toast.success('Reverted to default RPC.'); }} className="flex-1 py-3 bg-white text-red-600 font-black text-xs uppercase border-[3px] border-black hover:bg-red-50">
-              Reset to Default
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ─────────────────────────────────────────────────────────────────────────
 //  PREMIUM & QD VIEWS
