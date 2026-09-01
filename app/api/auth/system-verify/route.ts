@@ -78,7 +78,31 @@ export async function POST(req: NextRequest) {
         // only in this fallback mode. Client nonces must start with "HL-" to be accepted.
         const isClientNonce = body._clientNonce === true && typeof nonce === 'string' && nonce.startsWith('HL-');
 
-        if (!isClientNonce) {
+        if (isClientNonce) {
+            // [SECURITY HARDENING] Even in client-nonce fallback mode, the nonce MUST be
+            // embedded in the signed message. This prevents an attacker from re-using any
+            // old valid SIWE signature (replay) since the new nonce won't be in old messages.
+            if (!message.includes(nonce)) {
+                console.error(`[Auth:ClientNonce] Message does not contain the client nonce. Replay prevented.`);
+                return NextResponse.json({ error: 'Client nonce not found in message. Replay attack prevented.' }, { status: 401 });
+            }
+            // [SECURITY HARDENING] Per-address rate limit for client-nonce path (max 5 per hour)
+            // This prevents an attacker from farming sessions by rapidly generating HL- nonces
+            // for an address they own (they'd need a valid signature each time, but rate-limiting
+            // still caps the session generation rate to prevent abuse).
+            const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+            const clientNonceCount = await prisma.humanitySession.count({
+                where: {
+                    identity: { walletAddress: rawAddress },
+                    authenticationMethod: 'SIWE',
+                    createdAt: { gte: oneHourAgo },
+                },
+            }).catch(() => 0);
+            if (clientNonceCount >= 5) {
+                console.warn(`[Auth:ClientNonce] Rate limit exceeded for ${rawAddress.slice(0,8)}...`);
+                return NextResponse.json({ error: 'Too many authentication attempts. Please try again later.' }, { status: 429 });
+            }
+        } else {
             const validNonce = await prisma.siweNonce.findUnique({ where: { nonce } }).catch(() => null);
             if (!validNonce || validNonce.expiresAt < new Date()) {
                 return NextResponse.json({ error: 'Nonce invalid or expired. Replay attack prevented.' }, { status: 401 });
