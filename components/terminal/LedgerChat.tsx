@@ -162,6 +162,29 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   const { getSiloedPXE } = useAztec();
   const aztecNative = useAztecNative();
   const { spendQDs, balance, aztecAddress, refresh: refreshBalance } = aztecNative;
+  const refreshBalanceRef = useRef<() => Promise<void>>(async () => {});
+  useEffect(() => { refreshBalanceRef.current = refreshBalance; }, [refreshBalance]);
+
+  // Mechanical keyboard click sound
+  const playKeyClick = () => {
+    try {
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'square'; osc.frequency.setValueAtTime(800, ctx.currentTime);
+      gain.gain.setValueAtTime(0.04, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.03);
+    } catch {}
+  };
+
+  // Haptic feedback
+  const triggerHaptic = (intensity: number) => {
+    if (typeof navigator.vibrate !== 'function' || !intensity) return;
+    const pattern = intensity === 1 ? [10] : intensity === 2 ? [20, 10, 20] : [30, 10, 30, 10, 30];
+    navigator.vibrate(pattern);
+  };
   const chatContractAddress = { toString: () => '0xCHAT_CONTRACT_ADDRESS_PLACEHOLDER' } as any;
   const siloedPxe = getSiloedPXE ? getSiloedPXE(chatContractAddress) : null;
   const { 
@@ -2538,7 +2561,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           // Phase 5: Intercept Payment Signals for Auto-Sync
           if (typeof mappedContent === 'string' && mappedContent.startsWith('__PAYMENT__')) {
             // Reconcile balance from server because the sender just transferred QDs to our address
-            refreshBalance().catch(() => {});
+            refreshBalanceRef.current().catch(() => {});
           }
 
           const mappedMsg = {
@@ -2592,6 +2615,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                 // We are focused on this chat, so send a read receipt!
                 if (!document.hidden) {
                   if (ledgerSettings?.notification_sound !== false) { playReceiveSound(); };
+                  triggerHaptic(ledgerSettings?.haptics_intensity ?? 0);
                   if (ledgerSettings?.show_read_receipts !== false) {
                     sendMessage(client, msgConvPeer, `__READ__${realId}`, address).catch(e => console.warn('Failed to send read receipt', e));
                   }
@@ -3025,6 +3049,24 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
       setReplyingTo(null);
     }
 
+    // Smart macros
+    if (ledgerSettings?.smart_macros && !isSystemSignal) {
+      if (content.trim() === '/add') { finalContent = `My wallet: ${address}`; }
+      else if (/^\/pay (\d+\.?\d*)$/.test(content.trim())) {
+        const m = content.trim().match(/^\/pay (\d+\.?\d*)$/);
+        if (m) { setTransferAmount(m[1]); setShowWalletTransfer(true); setSending(false); return; }
+      }
+    }
+    // Tone translator  
+    if (ledgerSettings?.tone_translator && !isSystemSignal) {
+      finalContent = finalContent
+        .replace(/\bfuck(ing)?\b/gi, 'strongly disagree')
+        .replace(/\bshit\b/gi, 'situation')
+        .replace(/\bbitch\b/gi, 'person')
+        .replace(/\basshole\b/gi, 'individual')
+        .replace(/\bidiot|moron|stupid\b/gi, 'someone with a different view');
+    }
+
     // --- QD DEDUCTION LOGIC ---
     // [FIX] Only gate on QDs if the user has an Sovereign Identity connected.
     // If aztecAddress is null (user hasn't claimed yet), balance = 0 is expected
@@ -3092,6 +3134,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
       }
 
       if (!isSystemSignal && !isReaction) if (ledgerSettings?.notification_sound !== false) { playSendSound(); };
+      triggerHaptic(ledgerSettings?.haptics_intensity ?? 0);
 
       // Always attempt to send directly via XMTP.
       // sendMessage() handles canReceive checks, retries with backoff,
@@ -4414,6 +4457,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                               e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
                             }}
                             onKeyDown={e => {
+                              if (ledgerSettings?.mechanical_keyboard) playKeyClick();
                               const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
                               if (e.key === 'Enter' && !e.shiftKey && !isTouch) {
                                 e.preventDefault();
@@ -5185,9 +5229,16 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                  onClick={async () => {
                    const parsed = parseFloat(transferAmount);
                    if (isNaN(parsed) || parsed <= 0 || parsed > balance) return;
+                   if (!activePeer) { toast.error('No recipient selected.'); return; }
                    setTransferSending(true);
                    try {
-                     await spendQDs(parsed, `Transfer to ${shortAddr(activePeer!)}`);
+                     // CRITICAL FIX: pass activePeer as recipient — previously QDs went to 0x000 burn address!
+                     const ok = await spendQDs(parsed, `Transfer to ${shortAddr(activePeer!)}`, activePeer);
+                     if (!ok) {
+                       toast.error('Transfer failed. Check your Sovereign Identity balance.');
+                       return;
+                     }
+                     // Only send XMTP payment signal AFTER confirmed transfer
                      executeSend(`__PAYMENT__::${parsed}`);
                      toast.success(`Sent ${parsed} QD to ${shortAddr(activePeer!)}!`);
                      setShowWalletTransfer(false);

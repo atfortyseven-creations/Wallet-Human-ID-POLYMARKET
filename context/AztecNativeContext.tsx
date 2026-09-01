@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 /**
  * AztecNativeContext.tsx
  * ─────────────────────────────────────────────────────────────────────────────
@@ -563,7 +563,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
         const deriveRes = await fetch('/api/aztec/derive-address', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ seed: entropy }),
+          body: JSON.stringify({ evmAddress: rawSeed }),
         });
         if (deriveRes.ok) {
           const { aztecAddress: serverDerived } = await deriveRes.json();
@@ -716,7 +716,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   const spendQDs = useCallback(async (amount: number, reason: string, toAddress?: string): Promise<boolean> => {
     // Priority: prefer aztecAddress (derived), then fall back to evmAddress
     // For email users: aztecAddress is set via auto-derive in the mount effect
-    const activeAddr = aztecAddress || evmAddress;
+    const activeAddr = evmAddress || aztecAddress; // CRITICAL: EVM address must match middleware session for isOwner() check
     if (!activeAddr || balance < amount) return false;
     
     // ── [FASE 14: Battery Throttling — Apple Guideline 2.5.1] ─────────────────
