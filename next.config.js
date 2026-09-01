@@ -430,6 +430,25 @@ const nextConfig = {
                 source: '/system-shots/monochrome-illustration-science-fiction-arch-pixel-art-Devine-Lu-Linvega-2268380-wallhere.com (1).jpg',
                 headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
             },
+            // Phase 1 Mainnet: Lottie JSON animations — immutable CDN cache
+            {
+                source: '/lotties/(.*)',
+                headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }],
+            },
+            {
+                source: '/lottie/(.*)',
+                headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }],
+            },
+            // Video files — long cache with revalidation
+            {
+                source: '/system-shots/(.*)\\.mp4',
+                headers: [{ key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=2592000' }],
+            },
+            // 3D model textures
+            {
+                source: '/textures/(.*)',
+                headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+            },
         ];
     }
 };

@@ -22,32 +22,32 @@
 
 ---
 #  Secrets (populate externally, never commit values) 
-# kubectl create secret generic whale-alert-secrets \
+# kubectl create secret generic humanity-ledger-secrets \
 #   --from-literal=DATABASE_URL=postgresql://... \
 #   --from-literal=REDIS_URL=redis://... \
 #   --from-literal=ALCHEMY_API_KEY=... \
 #   --from-literal=TELEGRAM_BOT_TOKEN=... \
 #   --from-literal=NEXTAUTH_SECRET=... \
-#   --namespace=whale-alert
+#   --namespace=humanity-ledger
 
 ---
 #  ConfigMap 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: whale-alert-config
-  namespace: whale-alert
+  name: humanity-ledger-config
+  namespace: humanity-ledger
   labels:
-    app.kubernetes.io/name: whale-alert
+    app.kubernetes.io/name: humanity-ledger
     app.kubernetes.io/component: config
 data:
   NODE_ENV:              "production"
-  WHALE_THRESHOLD_USD:   "50000"
+  QD_THRESHOLD_USD:   "50000"
   DETECTION_CHAINS:      "BASE,ETHEREUM,BSC,SOLANA,BITCOIN"
   SSE_KEEP_ALIVE_MS:     "20000"
   REDIS_QUEUE_NAME:      "whale-events"
   LOG_LEVEL:             "info"
-  NEXTAUTH_URL:          "https://whalealert.network"
+  NEXTAUTH_URL:          "https://humanidfi.com"
   SKIP_ENV_VALIDATION:   "false"
 
 ---
@@ -55,17 +55,17 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: whale-alert-app
-  namespace: whale-alert
+  name: humanity-ledger-app
+  namespace: humanity-ledger
   labels:
-    app.kubernetes.io/name: whale-alert
+    app.kubernetes.io/name: humanity-ledger
     app.kubernetes.io/component: app
 spec:
   replicas: 2
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: whale-alert-app
+      app: humanity-ledger-app
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -74,14 +74,14 @@ spec:
   template:
     metadata:
       labels:
-        app: whale-alert-app
+        app: humanity-ledger-app
         version: "3.0.0"
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path:   "/api/metrics"
         prometheus.io/port:   "3000"
     spec:
-      serviceAccountName: whale-alert-sa
+      serviceAccountName: humanity-ledger-sa
       securityContext:
         runAsNonRoot: true
         runAsUser: 1001
@@ -89,7 +89,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: app
-          image: ghcr.io/humanityledger/whale-alert:3.0.0
+          image: ghcr.io/humanityledger/humanity-ledger:3.0.0
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
@@ -97,9 +97,9 @@ spec:
               name: http
           envFrom:
             - configMapRef:
-                name: whale-alert-config
+                name: humanity-ledger-config
             - secretRef:
-                name: whale-alert-secrets
+                name: humanity-ledger-secrets
           resources:
             requests:
               cpu:    "250m"
@@ -134,7 +134,7 @@ spec:
               podAffinityTerm:
                 labelSelector:
                   matchLabels:
-                    app: whale-alert-app
+                    app: humanity-ledger-app
                 topologyKey: kubernetes.io/hostname
 
 ---
@@ -143,9 +143,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: whale-scanner
-  namespace: whale-alert
+  namespace: humanity-ledger
   labels:
-    app.kubernetes.io/name: whale-alert
+    app.kubernetes.io/name: humanity-ledger
     app.kubernetes.io/component: scanner
 spec:
   replicas: 1                   # Single scanner to prevent duplicate detection
@@ -159,20 +159,20 @@ spec:
       labels:
         app: whale-scanner
     spec:
-      serviceAccountName: whale-alert-sa
+      serviceAccountName: humanity-ledger-sa
       securityContext:
         runAsNonRoot: true
         runAsUser: 1001
       containers:
         - name: scanner
-          image: ghcr.io/humanityledger/whale-alert:3.0.0
+          image: ghcr.io/humanityledger/humanity-ledger:3.0.0
           imagePullPolicy: Always
           command: ["node", "--max-old-space-size=4096", "-e", "require('./scripts/whale-worker')"]
           envFrom:
             - configMapRef:
-                name: whale-alert-config
+                name: humanity-ledger-config
             - secretRef:
-                name: whale-alert-secrets
+                name: humanity-ledger-secrets
           resources:
             requests:
               cpu:    "500m"
@@ -192,9 +192,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: whale-telegram
-  namespace: whale-alert
+  namespace: humanity-ledger
   labels:
-    app.kubernetes.io/name: whale-alert
+    app.kubernetes.io/name: humanity-ledger
     app.kubernetes.io/component: notifier
 spec:
   replicas: 1
@@ -208,20 +208,20 @@ spec:
       labels:
         app: whale-telegram
     spec:
-      serviceAccountName: whale-alert-sa
+      serviceAccountName: humanity-ledger-sa
       securityContext:
         runAsNonRoot: true
         runAsUser: 1001
       containers:
         - name: telegram
-          image: ghcr.io/humanityledger/whale-alert:3.0.0
+          image: ghcr.io/humanityledger/humanity-ledger:3.0.0
           imagePullPolicy: Always
           command: ["npx", "tsx", "scripts/telegram-worker.ts"]
           envFrom:
             - configMapRef:
-                name: whale-alert-config
+                name: humanity-ledger-config
             - secretRef:
-                name: whale-alert-secrets
+                name: humanity-ledger-secrets
           resources:
             requests:
               cpu:    "100m"
@@ -235,14 +235,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: whale-alert-app-svc
-  namespace: whale-alert
+  name: humanity-ledger-app-svc
+  namespace: humanity-ledger
   labels:
-    app.kubernetes.io/name: whale-alert
+    app.kubernetes.io/name: humanity-ledger
     app.kubernetes.io/component: app
 spec:
   selector:
-    app: whale-alert-app
+    app: humanity-ledger-app
   ports:
     - port: 80
       targetPort: 3000
@@ -255,13 +255,13 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: whale-alert-hpa
-  namespace: whale-alert
+  name: humanity-ledger-hpa
+  namespace: humanity-ledger
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: whale-alert-app
+    name: humanity-ledger-app
   minReplicas: 2
   maxReplicas: 10
   metrics:
@@ -292,23 +292,23 @@ spec:
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: whale-alert-pdb
-  namespace: whale-alert
+  name: humanity-ledger-pdb
+  namespace: humanity-ledger
 spec:
   minAvailable: 1
   selector:
     matchLabels:
-      app: whale-alert-app
+      app: humanity-ledger-app
 
 ---
 #  ServiceAccount 
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: whale-alert-sa
-  namespace: whale-alert
+  name: humanity-ledger-sa
+  namespace: humanity-ledger
   labels:
-    app.kubernetes.io/name: whale-alert
+    app.kubernetes.io/name: humanity-ledger
 automountServiceAccountToken: false
 
 ---
@@ -316,8 +316,8 @@ automountServiceAccountToken: false
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: whale-alert-ingress
-  namespace: whale-alert
+  name: humanity-ledger-ingress
+  namespace: humanity-ledger
   annotations:
     kubernetes.io/ingress.class:                    "nginx"
     cert-manager.io/cluster-issuer:                 "letsencrypt-prod"
@@ -335,27 +335,27 @@ metadata:
 spec:
   tls:
     - hosts:
-        - whalealert.network
-        - api.whalealert.network
-      secretName: whale-alert-tls
+        - humanidfi.com
+        - api.humanidfi.com
+      secretName: humanity-ledger-tls
   rules:
-    - host: whalealert.network
+    - host: humanidfi.com
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: whale-alert-app-svc
+                name: humanity-ledger-app-svc
                 port:
                   number: 80
-    - host: api.whalealert.network
+    - host: api.humanidfi.com
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: whale-alert-app-svc
+                name: humanity-ledger-app-svc
                 port:
                   number: 80
