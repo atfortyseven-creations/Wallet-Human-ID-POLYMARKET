@@ -1753,3 +1753,79 @@ img, a, canvas, svg {
   -ms-hyphens: none;
   hyphens: none;
 }
+/* LEDGER CHAT SETTINGS ENGINE - DYNAMIC STYLES */
+
+/* --- Chat Background --- */
+html[data-chat-bg="amoled"] body {
+  background-color: #000000 !important;
+}
+html[data-chat-bg="holographic"] body {
+  background: linear-gradient(135deg, rgba(13,13,26,1) 0%, rgba(26,13,46,1) 50%, rgba(13,26,46,1) 100%) !important;
+  color: white;
+}
+html[data-chat-bg="matrix"] body {
+  background-color: #001100 !important;
+  background-image: radial-gradient(circle, rgba(0,255,0,0.15) 1px, transparent 1px) !important;
+  background-size: 20px 20px !important;
+}
+html[data-chat-bg="gradient"] body {
+  background: linear-gradient(180deg, #e3f0ff 0%, #f0e8ff 100%) !important;
+}
+
+/* --- Bubble Styles (Targets message bubbles) --- */
+html[data-bubble-style="brutalist"] .msg-bubble-sent,
+html[data-bubble-style="brutalist"] .msg-bubble-recv {
+  border-radius: 0 !important;
+  border: 2px solid black !important;
+  box-shadow: 4px 4px 0 0 black !important;
+}
+html[data-bubble-style="glass"] .msg-bubble-sent,
+html[data-bubble-style="glass"] .msg-bubble-recv {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 16px !important;
+  color: inherit !important;
+}
+html[data-bubble-style="glass"][data-theme="dark"] .msg-bubble-sent,
+html[data-bubble-style="glass"][data-theme="dark"] .msg-bubble-recv {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+html[data-bubble-style="minimal"] .msg-bubble-sent,
+html[data-bubble-style="minimal"] .msg-bubble-recv {
+  background: transparent !important;
+  border-radius: 0 !important;
+  border-bottom: 1px solid currentColor !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* --- UI Density --- */
+html.ui-relaxed .msg-bubble-sent, html.ui-relaxed .msg-bubble-recv {
+  padding: 16px 20px !important;
+  margin-bottom: 8px !important;
+}
+html.ui-compact .msg-bubble-sent, html.ui-compact .msg-bubble-recv {
+  padding: 6px 10px !important;
+  margin-bottom: 2px !important;
+  font-size: 0.9em !important;
+}
+html.ui-dense .msg-bubble-sent, html.ui-dense .msg-bubble-recv {
+  padding: 4px 8px !important;
+  margin-bottom: 0px !important;
+  font-size: 0.85em !important;
+}
+
+/* --- Watermark --- */
+html.watermark-active body::after {
+  content: "SOVEREIGN IDENTITY PROTECTED";
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-family: monospace;
+  font-size: 10px;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 9999;
+}

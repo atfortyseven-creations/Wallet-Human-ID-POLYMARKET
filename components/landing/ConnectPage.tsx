@@ -305,10 +305,10 @@ export default function ConnectPage() {
   return (
     <div className="w-full min-h-screen bg-[#F7F7F6] text-black overflow-x-hidden selection:bg-black selection:text-white">
       {/* ────────────────────────────────────────────────────────────
-          MOBILE HERO: Full-width globe video, no borders, top 50vh
+          MOBILE HERO: Full-width globe video, natural 16:9 ratio
           Hidden on desktop — desktop uses the left/right grid below
       ──────────────────────────────────────────────────────────── */}
-      <div className="lg:hidden w-full relative overflow-hidden bg-black" style={{ height: '50dvh', minHeight: 220 }}>
+      <div className="lg:hidden w-full relative overflow-hidden bg-black aspect-video">
         <video
           autoPlay
           loop
@@ -328,7 +328,7 @@ export default function ConnectPage() {
         </div>
       </div>
 
-      <div className="w-full flex flex-col lg:grid lg:grid-cols-[1fr_460px]" style={{ minHeight: 'calc(100dvh - 50dvh)' }}>
+      <div className="w-full flex flex-col lg:grid lg:grid-cols-[1fr_460px]" style={{ minHeight: '100dvh' }}>
 
         {/* LEFT: Branding — desktop only */}
         <div className="hidden lg:flex flex-col justify-between bg-black text-white p-12 relative overflow-hidden" style={{ minHeight: '100dvh' }}>

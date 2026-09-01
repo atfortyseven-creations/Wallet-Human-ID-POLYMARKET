@@ -525,7 +525,7 @@ export const MessageBubble = React.memo(({
                 )}
                 <div
                   className={`relative px-4 py-2.5 shadow-sm ${
-                    isMe ? 'rounded-[20px] rounded-br-[5px]' : 'rounded-[20px] rounded-bl-[5px]'
+                    isMe ? 'msg-bubble-sent rounded-[20px] rounded-br-[5px]' : 'msg-bubble-recv rounded-[20px] rounded-bl-[5px]'
                   }`}
                   style={{
                     background: isMe

@@ -545,7 +545,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
               if (res.ok) { 
                 const resJson = await res.json(); 
                 const profile = resJson.data || resJson; // Handle both wrapped and unwrapped responses just in case
-                if (profile && (profile.displayName || profile.chatName)) { 
+                if (profile && (profile.displayName || profile.chatName || profile.walletAddress || profile.id)) { 
                   localStorage.setItem("ledger_onboarded_" + effectiveAddress, "true"); 
                   setIsOnboarded(true); 
                   updateBatch({ 

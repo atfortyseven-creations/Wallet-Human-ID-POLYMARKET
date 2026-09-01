@@ -81,7 +81,20 @@ export async function PUT(req: NextRequest) {
 
     const { walletAddress, displayName, chatName, avatarUrl, bio, theme, currency, language, displayUnit, gasPreset, mevProtection, stealthMode } = result.data;
 
-    if (validation.userId.toLowerCase() !== walletAddress.toLowerCase()) {
+    let authorizedUserId = validation.userId.toLowerCase();
+    
+    // UUID mapping for email users
+    if (authorizedUserId.includes('-') && authorizedUserId.length > 30) {
+      const authUser = await prisma.authUser.findUnique({ where: { id: validation.userId } });
+      if (authUser?.walletAddress) {
+        authorizedUserId = authUser.walletAddress.toLowerCase();
+      } else if (authUser?.email) {
+        // Fallback to email if no wallet connected
+        authorizedUserId = authUser.email.toLowerCase();
+      }
+    }
+
+    if (authorizedUserId !== walletAddress.toLowerCase()) {
         return NextResponse.json({ error: 'Forbidden: You can only modify your own profile.' }, { status: 403 });
     }
 
