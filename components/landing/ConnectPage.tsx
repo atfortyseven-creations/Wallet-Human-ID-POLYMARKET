@@ -316,7 +316,7 @@ export default function ConnectPage() {
           playsInline
           preload="auto"
           disablePictureInPicture
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-contain"
           src="/system-shots/72298-541981714.mp4"
           style={{ objectPosition: 'center center' }}
         />

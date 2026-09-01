@@ -452,162 +452,257 @@ A private portfolio tracker that connects directly to your wallet to display you
 ## Navigation
 
 The App Hub uses a persistent navigation sidebar on desktop and a bottom navigation bar on mobile. All core features are accessible within two taps or clicks.
+// Pre-generated documentation content
+const CONTENT_MAP: Record<string, string> = {
+  "terms": `
+# Terms of Service
+
+Last Updated: January 1, 2027
+
+Welcome to Humanity Ledger. By accessing or using our protocol, applications (including Ledger Chat and the App Hub), or any related services, you agree to be bound by these Terms of Service. Please read them carefully before proceeding.
 
 ---
 
-## Network Status
+## 1. Decentralization and ZK-Identity
 
-The top of the App Hub displays your current network status, including:
+Humanity Ledger operates as a decentralized cryptographic protocol utilizing Aztec Network's zero-knowledge proofs. You maintain sole ownership and control over your cryptographic keys, your identity, and your data. We do not store, possess, or have access to your private keys or recovery phrases.
 
-- **Wallet connection status** — Whether your wallet is connected and your session is active.
-- **XMTP network status** — Whether the messaging network is reachable.
-- **Quantum Dots balance** — Your current balance of Quantum Dots (QD), the in-app utility token.
+If you lose your keys or recovery phrase, your data cannot be recovered by Humanity Ledger or any third party. It is your sole responsibility to back up your recovery phrase in a safe and secure location.
+
+## 2. No Custody or Control
+
+We are a non-custodial software provider. We do not hold assets, messages, or metadata on your behalf. The network relies on Aztec for ZK state transitions and XMTP for decentralized message transport. Quantum Dots (QDs) are utility tokens for network usage, not financial instruments.
+
+## 3. Acceptable Use
+
+You agree not to use the protocol to:
+
+- Violate any applicable local, national, or international law or regulation.
+- Distribute malware, attempt to exploit network vulnerabilities, or launch DDoS / Sybil attacks.
+- Harass, threaten, impersonate, or attempt to reveal the identity of other participants without their consent.
+- Conduct any activity that could disrupt or degrade the performance and availability of the network for other users.
+
+## 4. Intellectual Property
+
+The Humanity Ledger software, design, and associated documentation are protected by applicable copyright and intellectual property laws. Open-source components are licensed under their respective open-source licenses.
+
+## 5. Limitation of Liability
+
+The software is provided "AS IS", without warranty of any kind, express or implied. Under no circumstances shall Humanity Ledger, its contributors, or its licensors be liable for any direct, indirect, incidental, punitive, or consequential damages arising from the use of or inability to use the protocol.
+
+## 6. Amendments
+
+We reserve the right to modify these terms at any time. Continued use of the protocol after changes are published constitutes your acceptance of the revised terms. We will make reasonable efforts to notify users of material changes.
+`,
+  "privacy": `
+# Privacy Policy
+
+Last Updated: January 1, 2027
+
+Humanity Ledger is designed with privacy as a foundational principle. This policy explains what data we process, why, and how we protect it using Zero-Knowledge cryptography.
 
 ---
 
-## Upcoming Features
+## Our Core Privacy Principles
 
-We are actively building additional modules for the App Hub, including:
+1. **Zero-Knowledge Architecture** - We leverage the Aztec Network to ensure transactions and state changes are mathematically verifiable without revealing the underlying data.
+2. **End-to-End Encryption** - All communications via Ledger Chat are E2EE using the XMTP protocol.
+3. **No central data stores** - Your messages and call content are never stored unencrypted on our servers.
 
-- **Ledger Academy** — Educational content on cryptography, privacy, and decentralized networks.
-- **Network Explorer** — A real-time view of network activity and statistics.
-- **Developer Sandbox** — Tools for developers building on top of the Humanity Ledger protocol.
+## What We Do Not Collect
+
+- The content of your messages, voice notes, or attachments.
+- Audio or video call streams.
+- Your private keys or wallet balances.
+- Your physical location or persistent IP address.
+- Advertising identifiers or behavioral tracking data.
+
+## What We Process for Network Operation
+
+To facilitate peer discovery and real-time call setup, temporary signaling metadata (such as presence heartbeats via Redis) is briefly processed by our relay servers. This data:
+- Is processed only in Redis working memory, and auto-expires (TTL) rapidly.
+- Cannot be linked to your real-world identity, only to your derived Sovereign ZK-Identity.
+
+## Local Storage & Vaults
+
+Application data (such as settings, contact lists, and message history) is stored locally on your device in an encrypted IndexedDB/LMDB Vault. This data never leaves your device unless you explicitly export it.
+
+## Third Parties
+
+We do not share any data with third-party advertising networks or analytics providers. We use secure edge caching (Cloudflare) to deliver UI assets, but no personal data is routed through third-party analytics.
+
+Contact: privacy@humanityledger.com
+`,
+  "cookies": `
+# Cookie & Storage Policy
+
+Last Updated: January 1, 2027
+
+---
+
+## Secure Session Tokens & Vaults
+
+We use secure session tokens, stored in your browser's \`localStorage\` and \`sessionStorage\`, to confirm your cryptographic identity (SIWE - Sign-In with Ethereum). 
+We also utilize local IndexedDB to power the Secure Vault which stores your encrypted chat history and preferences. These are strictly necessary for the application to function correctly.
+
+## What We Do Not Use
+
+- Advertising cookies.
+- Third-party tracking pixels (e.g., Meta Pixel).
+- Analytics cookies from platforms such as Google Analytics.
+- Any persistent identifier that tracks you across websites.
+
+## Your Control
+
+You may clear your session tokens at any time by disconnecting your wallet or clearing your browser's local storage. This will terminate your active session and lock your Secure Vault.
+`,
+  "aml-kyc": `
+# Sybil Resistance & AML Framework
+
+Last Updated: January 1, 2027
+
+---
+
+## Overview
+
+Humanity Ledger is a non-custodial communication protocol. We do not process, transfer, or hold fiat financial assets on behalf of users. Quantum Dots (QDs) are strictly utility tokens used to meter network usage and prevent spam.
+
+## Cryptographic Identity Verification & Anti-Sybil
+
+Our network uses cryptographic wallet signatures as the basis for identity. To prevent Sybil attacks (bot farming), we enforce a rigorous multi-layered defense:
+1. **Global Cap:** A maximum number of Genesis Identities can be minted on the Aztec network.
+2. **IP & Hardware Fingerprinting Thresholds:** Our Redis Anomaly Detector prevents a single physical location from mass-generating wallets.
+3. **Zero-Knowledge Proofs:** Aztec rollups ensure identity uniqueness without exposing public ledgers of user activity.
+
+## Abuse Prevention & Wash Trading
+
+We have implemented strict technical measures to prevent network abuse:
+- **Rate limiting** on message sending and QD transfers via Redis sliding windows.
+- **Wash Trading Prevention:** QD rewards for network activity are algorithmically capped per 24h period between any specific pair of users.
+- **Minimum Fees:** Every transaction burns a minimum fee, mathematically draining attackers attempting database bloat.
+
+## Reporting
+
+If you believe that illegal activity is occurring on the network, you can report it to us at legal@humanityledger.com.
+`,
+  "disclaimer": `
+# Risk Disclaimer
+
+Last Updated: January 1, 2027
+
+---
+
+## Software Status
+
+The Humanity Ledger protocol and its associated applications are currently in **Beta (Mainnet Genesis)**. 
+While extensive security audits and penetration testing have been conducted, the software is provided "AS IS". 
+Unexpected behaviors, downtime, or network congestion may occur.
+
+## Cryptographic Risks
+
+By utilizing Aztec ZK-Rollups and the XMTP protocol, you are interacting with cutting-edge cryptographic systems. 
+You acknowledge that vulnerabilities in underlying zero-knowledge circuits, smart contracts, or the Ethereum Virtual Machine (EVM) could result in loss of access to your identity or utility tokens (QDs).
+
+## No Financial Advice
+
+Nothing in the Humanity Ledger platform constitutes financial, legal, or tax advice. Quantum Dots (QDs) are utility tokens intended solely for accessing network bandwidth and premium features. They are not an investment vehicle.
+`,
+  "hub": `
+# App Hub Overview
+
+The Humanity Ledger **App Hub** is your central command center for interacting with the decentralized web.
+
+---
+
+## Core Modules
+
+- **Ledger Chat** - XMTP-powered, end-to-end encrypted messaging with voice notes, file sharing, and integrated QD transfers.
+- **Sovereign Identity** - Manage your Aztec ZK-Identity, view your QD balance, and monitor your network reputation.
+- **System Settings** - Configure your privacy engine, sound packs, self-destruct timers, and aesthetic preferences.
+
+## Dashboard Indicators
+
+The top status bar provides real-time information:
+- **Network Status** - Connection health to Aztec RPC nodes and XMTP relays.
+- **System Sync** - Status of your Secure Vault and background sync processes.
+- **QDs Balance** - Real-time reflection of your utility tokens on the Aztec network.
 `,
   "identity": `
-# Digital Identity
+# Sovereign ZK-Identity
 
-Humanity Ledger uses your Ethereum wallet as your global, portable identity. No email address or phone number is required.
+Humanity Ledger uses the **Aztec Network** to provide you with a privacy-preserving Sovereign Identity.
 
 ---
 
 ## How It Works
 
-Your Ethereum wallet generates a unique cryptographic key pair: a public key and a private key. Your **wallet address** (derived from your public key) is your unique identifier on the network. Think of it as your username, but one that is mathematically verified and cannot be duplicated or impersonated.
+Instead of traditional usernames and passwords, your identity is derived from your Ethereum wallet signature (SIWE). 
+This signature is deterministically hashed to generate your **Aztec ZK-Identity**.
 
-When you log in, you prove ownership of your wallet by **signing a message** with your private key. This signature is verifiable by anyone but can only be created by the holder of the private key. Your private key never leaves your device.
+Because Aztec utilizes Zero-Knowledge proofs, you can prove you own a specific identity and balance without revealing your entire transaction history to the public.
 
----
+## Quantum Dots (QDs)
 
-## Your Profile
-
-Your profile metadata — including your display name, biography, and avatar — is stored in the settings engine. This information is:
-
-- Stored locally on your device in an encrypted format.
-- Shared with the XMTP network to enable other users to find and identify you.
-- Never stored on a Humanity Ledger server.
-
-You can update your profile at any time from **Settings > My Profile > Edit Profile**.
-
----
+QDs are the native utility token of the Humanity Ledger network. They are used to:
+- Prevent network spam (micro-fees per message).
+- Unlock premium storage and AI features (e.g., Tone Translation).
+- Reward active, constructive network participants.
 
 ## Recovery and Key Management
 
-Your wallet's **recovery phrase** (also called a seed phrase or mnemonic) is a sequence of 12 or 24 words that can restore your wallet on any compatible device. It is the master key to your identity on the network.
-
-> **Critical:** Write down your recovery phrase and store it offline in a secure location. Anyone with access to your recovery phrase has full control of your wallet. Humanity Ledger cannot recover it for you if it is lost.
-
----
-
-## Changing Your Identity
-
-Because your identity is tied to your wallet's cryptographic keys, changing your identity means generating a new wallet. You cannot transfer your message history between wallets.
+Your wallet's **recovery phrase** (or your email OTP logic if using an embedded wallet) is the master key to your identity. 
+> **Critical:** If you lose access to your originating Ethereum wallet or email, you lose access to your Aztec ZK-Identity and all associated QDs. Humanity Ledger cannot recover it for you.
 `,
   "audits": `
-# Security Audits
+# Security Audits & Architecture
 
-The security of the Humanity Ledger protocol is a continuous priority. We use multiple methods to maintain a high security standard.
-
----
-
-## Automated Analysis
-
-Every change to the codebase undergoes automated security scanning using industry-standard static analysis tools. These tools check for common vulnerabilities, dependency issues, and misconfigurations before any code is deployed to production.
+The security of the Humanity Ledger protocol is uncompromising. We employ a multi-layered defense architecture.
 
 ---
 
-## Dependency Auditing
+## 1. Zero-Knowledge Cryptography (Aztec)
+All state transitions regarding identities and QDs are executed via Noir smart contracts on the Aztec network. This ensures data is mathematically verifiable while remaining completely private.
 
-All third-party libraries and dependencies are regularly audited using \`npm audit\` and Dependabot. Security updates are applied promptly. We maintain a minimal dependency footprint to reduce the attack surface.
+## 2. End-to-End Encryption (XMTP)
+Ledger Chat utilizes the Extensible Message Transport Protocol (XMTP). Messages are encrypted on your device using X25519 key pairs and decrypted only on the recipient's device. Relay servers cannot read message contents.
 
----
+## 3. Real-Time Anomaly Detection
+Our Edge infrastructure utilizes advanced Redis-backed sliding windows to monitor for Sybil attacks, DDoS attempts, and API abuse. Suspicious IP addresses and wallet signatures are temporarily blackholed at the Edge.
 
-## Manual Code Review
-
-All significant features and security-sensitive changes undergo mandatory manual code review by at least one other engineer before being merged. Changes to authentication, encryption, or key management require review by a senior engineer familiar with cryptographic systems.
-
----
-
-## Third-Party Audits
-
-As the protocol approaches mainnet and scales, we are committed to commissioning independent third-party security audits from recognized security research firms. Audit reports will be published publicly upon completion.
-
----
-
-## Responsible Disclosure
-
-We maintain a responsible disclosure policy. If you discover a security vulnerability, please report it privately to security@humanityledger.com before disclosing it publicly. We commit to acknowledging your report within 48 hours and working with you to resolve the issue promptly.
+## 4. Local Secure Vaults
+Browser storage (IndexedDB/LMDB) is encrypted locally before being written to disk, ensuring that physical access to your device does not immediately compromise your chat history.
 `,
   "bug-bounty": `
 # Bug Bounty Program
 
-Last Updated: August 2026
+Last Updated: January 1, 2027
 
 ---
 
-## Program Status: Coming Soon
+## Program Status: ACTIVE
 
-We are currently finalizing our formal Bug Bounty Program. The program is **not yet active** and no paid rewards are being offered at this time.
+With the launch of the Humanity Ledger Mainnet Genesis, our formal Bug Bounty Program is now active. We encourage responsible disclosure of security vulnerabilities.
 
----
+## How to report:
 
-## Responsible Disclosure (Active Now)
-
-While the formal bounty program is being established, we actively encourage responsible disclosure of security vulnerabilities.
-
-**How to report:**
-
-1. Send your findings to **security@humanityledger.com**
-2. Include a clear description of the vulnerability and steps to reproduce.
+1. Send your findings to **security@humanityledger.com**. PGP encryption is preferred (key available on request).
+2. Include a clear description of the vulnerability, a Proof of Concept (PoC), and steps to reproduce.
 3. Do **not** disclose publicly until we have confirmed resolution with you.
-4. We will acknowledge your report within 48 hours.
-
----
-
-## What to Report
-
-We are particularly interested in:
-- Authentication bypass or session hijacking
-- Cryptographic implementation weaknesses
-- API endpoints exposing user data without authorization
-- Cross-site scripting (XSS) or injection attacks
-- Smart contract interaction vulnerabilities
-
----
+4. We will acknowledge your report within 24 hours.
 
 ## Scope
 
-The following are in scope:
-- **Ledger Chat** (web application at humanidfi.com)
-- **Authentication and session management** (/api/auth/*)
-- **Encryption implementations** (lib/xmtp, lib/web-crypto)
-- **The Humanity Ledger public API**
-
----
+The following are in scope for bounties:
+- Cryptographic bypasses in ZK-Identity generation or Aztec integration.
+- Unauthorized state mutation or QD minting vulnerabilities.
+- XMTP encryption implementation flaws leading to message decryption.
+- Critical authentication bypasses in SIWE.
+- Cross-site scripting (XSS) leading to Vault key extraction.
 
 ## Out of Scope
-
-- Denial-of-service attacks
-- Social engineering of Humanity Ledger staff
-- Vulnerabilities in third-party services we do not control
-- Issues requiring physical access to a user's device
-
----
-
-## Future Program
-
-When the formal program launches, it will include structured reward tiers. Researchers who submitted valid reports during this pre-launch period will be recognized in the Hall of Fame.
-
-Follow our [GitHub](https://github.com/humanityledger/Humanity-Ledger) or [Changelog](/docs/changelog) for the official launch announcement.
+- Denial-of-service attacks against our edge infrastructure.
+- Social engineering.
+- Vulnerabilities in third-party libraries (unless specifically how we implemented them).
 `,
   "transparency": `
 # Transparency Report
@@ -618,34 +713,23 @@ Humanity Ledger is committed to full transparency about how our systems operate 
 
 ## Data Requests
 
-As a decentralized, non-custodial protocol, we hold virtually no user data. We have never received a legally enforceable request for user communication data because such data does not exist on our servers.
+As a decentralized, non-custodial protocol featuring Zero-Knowledge architecture and E2EE, we hold virtually no readable user data. We cannot provide message contents or financial histories to third parties because we do not possess them.
 
 | Metric | Count (All Time) |
 |---|---|
 | User message content handed over to authorities | 0 |
-| User IP addresses logged to disk | 0 |
+| User IP addresses logged to disk permanently | 0 |
 | Backdoors or interception mechanisms installed | 0 |
-| Government requests for user data received | 0 |
-
----
-
-## Infrastructure Transparency
-
-Our server infrastructure runs on Railway. Our application code is open for review on GitHub. We use no closed-source, proprietary components in the critical path of message delivery or encryption.
-
----
+| Government requests for user data fulfilled | 0 |
 
 ## Open Source Commitment
 
-The core communication components of Humanity Ledger are built on open-source protocols:
+The core communication and state components of Humanity Ledger are built on open-source protocols:
+- **Aztec Network** - Open-source ZK-Rollup architecture.
+- **XMTP** - Open-source, decentralized message transport.
+- **Wagmi / Viem** - Open-source Ethereum tooling.
 
-- **XMTP** — Open-source, decentralized message transport.
-- **WebRTC** — Open standard for real-time peer-to-peer communication.
-- **wagmi and viem** — Open-source Ethereum tooling.
-
-We are committed to progressively open-sourcing more of our codebase as the protocol matures.
-
----
+We are committed to progressively open-sourcing more of our frontend and relay codebase as the protocol matures.
 
 ## Updates to This Report
 
