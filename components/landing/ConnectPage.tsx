@@ -339,7 +339,7 @@ export default function ConnectPage() {
             muted
             playsInline
             preload="auto"
-            className="absolute inset-0 w-full h-full object-cover z-0"
+            className="absolute inset-0 w-full h-full object-contain z-0"
             src="/system-shots/72298-541981714.mp4"
           />
           <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.55) 100%)' }} />
