@@ -328,13 +328,21 @@ export async function POST(req: NextRequest) {
         }
 
         // 1. [PERFORMANCE PATCH] $O(1)$ Balance check using synchronized User creditsBalance
-        const sender = await tx.user.findUnique({
+        // AUTO-UPSERT: If the sender doesn't have a User row yet (e.g. new SIWE users whose
+        // row wasn't created at auth time), create it now with the default 2500 QD balance.
+        // This prevents "Sender account not found in ledger" for legitimate users.
+        const sender = await tx.user.upsert({
           where: { walletAddress: fromAddr },
+          update: {}, // no-op update — just return the existing row
+          create: {
+            walletAddress: fromAddr,
+            creditsBalance: 2500, // Default genesis balance per schema
+            tier: 'FREE',
+            humanityScore: 0,
+          },
           select: { creditsBalance: true, id: true }
         });
-        if (!sender) {
-          throw new Error('Sender account not found in ledger.');
-        }
+
 
         const balance = sender.creditsBalance;
 

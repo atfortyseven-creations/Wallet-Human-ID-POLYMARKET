@@ -361,6 +361,18 @@ export async function POST(req: NextRequest) {
             },
           },
         });
+
+        // 3. Update the authoritative User balance (sync with new unified balance API)
+        await txCtx.user.upsert({
+          where: { walletAddress: normalizedAddress },
+          update: { creditsBalance: { increment: AIRDROP_AMOUNT } },
+          create: {
+            walletAddress: normalizedAddress,
+            creditsBalance: 2500 + AIRDROP_AMOUNT, // 2500 default + airdrop
+            tier: 'FREE',
+            humanityScore: 0,
+          }
+        });
       }, { isolationLevel: 'Serializable' });
     } catch (atomicErr: any) {
       if (atomicErr.message === 'ALREADY_CLAIMED' || atomicErr.code === 'P2002') {
