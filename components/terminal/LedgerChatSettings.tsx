@@ -260,7 +260,15 @@ function ProfileView({ address, s }: any) {
             <span className="mt-4 text-[11px] font-bold bg-zinc-100 px-3 py-2 border border-black text-center break-all">{address}</span>
             <div className="flex gap-2 mt-3 w-full">
               <button onClick={() => { navigator.clipboard.writeText(address); toast.success('Address copied.'); }} className="flex-1 py-2 bg-black text-white font-black text-xs uppercase border-2 border-black">COPY</button>
-              <button onClick={() => toast.info('Share QR via system share sheet.')} className="flex-1 py-2 bg-white text-black font-black text-xs uppercase border-2 border-black hover:bg-zinc-100">SHARE</button>
+              <button onClick={() => {
+                const appUrl = typeof window !== 'undefined' ? window.location.origin : '';
+                const shareUrl = `${appUrl}/chat?to=${encodeURIComponent(address)}`;
+                if (navigator.share) {
+                  navigator.share({ title: 'Connect on Humanity Ledger', url: shareUrl }).catch(() => {});
+                } else {
+                  navigator.clipboard.writeText(shareUrl).then(() => toast.success('Chat link copied to clipboard!')).catch(() => toast.error('Failed to copy link'));
+                }
+              }} className="flex-1 py-2 bg-white text-black font-black text-xs uppercase border-2 border-black hover:bg-zinc-100">SHARE</button>
             </div>
           </div>
         )}

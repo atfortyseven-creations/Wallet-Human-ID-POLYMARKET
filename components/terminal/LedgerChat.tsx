@@ -261,6 +261,36 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     notificationEngine.init();
   }, []);
 
+  // [FEATURE] Auto-open chat from URL (simpler contact addition)
+  useEffect(() => {
+    if (!isMounted || !address || !client) return;
+    const params = new URLSearchParams(window.location.search);
+    const to = params.get('to');
+    if (to && !activePeerRef.current) {
+       const connectToPeer = async () => {
+         let peerAddr = to;
+         if (!to.startsWith('0x') || to.length !== 42) {
+           try {
+             const res = await fetch(`/api/chat/users/search?q=${encodeURIComponent(to)}`);
+             const data = await res.json();
+             if (data.users && data.users.length > 0) {
+               peerAddr = data.users[0].address;
+             } else {
+               toast.error('User not found: ' + to);
+               return;
+             }
+           } catch {
+             return;
+           }
+         }
+         handleStartConversationWithPeer(peerAddr);
+       };
+       connectToPeer();
+       // Clear URL so it doesn't reopen on refresh
+       window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, [isMounted, address, client]);
+
   const [conversations, setConversations] = useState<ConversationMeta[]>([]);
   const [activePeer, setActivePeer] = useState<string | null>(null);
   const [localContacts, setLocalContacts] = useState<LocalContact[]>([]);
@@ -2453,11 +2483,28 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           let resolvedPeerAddr = msg.conversation?.peerAddress?.toLowerCase() || '';
           if (!resolvedPeerAddr) {
             if (fromPeer) {
-              const senderAddr = await resolveSenderAddress(msg.senderInboxId);
+              const senderAddr = await resolveSenderAddress(msg.senderInboxId, client);
               resolvedPeerAddr = senderAddr?.toLowerCase() || '';
             } else if (msg.conversation) {
               const dmPeer = await extractPeerAddress(msg.conversation, selfInboxId);
               resolvedPeerAddr = dmPeer?.toLowerCase() || '';
+            }
+          }
+
+          // Ultimate fallback (works for both sender and recipient in v5.3.0)
+          if (!resolvedPeerAddr) {
+            const convoId = msg.convoId || msg.conversationId || msg.groupId;
+            if (convoId) {
+              try {
+                const dms = await client.conversations.listDms();
+                const dm = dms.find((d: any) => d.id === convoId);
+                if (dm) {
+                  const dmPeer = await extractPeerAddress(dm, selfInboxId);
+                  resolvedPeerAddr = dmPeer?.toLowerCase() || '';
+                }
+              } catch (e) {
+                console.warn('Failed to resolve convoId to peer address', e);
+              }
             }
           }
           const msgConvPeer = resolvedPeerAddr;
@@ -2969,9 +3016,29 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         if (peer.toLowerCase().startsWith('ethereum:')) {
             peer = peer.substring(9).split('@')[0];
         }
-        
-        if (!/^0x[a-fA-F0-9]{40}$/.test(peer)) {
-            alert('Invalid Ethereum address format.');
+
+        // Resolve @username handle to wallet address via search API
+        if (!peer.startsWith('0x') || (peer.length !== 42 && peer.length !== 66)) {
+          try {
+            const res = await fetch(`/api/chat/users/search?q=${encodeURIComponent(peer)}`);
+            const data = await res.json();
+            if (data.users && data.users.length > 0) {
+              peer = data.users[0].address;
+            } else {
+              toast.error(`User not found: ${peer}`);
+              setSending(false);
+              return;
+            }
+          } catch {
+            toast.error('User search unavailable. Please enter a 0x wallet address.');
+            setSending(false);
+            return;
+          }
+        }
+
+        // Accept both EVM (42 chars: 0x + 40) and Aztec (66 chars: 0x + 64) addresses
+        if (!/^0x[a-fA-F0-9]{40}([a-fA-F0-9]{24})?$/.test(peer)) {
+            toast.error('Invalid address format. Use a wallet address or @username.');
             setSending(false);
             return;
         }
@@ -3629,7 +3696,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
               <input
                 id="ledger-new-chat-input"
                 type="text"
-                placeholder="Wallet address or .eth name"
+                placeholder="@username or 0x wallet address"
                 value={peerInput}
                 onChange={e => setPeerInput(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleStartConversation()}

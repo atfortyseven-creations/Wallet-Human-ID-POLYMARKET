@@ -68,15 +68,22 @@ export function nsToDate(ns: bigint | undefined | null): Date {
  * Resolve inboxId → Ethereum address using the XMTP network.
  * Results are cached to avoid repeated network calls.
  */
-export async function resolveInboxIdToAddress(inboxId: string): Promise<string | null> {
+export async function resolveInboxIdToAddress(inboxId: string, client?: Client): Promise<string | null> {
   if (!inboxId) return null;
   const cached = inboxIdToAddressCache.get(inboxId.toLowerCase());
   if (cached) return cached;
 
   try {
-    // getLatestInboxState is available on Client static or instance
-    const states = await (Client as any).getInboxStates?.([inboxId], XMTP_ENV)
-      ?? await (Client as any).inboxStateFromInboxIds?.([inboxId], XMTP_ENV);
+    let states: any = null;
+    if (client) {
+      states = await (client as any).inboxStateFromInboxIds?.([inboxId], true);
+      if (!states) {
+        const state = await (client as any).getLatestInboxState?.(inboxId);
+        if (state) states = [state];
+      }
+    } else {
+      states = await (Client as any).inboxStateFromInboxIds?.([inboxId], XMTP_ENV);
+    }
 
     if (states && states[0]) {
       const state = states[0];
@@ -606,9 +613,9 @@ export async function* streamMessages(client: Client, signal?: AbortSignal) {
  * Given a senderInboxId from a streamed/fetched message, resolve
  * the Ethereum address of the sender using the cache or network.
  */
-export async function resolveSenderAddress(senderInboxId: string): Promise<string | null> {
+export async function resolveSenderAddress(senderInboxId: string, client?: Client): Promise<string | null> {
   if (!senderInboxId) return null;
   const cached = inboxIdToAddressCache.get(senderInboxId.toLowerCase());
   if (cached) return cached;
-  return resolveInboxIdToAddress(senderInboxId);
+  return resolveInboxIdToAddress(senderInboxId, client);
 }

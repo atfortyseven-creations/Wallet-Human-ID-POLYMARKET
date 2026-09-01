@@ -66,6 +66,7 @@ const PUBLIC_PREFIXES = [
   '/api/status',
   '/api/registry/',
   '/api/humanidfi/',
+  '/api/chat/users/search', // User discovery — can be called before full auth (contact search)
   '/_next/',
   '/connect',
   '/legal/',
