@@ -21,7 +21,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest) {
   try {
     const session = await getSession();
-    const callerAddress = session?.userId ?? req.headers.get('x-web3-address') ?? '';
+    const callerAddress = session?.userId ?? req.headers.get('x-verified-session-address') ?? '';
 
     const status = await getIdentityStatus(callerAddress);
 

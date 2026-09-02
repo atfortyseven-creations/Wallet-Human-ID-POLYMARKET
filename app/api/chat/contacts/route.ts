@@ -13,7 +13,7 @@ async function resolveUserId(req: NextRequest, queryAddress: string | null): Pro
   const session = await getSession();
   if (session?.userId) return session.userId.toLowerCase();
 
-  const web3Address = req.headers.get('x-web3-address');
+  const web3Address = req.headers.get('x-verified-session-address');
   if (web3Address) return web3Address.toLowerCase();
 
   return null;

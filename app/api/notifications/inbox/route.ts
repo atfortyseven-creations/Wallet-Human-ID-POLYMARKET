@@ -12,10 +12,11 @@ import { getSession } from '@/lib/session';
 export const dynamic = 'force-dynamic';
 
 async function resolveUserId(req: NextRequest): Promise<string | null> {
+  const verified = req.headers.get('x-verified-session-address');
+  if (verified) return verified.toLowerCase();
   const session = await getSession();
   if (session?.userId) return session.userId.toLowerCase();
-  const web3 = req.headers.get('x-web3-address') || req.headers.get('x-verified-session-address');
-  return web3?.toLowerCase() ?? null;
+  return null;
 }
 
 export async function GET(req: NextRequest) {

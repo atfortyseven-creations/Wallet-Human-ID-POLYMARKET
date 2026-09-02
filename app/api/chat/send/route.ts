@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     // Previously, body-supplied 'sender' was trusted directly, enabling any attacker to
     // impersonate ANY wallet in the chat — including admins or high-reputation users.
     const session = await getSession();
-    const web3Address = req.headers.get('x-web3-address');
+    const web3Address = req.headers.get('x-verified-session-address');
     const userId = session?.userId || web3Address;
     
     if (!userId) {

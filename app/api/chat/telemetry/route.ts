@@ -12,7 +12,7 @@ const TYPING_TTL_S   = 5;  // 5 seconds typing window
 // Falls back to reading the session cookie directly for non-edge environments.
 async function resolveAuthenticatedAddress(request: NextRequest): Promise<string | null> {
     const fromHeader = request.headers.get('x-verified-session-address')
-        ?? request.headers.get('x-web3-address');
+        ?? request.headers.get('x-verified-session-address');
     if (fromHeader) return fromHeader.toLowerCase();
 
     try {

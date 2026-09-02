@@ -71,8 +71,6 @@ const PUBLIC_PREFIXES = [
   '/connect',
   '/legal/',
   '/docs/',
-  '/portfolio',
-  '/registry',
   '/fonts/',
   '/images/',
   '/icons/',

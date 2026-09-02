@@ -308,7 +308,7 @@ export default function ConnectPage() {
           MOBILE HERO: Full-width globe video, natural 16:9 ratio
           Hidden on desktop — desktop uses the left/right grid below
       ──────────────────────────────────────────────────────────── */}
-      <div className="lg:hidden w-full relative overflow-hidden bg-black aspect-video">
+      <div className="lg:hidden w-full relative overflow-hidden bg-black aspect-video max-h-[40vh]">
         <video
           autoPlay
           loop
@@ -316,13 +316,13 @@ export default function ConnectPage() {
           playsInline
           preload="auto"
           disablePictureInPicture
-          className="absolute inset-0 w-full h-full object-contain"
+          className="absolute inset-0 w-full h-full object-cover"
           src="/system-shots/72298-541981714.mp4"
           style={{ objectPosition: 'center center' }}
         />
-        {/* Gentle bottom fade so the video blends into the white form */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 z-10" style={{ background: 'linear-gradient(to bottom, transparent, #ffffff)' }} />
-        {/* Logo top-left */}
+        {/* Bottom fade for seamless transition to the white auth form */}
+        <div className="absolute inset-x-0 bottom-0 h-20 z-10" style={{ background: 'linear-gradient(to bottom, transparent, #ffffff)' }} />
+        {/* Logo top-left with safe-area inset */}
         <div className="absolute top-4 left-4 z-20" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
           <img src="/logo-corporate.png" alt="Humanity Ledger" className="h-6 w-auto brightness-200 drop-shadow-lg" />
         </div>

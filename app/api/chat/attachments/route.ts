@@ -8,7 +8,7 @@ import { getSession } from '@/lib/session';
 export async function POST(req: Request) {
   try {
     const session = await getSession();
-    const web3Address = req.headers.get('x-web3-address');
+    const web3Address = req.headers.get('x-verified-session-address');
     const userId = session?.userId || web3Address;
     
     if (!userId) {

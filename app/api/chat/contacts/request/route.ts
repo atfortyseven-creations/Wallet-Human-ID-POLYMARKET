@@ -13,10 +13,14 @@ import { getSession } from '@/lib/session';
 export const dynamic = 'force-dynamic';
 
 async function resolveCallerAddress(req: NextRequest): Promise<string | null> {
+  // Priority 1: address injected by middleware after cryptographic JWT verification — cannot be forged by client
+  const verified = req.headers.get('x-verified-session-address');
+  if (verified) return verified.toLowerCase();
+  // Priority 2: server-side session (e.g. NextAuth cookie — email login)
   const session = await getSession();
   if (session?.userId) return session.userId.toLowerCase();
-  const web3 = req.headers.get('x-web3-address') || req.headers.get('x-verified-session-address');
-  if (web3) return web3.toLowerCase();
+  // NOTE: x-web3-address is a client-supplied header — NEVER trust it for authorization.
+  // It is deliberately excluded here to close the IDOR/impersonation attack vector.
   return null;
 }
 
@@ -134,7 +138,7 @@ export async function GET(req: NextRequest) {
 
     const users = await prisma.user.findMany({
       where: { walletAddress: { in: addresses } },
-      select: { walletAddress: true, chatName: true, displayName: true, avatarUrl: true, isVerified: true, tier: true },
+      select: { walletAddress: true, chatName: true, displayName: true, avatarUrl: true, isZkVerified: true, tier: true },
     });
     const userMap = Object.fromEntries(users.map((u: any) => [u.walletAddress, u]));
 
@@ -151,7 +155,7 @@ export async function GET(req: NextRequest) {
           address: addr,
           nickname: u.chatName || u.displayName || `${addr.slice(0,6)}…${addr.slice(-4)}`,
           avatarUrl: u.avatarUrl || null,
-          isVerified: u.isVerified || false,
+          isVerified: u.isZkVerified || false,
           tier: u.tier || 'EXPLORER',
         },
       };

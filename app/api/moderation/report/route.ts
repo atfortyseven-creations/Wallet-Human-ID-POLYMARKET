@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   try {
     const headersList = await headers();
     const reporterAddress = headersList.get('x-verified-session-address')
-      ?? headersList.get('x-web3-address');
+      ?? headersList.get('x-verified-session-address');
 
     if (!reporterAddress) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
