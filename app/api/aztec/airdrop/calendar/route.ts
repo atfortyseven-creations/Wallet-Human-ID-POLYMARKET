@@ -152,6 +152,7 @@ export async function POST(req: NextRequest) {
             explorerUrl: null,
             onChain: false,
             reason: `Monthly Airdrop (${currentMonth}/${currentYear})`
+          }
         }
       });
 
