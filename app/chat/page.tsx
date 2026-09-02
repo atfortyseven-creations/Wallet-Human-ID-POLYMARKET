@@ -8,11 +8,11 @@ const LedgerChat = dynamic(
 
 export default function ChatPage() {
   return (
-    <div className="flex flex-col w-full h-[100dvh] bg-[#F2F2F7] overflow-hidden">
-      {/* PC & Mobile: Fill the entire screen exactly like a native app */}
-      <div className="flex flex-col w-full h-full bg-white">
-        <LedgerChat forceAutoInit={true} />
-      </div>
+    // [LAYOUT FIX] The ClientLayout already wraps /chat in `fixed inset-0 flex flex-col overflow-hidden`.
+    // This page just needs to hand off a flex-1 min-h-0 flex-col child so LedgerChat
+    // can own the full remaining height with no dead-space below.
+    <div className="flex flex-col w-full h-full min-h-0 overflow-hidden bg-white">
+      <LedgerChat forceAutoInit={true} />
     </div>
   );
 }

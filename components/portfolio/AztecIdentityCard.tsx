@@ -252,8 +252,26 @@ function SendQDsPanel() {
   const [errMsg, setErrMsg]         = useState('');
 
   const amountNum = parseFloat(amount || '0');
-  const amountOk  = amountNum > 0 && amountNum <= balance;
+  const fee = Math.max(1, Math.round(amountNum * 0.01));
+  const amountOk  = amountNum > 0 && (amountNum + fee) <= balance;
   const formOk    = toValid === true && amountOk;
+
+  const handleMaxClick = () => {
+    if (balance <= 1) {
+      setAmount('0');
+      return;
+    }
+    let max = balance;
+    for (let i = 0; i < 5; i++) {
+      const currentFee = Math.max(1, Math.round(max * 0.01));
+      if (max + currentFee <= balance) {
+        setAmount((Math.floor(max * 100) / 100).toString());
+        return;
+      }
+      max = balance - currentFee;
+    }
+    setAmount('0');
+  };
 
   useEffect(() => {
     import('../../public/system-shots/Transaction Complete.json')
@@ -388,7 +406,7 @@ function SendQDsPanel() {
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <label className="text-[9px] font-black uppercase tracking-widest text-zinc-900/40">Amount (QDs)</label>
-          <button onClick={() => setAmount(String(balance))} className="text-[8px] font-black uppercase text-zinc-900/40 hover:text-zinc-900 border border-zinc-900/10 px-2 py-0.5 transition-all">MAX</button>
+          <button onClick={handleMaxClick} className="text-[8px] font-black uppercase text-zinc-900/40 hover:text-zinc-900 border border-zinc-900/10 px-2 py-0.5 transition-all">MAX</button>
         </div>
         <div className="relative">
           <input
@@ -403,7 +421,7 @@ function SendQDsPanel() {
           />
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-900/30 font-mono text-xs font-black">QDs</span>
         </div>
-        {amount && !amountOk && <p className="text-[8px] text-red-500 font-mono">Max {balance.toFixed(2)} QDs available.</p>}
+        {amount && !amountOk && <p className="text-[8px] text-red-500 font-mono">Insufficient balance for amount + {fee} QDs fee.</p>}
       </div>
       <button
         onClick={doSend}

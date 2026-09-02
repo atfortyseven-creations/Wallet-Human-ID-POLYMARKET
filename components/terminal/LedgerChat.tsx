@@ -188,18 +188,16 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   };
   const chatContractAddress = { toString: () => '0xCHAT_CONTRACT_ADDRESS_PLACEHOLDER' } as any;
   const siloedPxe = getSiloedPXE ? getSiloedPXE(chatContractAddress) : null;
-  const { 
-    chatName, 
-    chatBio, 
-    soundEffects,
-    chatBackground,
-    chatBackgroundCustomUrl,
-    bubbleStyle,
-    accentColor,
-    chatFont,
-    textSize,
-    setSettingsOpen
-  } = useSettingsStore();
+  const { setSettingsOpen } = useSettingsStore();
+  const chatName = ledgerSettings?.displayName || '';
+  const chatBio = ledgerSettings?.bio || '';
+  const soundEffects = ledgerSettings?.notification_sound ?? true;
+  const chatBackground = ledgerSettings?.chat_background || 'default';
+  const chatBackgroundCustomUrl = '';
+  const bubbleStyle = ledgerSettings?.bubble_style || 'default';
+  const accentColor = ledgerSettings?.accent_color || '#1c7aff';
+  const chatFont = 'inter';
+  const textSize = ledgerSettings?.text_size || 4;
 
   const bgStyle = React.useMemo((): React.CSSProperties => {
     switch (chatBackground) {
@@ -3643,6 +3641,10 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
 
   return (
     <TuringShieldGate>
+      {/* [LAYOUT FIX] This wrapper must be h-full flex-col so that `flex-1 min-h-0`
+          children (the two-panel layout) can resolve their height against the viewport.
+          Without this, TuringShieldGate's Fragment return gives no height context. */}
+      <div className="flex flex-col h-full w-full min-h-0 overflow-hidden">
       {/* FULL SCREEN MODALS */}
       <AnimatePresence>
         {showSettings && (
@@ -4509,11 +4511,37 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                   <div className="flex items-end gap-2 px-3 pb-3 pt-2 w-full relative z-40 bg-white">
                     <button
                       type="button"
-                      onClick={() => setShowAppDrawer(d => !d)}
+                      onClick={() => { setShowAppDrawer(d => !d); setShowEmojiPicker(false); }}
                       className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center transition-all duration-300 mt-auto mb-0.5 ${showAppDrawer ? 'bg-[#000000] text-white rotate-45 scale-90 shadow-md' : 'bg-[#E5E5EA] text-[#8E8E93] hover:bg-[#D1D1D6] hover:text-[#000000]'}`}
                     >
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     </button>
+
+                    <button
+                      type="button"
+                      onClick={() => { setShowEmojiPicker(d => !d); setShowAppDrawer(false); }}
+                      className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center transition-all duration-300 mt-auto mb-0.5 ${showEmojiPicker ? 'bg-[#1c7aff] text-white shadow-md scale-105' : 'bg-transparent text-[#8e8e93] hover:bg-[#E5E5EA] hover:text-[#000000]'}`}
+                    >
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                    </button>
+
+                    <AnimatePresence>
+                      {showEmojiPicker && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          className="absolute bottom-[60px] left-2 z-[100] shadow-2xl rounded-[20px] overflow-hidden border border-black/10"
+                        >
+                          <EmojiPicker 
+                            onEmojiClick={(emojiData) => { 
+                              setInputText(prev => prev + emojiData.emoji);
+                            }}
+                            theme="light"
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
 
                     <div className="flex-1 bg-white border border-[#c8c8cc] rounded-3xl flex items-end relative shadow-sm overflow-hidden min-h-[38px] transition-all focus-within:border-blue-400">
                       {isRecording ? (
@@ -5432,8 +5460,9 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         />,
         document.body
       )}
-
+      </div>{/* end h-full flex-col layout wrapper */}
     </TuringShieldGate>
   );
 }
+
 

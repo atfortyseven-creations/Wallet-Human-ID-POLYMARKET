@@ -206,21 +206,22 @@ const TapbackPicker = React.memo(({ isMe, onReact, onClose }: {
   isMe: boolean; onReact: (e: string) => void; onClose: () => void;
 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 8 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: 8 }}
-    transition={{ duration: 0.18, ease: 'easeOut' }}
-    className="absolute z-50 flex items-center gap-0.5 px-2 py-1.5 bg-[#1c1c1e]/90 backdrop-blur-2xl rounded-full shadow-2xl border border-white/10"
-    style={{ bottom: 'calc(100% + 8px)', ...(isMe ? { right: 0 } : { left: 0 }) }}
+    initial={{ opacity: 0, y: 15, scale: 0.9 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+    className="absolute z-50 flex items-center gap-2 px-3 py-2 bg-white/70 backdrop-blur-3xl rounded-[32px] shadow-[0_16px_40px_rgba(0,0,0,0.15)] border border-white/80"
+    style={{ bottom: 'calc(100% + 12px)', ...(isMe ? { right: 0 } : { left: 0 }) }}
     onClick={e => e.stopPropagation()}
   >
     {TAPBACKS.map((t, i) => (
       <button
         key={t}
         onClick={() => { onReact(t); onClose(); }}
-        className="w-9 h-9 flex items-center justify-center text-[20px] hover:scale-125 transition-transform duration-100 active:scale-90"
+        className="w-11 h-11 flex items-center justify-center text-[26px] hover:scale-[1.35] hover:-translate-y-2 hover:bg-white/40 hover:shadow-sm rounded-full transition-all duration-300 active:scale-90 relative group"
       >
-        {t}
+        <span className="relative z-10">{t}</span>
+        <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-100 transition-opacity blur-[8px] z-0" />
       </button>
     ))}
   </motion.div>
@@ -231,28 +232,26 @@ TapbackPicker.displayName = 'TapbackPicker';
 export const StickerPicker = React.memo(({ onSend, onClose }: {
   onSend: (s: string) => void; onClose: () => void;
 }) => (
-  // [FIX] Use position: absolute so it floats above the input bar.
-  // The parent container in Ledger Chat must have position: relative.
   <motion.div
-    initial={{ opacity: 0, y: 12 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: 12 }}
-    transition={{ duration: 0.2, ease: 'easeOut' }}
-    className="absolute bottom-full mb-2 left-0 right-0 bg-white/95 backdrop-blur-2xl border border-black/8 rounded-[20px] shadow-2xl p-3 z-50"
+    initial={{ opacity: 0, y: 15, scale: 0.96 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    exit={{ opacity: 0, y: 15, scale: 0.96 }}
+    transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+    className="absolute bottom-full mb-3 left-0 right-0 bg-white/80 backdrop-blur-3xl border border-white/60 rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.15)] p-4 z-50"
     onClick={e => e.stopPropagation()}
   >
-    <div className="flex items-center justify-between mb-2 px-1">
-      <span className="text-[11px] font-black uppercase tracking-widest text-black/40">Stickers</span>
-      <button onClick={onClose} className="text-black/30 hover:text-black/60 transition-colors p-1">
+    <div className="flex items-center justify-between mb-4 px-2">
+      <span className="text-[13px] font-black uppercase tracking-widest text-[#1c1c1e]/40">Stickers</span>
+      <button onClick={onClose} className="w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 flex items-center justify-center transition-colors text-black/40 hover:text-black">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
-    <div className="grid grid-cols-5 gap-1 max-h-[200px] overflow-y-auto">
+    <div className="grid grid-cols-5 gap-2 max-h-[220px] overflow-y-auto px-1 pb-2 scrollbar-none">
       {STICKERS.map(s => (
         <button
           key={s}
           onClick={() => { onSend(s); onClose(); }}
-          className="w-full aspect-square flex items-center justify-center text-[26px] rounded-xl hover:bg-black/5 active:scale-90 transition-all duration-100"
+          className="w-full aspect-square flex items-center justify-center text-[32px] rounded-2xl hover:bg-white hover:shadow-sm hover:scale-110 active:scale-90 transition-all duration-200"
         >
           {s}
         </button>

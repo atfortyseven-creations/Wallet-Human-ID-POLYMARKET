@@ -152,7 +152,18 @@ export async function POST(req: NextRequest) {
             explorerUrl: null,
             onChain: false,
             reason: `Monthly Airdrop (${currentMonth}/${currentYear})`
-          }
+        }
+      });
+
+      // Update the user's balance
+      await tx.user.upsert({
+        where: { walletAddress: aztecAddress },
+        update: { creditsBalance: { increment: AIRDROP_AMOUNT } },
+        create: {
+          walletAddress: aztecAddress,
+          creditsBalance: 2500 + AIRDROP_AMOUNT,
+          tier: 'FREE',
+          humanityScore: 0
         }
       });
     });

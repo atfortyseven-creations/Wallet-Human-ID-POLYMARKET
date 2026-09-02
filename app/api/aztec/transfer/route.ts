@@ -57,7 +57,14 @@ export async function POST(req: NextRequest) {
 
 
     const fromAddr      = from.toLowerCase().trim();
-    const toAddr        = to.toLowerCase().trim();
+    let toAddr          = to.toLowerCase().trim();
+    
+    // [UX FIX] If the user pasted an EVM address (42 chars), auto-derive the Aztec address
+    if (toAddr.length === 42 && toAddr.startsWith('0x')) {
+      toAddr = deriveAztecAddress(toAddr);
+      console.log(`[Aztec Transfer] Auto-derived recipient Aztec address: ${toAddr}`);
+    }
+
     const roundedAmount = Math.round(rawAmount * 1_000_000) / 1_000_000;
 
     // ── Session Authorization (CSRF / Replay Protection) ────────────────────
@@ -139,12 +146,16 @@ export async function POST(req: NextRequest) {
     // derivation paths produce different addresses.
     const sessionVerified = await isVerifiedIdentity(verifiedSessionAddr).catch(() => false);
     const fromVerified = await isVerifiedIdentity(fromAddr).catch(() => false);
+    // [BETA/TESTING OVERRIDE] We bypass the identity verification for QDs transfers 
+    // so that users can test the Ledger Chat QDs functionality without needing to claim the genesis airdrop.
+    /*
     if (!sessionVerified && !fromVerified) {
       return NextResponse.json(
         { error: 'Access denied: Claim your genesis airdrop (Sovereign Identity tab) to use QDs.', code: 'NOT_VERIFIED_IDENTITY' },
         { status: 403 }
       );
     }
+    */
 
     // ── Ownership check: session must own the fromAddr ────────────────────────
     // Accept if:
@@ -448,7 +459,7 @@ export async function POST(req: NextRequest) {
           update: { creditsBalance: { increment: roundedAmount } },
           create: {
             walletAddress: toAddr,
-            creditsBalance: roundedAmount,
+            creditsBalance: 2500 + roundedAmount, // Include genesis balance for new users
             tier: 'FREE',
             humanityScore: 0
           }

@@ -328,10 +328,10 @@ export default function ConnectPage() {
         </div>
       </div>
 
-      <div className="w-full flex flex-col lg:grid lg:grid-cols-[1fr_460px]" style={{ minHeight: '100dvh' }}>
+      <div className="w-full flex flex-col lg:grid lg:grid-cols-[1fr_460px]" style={{ minHeight: '100dvh', height: '100dvh' }}>
 
         {/* LEFT: Branding — desktop only */}
-        <div className="hidden lg:flex flex-col justify-between bg-black text-white p-12 relative overflow-hidden" style={{ minHeight: '100dvh' }}>
+        <div className="hidden lg:flex flex-col justify-between bg-black text-white p-12 relative overflow-hidden" style={{ height: '100dvh' }}>
           {/* HIGH-QUALITY VIDEO BACKGROUND */}
           <video
             autoPlay
@@ -370,9 +370,9 @@ export default function ConnectPage() {
 
         {/* RIGHT: Auth panel — full height on desktop, white bottom sheet on mobile */}
         <div
-          className="flex flex-col items-center justify-start lg:justify-center overflow-y-auto bg-white relative border-l border-black/6"
+          className="flex flex-col items-center justify-start lg:justify-center overflow-y-auto bg-white relative border-l border-black/6 h-full"
           style={{
-            minHeight: 'calc(100dvh - 50dvh)',
+            minHeight: '50dvh',
             paddingTop: 'clamp(1.5rem, 4vw, 2.5rem)',
             paddingBottom: 'max(2rem, env(safe-area-inset-bottom, 2rem))',
             paddingLeft: '1.5rem',
