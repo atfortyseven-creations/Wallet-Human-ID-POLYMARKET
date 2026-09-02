@@ -302,6 +302,9 @@ export default function UniversalScanModal({
     };
   }, [isOpen, initialScanData, destroyScanner, initScanner, handleDecoded]);
 
+  const handshakeCleanupRef = useRef<(() => void) | null>(null);
+  useEffect(() => { return () => { handshakeCleanupRef.current?.(); }; }, []);
+
   // Handle PIN submission after QR scan
   const handlePinConfirm = useCallback(async () => {
     if (pinInput.length !== 4 || !pinScanData) return;
@@ -318,6 +321,7 @@ export default function UniversalScanModal({
         hasScannedRef.current = false;
         return;
       }
+      if (result.ok && result.cleanup) handshakeCleanupRef.current = result.cleanup;
       setStatus('success');
       onScanRef.current?.(pinScanData);
       setTimeout(() => onCloseRef.current(), 1400);
@@ -349,6 +353,16 @@ export default function UniversalScanModal({
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // [SECURITY] Reject oversized images to prevent OOM
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+    if (file.size > MAX_FILE_SIZE) {
+      setErrMsg('Image too large. Please use a file smaller than 10 MB.');
+      setStatus('error');
+      e.target.value = '';
+      return;
+    }
+
     setFileLoading(true);
     try {
       const decoded = await scanFileForQR(file);

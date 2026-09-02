@@ -3,7 +3,7 @@
  */
 
 export type SessionHandshakeResult =
-  | { ok: true }
+  | { ok: true; cleanup?: () => void }
   | { ok: false; message: string; needsWallet?: boolean };
 
 /**
@@ -313,5 +313,7 @@ export async function completeSessionHandshake(
     }
   }, 1000);
 
-  return { ok: true };
+  // Return cleanup so callers can clear the interval on component unmount
+  // (prevents ghost polling after the scan page is navigated away from)
+  return { ok: true, cleanup: () => clearInterval(pollSeed) };
 }
