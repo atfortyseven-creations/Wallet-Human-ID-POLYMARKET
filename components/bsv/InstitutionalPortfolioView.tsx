@@ -328,6 +328,7 @@ export function InstitutionalPortfolioView() {
 }
 
 function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, loading, onRefresh, onSend, onReceive, onScan, onCreate, onBuy, onSwap, onBridge, onNetworkClick, onSettingsClick, onAccountsClick, scannerBase, onShield, onSecurity, onSmartAccount, onDeploy, onOmnichain, onMempool, onQds, assets, displayCurrency, setDisplayCurrency, rate, symbol, isEmailAuth }: any) {
+    const { hideBalances, toggleHideBalances } = useSettings();
     const [copied, setCopied] = useState(false);
     const [isDisconnecting, setIsDisconnecting] = useState(false);
     const [activeTab, setActiveTab] = useState<'TOKENS'|'ACTIVITY'|'AZTEC'>('TOKENS');
