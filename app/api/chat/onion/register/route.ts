@@ -1,3 +1,4 @@
+import { getSession } from '@/lib/session';
 /**
  * GET/POST /api/chat/onion/register
  *

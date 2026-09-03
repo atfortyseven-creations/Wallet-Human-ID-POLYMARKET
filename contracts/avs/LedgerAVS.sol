@@ -33,6 +33,7 @@ contract LedgerAVS is Ownable2Step, ReentrancyGuard, Pausable {
         bytes32 txHash;
         uint256 zScore; // Scaled by 1e18
         uint256 timestamp;
+        uint256 expiresAt;
         uint256 approvals;
         uint256 rejections;
         bool resolved;
@@ -81,6 +82,7 @@ contract LedgerAVS is Ownable2Step, ReentrancyGuard, Pausable {
         task.txHash = txHash;
         task.zScore = zScore;
         task.timestamp = block.timestamp;
+        task.expiresAt = block.timestamp + 1 hours;
 
         emit SignalTaskCreated(txHash, zScore);
     }
@@ -96,6 +98,7 @@ contract LedgerAVS is Ownable2Step, ReentrancyGuard, Pausable {
         SignalTask storage task = signalTasks[txHash];
         require(task.timestamp != 0, "Task does not exist");
         require(!task.resolved, "Task already resolved");
+        require(block.timestamp <= task.expiresAt, "Task expired");
         require(!task.hasVoted[msg.sender], "Already attested");
 
         task.hasVoted[msg.sender] = true;
@@ -107,13 +110,14 @@ contract LedgerAVS is Ownable2Step, ReentrancyGuard, Pausable {
             task.rejections += 1;
         }
 
-        // Resolving locally if consensus threshold met (simplified for example: 3 approvals)
-        if (task.approvals >= 3) {
+        // Dynamic consensus: 2/3 of active operators (BFT threshold)
+        uint256 requiredQuorum = (activeOperatorsList.length * 2) / 3 + 1;
+        
+        if (task.approvals >= requiredQuorum) {
             task.resolved = true;
             emit SignalResolved(txHash, true);
-        } else if (task.rejections >= 3) {
+        } else if (task.rejections >= requiredQuorum) {
             task.resolved = true;
-            // False positive detected by consensus. Slash the original proposer or approve slashing.
             emit SignalResolved(txHash, false);
         }
     }
@@ -121,6 +125,17 @@ contract LedgerAVS is Ownable2Step, ReentrancyGuard, Pausable {
     /**
      * @dev Operators can unregister and withdraw their stake if they are not slashed.
      */
+    
+    function _removeActiveOperator(address op) internal {
+        for (uint256 i = 0; i < activeOperatorsList.length; i++) {
+            if (activeOperatorsList[i] == op) {
+                activeOperatorsList[i] = activeOperatorsList[activeOperatorsList.length - 1];
+                activeOperatorsList.pop();
+                break;
+            }
+        }
+    }
+
     function unregisterOperator() external nonReentrant whenNotPaused {
         Operator storage op = operators[msg.sender];
         require(op.isRegistered, "Not an operator");
@@ -128,6 +143,8 @@ contract LedgerAVS is Ownable2Step, ReentrancyGuard, Pausable {
         uint256 amountToReturn = op.stakedAmount;
         op.isRegistered = false;
         op.stakedAmount = 0;
+        
+        _removeActiveOperator(msg.sender);
 
         stakingToken.safeTransfer(msg.sender, amountToReturn);
     }
@@ -144,6 +161,11 @@ contract LedgerAVS is Ownable2Step, ReentrancyGuard, Pausable {
         uint256 penalty = (op.stakedAmount * SLASH_PENALTY_BPS) / 10000;
         op.stakedAmount -= penalty;
         op.slashedCount += 1;
+
+        if (op.stakedAmount < MIN_STAKE) {
+            op.isRegistered = false;
+            _removeActiveOperator(operator);
+        }
 
         // Burn the slashed tokens or send to treasury (sending to zero address for deflation)
         stakingToken.safeTransfer(address(0xdead), penalty);

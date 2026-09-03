@@ -1,8 +1,19 @@
+import { getSession } from '@/lib/session';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
 
-export async function PUT(req: Request, { params }: { params: Promise<{ address: string }> }) {
+export async function PUT(req: Request) {
+    const session = await getSession();
+    if (!session?.userId) {
+        return new Response(JSON.stringify({ error: 'Unauthorized: Authentication required.' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+    }
+
+    const session = await getSession();
+    if (!session?.userId) {
+        return new Response(JSON.stringify({ error: 'Unauthorized: Authentication required.' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+    }
+
     try {
         const { address } = await params;
         const cookieStore = await cookies();
