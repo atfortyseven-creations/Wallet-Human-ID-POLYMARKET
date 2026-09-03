@@ -122,6 +122,8 @@ export async function POST(req: NextRequest) {
     if (!isServerMint && encryptedPayload && iv) {
       // PATH A: client encrypted the JWT  store encrypted bundle
       sessionPayload = JSON.stringify({
+        // [SECURITY PATCH B] Injecting server-signed JWT to prevent client-side forgery
+        serverSignedJwt: jwt,
         encryptedPayload,
         iv,
         tag: tag || null,
@@ -169,3 +171,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Server error during mobile QR link' }, { status: 500 });
   }
 }
+

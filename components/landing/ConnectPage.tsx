@@ -339,7 +339,7 @@ export default function ConnectPage() {
             muted
             playsInline
             preload="auto"
-            className="absolute inset-0 w-full h-full object-contain z-0"
+            className="absolute inset-0 w-full h-full object-cover z-0 opacity-90"
             src="/system-shots/72298-541981714.mp4"
           />
           <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.55) 100%)' }} />
@@ -370,7 +370,7 @@ export default function ConnectPage() {
 
         {/* RIGHT: Auth panel — full height on desktop, white bottom sheet on mobile */}
         <div
-          className="flex flex-col items-center justify-start lg:justify-center overflow-y-auto bg-white relative border-l border-black/6 h-full"
+          className="flex flex-col items-center justify-start lg:justify-center overflow-y-auto bg-white relative border-l border-black/6 h-full w-full lg:w-[450px] xl:w-[500px] shrink-0 shadow-[-20px_0_40px_rgba(0,0,0,0.5)]"
           style={{
             minHeight: '50dvh',
             paddingTop: 'clamp(1.5rem, 4vw, 2.5rem)',

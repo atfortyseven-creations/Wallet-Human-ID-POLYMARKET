@@ -724,7 +724,7 @@ export function TuringShieldGate({
                     {verifying ? (
                       <><Loader2 size={16} className="animate-spin" /> Verifying...</>
                     ) : (
-                      <><Shield size={16} /> Confirm Enclave Access</>
+                      <> Confirm Enclave Access</>
                     )}
                   </button>
                   
@@ -971,3 +971,5 @@ export function TuringShieldGate({
     </div>
   );
 }
+
+
