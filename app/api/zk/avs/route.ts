@@ -1,3 +1,4 @@
+import { getSession } from '@/lib/session';
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
@@ -11,6 +12,11 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(req: NextRequest) {
     try {
+        // [SECURITY] Only registered AVS operators (authenticated) should pull pending signals
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ ok: false, error: 'Unauthorized: AVS operator session required.' }, { status: 401 });
+        }
         // Fetch 5 most recent unverified ledger activity signals
         const pendingSignals = await prisma.ledgerActivity.findMany({
             where: { isZkVerified: false },
@@ -36,8 +42,18 @@ export async function GET(req: NextRequest) {
  */
 export async function POST(req: NextRequest) {
     try {
+        // [SECURITY] Only authenticated operators can submit proofs
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ ok: false, error: 'Unauthorized: AVS operator session required.' }, { status: 401 });
+        }
         const body = await req.json();
         const { txHash, proof, operatorId } = body;
+        
+        // [SECURITY] Ensure operatorId matches the authenticated session
+        if (operatorId && operatorId.toLowerCase() !== session.userId.toLowerCase()) {
+            return NextResponse.json({ ok: false, error: 'operatorId mismatch with authenticated session.' }, { status: 403 });
+        }
 
         if (!txHash || !proof || !operatorId) {
             return NextResponse.json({ ok: false, error: 'Missing txHash, proof, or operatorId' }, { status: 400 });

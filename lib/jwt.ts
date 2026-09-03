@@ -63,6 +63,8 @@ export const mintJWT = async (payload: JWTPayload): Promise<string> => {
       .setProtectedHeader({ alg })
       .setIssuedAt()
       .setExpirationTime('7d')
+      .setIssuer('humanidfi.com')
+      .setAudience('humanidfi.com')
       .sign(keys.privateKey);
   }
 
@@ -72,6 +74,8 @@ export const mintJWT = async (payload: JWTPayload): Promise<string> => {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
+    .setIssuer('humanidfi.com')
+    .setAudience('humanidfi.com')
     .sign(new TextEncoder().encode(secret));
 };
 

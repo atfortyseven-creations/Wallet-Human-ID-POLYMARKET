@@ -77,7 +77,11 @@ export async function POST(req: Request) {
                 }
 
                 // Record the irreversible cryptographic proof securely in General Log (Zk-Hash mapped)
-                const salt = process.env.NUKE_SALT || process.env.JWT_SECRET || 'HumanityLedger_ZeroG_Salt_777';
+                // [SECURITY] Fail closed - never use hardcoded salt for deletion commitments
+                const salt = process.env.NUKE_SALT || process.env.JWT_SECRET;
+                if (!salt) {
+                    throw new Error('NUKE_SALT not configured. Cannot create deletion commitment.');
+                }
                 const deletionCommitment = createHash('sha256').update(userAddress + salt).digest('hex');
                 
                 await tx.log.create({
