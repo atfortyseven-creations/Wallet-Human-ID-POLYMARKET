@@ -24,13 +24,14 @@ async function resolveCallerAddress(req: NextRequest): Promise<string | null> {
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { action: string } }
+  { params }: { params: Promise<{ action: string }> }
 ) {
   try {
     const caller = await resolveCallerAddress(req);
+    const resolvedParams = await params;
+    const action = resolvedParams.action;
     if (!caller) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const action = params.action;
     if (action !== 'accept' && action !== 'reject') {
       return NextResponse.json({ error: 'Invalid action. Use accept or reject.' }, { status: 400 });
     }

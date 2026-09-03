@@ -305,7 +305,7 @@ export function InstitutionalPortfolioView() {
             />
 
             <AnimatePresence>
-                {showSettings && <SettingsView onBack={() => setShowSettings(false)} />}
+                {showSettings && <SettingsView onClose={() => setShowSettings(false)} />}
             </AnimatePresence>
             {showAccounts && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-sm p-4" onClick={() => setShowAccounts(false)}>

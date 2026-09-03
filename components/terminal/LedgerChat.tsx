@@ -208,7 +208,6 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         };
       case 'matrix': return { background: '#f8fafc' };
       case 'gradient': return { background: 'linear-gradient(to bottom right, #ffffff, #f1f5f9)' };
-      case 'custom': return chatBackgroundCustomUrl ? { backgroundImage: `url(${chatBackgroundCustomUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : { background: '#ffffff' };
       default: return { background: '#ffffff' };
     }
   }, [chatBackground, chatBackgroundCustomUrl]);
@@ -4554,7 +4553,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                             onEmojiClick={(emojiData) => { 
                               setInputText(prev => prev + emojiData.emoji);
                             }}
-                            theme="light"
+                            
                           />
                         </motion.div>
                       )}

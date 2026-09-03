@@ -151,8 +151,8 @@ function SecurityModule({ passwordHash, setupPassword, lockVault, privateKey, mn
     const handleVerify = async () => {
         if (!authPassword) return;
         try {
-            const { verifyPassword } = await import('@/lib/store/crypto-utils');
-            const isValid = await verifyPassword(authPassword, passwordHash);
+            const CryptoJS = (await import('crypto-js')).default;
+            const isValid = CryptoJS.SHA256(authPassword).toString() === passwordHash;
             if (isValid) {
                 setIsAuthorized(true);
                 toast.success('Identity verified');
