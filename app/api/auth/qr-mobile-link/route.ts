@@ -50,10 +50,11 @@ export async function POST(req: NextRequest) {
     }
 
     //  2. Verify mobile identity via secure JWT ONLY 
-    // We STRICTLY require a cryptographic SIWE JWT (human_session or ledger_session).
-    // The insecure 'system_handshake' cookie fallback has been entirely removed 
-    // to prevent identity spoofing / authentication bypass vulnerabilities.
-    const humanSession = req.cookies.get('human_session')?.value || req.cookies.get('ledger_session')?.value || fallbackJwt;
+    // We STRICTLY require a cryptographic SIWE JWT from HttpOnly cookies (human_session or ledger_session).
+    // SECURITY: fallbackJwt from the request body is NEVER used for authentication —
+    // a client can craft any JWT and pass it as fallbackJwt to bypass session checks.
+    // Only cookie-based JWTs are trusted; cookies cannot be set cross-origin by an attacker.
+    const humanSession = req.cookies.get('human_session')?.value || req.cookies.get('ledger_session')?.value;
 
     if (!humanSession) {
       console.error(`[QR:Handshake:FAILURE] No secure JWT session found for UUID: ${uuid}. IP: ${req.headers.get('x-forwarded-for')}`);

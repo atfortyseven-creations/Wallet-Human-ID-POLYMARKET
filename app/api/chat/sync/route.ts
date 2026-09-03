@@ -29,9 +29,14 @@ async function getMessages(): Promise<any[]> {
 /**
  * GET /api/chat/sync
  * Retrieves the live gossip message buffer from Redis.
- * Returns empty array if Redis is offline — no fallback fabrications.
+ * Returns empty array if Redis is offline - no fallback fabrications.
+ * Requires an authenticated session.
  */
 export async function GET() {
+    const session = await getSession();
+    if (!session?.userId) {
+        return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
     const messages = await getMessages();
     return NextResponse.json({ messages });
 }

@@ -597,7 +597,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     // Poll for contact requests count
     if (address && !isSystemHandshake) {
       const pollRequests = () => {
-        fetch('/api/notifications/inbox', { headers: { 'x-web3-address': address } })
+        fetch('/api/notifications/inbox', { credentials: 'same-origin' })
           .then(r => r.json())
           .then(data => {
             if (data?.unreadCount !== undefined) {
@@ -801,6 +801,21 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
    */
   const confirmedMsgIds = useRef<Set<string>>(new Set());
   const optimisticContentMap = useRef<Map<string, string>>(new Map()); // content -> optimisticId
+  // Prune confirmedMsgIds to prevent unbounded growth in long sessions.
+  // We keep the last 500 IDs to guarantee deduplication for any reasonable message history.
+  const pruneConfirmedIds = useCallback(() => {
+    if (confirmedMsgIds.current.size > 500) {
+      const arr = Array.from(confirmedMsgIds.current);
+      confirmedMsgIds.current = new Set(arr.slice(arr.length - 250));
+    }
+  }, []);
+  // Prune optimisticContentMap — entries lingering >60s were never echoed back (failed send)
+  // and should be cleared to prevent unbounded growth.
+  const pruneOptimisticMap = useCallback(() => {
+    if (optimisticContentMap.current.size > 100) {
+      optimisticContentMap.current.clear();
+    }
+  }, []);
   // Always-fresh ref to executeSend — avoids stale closure in event listeners
   const executeSendRef = useRef<((content: string) => Promise<void>) | null>(null);
 
@@ -2531,6 +2546,8 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           // ── ABSOLUTE DEDUPLICATION GATE ──────────────────────────────────────
           if (confirmedMsgIds.current.has(realId)) continue;
           confirmedMsgIds.current.add(realId);
+          pruneConfirmedIds(); // keep Set bounded to last 500 IDs
+          pruneOptimisticMap(); // prune stale optimistic entries
           // ─────────────────────────────────────────────────────────────────────
 
           // Phase 2: Intercept Reactions

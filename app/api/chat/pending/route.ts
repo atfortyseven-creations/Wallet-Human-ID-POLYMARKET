@@ -53,6 +53,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
     }
 
+    // Validate address formats
+    const ETH_ADDR_RE = /^0x[a-fA-F0-9]{40}$/;
+    if (!ETH_ADDR_RE.test(sender) || !ETH_ADDR_RE.test(recipient)) {
+      return NextResponse.json({ error: 'Invalid address format' }, { status: 400 });
+    }
+
+    // Content length guard — prevent storage exhaustion attacks
+    if (typeof content !== 'string' || content.length > 4096) {
+      return NextResponse.json({ error: 'Content too long (max 4096 chars)' }, { status: 400 });
+    }
+
     const userId = await resolveUserId(req, sender);
     if (!userId || sender.toLowerCase() !== userId.toLowerCase()) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
