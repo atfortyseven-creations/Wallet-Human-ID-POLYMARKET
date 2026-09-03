@@ -9,11 +9,6 @@ export async function PUT(req: Request) {
         return new Response(JSON.stringify({ error: 'Unauthorized: Authentication required.' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
     }
 
-    const session = await getSession();
-    if (!session?.userId) {
-        return new Response(JSON.stringify({ error: 'Unauthorized: Authentication required.' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
-    }
-
     try {
         const { address } = await params;
         const cookieStore = await cookies();

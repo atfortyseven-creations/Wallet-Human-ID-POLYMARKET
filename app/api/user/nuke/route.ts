@@ -12,11 +12,6 @@ export async function POST(req: Request) {
         return new Response(JSON.stringify({ error: 'Unauthorized: Authentication required.' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
     }
 
-    const session = await getSession();
-    if (!session?.userId) {
-        return new Response(JSON.stringify({ error: 'Unauthorized: Authentication required.' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
-    }
-
     try {
         const body = await req.json();
         const { address, signature, timestamp } = body;
