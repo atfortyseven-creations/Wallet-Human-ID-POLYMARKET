@@ -37,7 +37,6 @@ export class TransactionManager {
     TransactionManager.nonceMutex.set(address, mutexPromise);
     
     try {
-    const address = this.wallet.address.toLowerCase();
     const networkPending = await this.provider.getTransactionCount(this.wallet.address, "pending");
     
     const local = TransactionManager.localNonceCache.get(address);

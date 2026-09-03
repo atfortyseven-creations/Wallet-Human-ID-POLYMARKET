@@ -95,11 +95,13 @@ export function InstitutionalPortfolioView() {
     const unlockVault = useWalletStore(s => s.unlockVault);
     const passwordHash = useWalletStore(s => s.passwordHash);
     const isLocked = useWalletStore(s => s.isLocked);
-    const displayCurrency = useWalletStore(s => s.displayCurrency || 'EUR');
+    
     const setDisplayCurrency = useWalletStore(s => s.setDisplayCurrency);
     const { address, isLocalSystemWallet, isConnected, isEmailAuth } = useSystemAccount();
     const { assets, totalBalance } = useRealWalletData([], address || undefined);
     const liveEurRate = useLiveEurRate(); // AUDIT FIX: live ECB rate
+    const { hideBalances, currency: settingsCurrency, toggleHideBalances } = useSettings();
+    const displayCurrency = settingsCurrency || "USD";
 
     
     // We keep 'HOME' as the main view, and overlay modals for actions
@@ -410,16 +412,18 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
             {/* ── Main Dashboard Hero ── */}
             <section className="w-full flex flex-col items-center justify-center py-10 px-4 md:py-16 md:px-10 border-b border-zinc-900/10 bg-zinc-900/[0.02]">
                 <div className="flex flex-col items-center mb-6">
-                    <span className="text-[10px] uppercase font-black tracking-[0.3em] text-zinc-900/40 mb-3">Portfolio Value</span>
+                    <span onClick={toggleHideBalances} className="text-[10px] uppercase font-black tracking-[0.3em] text-zinc-900/40 mb-3 cursor-pointer hover:text-zinc-900 transition-colors">Portfolio Value {hideBalances ? "(Hidden)" : ""}</span>
                     <h1 className="text-5xl md:text-7xl font-sans tracking-tighter text-zinc-900 flex items-baseline gap-1">
                         <span className="text-3xl md:text-5xl opacity-40 font-serif mr-1">{symbol}</span>
-                        {((parseFloat(totalBalance) || 0) * rate).toFixed(2).split('.')[0]}
-                        <span className="text-2xl md:text-4xl opacity-50 font-serif">.{((parseFloat(totalBalance) || 0) * rate).toFixed(2).split('.')[1] || '00'}</span>
+                        {hideBalances ? "****" : ((parseFloat(totalBalance) || 0) * rate).toFixed(2).split('.')[0]}
+                        <span className="text-2xl md:text-4xl opacity-50 font-serif">
+                           {hideBalances ? "" : "." + (((parseFloat(totalBalance) || 0) * rate).toFixed(2).split('.')[1] || '00')}
+                        </span>
                     </h1>
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
                     <p className="text-[11px] tracking-[0.18em] font-mono text-zinc-900/50 border border-zinc-900/10 px-4 py-1.5">
-                        {balance} {networkInfo.currency} ({symbol}{balanceFiat})
+                        {hideBalances ? "****" : balance} {networkInfo.currency} ({symbol}{hideBalances ? "****" : balanceFiat})
                     </p>
                 </div>
 

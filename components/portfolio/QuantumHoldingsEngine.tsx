@@ -54,6 +54,7 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
     const [activeAction, setActiveAction] = useState<{type: 'SEND'|'RECEIVE'|'SWAP'|'BRIDGE', token: any} | null>(null);
     const [showSpam, setShowSpam] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const { hideBalances, uiConfig, formatAmount, currency } = useSettings();
     const ITEMS_PER_PAGE = 8;
 
     // CRITICAL: Reset to page 1 whenever the user switches network.
@@ -131,7 +132,21 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
             }
         });
 
+        
+        if (uiConfig?.hideZeroBalances) {
+            combined = combined.filter((a: any) => a.balance > 0);
+        }
+        if (uiConfig?.hideSpamTokens) {
+            combined = combined.filter((a: any) => !(a.balance > 0 && a.balance < 0.0001 && a.symbol !== 'ETH'));
+        }
+        
         return combined.sort((a, b) => {
+            if (uiConfig?.tokenSort === 'value_asc') {
+                return (a.value || 0) - (b.value || 0);
+            } else if (uiConfig?.tokenSort === 'alpha') {
+                return a.symbol.localeCompare(b.symbol);
+            }
+
             if (a.isOwned && !b.isOwned) return -1;
             if (!a.isOwned && b.isOwned) return 1;
             if (a.balance > 0 && b.balance > 0) return b.value - a.value;
@@ -282,9 +297,9 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                                     <td className="py-4 px-6 text-right">
                                         <div className="flex flex-col items-end">
                                             <span className={`font-black text-sm ${token.isOwned ? 'text-black' : 'text-black/30'}`}>
-                                                {token.balance > 0 ? Number(token.balance).toFixed(6) : "0.00"}
+                                                {hideBalances ? "****" : (token.balance > 0 ? Number(token.balance).toFixed(6) : "0.00")}
                                             </span>
-                                            {token.value > 0 && <span className="text-[10px] text-black/50 font-bold">{symbol}{safeToFixed(token.value, 2)}</span>}
+                                            {token.value > 0 && <span className="text-[10px] text-black/50 font-bold">{hideBalances ? "****" : formatAmount(token.value)}</span>}
                                             {token.price > 0 && !token.isOwned && (
                                                 <span className="text-[9px] text-black/30 font-bold font-mono">
                                                     {symbol}{token.price >= 1 ? safeToFixed(token.price, 2) : token.price >= 0.0001 ? token.price.toFixed(6) : "0.00"}
@@ -573,9 +588,9 @@ function TokenDetailPanel({ token, onClose, onAction, symbol = '$' }: { token: a
                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30 mb-2 block">Your Balance</span>
                     <div className="flex flex-col">
                         <span className="text-4xl font-light tracking-tighter text-black">
-                            {token.balance > 0 ? Number(token.balance).toFixed(4) : "0.00"} <span className="text-xl text-black/40">{token.symbol}</span>
+                            {hideBalances ? "****" : (token.balance > 0 ? Number(token.balance).toFixed(4) : "0.00")} <span className="text-xl text-black/40">{token.symbol}</span>
                         </span>
-                        {token.value > 0 && <span className="text-sm font-mono text-black/50 mt-1">${safeToFixed(token.value, 2)} USD</span>}
+                        {token.value > 0 && <span className="text-sm font-mono text-black/50 mt-1">${safeToFixed(token.value, 2)}{hideBalances ? "****" : formatAmount(token.value)}</span>}
                     </div>
                 </div>
 

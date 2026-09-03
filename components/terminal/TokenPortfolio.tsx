@@ -18,7 +18,7 @@ import { TokenLogo } from '@/components/ui/TokenLogo';
 
 export function TokenPortfolio() {
     const { address, chainId } = useAccount();
-    const { strictMode, contacts } = useSettings();
+    const { strictMode, contacts, uiConfig, hideBalances, formatAmount, currency } = useSettings();
     const [selectedToken, setSelectedToken] = useState<any>(null);
     const [view, setView] = useState<'details' | 'send' | 'receive'>('details');
 
@@ -46,19 +46,37 @@ export function TokenPortfolio() {
         query: { enabled: !!address, refetchInterval: 10000 }
     });
 
-    // --- DATA TRANSFORMATION ---
+    // --- DATA TRANSFORMATION & SETTINGS APPLIED ---
     const assets = useMemo(() => {
         if (!address) return [];
         const ethVal = ethBalance ? parseFloat(ethBalance.formatted) : 0;
         const usdcVal = tokenBalances?.[0]?.result ? parseFloat(formatUnits(tokenBalances[0].result as bigint, 6)) : 0;
         const wldVal = tokenBalances?.[1]?.result ? parseFloat(formatEther(tokenBalances[1].result as bigint)) : 0;
 
-        return [
+        let rawAssets = [
             { id: 'eth', symbol: 'ETH', name: 'Ethereum', balance: ethVal, price: prices.ETH || 0, change: changes.ETH || 0, icon: '', network: 'Base Sepolia', decimals: 18, isNative: true },
             { id: 'usdc', symbol: 'USDC', name: 'USD Coin', balance: usdcVal, price: prices.USDC || 1, change: changes.USDC || 0, icon: '', network: 'Base Sepolia', decimals: 6, address: usdcAddress },
             { id: 'wld', symbol: 'AUTH', name: 'Identity', balance: wldVal, price: prices.AUTH || 0, change: changes.AUTH || 0, icon: '', network: 'Optimism / Base', decimals: 18, address: AUTH_TOKEN_ADDRESS }
         ];
-    }, [ethBalance, tokenBalances, prices, changes, address, usdcAddress]);
+
+        if (uiConfig?.hideZeroBalances) {
+            rawAssets = rawAssets.filter(a => a.balance > 0);
+        }
+
+        if (uiConfig?.hideSpamTokens) {
+            rawAssets = rawAssets.filter(a => !(a.balance > 0 && a.balance < 0.0001 && a.symbol !== 'ETH'));
+        }
+
+        if (uiConfig?.tokenSort === 'value_asc') {
+            rawAssets.sort((a, b) => (a.balance * a.price) - (b.balance * b.price));
+        } else if (uiConfig?.tokenSort === 'alpha') {
+            rawAssets.sort((a, b) => a.symbol.localeCompare(b.symbol));
+        } else {
+            rawAssets.sort((a, b) => (b.balance * b.price) - (a.balance * a.price));
+        }
+
+        return rawAssets;
+    }, [ethBalance, tokenBalances, prices, changes, address, usdcAddress, uiConfig]);
 
     // Actions
     const handleSend = async () => {
@@ -107,7 +125,7 @@ export function TokenPortfolio() {
 
     const openToken = (token: any) => { setSelectedToken(token); setView('details'); setAmount(''); setRecipient(''); };
     const closeToken = () => setSelectedToken(null);
-    const formatUSD = (val: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+    const formatUSD = (val: number) => formatAmount(val); // Wires dynamically to fiat settings & hideBalances
     const formatChange = (val: number) => {
         const sign = val >= 0 ? '+' : '';
         return `${sign}${safeToFixed(val, 2)}%`;
@@ -135,7 +153,7 @@ export function TokenPortfolio() {
                         >
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-xl shadow-inner border border-white/5 group-hover:border-[#00f2ea]/30 transition-colors">
-                                    <TokenLogo symbol={token.symbol} address={token.address} className="w-full h-full rounded-full" fallbackClassName="w-full h-full rounded-full text-[10px]" />
+                                    {uiConfig?.showTokenLogos !== false ? <TokenLogo symbol={token.symbol} address={token.address} className="w-full h-full rounded-full" fallbackClassName="w-full h-full rounded-full text-[10px]" /> : <div className="w-full h-full rounded-full bg-white/10" />}
                                 </div>
                                 <div>
                                     <h4 className="text-white font-bold text-sm">{token.name}</h4>
@@ -182,9 +200,9 @@ export function TokenPortfolio() {
                             {view === 'details' && (
                                 <div className="flex flex-col items-center">
                                     <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-white/5 to-white/0 border border-white/10 flex items-center justify-center text-4xl mb-4 shadow-[0_0_30px_rgba(0,242,234,0.1)]">
-                                        <TokenLogo symbol={selectedToken.symbol} address={selectedToken.address} className="w-full h-full rounded-full" fallbackClassName="w-full h-full rounded-full text-[14px]" />
+                                        {uiConfig?.showTokenLogos !== false ? <TokenLogo symbol={selectedToken.symbol} address={selectedToken.address} className="w-full h-full rounded-full" fallbackClassName="w-full h-full rounded-full text-[14px]" /> : <div className="w-full h-full rounded-full bg-white/10" />}
                                     </div>
-                                    <h2 className="text-3xl font-bold text-white mb-1">{safeToFixed(selectedToken.balance, 4)} <span className="text-lg text-gray-500">{selectedToken.symbol}</span></h2>
+                                    <h2 className="text-3xl font-bold text-white mb-1">{hideBalances ? "****" : safeToFixed(selectedToken.balance, 4)} <span className="text-lg text-gray-500">{selectedToken.symbol}</span></h2>
                                     <p className="text-gray-400 font-mono mb-8"> {formatUSD(selectedToken.balance * selectedToken.price)}</p>
 
                                     <div className="grid grid-cols-2 gap-4 w-full">
