@@ -20,11 +20,18 @@ export async function POST(req: NextRequest) {
     const { data: fields, error: siweErr } = await siweMessage.verify({
       signature,
       nonce,
+      domain: process.env.NEXT_PUBLIC_DOMAIN || 'humanidfi.com',
     });
 
     if (siweErr || !fields) {
       console.error('[SIWE] Verification failed:', siweErr);
       return NextResponse.json({ ok: false, error: 'Invalid signature or nonce mismatch.' }, { status: 401 });
+    }
+    
+    // Enforce only supported chains (Ethereum mainnet=1, Base=8453, Base Sepolia=84532)
+    const ALLOWED_CHAINS = [1, 8453, 84532];
+    if (!ALLOWED_CHAINS.includes(fields.chainId)) {
+      return NextResponse.json({ ok: false, error: 'Unsupported chain. Use Ethereum or Base.' }, { status: 401 });
     }
 
     if (fields.nonce !== nonce) {
@@ -77,7 +84,7 @@ export async function POST(req: NextRequest) {
     const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax' as const,
+      sameSite: 'strict' as const, // CSRF fix: was 'lax'
       path: '/',
       maxAge: 60 * 60 * 24 * 7, // 7 days
     };

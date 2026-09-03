@@ -1,3 +1,4 @@
+import { getSession } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 import { ethers } from "ethers";
 import { prisma } from "@/lib/prisma";
@@ -23,6 +24,12 @@ const ZAP_ABI = [
 
 export async function POST(req: NextRequest) {
     try {
+        // Auth guard
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: "Unauthorized: Authentication required." }, { status: 401 });
+        }
+
         // ====================================================================
         // PARSE REQUEST
         // ====================================================================
@@ -126,7 +133,7 @@ export async function POST(req: NextRequest) {
         await prisma.blockchainTransaction.create({
             data: {
                 txHash: tx.hash,
-                userId: user.toLowerCase(),
+                userId: session.userId, // IDOR fix: use verified session, NOT client-supplied user field
                 blockNumber: 0,
                 status: "PENDING",
                 type: "GASLESS_ZAP",

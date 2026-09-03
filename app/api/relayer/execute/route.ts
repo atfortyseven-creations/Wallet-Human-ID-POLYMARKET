@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getSession } from "@/lib/session";
 import { ethers } from "ethers";
 import { prisma } from "@/lib/prisma";
 
@@ -17,6 +18,10 @@ const GOVERNANCE_ABI = [
 
 export async function POST(req: NextRequest) {
     try {
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: "Unauthorized: Authentication required." }, { status: 401 });
+        }
         const body = await req.json();
         const { executor, proposalId, nonce, deadline, signature } = body;
 
@@ -85,7 +90,8 @@ export async function POST(req: NextRequest) {
 
     } catch (error: any) {
         console.error("[Relayer] Execution error:", error);
-        return NextResponse.json({ error: error.message || "Execution failed" }, { status: 500 });
+        const safeErr = process.env.NODE_ENV === "production" ? "Execution failed. Please try again." : error.message;
+        return NextResponse.json({ error: safeErr }, { status: 500 });
     }
 }
 
