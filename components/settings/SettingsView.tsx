@@ -27,7 +27,6 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
             exit={{ opacity: 0, y: 20 }}
             className="fixed inset-0 z-[100] md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[800px] md:h-[600px] bg-white md:rounded-2xl md:shadow-2xl overflow-hidden flex flex-col font-sans border border-zinc-200"
         >
-            {/* Header */}
             <header className="h-[60px] border-b border-zinc-100 flex items-center justify-between px-6 bg-zinc-50/50 shrink-0">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-white">
@@ -43,22 +42,21 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
                 </button>
             </header>
 
-            {/* Layout container */}
             <div className="flex flex-1 overflow-hidden">
-                {/* Sidebar */}
                 <div className="w-[200px] shrink-0 border-r border-zinc-100 bg-zinc-50/50 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
                     {TABS.map(tab => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={w-full text-left px-6 py-4 text-[11px] font-bold uppercase tracking-widest transition-all }
+                            className={`w-full text-left px-6 py-4 text-[11px] font-bold uppercase tracking-widest transition-all ${
+                                activeTab === tab.id ? 'bg-white text-zinc-900 border-r-2 border-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100'
+                            }`}
                         >
                             {tab.label}
                         </button>
                     ))}
                 </div>
 
-                {/* Content */}
                 <div className="flex-1 overflow-y-auto p-8 bg-white" style={{ WebkitOverflowScrolling: 'touch' }}>
                     <AnimatePresence mode="wait">
                         <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
@@ -147,7 +145,7 @@ function SecurityModule({ passwordHash, setupPassword, lockVault, privateKey, mn
     const handleSaveTimer = (val: number) => {
         setAutoLockTimer(val);
         localStorage.setItem('wallet_autolock_timer', val.toString());
-        toast.success(Auto-lock set to  minutes);
+        toast.success(`Auto-lock set to ${val} minutes`);
     };
 
     const handleVerify = async () => {
@@ -249,7 +247,7 @@ function SecurityModule({ passwordHash, setupPassword, lockVault, privateKey, mn
 }
 
 function NetworkModule({ activeNetwork, setNetwork, customRpcUrl, setCustomRpcUrl }: any) {
-    const [view, setView] = useState<'list' | 'add'>('list');
+    const [view, setView] = useState<"list" | "add">('list');
     const [rpcInput, setRpcInput] = useState(customRpcUrl || '');
     const [newNetName, setNewNetName] = useState('');
     const [newChainId, setNewChainId] = useState('');
@@ -317,17 +315,19 @@ function NetworkModule({ activeNetwork, setNetwork, customRpcUrl, setCustomRpcUr
                         <button
                             key={id}
                             onClick={() => setNetwork(id as NetworkId)}
-                            className={w-full p-4 text-left flex flex-col rounded-xl border transition-all }
+                            className={`w-full p-4 text-left flex flex-col rounded-xl border transition-all ${
+                                isActive ? 'border-blue-600 bg-blue-50/50 shadow-sm' : 'border-zinc-200 bg-white hover:border-zinc-300'
+                            }`}
                         >
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center gap-3">
                                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: net.color || '#ccc' }}></div>
-                                    <span className={	ext-[13px] font-bold }>{net.name}</span>
+                                    <span className={`text-[13px] font-bold ${isActive ? 'text-blue-900' : 'text-zinc-700'}`}>{net.name}</span>
                                 </div>
                                 {isActive && <span className="text-[10px] bg-blue-600 text-white px-2 py-1 rounded font-bold uppercase">Active</span>}
                             </div>
                             <div className="mt-2 text-[11px] text-zinc-500 font-mono ml-5">
-                                Chain ID: {net.chainId} {isActive && customRpcUrl && • Custom RPC}
+                                Chain ID: {net.chainId} {isActive && customRpcUrl && `• Custom RPC`}
                             </div>
                         </button>
                     );
@@ -387,7 +387,7 @@ function ContactsModule() {
                             <div key={name} className="flex flex-col p-4 border border-zinc-200 rounded-xl gap-2 hover:border-zinc-300 group">
                                 <div className="flex justify-between items-center">
                                     <div className="text-[13px] font-bold text-zinc-900">{name}</div>
-                                    <button onClick={() => { const up = {...contacts}; delete up[name]; saveContacts(up); toast.success("Removed"); }} className="text-[10px] font-bold uppercase text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">Remove</button>
+                                    <button onClick={() => { const up = {...contacts}; delete up[name]; saveContacts(up); toast.success("Removed"); }} className="text-[10px] font-bold uppercase text-red-500 opacity-0 hover:opacity-100 transition-opacity">Remove</button>
                                 </div>
                                 <div className="text-[11px] font-mono text-zinc-500 flex justify-between items-center">
                                     {addr}
@@ -444,8 +444,8 @@ function AdvancedModule({ address, activeNetwork }: { address: string | null, ac
                             <div className="text-[13px] font-bold text-zinc-900">Show Hex Data</div>
                             <div className="text-[11px] text-zinc-500 mt-1 leading-relaxed">Select this to display the hex data field on the send screen.</div>
                         </div>
-                        <button onClick={toggleHex} className={elative w-12 h-6 rounded-full transition-colors }>
-                            <div className={bsolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform } />
+                        <button onClick={toggleHex} className={`relative w-12 h-6 rounded-full transition-colors ${hexEnabled ? 'bg-blue-600' : 'bg-zinc-200'}`}>
+                            <div className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${hexEnabled ? 'translate-x-6' : 'translate-x-0'}`} />
                         </button>
                     </div>
 
@@ -454,8 +454,8 @@ function AdvancedModule({ address, activeNetwork }: { address: string | null, ac
                             <div className="text-[13px] font-bold text-zinc-900">Advanced Gas Controls</div>
                             <div className="text-[11px] text-zinc-500 mt-1 leading-relaxed">Select this to show gas price and limit controls directly on the send and confirm screens.</div>
                         </div>
-                        <button onClick={toggleGas} className={elative w-12 h-6 rounded-full transition-colors }>
-                            <div className={bsolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform } />
+                        <button onClick={toggleGas} className={`relative w-12 h-6 rounded-full transition-colors ${gasControls ? 'bg-blue-600' : 'bg-zinc-200'}`}>
+                            <div className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${gasControls ? 'translate-x-6' : 'translate-x-0'}`} />
                         </button>
                     </div>
                 </div>
