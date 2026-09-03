@@ -330,14 +330,14 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
         </div>
 
         <SectionLabel>Charts & Data</SectionLabel>
-        <Row icon={BarChart2} title="Portfolio Chart" desc="Show / hide the net-worth history graph." toggle={uiConfig.showPortfolioChart ?? true} onToggle={() => setUiConfig({ showPortfolioChart: !uiConfig.showPortfolioChart })} />
-        <Row icon={Activity} title="Show PnL" desc="Display profit & loss next to each asset." toggle={uiConfig.showPnl ?? true} onToggle={() => setUiConfig({ showPnl: !uiConfig.showPnl })} />
-        <Row icon={Gauge} title="Live Gas Tracker" desc="Show current Ethereum gas in the header." toggle={uiConfig.showGasTracker ?? true} onToggle={() => setUiConfig({ showGasTracker: !uiConfig.showGasTracker })} />
+        <Row icon={BarChart2} title="Portfolio Chart" desc="Show / hide the net-worth history graph." toggle={uiConfig.showPortfolioChart ?? true} onToggle={() => setUiConfig({ ...uiConfig, showPortfolioChart: !uiConfig.showPortfolioChart })} />
+        <Row icon={Activity} title="Show PnL" desc="Display profit & loss next to each asset." toggle={uiConfig.showPnl ?? true} onToggle={() => setUiConfig({ ...uiConfig, showPnl: !uiConfig.showPnl })} />
+        <Row icon={Gauge} title="Live Gas Tracker" desc="Show current Ethereum gas in the header." toggle={uiConfig.showGasTracker ?? true} onToggle={() => setUiConfig({ ...uiConfig, showGasTracker: !uiConfig.showGasTracker })} />
 
         <SectionLabel>Assets</SectionLabel>
-        <Row icon={EyeOff} title="Hide Zero Balances" desc="Don't show tokens with 0.00 balance." toggle={uiConfig.hideZeroBalances ?? false} onToggle={() => setUiConfig({ hideZeroBalances: !uiConfig.hideZeroBalances })} />
-        <Row icon={Layers} title="Show NFT Gallery" desc="Display your NFT collection in portfolio." toggle={uiConfig.showNFTs ?? true} onToggle={() => setUiConfig({ showNFTs: !uiConfig.showNFTs })} />
-        <Row icon={Layers} title="Show Token Logos" desc="Display asset icons next to token names." toggle={uiConfig.showTokenLogos ?? true} onToggle={() => setUiConfig({ showTokenLogos: !uiConfig.showTokenLogos })} />
+        <Row icon={EyeOff} title="Hide Zero Balances" desc="Don't show tokens with 0.00 balance." toggle={uiConfig.hideZeroBalances ?? false} onToggle={() => setUiConfig({ ...uiConfig, hideZeroBalances: !uiConfig.hideZeroBalances })} />
+        <Row icon={Layers} title="Show NFT Gallery" desc="Display your NFT collection in portfolio." toggle={uiConfig.showNFTs ?? true} onToggle={() => setUiConfig({ ...uiConfig, showNFTs: !uiConfig.showNFTs })} />
+        <Row icon={Layers} title="Show Token Logos" desc="Display asset icons next to token names." toggle={uiConfig.showTokenLogos ?? true} onToggle={() => setUiConfig({ ...uiConfig, showTokenLogos: !uiConfig.showTokenLogos })} />
       </div>
     );
   }
@@ -355,13 +355,13 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
             ]} />
           </div>
         </Row>
-        <Row icon={Fingerprint} title="Biometric Unlock" desc="Use Face ID or fingerprint to unlock." toggle={uiConfig.biometricEnabled ?? false} onToggle={() => setUiConfig({ biometricEnabled: !uiConfig.biometricEnabled })} badge="Native" />
+        <Row icon={Fingerprint} title="Biometric Unlock" desc="Use Face ID or fingerprint to unlock." toggle={uiConfig.biometricEnabled ?? false} onToggle={() => setUiConfig({ ...uiConfig, biometricEnabled: !uiConfig.biometricEnabled })} badge="Native" />
 
         <SectionLabel>Transaction Safety</SectionLabel>
         <Row icon={UserCheck} title="Require Password for Signing" desc="Always confirm vault password before signing transactions." toggle={requirePasswordForSigning} onToggle={toggleRequirePasswordForSigning} />
         <Row icon={AlertTriangle} title="Strict Mode (Whitelist Only)" desc="Only allow transactions to addresses in your contact book." toggle={strictMode} onToggle={toggleStrictMode} />
-        <Row icon={Activity} title="Simulate Transactions" desc="Preview exact token flows before broadcasting." toggle={executionConfig.simulateBeforeSend ?? true} onToggle={() => setExecutionConfig({ simulateBeforeSend: !executionConfig.simulateBeforeSend })} badge="Pro" />
-        <Row icon={Shield} title="Phishing Detection" desc="Warn when interacting with flagged contracts." toggle={uiConfig.phishingDetection ?? true} onToggle={() => setUiConfig({ phishingDetection: !uiConfig.phishingDetection })} />
+        <Row icon={Activity} title="Simulate Transactions" desc="Preview exact token flows before broadcasting." toggle={executionConfig.simulateBeforeSend ?? true} onToggle={() => setExecutionConfig({ ...executionConfig, simulateBeforeSend: !executionConfig.simulateBeforeSend })} badge="Pro" />
+        <Row icon={Shield} title="Phishing Detection" desc="Warn when interacting with flagged contracts." toggle={uiConfig.phishingDetection ?? true} onToggle={() => setUiConfig({ ...uiConfig, phishingDetection: !uiConfig.phishingDetection })} />
 
         <SectionLabel>Session Control</SectionLabel>
         <Row icon={Lock} title="Lock Wallet Now" desc="Immediately end the current session." action={handleLockWallet} actionLabel="Lock Now" />
@@ -382,7 +382,7 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
         <Row icon={Shield} title="Privacy Mode" desc="Block third-party data requests from within the app." toggle={privacyMode} onToggle={togglePrivacyMode} />
 
         <SectionLabel>On-Chain Privacy</SectionLabel>
-        <Row icon={Globe} title="Block Explorer" desc="Privacy-respecting explorer preference." toggle={uiConfig.useBlockscout ?? false} onToggle={() => setUiConfig({ useBlockscout: !uiConfig.useBlockscout })} value={uiConfig.useBlockscout ? 'Blockscout' : 'Etherscan'} />
+        <Row icon={Globe} title="Block Explorer" desc="Privacy-respecting explorer preference." toggle={uiConfig.useBlockscout ?? false} onToggle={() => setUiConfig({ ...uiConfig, useBlockscout: !uiConfig.useBlockscout })} value={uiConfig.useBlockscout ? 'Blockscout' : 'Etherscan'} />
         <Row icon={Database} title="IPFS Gateway" desc="Resolve decentralized content through:">
           <div className="mt-1.5">
             <Select value={ipfsGateway} onChange={setIpfsGateway} options={[
@@ -402,7 +402,7 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
         <SectionLabel>RPC Provider</SectionLabel>
         <Row icon={PlugZap} title="Primary RPC Provider" desc="Blockchain node source for all read/write calls.">
           <div className="mt-1.5">
-            <Select value={executionConfig.rpcProvider ?? 'alchemy'} onChange={v => setExecutionConfig({ rpcProvider: v })} options={[
+            <Select value={executionConfig.rpcProvider ?? 'alchemy'} onChange={v => setExecutionConfig({ ...executionConfig, rpcProvider: v })} options={[
               { label: 'Alchemy (Auto)', value: 'alchemy' },
               { label: 'Infura', value: 'infura' },
               { label: 'GetBlock', value: 'getblock' },
@@ -418,11 +418,11 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
             onChange={e => setCustomRPC(e.target.value)}
           />
         </Row>
-        <Row icon={Wifi} title="WebSocket Real-Time Sync" desc="Live balance streaming via WSS connections." toggle={executionConfig.wssEnabled ?? true} onToggle={() => setExecutionConfig({ wssEnabled: !executionConfig.wssEnabled })} />
+        <Row icon={Wifi} title="WebSocket Real-Time Sync" desc="Live balance streaming via WSS connections." toggle={executionConfig.wssEnabled ?? true} onToggle={() => setExecutionConfig({ ...executionConfig, wssEnabled: !executionConfig.wssEnabled })} />
 
         <SectionLabel>Testnets & Switching</SectionLabel>
         <Row icon={WifiOff} title="Show Testnets" desc="Display Sepolia, Arbitrum Sepolia, Amoy testnet assets." toggle={testNetsEnabled} onToggle={toggleTestNets} />
-        <Row icon={Activity} title="Auto-Switch Network" desc="Auto-match network when connecting to a DApp." toggle={executionConfig.autoSwitchNetwork ?? true} onToggle={() => setExecutionConfig({ autoSwitchNetwork: !executionConfig.autoSwitchNetwork })} />
+        <Row icon={Activity} title="Auto-Switch Network" desc="Auto-match network when connecting to a DApp." toggle={executionConfig.autoSwitchNetwork ?? true} onToggle={() => setExecutionConfig({ ...executionConfig, autoSwitchNetwork: !executionConfig.autoSwitchNetwork })} />
       </div>
     );
   }
@@ -443,7 +443,7 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
           ]).map(({ label, value, sub, gwei }) => (
             <button
               key={value}
-              onClick={() => { setExecutionConfig({ gasPreset: value }); setDefaultGasPrice(value); }}
+              onClick={() => { setExecutionConfig({ ...executionConfig, gasPreset: value }); setDefaultGasPrice(value); }}
               className={`flex flex-col items-center gap-1 py-3.5 rounded-2xl border transition-all ${
                 gasPreset === value ? 'bg-black text-white border-black' : 'bg-white text-zinc-600 border-black/10 hover:border-black/20'
               }`}
@@ -461,7 +461,7 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
             {[0.1, 0.5, 1.0, 3.0].map(v => (
               <button
                 key={v}
-                onClick={() => { setDefaultSlippage(v); setExecutionConfig({ slippage: v }); }}
+                onClick={() => { setDefaultSlippage(v); setExecutionConfig({ ...executionConfig, slippage: v }); }}
                 className={`text-[12px] font-bold px-3 py-1.5 rounded-xl transition-colors ${
                   Math.abs(slippage - v) < 0.001 ? 'bg-black text-white' : 'bg-[#F2F2F7] text-black hover:bg-zinc-200'
                 }`}
@@ -474,7 +474,7 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
         </Row>
         <Row icon={Clock} title="Transaction Deadline" desc="Swap expires if not mined within this window.">
           <div className="mt-1.5">
-            <Select value={String(executionConfig.deadlineMinutes ?? 20)} onChange={v => setExecutionConfig({ deadlineMinutes: Number(v) })} options={[
+            <Select value={String(executionConfig.deadlineMinutes ?? 20)} onChange={v => setExecutionConfig({ ...executionConfig, deadlineMinutes: Number(v) })} options={[
               { label: '10 minutes', value: '10' }, { label: '20 minutes', value: '20' },
               { label: '30 minutes', value: '30' }, { label: '60 minutes', value: '60' },
             ]} />
@@ -482,10 +482,10 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
         </Row>
 
         <SectionLabel>MEV & Gas Protection</SectionLabel>
-        <Row icon={Shield} title="MEV Protection (Flashbots)" desc="Route swaps via Flashbots to prevent front-running bots." toggle={mevProtection} onToggle={() => setExecutionConfig({ mevProtection: !mevProtection })} badge="Advanced" />
+        <Row icon={Shield} title="MEV Protection (Flashbots)" desc="Route swaps via Flashbots to prevent front-running bots." toggle={mevProtection} onToggle={() => setExecutionConfig({ ...executionConfig, mevProtection: !mevProtection })} badge="Advanced" />
         <Row icon={Zap} title="Gas Limit Buffer" desc="Safety multiplier applied on top of estimated gas cost.">
           <div className="mt-1.5">
-            <Select value={String(executionConfig.gasLimitBuffer ?? '1.2')} onChange={v => setExecutionConfig({ gasLimitBuffer: v })} options={[
+            <Select value={String(executionConfig.gasLimitBuffer ?? '1.2')} onChange={v => setExecutionConfig({ ...executionConfig, gasLimitBuffer: v })} options={[
               { label: '1.1× Buffer', value: '1.1' }, { label: '1.2× Buffer', value: '1.2' },
               { label: '1.5× Buffer', value: '1.5' }, { label: '2.0× Buffer', value: '2.0' },
             ]} />
@@ -500,15 +500,15 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
       <div className="flex flex-col gap-1.5">
         <SectionLabel>Transaction Alerts</SectionLabel>
         <Row icon={Download} title="Incoming Transfers" desc="Notify when you receive crypto." toggle={transactionAlerts} onToggle={toggleTransactionAlerts} />
-        <Row icon={Upload} title="Outgoing Confirmations" desc="Confirm when your outbound transaction is mined." toggle={uiConfig.notifOutgoing ?? true} onToggle={() => setUiConfig({ notifOutgoing: !uiConfig.notifOutgoing })} />
-        <Row icon={ArrowUpRight} title="Bridge Completions" desc="Notify when a cross-chain bridge transfer settles." toggle={uiConfig.notifBridge ?? true} onToggle={() => setUiConfig({ notifBridge: !uiConfig.notifBridge })} />
+        <Row icon={Upload} title="Outgoing Confirmations" desc="Confirm when your outbound transaction is mined." toggle={uiConfig.notifOutgoing ?? true} onToggle={() => setUiConfig({ ...uiConfig, notifOutgoing: !uiConfig.notifOutgoing })} />
+        <Row icon={ArrowUpRight} title="Bridge Completions" desc="Notify when a cross-chain bridge transfer settles." toggle={uiConfig.notifBridge ?? true} onToggle={() => setUiConfig({ ...uiConfig, notifBridge: !uiConfig.notifBridge })} />
 
         <SectionLabel>Market Alerts</SectionLabel>
-        <Row icon={Activity} title="Price Alerts" desc="Alerts when watched assets hit your target price." toggle={uiConfig.notifPriceAlerts ?? false} onToggle={() => setUiConfig({ notifPriceAlerts: !uiConfig.notifPriceAlerts })} />
-        <Row icon={BarChart2} title="DeFi Yield Updates" desc="Daily summary of accrued yields and rewards." toggle={uiConfig.notifDeFiYield ?? true} onToggle={() => setUiConfig({ notifDeFiYield: !uiConfig.notifDeFiYield })} />
+        <Row icon={Activity} title="Price Alerts" desc="Alerts when watched assets hit your target price." toggle={uiConfig.notifPriceAlerts ?? false} onToggle={() => setUiConfig({ ...uiConfig, notifPriceAlerts: !uiConfig.notifPriceAlerts })} />
+        <Row icon={BarChart2} title="DeFi Yield Updates" desc="Daily summary of accrued yields and rewards." toggle={uiConfig.notifDeFiYield ?? true} onToggle={() => setUiConfig({ ...uiConfig, notifDeFiYield: !uiConfig.notifDeFiYield })} />
 
         <SectionLabel>Security Notifications</SectionLabel>
-        <Row icon={AlertTriangle} title="Security Alerts" desc="Immediate warnings for suspicious activity detected on your address." toggle={uiConfig.notifSecurityAlerts ?? true} onToggle={() => setUiConfig({ notifSecurityAlerts: !uiConfig.notifSecurityAlerts })} />
+        <Row icon={AlertTriangle} title="Security Alerts" desc="Immediate warnings for suspicious activity detected on your address." toggle={uiConfig.notifSecurityAlerts ?? true} onToggle={() => setUiConfig({ ...uiConfig, notifSecurityAlerts: !uiConfig.notifSecurityAlerts })} />
 
         <SectionLabel>Communication</SectionLabel>
         <Row icon={Bell} title="Push Notifications" desc="Browser / mobile push notification channel." toggle={pushNotifications} onToggle={togglePushNotifications} />
@@ -524,7 +524,7 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
         <SectionLabel>Asset Ordering & Grouping</SectionLabel>
         <Row icon={BarChart2} title="Token Sort Order" desc="How tokens are ranked and displayed.">
           <div className="mt-1.5">
-            <Select value={uiConfig.tokenSort ?? 'value_desc'} onChange={v => setUiConfig({ tokenSort: v })} options={[
+            <Select value={uiConfig.tokenSort ?? 'value_desc'} onChange={v => setUiConfig({ ...uiConfig, tokenSort: v })} options={[
               { label: 'Value: High → Low', value: 'value_desc' },
               { label: 'Value: Low → High', value: 'value_asc' },
               { label: 'Alphabetical (A → Z)', value: 'alpha' },
@@ -532,17 +532,17 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
             ]} />
           </div>
         </Row>
-        <Row icon={Network} title="Group by Network" desc="Cluster token cards by blockchain (Eth, Polygon, etc)." toggle={uiConfig.groupByNetwork ?? true} onToggle={() => setUiConfig({ groupByNetwork: !uiConfig.groupByNetwork })} />
-        <Row icon={EyeOff} title="Hide Spam Tokens" desc="Automatically filter out airdrop and phishing tokens." toggle={uiConfig.hideSpamTokens ?? true} onToggle={() => setUiConfig({ hideSpamTokens: !uiConfig.hideSpamTokens })} />
+        <Row icon={Network} title="Group by Network" desc="Cluster token cards by blockchain (Eth, Polygon, etc)." toggle={uiConfig.groupByNetwork ?? true} onToggle={() => setUiConfig({ ...uiConfig, groupByNetwork: !uiConfig.groupByNetwork })} />
+        <Row icon={EyeOff} title="Hide Spam Tokens" desc="Automatically filter out airdrop and phishing tokens." toggle={uiConfig.hideSpamTokens ?? true} onToggle={() => setUiConfig({ ...uiConfig, hideSpamTokens: !uiConfig.hideSpamTokens })} />
 
         <SectionLabel>DeFi & Staking</SectionLabel>
-        <Row icon={Zap} title="Show DeFi Positions" desc="Display LP pools, lending positions, and yield farms." toggle={uiConfig.showDeFiPositions ?? true} onToggle={() => setUiConfig({ showDeFiPositions: !uiConfig.showDeFiPositions })} />
-        <Row icon={Layers} title="Show Staking Positions" desc="Include liquid staking and validator rewards." toggle={uiConfig.showStaking ?? true} onToggle={() => setUiConfig({ showStaking: !uiConfig.showStaking })} />
+        <Row icon={Zap} title="Show DeFi Positions" desc="Display LP pools, lending positions, and yield farms." toggle={uiConfig.showDeFiPositions ?? true} onToggle={() => setUiConfig({ ...uiConfig, showDeFiPositions: !uiConfig.showDeFiPositions })} />
+        <Row icon={Layers} title="Show Staking Positions" desc="Include liquid staking and validator rewards." toggle={uiConfig.showStaking ?? true} onToggle={() => setUiConfig({ ...uiConfig, showStaking: !uiConfig.showStaking })} />
 
         <SectionLabel>Auto-Refresh</SectionLabel>
         <Row icon={RefreshCw} title="Balance Refresh Interval" desc="Frequency of automatic balance updates.">
           <div className="mt-1.5">
-            <Select value={uiConfig.portfolioRefresh ?? '30s'} onChange={v => setUiConfig({ portfolioRefresh: v })} options={[
+            <Select value={uiConfig.portfolioRefresh ?? '30s'} onChange={v => setUiConfig({ ...uiConfig, portfolioRefresh: v })} options={[
               { label: '10 seconds', value: '10s' }, { label: '30 seconds', value: '30s' },
               { label: '1 minute', value: '1min' }, { label: '5 minutes', value: '5min' },
             ]} />
@@ -615,14 +615,14 @@ export function SettingsView({ onClose }: { onClose: () => void }) {
           toggle={executionConfig.expertMode ?? false}
           onToggle={() => {
             if (!executionConfig.expertMode) toast.warning('Expert Mode disables all safety prompts.', { duration: 5000 });
-            setExecutionConfig({ expertMode: !executionConfig.expertMode });
+            setExecutionConfig({ ...executionConfig, expertMode: !executionConfig.expertMode });
           }}
           danger
         />
-        <Row icon={Key} title="Custom Nonce Override" desc="Manually set transaction sequence nonces." toggle={executionConfig.customNonce ?? false} onToggle={() => setExecutionConfig({ customNonce: !executionConfig.customNonce })} disabled={!executionConfig.expertMode} />
+        <Row icon={Key} title="Custom Nonce Override" desc="Manually set transaction sequence nonces." toggle={executionConfig.customNonce ?? false} onToggle={() => setExecutionConfig({ ...executionConfig, customNonce: !executionConfig.customNonce })} disabled={!executionConfig.expertMode} />
 
         <SectionLabel>Zero-Knowledge Proving</SectionLabel>
-        <Row icon={Cpu} title="WASM Client-Side Proving" desc="Generate zk-SNARK proofs locally in your browser (private, but CPU-intensive)." toggle={executionConfig.wasmProving ?? true} onToggle={() => setExecutionConfig({ wasmProving: !executionConfig.wasmProving })} badge="ZK" />
+        <Row icon={Cpu} title="WASM Client-Side Proving" desc="Generate zk-SNARK proofs locally in your browser (private, but CPU-intensive)." toggle={executionConfig.wasmProving ?? true} onToggle={() => setExecutionConfig({ ...executionConfig, wasmProving: !executionConfig.wasmProving })} badge="ZK" />
       </div>
     );
   }

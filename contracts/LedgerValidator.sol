@@ -7,7 +7,7 @@ pragma solidity ^0.8.20;
  * Audits the solvency of Exchanges, Casinos, and Wallets.
  */
 contract LedgerValidator {
-    address public immutable ledgerAuthority;
+    address public ledgerAuthority;
 
     struct AuditRecord {
         bytes32 platformHash;
@@ -46,6 +46,13 @@ contract LedgerValidator {
      * @param _reserve The USD equivalent of verified on-chain reserves
      * @param _isSolvent Boolean indicating the safety verdict
      */
+    
+    function transferAuthority(address _newAuthority) external onlyAuthority {
+        require(_newAuthority != address(0), "Invalid address");
+        emit AuthorityTransferred(ledgerAuthority, _newAuthority);
+        ledgerAuthority = _newAuthority;
+    }
+
     function pingReserve(
         string calldata _platformSlug, 
         uint256 _reserve, 

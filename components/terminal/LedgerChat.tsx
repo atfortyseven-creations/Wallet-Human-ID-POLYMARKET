@@ -2811,7 +2811,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         
         const clearTsMs = parseInt(localStorage.getItem(`ledger_cleared_${address}_${activePeer.toLowerCase()}`) || '0', 10);
         if (clearTsMs > 0) {
-          const clearTsNs = clearTsMs * 1000000;
+          const clearTsNs = clearTsMs; // Fixed: sentAtNs is actually in MS after mapping
           raw = raw.filter((m: any) => m.sentAtNs > clearTsNs);
         }
         
@@ -2868,7 +2868,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                  if (lc.includes('initiatedbyinboxid')) return false;
                  if (lc.includes('from cursor')) return false;
                  if (lc.includes('group is inactive') || lc.includes('groupinactive')) return false;
-                 if (lc.includes('synced') || lc.includes('originator_id') || lc.includes('sequence_id')) return false;
+                 if (lc.includes('originator_id') || lc.includes('sequence_id')) return false;
              }
              return true;
           });
@@ -2989,7 +2989,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           // otherwise every poll re-injects the deleted history.
           const clearTsMs = parseInt(localStorage.getItem(`ledger_cleared_${address}_${activePeer.toLowerCase()}`) || '0', 10);
           if (clearTsMs > 0) {
-            const clearTsNs = clearTsMs * 1000000;
+            const clearTsNs = clearTsMs; // Fixed: sentAtNs is actually in MS after mapping
             newConfirmed = newConfirmed.filter((m: any) => m.sentAtNs > clearTsNs);
           }
           
@@ -5379,6 +5379,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                      }
                      // Only send XMTP payment signal AFTER confirmed transfer
                      executeSend(`__PAYMENT__::${parsed}`);
+                     refreshBalanceRef.current().catch(() => {}); // Refresh sender QD balance
                      toast.success(`Sent ${parsed} QD to ${shortAddr(activePeer!)}!`);
                      setShowWalletTransfer(false);
                      setTransferAmount('');

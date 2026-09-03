@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 
 /// @title LedgerPass: Professional Gold Ticket Membership
 /// @notice ERC-1155 implementation for exclusive Ledger Alert Network terminal access
-contract LedgerPass is ERC1155, Ownable, ERC1155Supply {
+contract LedgerPass is ERC1155, Ownable, ERC1155Supply, ReentrancyGuard {
     using Strings for uint256;
 
     // Token IDs
@@ -92,7 +92,7 @@ contract LedgerPass is ERC1155, Ownable, ERC1155Supply {
         whitelistMerkleRoot = root;
     }
 
-    function withdraw() external onlyOwner {
+    function withdraw() external onlyOwner nonReentrant {
         (bool success, ) = payable(owner()).call{value: address(this).balance}("");
         require(success, "Withdraw Failed");
     }

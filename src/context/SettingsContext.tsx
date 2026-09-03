@@ -195,7 +195,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
     // --- LOAD SETTINGS (Using Sync Service) ---
     useEffect(() => {
-        if (!userId) return; // Don't load if no user
+        // if (!userId) return; // Allow loading for email users
 
         const loadSettings = async () => {
             if (initialLoadDone.current) return;

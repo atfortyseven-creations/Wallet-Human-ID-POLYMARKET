@@ -62,7 +62,9 @@ contract WalkawaySwitch is Ownable2Step, Pausable, ReentrancyGuard {
         );
         
         // Finalize the handover to community control
-        _transferOwnership(COMMUNITY_MULTISIG);
+        // FIX: Use public transferOwnership() to trigger Ownable2Step pending-accept mechanism.
+        // _transferOwnership() (internal) bypasses the 2-step and assigns owner directly.
+        transferOwnership(COMMUNITY_MULTISIG);
         
         emit OwnershipTransferredToCommunity(COMMUNITY_MULTISIG, block.timestamp);
     }

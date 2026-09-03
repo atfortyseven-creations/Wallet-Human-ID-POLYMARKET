@@ -265,11 +265,18 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
   //      x-verified-session-address → cryptographically verified wallet address
   //      x-session-ts               → timestamp for replay-attack detection in routes
   //      x-request-id               → unique request correlation ID for audit trail
-  const response = NextResponse.next();
-  response.headers.set('x-verified-session-address', sessionAddress);
-  response.headers.set('x-session-ts', String(Date.now()));
-  // Unique request ID for distributed tracing — helps correlate audit logs
-  const requestId = crypto.randomUUID?.() ?? `req_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set('x-verified-session-address', sessionAddress);
+  requestHeaders.set('x-session-ts', String(Date.now()));
+  const requestId = crypto.randomUUID?.() ?? 
+eq__;
+  requestHeaders.set('x-request-id', requestId);
+
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
   response.headers.set('x-request-id', requestId);
 
   // [SECURITY] Strict CSP — unsafe-eval removed (was allowing arbitrary JS execution)
