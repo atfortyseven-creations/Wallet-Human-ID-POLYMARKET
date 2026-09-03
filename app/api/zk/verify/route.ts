@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import prisma from '@/lib/prisma'; // Assumes Prisma client is available here
 
-const ZK_SECRET = process.env.ZK_PIPELINE_SECRET || 'aztec-zk-pipeline-secret-key-3948';
+// Removed hardcoded fallback for security
+// const ZK_SECRET = process.env.ZK_PIPELINE_SECRET;
 
 export async function POST(req: Request) {
   try {
@@ -33,7 +34,9 @@ export async function POST(req: Request) {
 
     const [base64Payload, signature] = parts;
     const payload = Buffer.from(base64Payload, 'base64').toString('utf-8');
-    const expectedSignature = crypto.createHmac('sha256', ZK_SECRET).update(payload).digest('hex');
+    const zkSecret = process.env.ZK_PIPELINE_SECRET;
+    if (!zkSecret) { return NextResponse.json({ success: false, error: 'CRITICAL: ZK_PIPELINE_SECRET not configured. Verification halted.' }, { status: 500 }); }
+    const expectedSignature = crypto.createHmac('sha256', zkSecret).update(payload).digest('hex');
 
     if (signature.length !== expectedSignature.length || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
       return NextResponse.json({ success: false, error: "CRYPTOGRAPHIC_ERROR: Proof signature mismatch. Tampering detected." }, { status: 403 });
