@@ -2528,8 +2528,14 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
             const convoId = msg.convoId || msg.conversationId || msg.groupId;
             if (convoId) {
               try {
-                const dms = await client.conversations.listDms();
-                const dm = dms.find((d: any) => d.id === convoId);
+                let dms = await client.conversations.listDms();
+                let dm = dms.find((d: any) => d.id === convoId);
+                if (!dm) {
+                  // Message from a NEW conversation not yet synced locally!
+                  await client.conversations.sync().catch(()=>{});
+                  dms = await client.conversations.listDms();
+                  dm = dms.find((d: any) => d.id === convoId);
+                }
                 if (dm) {
                   const dmPeer = await extractPeerAddress(dm, selfInboxId);
                   resolvedPeerAddr = dmPeer?.toLowerCase() || '';

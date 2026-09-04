@@ -200,7 +200,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   const fetchLedgerState = useCallback(async (addr: string) => {
     try {
       const [balRes, txRes] = await Promise.all([
-        fetch(`/api/aztec/balance?aztecAddress=${encodeURIComponent(addr.toLowerCase())}`),
+        fetch(`/api/aztec/balance?aztecAddress=${encodeURIComponent(addr.toLowerCase())}&t=${Date.now()}`, { cache: "no-store" }),
         fetch(`/api/aztec/transactions?address=${encodeURIComponent(addr.toLowerCase())}`),
       ]);
 
