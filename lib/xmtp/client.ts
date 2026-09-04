@@ -76,7 +76,7 @@ export async function resolveInboxIdToAddress(inboxId: string, client?: Client):
   try {
     let states: any = null;
     if (client) {
-      states = await (client as any).inboxStateFromInboxIds?.([inboxId], true);
+      states = await (client as any).inboxStateFromInboxIds?.([inboxId], XMTP_ENV);
       if (!states) {
         const state = await (client as any).getLatestInboxState?.(inboxId);
         if (state) states = [state];
