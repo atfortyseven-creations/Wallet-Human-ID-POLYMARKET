@@ -2673,7 +2673,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                 // Strategy 1: look up by content key in optimisticContentMap
                 const knownOptId = optimisticContentMap.current.get(content);
                 if (knownOptId) {
-                  optimisticContentMap.current.delete(content); // consume the entry
+                  optimisticContentMap.current.delete(finalContent); // consume the entry
                   const idx = prev.findIndex(m => m.id === knownOptId);
                   if (idx !== -1) {
                     const next = [...prev];
@@ -3207,7 +3207,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         // ─── OPTIMISTIC INSERT ────────────────────────────────────────────────────
         // Register the content in the map BEFORE inserting, so the stream echo
         // can find and replace this optimistic message atomically when it arrives.
-        optimisticContentMap.current.set(content, optimisticId);
+        optimisticContentMap.current.set(finalContent, optimisticId); // FIX: must match what XMTP echoes back
 
         const optimisticMsg = {
           id: optimisticId,
@@ -3273,7 +3273,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     } catch (err: any) {
       throw err;
       // On failure, keep the message but mark it as failed so the user knows what happened
-      optimisticContentMap.current.delete(content);
+      optimisticContentMap.current.delete(finalContent);
       const errString = err?.message || String(err);
       setMessages(prev => prev.map(m => 
         m.id === optimisticId 
@@ -4048,7 +4048,16 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                       ) : (
                         <>
                           <span className="w-1 h-1 rounded-full bg-gray-400 inline-block" />
-                          {peerStatus.lastSeen ? `Last seen ${new Date(peerStatus.lastSeen).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'Offline'}
+                          {peerStatus.lastSeen ? (() => {
+                            const d = new Date(peerStatus.lastSeen);
+                            const now = new Date();
+                            const todayStr = now.toDateString();
+                            const yest = new Date(now); yest.setDate(yest.getDate() - 1);
+                            const t = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            if (d.toDateString() === todayStr) return `Last seen ${t}`;
+                            if (d.toDateString() === yest.toDateString()) return `Last seen yesterday ${t}`;
+                            return `Last seen ${d.toLocaleDateString([], { day: '2-digit', month: '2-digit' })} ${t}`;
+                          })() : 'Offline'}
                         </>
                       )}
                     </span>
