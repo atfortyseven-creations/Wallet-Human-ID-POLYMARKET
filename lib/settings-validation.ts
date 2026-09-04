@@ -117,3 +117,42 @@ export type UserSettings = z.infer<typeof UserSettingsSchema>;
 export function getDefaultUserSettings(): UserSettings {
   return UserSettingsSchema.parse({});
 }
+
+// ─── Validation helpers used by SettingsSyncService ──────────────────────────
+
+export type ValidationResult<T> =
+  | { success: true; data: T; errors?: undefined }
+  | { success: false; data?: undefined; errors: string[] };
+
+/**
+ * Validates a full UserSettings object against the schema.
+ * Returns typed success/error result instead of throwing.
+ */
+export function validateUserSettings(raw: unknown): ValidationResult<UserSettings> {
+  const result = UserSettingsSchema.safeParse(raw);
+  if (result.success) {
+    return { success: true, data: result.data };
+  }
+  return {
+    success: false,
+    errors: result.error.errors.map((e) => `${e.path.join('.')}: ${e.message}`),
+  };
+}
+
+/**
+ * Validates a partial settings update (PATCH payload).
+ * Any subset of UserSettings fields is accepted.
+ */
+export type PartialUserSettings = Partial<UserSettings>;
+
+export function validatePartialSettings(raw: unknown): ValidationResult<PartialUserSettings> {
+  const PartialSchema = UserSettingsSchema.partial();
+  const result = PartialSchema.safeParse(raw);
+  if (result.success) {
+    return { success: true, data: result.data };
+  }
+  return {
+    success: false,
+    errors: result.error.errors.map((e) => `${e.path.join('.')}: ${e.message}`),
+  };
+}

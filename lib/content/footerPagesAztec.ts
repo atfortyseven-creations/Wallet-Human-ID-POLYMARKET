@@ -113,7 +113,7 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
     title: '9. Development Status',
     paragraphs: [
       'The protocol development focuses on verified foundations built directly on the Aztec Network.',
-      'Current status (26 July 2026): The frontend platform (humanidfi.com) is live and connected to the Aztec testnet (node.aztec.network). The Noir smart contracts, specifically QDsToken.nr as a native Aztec token and the mint_private_license KYC circuit, are fully specified and in active development. The legal and regulatory framework (25-document MiCA suite) is fully drafted and in the formal process of being executed.',
+      'Current status (26 July 2026): The frontend platform (humanidfi.com) is live and connected to the Aztec Mainnet (node.aztec.network). The Noir smart contracts, specifically QDsToken.nr as a native Aztec token and the mint_private_license KYC circuit, are fully specified and in active development. The legal and regulatory framework (25-document MiCA suite) is fully drafted and in the formal process of being executed.',
     ],
   },
   {
@@ -328,7 +328,7 @@ export const SECURITY_SECTIONS: AztecDocSection[] = [
     title: 'Vulnerability Disclosure and Bug Bounty',
     paragraphs: [
       'We maintain an active bug bounty program covering all components of the protocol. Scope includes Noir circuit soundness, Ethereum contract vulnerabilities, API authentication bypasses, and client-side proving pipeline integrity.',
-      'Critical vulnerabilities, those that could result in loss of user funds or deanonymization of users, are eligible for significant rewards. Specific bounty amounts are defined at the time of the formal bug bounty program launch, which occurs alongside our first public testnet deployment. Researchers are asked to submit findings to humanityledger@icloud.com with a clear proof-of-concept demonstrating the vulnerability. We commit to acknowledging receipt within 24 hours and providing an initial assessment within 72 hours.',
+      'Critical vulnerabilities, those that could result in loss of user funds or deanonymization of users, are eligible for significant rewards. Specific bounty amounts are defined at the time of the formal bug bounty program launch, which occurs alongside our first public mainnet deployment. Researchers are asked to submit findings to humanityledger@icloud.com with a clear proof-of-concept demonstrating the vulnerability. We commit to acknowledging receipt within 24 hours and providing an initial assessment within 72 hours.',
       'Researchers are asked to submit findings to humanityledger@icloud.com with a clear proof-of-concept demonstrating the vulnerability. We commit to acknowledging receipt within 24 hours and providing an initial assessment within 72 hours. We adhere to a responsible disclosure timeline of 90 days, after which findings are disclosed publicly regardless of remediation status.',
     ],
     callout: {
@@ -355,7 +355,7 @@ export const ROADMAP_SECTIONS: AztecDocSection[] = [
   {
     title: 'Current State: Protocol Genesis & Mainnet Readiness',
     paragraphs: [
-      'The Humanity Ledger architecture has reached full operational maturity on the active Aztec Mainnet (Node v5.0.0-rc.2, Rollup v4239416255) anchoring to Ethereum Sepolia. The system successfully validates 600+ end to end cryptographic integration tests natively against the decentralised network infrastructure. The foundation is now resilient, mathematically verified, and fully scaled to support the impending Beta Genesis rollout.',
+      'The Humanity Ledger architecture has reached full operational maturity on the active Aztec Mainnet (Node v5.0.0-rc.2, Rollup v4239416255) anchoring to Ethereum Mainnet. The system successfully validates 600+ end to end cryptographic integration tests natively against the decentralised network infrastructure. The foundation is now resilient, mathematically verified, and fully scaled to support the impending Beta Genesis rollout.',
     ],
   },
   {
@@ -417,7 +417,7 @@ export const API_REFERENCE_SECTIONS: AztecDocSection[] = [
     title: 'API Overview & Network Architecture',
     paragraphs: [
       'The Humanity Ledger Sovereign API provides deterministic, cryptographically secure programmatic access to network analytics, Aztec L2 state commitments, and real-time Humanity Ledger event streams. The API architecture separates read-only analytics endpoints from write-heavy state-transition relay layers.',
-      'All interactions operate over TLS 1.3 with strict cypher suite enforcement. The base URL for the production environment is `https://api.humanidfi.com/v1`. Testnet environments operate on `https://testnet-api.humanidfi.com/v1`.',
+      'All interactions operate over TLS 1.3 with strict cypher suite enforcement. The base URL for the production environment is `https://api.humanidfi.com/v1`. Testnet environments operate on `https://api.humanidfi.com/v1`.',
       'The API Gateway implements a sophisticated bucket-algorithm rate limiter based on the caller\'s institutional tier, verifying HMAC-SHA256 signatures derived from assigned API keys in sub-millisecond latencies using edge-deployed WebAssembly verifiers.'
     ],
   },
@@ -512,7 +512,7 @@ export const COMMUNITY_FORUM_INTRO: AztecDocSection[] = [
   {
     title: 'Purpose',
     paragraphs: [
-      'The System Forum is the primary coordination layer for Humanity Ledger protocol participants. It is the canonical location for technical proposals, circuit reviews, testnet coordination, and governance deliberation.',
+      'The System Forum is the primary coordination layer for Humanity Ledger protocol participants. It is the canonical location for technical proposals, circuit reviews, mainnet coordination, and governance deliberation.',
     ],
   },
   {
@@ -524,7 +524,7 @@ export const COMMUNITY_FORUM_INTRO: AztecDocSection[] = [
   {
     title: 'Categories',
     paragraphs: [
-      'Topics are organized into structured categories: Humanity Ledger, General, Applications, Testnets, Noir Circuits, Site Feedback, and QDs Connect. Select the appropriate category before posting to ensure visibility to the relevant participants.',
+      'Topics are organized into structured categories: Humanity Ledger, General, Applications, Mainnet Nodes, Noir Circuits, Site Feedback, and QDs Connect. Select the appropriate category before posting to ensure visibility to the relevant participants.',
     ],
   },
 ];

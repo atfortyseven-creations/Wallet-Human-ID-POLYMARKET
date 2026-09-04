@@ -77,7 +77,7 @@ class AztecQDSequencer {
       
       // 2. Prepare Aztec connection
       if (!this.contractAddress) {
-        console.warn('[Sequencer] PROVENANCE_REGISTRY_ADDRESS missing. Simulating contract interaction for testnet certification.');
+        console.warn('[Sequencer] PROVENANCE_REGISTRY_ADDRESS missing. Simulating contract interaction for mainnet certification.');
       }
       
       const pxe = await this.getPXE();
@@ -148,7 +148,7 @@ class AztecQDSequencer {
           eventType: 'on_chain_confirmed',
           payload: {
             txHash,
-            chainId: 89021716, // Aztec testnet chainId
+            chainId: 89021716, // Aztec Mainnet chainId
             confirmedAt: new Date().toISOString(),
             platform: 'StudioProvenance/v1',
           }

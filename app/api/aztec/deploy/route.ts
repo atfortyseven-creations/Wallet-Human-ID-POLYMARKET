@@ -23,7 +23,7 @@ export async function GET() {
   const pxeUrl = process.env.AZTEC_PXE_URL || 'https://node.aztec.network';
   const nodeUrl = process.env.AZTEC_NODE_URL || 'https://node.aztec.network';
 
-  // Check if we can reach the Aztec testnet node
+  // Check if we can reach the Aztec mainnet node
   let nodeStatus: 'reachable' | 'unreachable' = 'unreachable';
   let nodeInfo: any = null;
 

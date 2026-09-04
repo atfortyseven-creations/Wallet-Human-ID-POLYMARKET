@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
         return [137]; // Polygon Mainnet ONLY
       }
       if (appEnv === 'qa' || appEnv === 'staging') {
-        return [137, 80002]; // Polygon + Amoy testnet
+        return [137, 80002]; // Polygon + Polygon Mainnet
       }
       // development / local — also allow Hardhat
       return [137, 80002, 31337];

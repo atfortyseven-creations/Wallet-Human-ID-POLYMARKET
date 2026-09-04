@@ -18,7 +18,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     problem: "Current elliptic curves (BN254) are vulnerable to Shor's algorithm on quantum computers.",
     solution: "Implementation of lattice-based cryptography for L1 state anchoring, maintaining temporary hybrid compatibility.",
     contribution: "Introduces the first post-quantum finality layer in the rollup ecosystem.",
-    deliverable: "Deployment of lattice-based verifier contract on testnet within 6 months; zero quantum vulnerabilities.",
+    deliverable: "Deployment of lattice-based verifier contract on mainnet within 6 months; zero quantum vulnerabilities.",
     integrity: "Ensures the financial history of Humanity Ledger cannot be retroactively decrypted in the future."
   },
   {

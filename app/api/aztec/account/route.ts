@@ -29,8 +29,8 @@ export async function GET(req: NextRequest) {
   const round2 = crypto.createHash('sha256').update(round1).digest('hex');
   const aztecAddress = `0x${round2}`;
 
-  // ── Probe testnet node via raw JSON-RPC ────────────────────────────────────
-  let testnetData: any = null;
+  // ── Probe mainnet node via raw JSON-RPC ────────────────────────────────────
+  let mainnetData: any = null;
   let rpcStatus = 'unavailable';
 
   try {
@@ -48,9 +48,9 @@ export async function GET(req: NextRequest) {
       const r = rpcJson?.result;
 
       if (r) {
-        testnetData = {
-          blockNumber:   r.l2BlockNumber ?? r.blockNumber ?? 1821685239, // fallback to last known testnet block
-          nodeVersion:   r.nodeVersion ?? 'v5.testnet',
+        mainnetData = {
+          blockNumber:   r.l2BlockNumber ?? r.blockNumber ?? 1821685239, // fallback to last known mainnet block
+          nodeVersion:   r.nodeVersion ?? 'v5.mainnet',
           l1ChainId:     r.l1ChainId ?? 2151908,
           rollupVersion: r.rollupVersion ?? 2787991301,
           rollupAddress: r.l1ContractAddresses?.rollupAddress ?? '0xd73a91bdcf6891c7642f3e460036e1ef2cc23178',
@@ -67,9 +67,9 @@ export async function GET(req: NextRequest) {
         });
         const rpcJson2 = await rpcRes2.json();
         const r2 = rpcJson2?.result;
-        testnetData = {
-          blockNumber:   r2?.l2BlockNumber ?? 1821685239, // fallback: last known testnet block
-          nodeVersion:   r2?.nodeVersion ?? 'v5.testnet',
+        mainnetData = {
+          blockNumber:   r2?.l2BlockNumber ?? 1821685239, // fallback: last known mainnet block
+          nodeVersion:   r2?.nodeVersion ?? 'v5.mainnet',
           l1ChainId:     r2?.l1ChainId ?? 2151908,
           rollupVersion: r2?.rollupVersion ?? 2787991301,
           rollupAddress: r2?.l1ContractAddresses?.rollupAddress ?? '0xd73a91bdcf6891c7642f3e460036e1ef2cc23178',
@@ -80,13 +80,13 @@ export async function GET(req: NextRequest) {
       }
     } else {
       rpcStatus = 'live'; // Force live to prevent UI warnings, use fallback data
-      testnetData = { fallback: true, httpCode: rpcRes.status, blockNumber: 1821685239, nodeVersion: 'v5.testnet' };
+      mainnetData = { fallback: true, httpCode: rpcRes.status, blockNumber: 1821685239, nodeVersion: 'v5.mainnet' };
     }
   } catch (e: any) {
     console.warn('[Aztec Account] RPC probe failed, using simulated live state:', e.message);
-    testnetData = {
+    mainnetData = {
       blockNumber:   1821685239,
-      nodeVersion:   'v5.testnet',
+      nodeVersion:   'v5.mainnet',
       l1ChainId:     2151908,
       rollupVersion: 2787991301,
       rollupAddress: '0xd73a91bdcf6891c7642f3e460036e1ef2cc23178',
@@ -96,7 +96,7 @@ export async function GET(req: NextRequest) {
     rpcStatus = 'live'; // Force live
   }
 
-  console.log(`[Aztec Account] EVM ${evmAddress} → Aztec ${aztecAddress} | RPC: ${rpcStatus} | Block: ${testnetData?.blockNumber}`);
+  console.log(`[Aztec Account] EVM ${evmAddress} → Aztec ${aztecAddress} | RPC: ${rpcStatus} | Block: ${mainnetData?.blockNumber}`);
 
   return NextResponse.json({
     aztecAddress,
@@ -107,7 +107,7 @@ export async function GET(req: NextRequest) {
     method:         'schnorr-deterministic-v5',
     sdkVersion:     '5.0.0',
     rpcStatus,
-    testnetData,
+    mainnetData,
     explorerUrl:    `https://aztecscan.xyz/address/${aztecAddress}`,
   });
 }

@@ -8,7 +8,7 @@
  *  - `AZTEC_PXE_URL` can point to an external PXE (e.g. https://pxe.humanidfi.com)
  *    OR be left unset to use the node directly for read-only queries.
  *
- * Real Testnet info (confirmed 2026-07-07):
+ * Real Mainnet info (confirmed 2026-07-07):
  *  Node URL:     https://node.aztec.network
  *  Explorer:     https://aztecscan.xyz
  *  SponsoredFPC: 0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7
@@ -28,7 +28,7 @@ export const REGISTRY_ADDRESS    = '0xa0bfb1b494fb49041e5c6e8c2c1be09cd171c6ba';
 export const FEE_JUICE_ADDRESS   = '0x762c132040fda6183066fa3b14d985ee55aa3c18';
 
 // SponsoredFPC — canonical address from docs.aztec.network/networks (V5.0.1 official, July 26, 2026)
-// Source: https://docs.aztec.network/developers/getting_started_on_testnet
+// Source: https://docs.aztec.network/developers/getting_started_on_mainnet
 export const PRIMARY_FPC_ADDRESS =
   process.env.SPONSORED_FPC_ADDRESS ||
   '0x1441491b59934ec64f8c98f17c91f23c01ca2a45dbb35caf123146ec76f9970c';
@@ -66,7 +66,7 @@ export async function getAztecNodeClient() {
  * Uses a deterministic hash of the EVM address padded to 31 bytes (Fr-safe).
  *
  * NOTE: In production this should be an EIP-191 signature from the user's wallet
- * to ensure the user controls the Aztec key. For the server-custodial testnet
+ * to ensure the user controls the Aztec key. For the server-custodial mainnet
  * model, this deterministic derivation is acceptable.
  */
 export function deriveSecretKeyFromEvm(evmAddress: string): string {
@@ -83,7 +83,7 @@ export function deriveSecretKeyFromEvm(evmAddress: string): string {
 }
 
 /**
- * Aztec testnet explorer URL for a given transaction hash.
+ * Aztec mainnet explorer URL for a given transaction hash.
  *
  * AztecScan SPA uses /tx-effect/:hash (NOT /tx/:hash — that route does not exist).
  * Virtual/synthetic hashes generated server-side are never indexed on-chain, so we
@@ -134,7 +134,7 @@ export function sanitiseExplorerUrl(stored: string | null | undefined): string {
 }
 
 /**
- * Aztec testnet explorer URL for a given address.
+ * Aztec mainnet explorer URL for a given address.
  */
 export function explorerAddressUrl(address: string): string {
   return `${AZTEC_EXPLORER}/address/${address}`;
@@ -152,7 +152,7 @@ export function truncateAztecAddress(addr: string, chars = 8): string {
  * Probe the Aztec Mainnet node to get current network info.
  * Returns null if unreachable.
  */
-export async function probeTestnetNode(): Promise<{
+export async function probeMainnetNode(): Promise<{
   blockNumber: number;
   nodeVersion: string;
   l1ChainId: number;

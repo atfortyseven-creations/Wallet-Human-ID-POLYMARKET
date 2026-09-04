@@ -28,7 +28,7 @@ const AIRDROP_AMOUNT        = 1000;  // 1000 QDs per airdrop (Genesis Airdrop �
  * Mints 1000 QDs to the caller's Aztec address.
  * Architecture (SDK v5.0.0):
  *  - Mode A: Full on-chain mint via PXE + TokenContract (requires AZTEC_TOKEN_CONTRACT_ADDRESS)
- *  - Mode B: Node-verified DB airdrop — real testnet block hash, no token contract needed
+ *  - Mode B: Node-verified DB airdrop — real mainnet block hash, no token contract needed
  *
  * - One-per-wallet enforcement via DB unique check
  */
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     // ══════════════════════════════════════════════════════════════════════════════
     //
     // LAYER 1: Global identity cap.
-    //   The Aztec testnet identity is scarce by design. There are a maximum of
+    //   The Aztec mainnet identity is scarce by design. There are a maximum of
     //   IDENTITY_CAP identities (default 200) that can ever be claimed across ALL
     //   wallets. Once this cap is reached, the airdrop closes permanently.
     //   This prevents a single actor from industrially farming all identities.
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
     //   A user controlling 200 wallets from the same machine/VPN gets a SINGLE
     //   identity claim per day. This forces genuine Sybil attacks to require
     //   200 unique IPs (real proxy farms), making mass-farming economically
-    //   impractical at the testnet scale.
+    //   impractical at the mainnet scale.
     //
     // LAYER 3: One airdrop per wallet (enforced in DB + Serializable tx).
     //   The existing check remains as the final guard.
@@ -174,7 +174,7 @@ export async function POST(req: NextRequest) {
 
     if (!tokenAddressStr || tokenAddressStr === 'PENDING_DEPLOY' || !relayerSecretHex) {
         // ── MODE B: Node-verified DB airdrop (token contract not yet deployed or no relayer key) ──
-        // The airdrop is REAL — it is anchored to a genuine Aztec testnet block hash.
+        // The airdrop is REAL — it is anchored to a genuine Aztec mainnet block hash.
         // Once AZTEC_TOKEN_CONTRACT_ADDRESS and AZTEC_RELAYER_SECRET_KEY are set, Mode A activates.
         console.log('[Aztec Airdrop] Mode B: DB-only ledger with live Aztec node block verification.');
         
@@ -207,7 +207,7 @@ export async function POST(req: NextRequest) {
         // Skip to DB write below
     } else {
 
-    // ── NATIVE AZTEC TESTNET MINT (No simulations allowed) ────────────────
+    // ── NATIVE AZTEC MAINNET MINT (No simulations allowed) ────────────────
     console.log('[Aztec Airdrop] Native: On-chain mint via TokenContract');
 
     const { EmbeddedWallet }            = await import('@aztec/wallets/embedded');

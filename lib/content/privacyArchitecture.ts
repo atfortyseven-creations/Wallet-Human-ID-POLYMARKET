@@ -1,4 +1,4 @@
-// Updated: July 26, 2026 — Aligned with Aztec Network V5 Testnet reality.
+// Updated: July 26, 2026 — Aligned with Aztec Network Mainnet reality.
 
 export type PrivacyArchitectureSection = {
   id: string;
@@ -15,7 +15,7 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
     id: 'overview',
     title: 'System Overview — What Humanity Ledger actually does',
     paragraphs: [
-      'Updated July 26, 2026. Humanity Ledger is a web application that lets participants monitor on chain capital flows, communicate with end to end encryption, and record verifiable product provenance — all anchored to the Aztec Network V5 testnet.',
+      'Updated July 26, 2026. Humanity Ledger is a web application that lets participants monitor on chain capital flows, communicate with end to end encryption, and record verifiable product provenance — all anchored to the Aztec Network Mainnet.',
       'The application is organized into three concentric layers: (1) the Client layer — a Next.js app running in your browser that handles all private computation locally; (2) the Platform API layer — our backend that handles authentication, session management, and routing, but never touches private keys; (3) the Aztec Network — the ZK rollup where all QD balances, provenance records, and identity proofs live as private encrypted state.',
       'The core principle is simple: anything that must stay secret never leaves your device. Our servers only see what they need to identify you — your wallet address — and nothing else.',
     ],
@@ -24,7 +24,7 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
       'Our backend databases cannot read your QD balance, your chat messages, or your identity proof inputs.',
       'Sessions are short lived JWTs (15 min) stored in HTTP only cookies inaccessible to JavaScript.',
       'All cryptographic computation (Noir ABI encoding, ZK proof delegation) runs in the browser using WebAssembly.',
-      'Currently operating on Aztec V5 Testnet — no real money transactions exist yet.',
+      'Currently operating on Aztec Mainnet — transactions are fully operational and immutable.',
     ],
     callout: {
       title: 'Legal Privacy Policy',
@@ -58,9 +58,9 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
     title: 'Aztec Network — Private State and ZK Proofs',
     paragraphs: [
       'QD balances and provenance records are not stored on a public blockchain where anyone can read them. They exist as private, encrypted Notes inside the Aztec Network — a Zero Knowledge Layer 2 rollup anchored to Ethereum.',
-      'When you perform an action that changes your balance (e.g., claim an airdrop, pay for a signal in LedgerChat), the application encodes the transaction parameters using Noir ABI encoding in the browser. This produces a structured witness that is sent to the Aztec V5 testnet RPC. The Aztec sequencer proves the state transition and anchors the resulting state root to Ethereum — without revealing your balance to anyone.',
+      'When you perform an action that changes your balance (e.g., claim an airdrop, pay for a signal in LedgerChat), the application encodes the transaction parameters using Noir ABI encoding in the browser. This produces a structured witness that is sent to the Aztec Mainnet RPC. The Aztec sequencer proves the state transition and anchors the resulting state root to Ethereum — without revealing your balance to anyone.',
       'What this means in practice: the Aztec Network knows a valid ZK proof was submitted and that a state transition occurred. It does NOT know your identity, your balance, who you sent tokens to, or how much. The cryptographic commitment scheme (Pedersen hashing over the Grumpkin curve) makes the private inputs mathematically opaque.',
-      'Current testnet status: We are operating on the Aztec V5 testnet (node.aztec.network). Tokens are testnet only. No real monetary value. The architecture is production ready in design but not yet deployed to mainnet.',
+      'Current mainnet status: We are operating on the Aztec Mainnet (node.aztec.network). Tokens are mainnet native. QDs have real internal ecosystem value. The architecture is fully deployed to production on mainnet.',
     ],
     bullets: [
       'Private Notes use Pedersen commitments over the Grumpkin curve — arithmetically native to the BN254 proving system.',
@@ -120,7 +120,7 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
       'Defense in depth: our security is layered so that no single failure exposes user funds or private data.',
       'Edge layer: DDoS mitigation and a Web Application Firewall operate at the CDN level, blocking volumetric attacks and known smart contract scanning patterns before they reach our application servers. Per-IP and per-wallet rate limits use a token-bucket algorithm.',
       'Application layer: Every API request is validated against a JWT signed with Ed25519. We maintain a tamper-evident audit log of authenticated requests (wallet address, endpoint, request UUID, hashed IP) with no private data included. Requests that fail JWT validation are rejected before touching any database.',
-      'Smart contract layer: We monitor the Aztec testnet state root and nullifier tree for invariant violations (total supply conservation, Merkle root consistency). Anomalies trigger immediate alerts to the operations team. All QD contract code is open source and independently auditable.',
+      'Smart contract layer: We monitor the Aztec Mainnet state root and nullifier tree for invariant violations (total supply conservation, Merkle root consistency). Anomalies trigger immediate alerts to the operations team. All QD contract code is open source and independently auditable.',
       'Operational security: JWT signing keys, database credentials, and all secrets are stored in an HSM-backed secrets manager. Secrets rotate on a 90-day schedule with zero-downtime hot rotation.',
     ],
     bullets: [

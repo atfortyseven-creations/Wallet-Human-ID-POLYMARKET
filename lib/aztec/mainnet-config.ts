@@ -1,12 +1,12 @@
 /**
  * AZTEC MAINNET CONFIGURATION
- * Switch from testnet to mainnet for January launch.
+ * Switch to Aztec mainnet for January launch.
  * 
  * HOW TO SWITCH TO MAINNET:
  * Set AZTEC_NETWORK=mainnet in your Railway environment variables.
  */
 
-export const AZTEC_NETWORK = process.env.AZTEC_NETWORK || 'testnet';
+export const AZTEC_NETWORK = process.env.AZTEC_NETWORK || 'mainnet';
 export const IS_MAINNET = AZTEC_NETWORK === 'mainnet';
 
 export const AZTEC_CONFIG = IS_MAINNET ? {

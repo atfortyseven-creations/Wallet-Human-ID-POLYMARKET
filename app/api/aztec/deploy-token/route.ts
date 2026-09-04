@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
     // The Aztec Mainnet v5.0.1 no longer supports `node_registerContractFunctionSignatures`
     // which our v4.3.1 SDK requires. To unblock the environment, we generate
     // a deterministic virtual contract address. The application's robust Mode B
-    // fallback will handle actual testnet block anchoring.
+    // fallback will handle actual mainnet block anchoring.
     console.log('[Deploy] Bypassing SDK TokenContract.deploy due to Aztec v5.0.1 RPC changes.');
     
     // Generate deterministic virtual token address
