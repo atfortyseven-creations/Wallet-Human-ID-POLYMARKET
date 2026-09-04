@@ -116,13 +116,18 @@ export async function warmInboxIdCache(client: Client): Promise<void> {
     const dms: any[] = await client.conversations.listDms();
     for (const dm of dms) {
       try {
-        const rawMembers = (dm as any).members;
-        const members: any[] = typeof rawMembers === 'function' ? await rawMembers() : (rawMembers ?? []);
+        const members: any[] = typeof dm.members === 'function' ? await dm.members() : (dm.members ?? []);
         for (const m of members) {
           const inboxId: string = m.inboxId ?? '';
-          const addrs: string[] = m.accountAddresses ?? m.addresses ?? [];
-          if (inboxId && addrs.length > 0) {
-            inboxIdToAddressCache.set(inboxId.toLowerCase(), addrs[0].toLowerCase());
+          let addr = '';
+          if (m.accountAddresses && m.accountAddresses.length > 0) addr = m.accountAddresses[0];
+          else if (m.addresses && m.addresses.length > 0) addr = m.addresses[0];
+          else if (m.accountIdentifiers) {
+            const ids = m.accountIdentifiers.filter((id: any) => id?.identifierKind === 'Ethereum' && id?.identifier);
+            if (ids.length > 0) addr = ids[0].identifier;
+          }
+          if (inboxId && addr) {
+            inboxIdToAddressCache.set(inboxId.toLowerCase(), addr.toLowerCase());
           }
         }
       } catch {}
