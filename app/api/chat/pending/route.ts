@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/session';
+import { deriveAztecAddress } from '@/lib/aztec/zk-identity';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,11 +29,15 @@ export async function GET(req: NextRequest) {
     if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     if (!address || address !== userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
+    const aztecAddr = deriveAztecAddress(address).toLowerCase();
+
     const pending = await prisma.pendingChatMessage.findMany({
       where: {
         OR: [
           { sender: address },
-          { recipient: address }
+          { recipient: address },
+          { sender: aztecAddr },
+          { recipient: aztecAddr }
         ]
       },
       orderBy: { timestamp: 'asc' }
@@ -53,10 +58,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
     }
 
-    // Validate address formats
+    // Validate address formats (EVM or Aztec)
     const ETH_ADDR_RE = /^0x[a-fA-F0-9]{40}$/;
-    if (!ETH_ADDR_RE.test(sender) || !ETH_ADDR_RE.test(recipient)) {
-      return NextResponse.json({ error: 'Invalid address format' }, { status: 400 });
+    const AZTEC_ADDR_RE = /^0x[a-fA-F0-9]{64}$/;
+    if (!ETH_ADDR_RE.test(sender) && !AZTEC_ADDR_RE.test(sender)) {
+      return NextResponse.json({ error: 'Invalid sender address format' }, { status: 400 });
+    }
+    if (!ETH_ADDR_RE.test(recipient) && !AZTEC_ADDR_RE.test(recipient)) {
+      return NextResponse.json({ error: 'Invalid recipient address format' }, { status: 400 });
     }
 
     // Content length guard — prevent storage exhaustion attacks
@@ -65,13 +74,17 @@ export async function POST(req: NextRequest) {
     }
 
     const userId = await resolveUserId(req, sender);
-    if (!userId || sender.toLowerCase() !== userId.toLowerCase()) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    if (!userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+    const aztecUserId = deriveAztecAddress(userId).toLowerCase();
+    const senderLower = sender.toLowerCase();
+    if (senderLower !== userId.toLowerCase() && senderLower !== aztecUserId) {
+       return NextResponse.json({ error: 'Forbidden: You cannot spoof the sender address' }, { status: 403 });
     }
 
     const pending = await prisma.pendingChatMessage.create({
       data: {
-        sender: sender.toLowerCase(),
+        sender: senderLower,
         recipient: recipient.toLowerCase(),
         content
       }
@@ -93,8 +106,15 @@ export async function DELETE(req: NextRequest) {
     if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     if (!address || address !== userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
+    const aztecAddr = deriveAztecAddress(address).toLowerCase();
+
     await prisma.pendingChatMessage.deleteMany({
-      where: { OR: [{ recipient: address }, { sender: address }] }
+      where: { OR: [
+        { recipient: address }, 
+        { sender: address },
+        { recipient: aztecAddr },
+        { sender: aztecAddr }
+      ] }
     });
 
     return NextResponse.json({ success: true });

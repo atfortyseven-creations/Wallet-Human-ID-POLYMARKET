@@ -122,11 +122,15 @@ export async function GET(req: NextRequest) {
     if (!caller) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const dir = new URL(req.url).searchParams.get('direction') ?? 'incoming';
+    
+    // Import dynamically to avoid top-level issues if needed, or just import at top.
+    const { deriveAztecAddress } = await import('@/lib/aztec/zk-identity');
+    const aztecCaller = deriveAztecAddress(caller).toLowerCase();
 
     const requests = await (prisma as any).chatContactRequest.findMany({
       where: dir === 'incoming'
-        ? { toAddress: caller, status: 'PENDING' }
-        : { fromAddress: caller, status: { in: ['PENDING', 'ACCEPTED', 'REJECTED'] } },
+        ? { toAddress: { in: [caller, aztecCaller] }, status: 'PENDING' }
+        : { fromAddress: { in: [caller, aztecCaller] }, status: { in: ['PENDING', 'ACCEPTED', 'REJECTED'] } },
       orderBy: { createdAt: 'desc' },
       take: 50,
     });
@@ -140,11 +144,11 @@ export async function GET(req: NextRequest) {
       where: { walletAddress: { in: addresses } },
       select: { walletAddress: true, chatName: true, displayName: true, avatarUrl: true, isZkVerified: true, tier: true },
     });
-    const userMap = Object.fromEntries(users.map((u: any) => [u.walletAddress, u]));
+    const userMap = Object.fromEntries(users.map((u: any) => [u.walletAddress.toLowerCase(), u]));
 
     const enriched = requests.map((r: any) => {
       const addr = dir === 'incoming' ? r.fromAddress : r.toAddress;
-      const u = userMap[addr] || {};
+      const u = userMap[addr.toLowerCase()] || {};
       return {
         id: r.id,
         fromAddress: r.fromAddress,

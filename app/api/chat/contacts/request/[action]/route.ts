@@ -11,6 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/session';
+import { deriveAztecAddress } from '@/lib/aztec/zk-identity';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,7 +46,9 @@ export async function POST(
     }).catch(() => null);
 
     if (!request) return NextResponse.json({ error: 'Request not found' }, { status: 404 });
-    if (request.toAddress !== caller) {
+    
+    const aztecCaller = deriveAztecAddress(caller).toLowerCase();
+    if (request.toAddress !== caller && request.toAddress !== aztecCaller) {
       return NextResponse.json({ error: 'Forbidden — you are not the recipient of this request' }, { status: 403 });
     }
     if (request.status !== 'PENDING') {
@@ -61,9 +64,9 @@ export async function POST(
           create: { owner: caller, peer: request.fromAddress },
         }),
         prisma.chatContact.upsert({
-          where: { owner_peer: { owner: request.fromAddress, peer: caller } },
+          where: { owner_peer: { owner: request.fromAddress, peer: request.toAddress } },
           update: { updatedAt: new Date() },
-          create: { owner: request.fromAddress, peer: caller },
+          create: { owner: request.fromAddress, peer: request.toAddress },
         }),
         (prisma as any).chatContactRequest.update({
           where: { id: requestId },

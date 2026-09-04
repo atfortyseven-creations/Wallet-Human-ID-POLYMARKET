@@ -2525,7 +2525,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
 
           // Ultimate fallback (works for both sender and recipient in v5.3.0)
           if (!resolvedPeerAddr) {
-            const convoId = msg.convoId || msg.conversationId || msg.groupId;
+            const convoId = msg.convoId || msg.conversationId || msg.groupId || msg.conversation?.id;
             if (convoId) {
               try {
                 let dms = await client.conversations.listDms();
