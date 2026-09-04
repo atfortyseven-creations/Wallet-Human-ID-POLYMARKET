@@ -82,16 +82,16 @@ const dedicatedMonadMainnet: AppKitNetwork = {
 } as any;
 
 const galactica: AppKitNetwork = {
-    id: 9302,
-    name: 'Galactica Reticulum',
-    caipNetworkId: 'eip155:9302',
+    id: 613419,
+    name: 'Galactica Mainnet',
+    caipNetworkId: 'eip155:613419',
     chainNamespace: 'eip155',
     nativeCurrency: { name: 'GNET', symbol: 'GNET', decimals: 18 },
     rpcUrls: {
-        default: { http: ['https://evm-rpc-http-reticulum.galactica.com/'] }
+        default: { http: ['https://galactica-mainnet.g.alchemy.com/public'] }
     },
     blockExplorers: {
-        default: { name: 'Galactica Explorer', url: 'https://explorer-reticulum.galactica.com/' }
+        default: { name: 'Galactica Explorer', url: 'https://explorer.galactica.com/' }
     }
 } as any;
 
