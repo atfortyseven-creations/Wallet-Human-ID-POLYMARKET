@@ -14,7 +14,7 @@ export NO_UPDATE_NOTIFIER=1
 
 # ─── PHASE 0: Aztec PXE Sidecar ─────────────────────────────────────────────
 echo "[System] "
-echo "[System] Phase 0: Starting Aztec Testnet PXE sidecar..."
+echo "[System] Phase 0: Starting Aztec Mainnet PXE sidecar..."
 echo "[System] "
 
 AZTEC_NODE_URL="${AZTEC_NODE_URL:-https://rpc.testnet.aztec-labs.com}"

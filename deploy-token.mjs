@@ -1,5 +1,5 @@
 // deploy-token.mjs
-// Despliega el QDs TokenContract en Aztec Testnet v5
+// Despliega el QDs TokenContract en Aztec Mainnet v5
 // Uso: node deploy-token.mjs
 // Requiere: AZTEC_RELAYER_SECRET_KEY en el entorno
 
@@ -14,7 +14,7 @@ import { AztecAddress } from '@aztec/stdlib/aztec-address';
 import { SponsoredFeePaymentMethod } from '@aztec/aztec.js/fee';
 import { TokenContract } from '@aztec/noir-contracts.js/Token';
 
-const NODE_URL   = 'https://v5.testnet.rpc.aztec-labs.com';
+const NODE_URL   = 'https://node.aztec.network';
 const FPC_ADDR   = '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
 const SECRET_HEX = process.env.AZTEC_RELAYER_SECRET_KEY;
 
@@ -23,7 +23,7 @@ if (!SECRET_HEX) {
   process.exit(1);
 }
 
-console.log('🔗 Connecting to Aztec Testnet node...');
+console.log('🔗 Connecting to Aztec Mainnet node...');
 const node = createAztecNodeClient(NODE_URL);
 const blockNumber = await node.getBlockNumber();
 console.log(`✅ Node connected — Block #${blockNumber}`);
@@ -43,7 +43,7 @@ const paymentMethod = new SponsoredFeePaymentMethod(
   AztecAddress.fromString(FPC_ADDR)
 );
 
-console.log('🚀 Deploying QDs TokenContract on Aztec Testnet...');
+console.log('🚀 Deploying QDs TokenContract on Aztec Mainnet...');
 console.log('   (This may take 30-120 seconds for ZK proof generation)');
 
 const deployTx = TokenContract.deploy(wallet, adminAddress, 'Quantum Dollars', 'QDs', 18)
@@ -61,7 +61,7 @@ console.log(`📌 Admin Address:  ${adminAddress.toString()}`);
 console.log(`📌 Deploy Tx Hash: ${receipt.txHash?.toString()}`);
 console.log(`📌 Block Number:   ${receipt.blockNumber}`);
 console.log(`\n🔗 View on AztecScan:`);
-console.log(`   https://testnet.aztecscan.xyz/tx/${receipt.txHash?.toString()}`);
+console.log(`   https://aztecscan.xyz/tx/${receipt.txHash?.toString()}`);
 console.log(`\n📋 ACTION REQUIRED — Add to Railway env vars:`);
 console.log(`   AZTEC_TOKEN_CONTRACT_ADDRESS=${tokenAddress}`);
 console.log(`\n   Then redeploy Railway to activate Mode A (real on-chain txs)`);

@@ -1,4 +1,4 @@
-fetch('https://v5.testnet.rpc.aztec-labs.com', {
+fetch('https://node.aztec.network', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({

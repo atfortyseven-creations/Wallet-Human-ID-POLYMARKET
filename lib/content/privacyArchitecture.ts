@@ -60,7 +60,7 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
       'QD balances and provenance records are not stored on a public blockchain where anyone can read them. They exist as private, encrypted Notes inside the Aztec Network — a Zero Knowledge Layer 2 rollup anchored to Ethereum.',
       'When you perform an action that changes your balance (e.g., claim an airdrop, pay for a signal in LedgerChat), the application encodes the transaction parameters using Noir ABI encoding in the browser. This produces a structured witness that is sent to the Aztec V5 testnet RPC. The Aztec sequencer proves the state transition and anchors the resulting state root to Ethereum — without revealing your balance to anyone.',
       'What this means in practice: the Aztec Network knows a valid ZK proof was submitted and that a state transition occurred. It does NOT know your identity, your balance, who you sent tokens to, or how much. The cryptographic commitment scheme (Pedersen hashing over the Grumpkin curve) makes the private inputs mathematically opaque.',
-      'Current testnet status: We are operating on the Aztec V5 testnet (v5.testnet.rpc.aztec-labs.com). Tokens are testnet only. No real monetary value. The architecture is production ready in design but not yet deployed to mainnet.',
+      'Current testnet status: We are operating on the Aztec V5 testnet (node.aztec.network). Tokens are testnet only. No real monetary value. The architecture is production ready in design but not yet deployed to mainnet.',
     ],
     bullets: [
       'Private Notes use Pedersen commitments over the Grumpkin curve — arithmetically native to the BN254 proving system.',

@@ -8,8 +8,8 @@ export const dynamic = 'force-dynamic';
  * No SDK imports - just raw HTTP to verify the sidecar is alive.
  */
 export async function GET() {
-  const pxeUrl = process.env.AZTEC_PXE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
-  const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+  const pxeUrl = process.env.AZTEC_PXE_URL || 'https://node.aztec.network';
+  const nodeUrl = process.env.AZTEC_NODE_URL || 'https://node.aztec.network';
   
   try {
     // Test PXE connectivity with raw JSON-RPC

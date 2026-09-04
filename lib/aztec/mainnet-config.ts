@@ -16,11 +16,11 @@ export const AZTEC_CONFIG = IS_MAINNET ? {
   chainId: 2151908,
   networkName: 'Aztec Mainnet',
 } : {
-  pxeUrl: process.env.AZTEC_PXE_URL || 'https://v5.testnet.rpc.aztec-labs.com',
-  nodeUrl: process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com',
-  explorerUrl: 'https://testnet.aztecscan.xyz',
-  chainId: 11155111,
-  networkName: 'Aztec Testnet',
+  pxeUrl: process.env.AZTEC_PXE_URL || 'https://node.aztec.network',
+  nodeUrl: process.env.AZTEC_NODE_URL || 'https://node.aztec.network',
+  explorerUrl: 'https://aztecscan.xyz',
+  chainId: 2151908,
+  networkName: 'Aztec Mainnet',
 };
 
 /** 

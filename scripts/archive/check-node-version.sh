@@ -7,7 +7,7 @@ echo "=== Checking V5 node version vs SDK version ==="
 node -e "
 async function main() {
   // Get node version from chain tip
-  const resp = await fetch('https://v5.testnet.rpc.aztec-labs.com', {
+  const resp = await fetch('https://node.aztec.network', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({jsonrpc:'2.0', method:'node_getNodeInfo', params:[], id:1})

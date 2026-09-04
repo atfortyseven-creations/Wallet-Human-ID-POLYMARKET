@@ -4,7 +4,7 @@
 The Humanity Ledger is designed as a modular ecosystem of "Mini-Apps" operating on a shared core identity layer.
 
 - **Identity Layer (P2):** Currently migrating to `HumanityIdentity` (SIWE-based) using a Hybrid Edge JWT + DB Revocation pattern (Option D).
-- **Core Dependencies:** PostgreSQL (Canonical state), Upstash Redis (Ephemeral state), Aztec Testnet (ZK Data).
+- **Core Dependencies:** PostgreSQL (Canonical state), Upstash Redis (Ephemeral state), Aztec Mainnet (ZK Data).
 
 ## 2. P2-C Migration
 The current phase focuses on unifying all Mini-Apps under the SIWE identity.

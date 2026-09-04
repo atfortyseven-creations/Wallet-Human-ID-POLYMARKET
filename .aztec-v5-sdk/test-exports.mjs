@@ -3,7 +3,7 @@ import { EmbeddedWallet } from '@aztec/wallets/embedded';
 import { AztecAddress } from '@aztec/stdlib/aztec-address';
 
 async function main() {
-  const NODE_URL = 'https://v5.testnet.rpc.aztec-labs.com/';
+  const NODE_URL = 'https://node.aztec.network/';
   const wallet = await EmbeddedWallet.create(NODE_URL, { ephemeral: true });
   
   const fpcStr = '0x261366b3c0a9b4c30864629556cf282be409e6822b1f3a065fcb7e34f36d7880';

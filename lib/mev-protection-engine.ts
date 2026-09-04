@@ -42,7 +42,7 @@ export async function executeMevProtectedTransaction(
   const currentNetwork = await wallet.provider.getNetwork();
   
   // Flashbots only operates securely on Mainnet (Chain ID 1) and Goerli/Sepolia
-  if (currentNetwork.chainId !== 1n && currentNetwork.chainId !== 11155111n) {
+  if (currentNetwork.chainId !== 1n && currentNetwork.chainId !== 2151908n) {
     throw new Error(`MEV Protection is only available on Ethereum Mainnet. Current chain: ${currentNetwork.chainId}`);
   }
 

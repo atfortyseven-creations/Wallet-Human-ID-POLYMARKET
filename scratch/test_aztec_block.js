@@ -1,4 +1,4 @@
-const url = 'https://v5.testnet.rpc.aztec-labs.com';
+const url = 'https://node.aztec.network';
 
 async function test() {
   // 1. Get latest block number

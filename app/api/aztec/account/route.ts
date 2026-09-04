@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
  *
  * Derives the Aztec L2 address for a given EVM address and probes the testnet.
  * Architecture (v5.0.0):
- *  - Probes the public Aztec Testnet node via raw JSON-RPC fetch (zero SDK imports)
+ *  - Probes the public Aztec Mainnet node via raw JSON-RPC fetch (zero SDK imports)
  *  - Derives a deterministic Aztec address from the EVM address (pure hex math)
  *  - No PXE required — all read-only queries go directly to the public node
  */
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Missing or invalid EVM address.' }, { status: 400 });
   }
 
-  const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+  const nodeUrl = process.env.AZTEC_NODE_URL || 'https://node.aztec.network';
 
   // ── Derive deterministic Aztec address from EVM address ────────────────────
   const normalized = evmAddress.toLowerCase().trim();
@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
         testnetData = {
           blockNumber:   r.l2BlockNumber ?? r.blockNumber ?? 1821685239, // fallback to last known testnet block
           nodeVersion:   r.nodeVersion ?? 'v5.testnet',
-          l1ChainId:     r.l1ChainId ?? 11155111,
+          l1ChainId:     r.l1ChainId ?? 2151908,
           rollupVersion: r.rollupVersion ?? 2787991301,
           rollupAddress: r.l1ContractAddresses?.rollupAddress ?? '0xd73a91bdcf6891c7642f3e460036e1ef2cc23178',
           latencyMs:     latency,
@@ -70,7 +70,7 @@ export async function GET(req: NextRequest) {
         testnetData = {
           blockNumber:   r2?.l2BlockNumber ?? 1821685239, // fallback: last known testnet block
           nodeVersion:   r2?.nodeVersion ?? 'v5.testnet',
-          l1ChainId:     r2?.l1ChainId ?? 11155111,
+          l1ChainId:     r2?.l1ChainId ?? 2151908,
           rollupVersion: r2?.rollupVersion ?? 2787991301,
           rollupAddress: r2?.l1ContractAddresses?.rollupAddress ?? '0xd73a91bdcf6891c7642f3e460036e1ef2cc23178',
           latencyMs:     latency,
@@ -87,7 +87,7 @@ export async function GET(req: NextRequest) {
     testnetData = {
       blockNumber:   1821685239,
       nodeVersion:   'v5.testnet',
-      l1ChainId:     11155111,
+      l1ChainId:     2151908,
       rollupVersion: 2787991301,
       rollupAddress: '0xd73a91bdcf6891c7642f3e460036e1ef2cc23178',
       latencyMs:     124,
@@ -101,13 +101,13 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     aztecAddress,
     evmAddress:     evmAddress.toLowerCase(),
-    network:        'aztec-testnet',
+    network:        'aztec-mainnet',
     nodeUrl,
     registered:     true,
     method:         'schnorr-deterministic-v5',
     sdkVersion:     '5.0.0',
     rpcStatus,
     testnetData,
-    explorerUrl:    `https://testnet.aztecscan.xyz/address/${aztecAddress}`,
+    explorerUrl:    `https://aztecscan.xyz/address/${aztecAddress}`,
   });
 }

@@ -13,7 +13,7 @@ if [ -n "$1" ]; then
   export AZTEC_RELAYER_SECRET_KEY="$1"
 fi
 
-export AZTEC_NODE_URL="${AZTEC_NODE_URL:-https://v5.testnet.rpc.aztec-labs.com}"
+export AZTEC_NODE_URL="${AZTEC_NODE_URL:-https://node.aztec.network}"
 
 echo "=== QDs Token Deploy — Aztec V5 Testnet ==="
 echo "Node: $AZTEC_NODE_URL"

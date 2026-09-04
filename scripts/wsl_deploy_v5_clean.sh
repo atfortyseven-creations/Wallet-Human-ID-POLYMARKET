@@ -1,7 +1,7 @@
 #!/bin/bash
 # ═══════════════════════════════════════════════════════════════════
 # wsl_deploy_v5_clean.sh
-# Deploys QDs TokenContract to Aztec Testnet V5 using the
+# Deploys QDs TokenContract to Aztec Mainnet V5 using the
 # isolated .aztec-v5-sdk directory which has Linux-native node_modules.
 # 
 # SECURITY: No secret keys hardcoded. Must be passed as env var.
@@ -25,7 +25,7 @@ nvm use 20
 
 echo ""
 echo "╔══════════════════════════════════════════════════════════════╗"
-echo "║   LEDGER NETWORK — Aztec Testnet V5 Deployment               ║"
+echo "║   LEDGER NETWORK — Aztec Mainnet V5 Deployment               ║"
 echo "║   Target: QDs TokenContract                                  ║"
 echo "╚══════════════════════════════════════════════════════════════╝"
 echo ""

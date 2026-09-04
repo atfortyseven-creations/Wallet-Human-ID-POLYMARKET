@@ -1,6 +1,6 @@
 #!/bin/bash
 # ══════════════════════════════════════════════════════════════
-#  QDs Token Deploy — Aztec Testnet V5 — SDK 5.x CORRECTO
+#  QDs Token Deploy — Aztec Mainnet V5 — SDK 5.x CORRECTO
 #  humanidfi.com
 # ══════════════════════════════════════════════════════════════
 set -e
@@ -11,7 +11,7 @@ SDK_DIR="/mnt/d/Projects/Wallet Human Polymarket ID/.aztec-v5-sdk"
 
 echo ""
 echo "╔═══════════════════════════════════════════════════════╗"
-echo "║   🚀  QDs Token Deploy — Aztec Testnet V5 (SDK 5.x)  ║"
+echo "║   🚀  QDs Token Deploy — Aztec Mainnet V5 (SDK 5.x)  ║"
 echo "║   humanidfi.com                                       ║"
 echo "╚═══════════════════════════════════════════════════════╝"
 echo ""
@@ -25,7 +25,7 @@ cd "$SDK_DIR"
 
 cat > deploy-qds.mjs << 'SCRIPT'
 /**
- * QDs TokenContract — Aztec Testnet V5
+ * QDs TokenContract — Aztec Mainnet V5
  * SDK: 5.0.0-nightly.20260625
  * API 5.x: AccountManager + SchnorrAccountContract + deriveKeys
  */
@@ -37,7 +37,7 @@ import { deriveKeys }                     from '@aztec/aztec.js/keys';
 import { SchnorrAccountContract }         from '@aztec/accounts/schnorr';
 import { TokenContract }                  from '@aztec/noir-contracts.js/Token';
 
-const NODE_URL   = 'https://v5.testnet.rpc.aztec-labs.com';
+const NODE_URL   = 'https://node.aztec.network';
 const SECRET_HEX = process.env.AZTEC_RELAYER_SECRET_KEY;
 if (!SECRET_HEX) { console.error('AZTEC_RELAYER_SECRET_KEY no definida'); process.exit(1); }
 
@@ -104,7 +104,7 @@ async function main() {
   console.log(`  ${bold('AZTEC_RELAYER_SECRET_KEY')}=${SECRET_HEX}`);
   console.log(`  ${bold('TX_HASH')}=${receipt.txHash?.toString() ?? 'n/a'}`);
   console.log('');
-  console.log(`  ${dim('AztecScan')} → https://testnet.aztecscan.xyz/address/${contractAddr}`);
+  console.log(`  ${dim('AztecScan')} → https://aztecscan.xyz/address/${contractAddr}`);
   console.log(`  ${dim('Tiempo')}    → ${elapsed}s`);
   console.log('');
 
@@ -116,7 +116,7 @@ async function main() {
     txHash          : receipt.txHash?.toString(),
     blockNumber     : Number(blockNum),
     timestamp       : new Date().toISOString(),
-    network         : 'aztec-testnet-v5',
+    network         : 'aztec-mainnet-v5',
     token           : { name: 'Quantum Dots', symbol: 'QDs', decimals: 18 }
   };
   writeFileSync('/tmp/aztec-qds-result.json', JSON.stringify(result, null, 2));

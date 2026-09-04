@@ -147,7 +147,7 @@ export default function TermsOfService() {
             <p>The Protocol utilizes cutting-edge cryptographic research, including zero-knowledge proof systems based on the BN254 elliptic curve, the Honk/UltraPLONK arithmetization scheme, and the Noir domain-specific language. While these technologies have undergone rigorous academic peer review and multiple independent security audits, they represent the frontier of applied cryptography and may contain undiscovered vulnerabilities.</p>
           </Clause>
           <Clause id="arch-testnet" title="2.4 Testnet Operation">
-            <p>As of the Effective Date, the Protocol operates on the Aztec Alpha Testnet. Testnet operations are subject to higher instability, resets, and experimental parameter changes than mainnet. Testnet Cryptographic Assets have no monetary value. The Foundation makes no representations regarding the equivalence of testnet and mainnet behavior.</p>
+            <p>As of the Effective Date, the Protocol operates on the Aztec Mainnet. Testnet operations are subject to higher instability, resets, and experimental parameter changes than mainnet. Testnet Cryptographic Assets have no monetary value. The Foundation makes no representations regarding the equivalence of testnet and mainnet behavior.</p>
           </Clause>
         </Article>
 

@@ -712,7 +712,7 @@ export function NetworkMapPanel() {
 
                       {/* L2 Side */}
                       <div className="flex-1 w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 relative">
-                         <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-6">Aztec Testnet (L2)</div>
+                         <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-6">Aztec Mainnet (L2)</div>
                          
                          <div className="space-y-4">
                             <div className="bg-black/50 border border-slate-700 p-4 rounded-2xl shadow-sm hover:border-slate-500 transition-colors cursor-default relative overflow-hidden group">

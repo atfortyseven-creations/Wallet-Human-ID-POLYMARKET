@@ -2,19 +2,19 @@
 /**
  * scripts/deploy-humanity-ledger.ts
  *
- * Deploys the HumanityLedger (QDs Token) contract to Aztec Alpha Testnet.
+ * Deploys the HumanityLedger (QDs Token) contract to Aztec Mainnet.
  * Compatible with @aztec/aztec.js v5 SDK (using @aztec/wallets).
  */
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
-const AZTEC_PXE_URL = process.env.AZTEC_PXE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+const AZTEC_PXE_URL = process.env.AZTEC_PXE_URL || 'https://node.aztec.network';
 const RELAYER_KEY_HEX = process.env.AZTEC_RELAYER_PRIVATE_KEY || process.env.AZTEC_RELAYER_SECRET_KEY;
 
 async function main() {
   console.log('\n🐋 ================================================');
-  console.log('   Humanity Ledger (QDs) → Aztec Alpha Testnet (v5)');
+  console.log('   Humanity Ledger (QDs) → Aztec Mainnet (v5)');
   console.log('   ================================================\n');
 
   if (!RELAYER_KEY_HEX) {
@@ -71,7 +71,7 @@ async function main() {
   console.log(`✅ Artifact loaded: ${artifact.name} (${artifact.functions?.length ?? '?'} functions)\n`);
 
   // ── Deploy contract ──────────────────────────────────────────────────────
-  console.log('🚀 Deploying HumanityLedger contract to Aztec Alpha Testnet...');
+  console.log('🚀 Deploying HumanityLedger contract to Aztec Mainnet...');
   console.log('   (This may take 30–120 seconds — ZK proof generation in progress)\n');
 
   try {
@@ -87,7 +87,7 @@ async function main() {
     console.log('   ================================================');
     console.log(`\n📍 Contract Address : ${contractAddress}`);
     console.log(`🔗 Tx Hash          : ${txHash}`);
-    console.log(`🔍 Explorer         : https://testnet.aztecscan.xyz/tx/${txHash}\n`);
+    console.log(`🔍 Explorer         : https://aztecscan.xyz/tx/${txHash}\n`);
 
     console.log('📋 ADD THESE TO YOUR .env AND Railway dashboard:\n');
     console.log(`AZTEC_TOKEN_CONTRACT_ADDRESS=${contractAddress}`);
@@ -98,7 +98,7 @@ async function main() {
 
     // ── Write to .env.aztec ──────────────────────────────────────────────────
     const envContent = [
-      `# Aztec Alpha Testnet — QDs Contract (auto-generated ${new Date().toISOString()})`,
+      `# Aztec Mainnet — QDs Contract (auto-generated ${new Date().toISOString()})`,
       `AZTEC_TOKEN_CONTRACT_ADDRESS=${contractAddress}`,
       `AZTEC_QDS_CONTRACT_ADDRESS=${contractAddress}`,
       `NEXT_PUBLIC_AZTEC_QDS_ADDRESS=${contractAddress}`,

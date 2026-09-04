@@ -8,13 +8,13 @@ import { Contract } from '@aztec/aztec.js/contracts';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const NODE_URL = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+const NODE_URL = process.env.AZTEC_NODE_URL || 'https://node.aztec.network';
 const SECRET = process.env.AZTEC_RELAYER_SECRET_KEY || '0x0b2cda0c07982cced5c5bbbc01dc76a5b2ef4e8111926bb4d8a14f15104d8e36';
 const SPONSORED_FPC = process.env.SPONSORED_FPC_ADDRESS || '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
 
 async function main() {
   console.log('══════════════════════════════════════════════════════');
-  console.log('  Aztec Testnet Deployment — Infrastructure Contracts');
+  console.log('  Aztec Mainnet Deployment — Infrastructure Contracts');
   console.log('══════════════════════════════════════════════════════');
 
   console.log('\n🔗 Initializing EmbeddedWallet...');

@@ -167,7 +167,7 @@ const CHAIN_EXPLORERS: Record<number, { name: string; base: string }> = {
   1:    { name: 'Etherscan',    base: 'https://etherscan.io/tx/' },
   8453: { name: 'Basescan',    base: 'https://basescan.org/tx/' },
   137:  { name: 'Polygonscan', base: 'https://polygonscan.com/tx/' },
-  11155111: { name: 'AztecScan', base: 'https://testnet.aztecscan.xyz/tx-effect/' },
+  2151908: { name: 'AztecScan', base: 'https://aztecscan.xyz/tx-effect/' },
 };
 
 /* ─────────────────────────────────────────────
@@ -175,7 +175,7 @@ const CHAIN_EXPLORERS: Record<number, { name: string; base: string }> = {
 ───────────────────────────────────────────── */
 function explorerUrl(chainId: number | null, txHash: string | null): string | null {
   if (!txHash || !chainId) return null;
-  if (chainId === 11155111 || chainId === 89021716) return 'https://testnet.aztecscan.xyz';
+  if (chainId === 2151908 || chainId === 89021716) return 'https://aztecscan.xyz';
   const explorer = CHAIN_EXPLORERS[chainId];
   return explorer ? `${explorer.base}${txHash}` : null;
 }

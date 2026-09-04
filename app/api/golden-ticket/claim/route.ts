@@ -278,11 +278,11 @@ export async function POST(req: NextRequest) {
         //  Create ticket using standard Prisma methods 
         const tempSerial = `PENDING-${address}-${Date.now()}`;
         
-        // --- 🔴 Aztec Testnet Verification Anchoring ---
+        // --- 🔴 Aztec Mainnet Verification Anchoring ---
         let aztecBlockNum = 0;
         let aztecExplorerUrl = '';
         try {
-            const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+            const nodeUrl = process.env.AZTEC_NODE_URL || 'https://node.aztec.network';
             const nodeInfoRes = await fetch(`${nodeUrl}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -296,7 +296,7 @@ export async function POST(req: NextRequest) {
                 aztecExplorerUrl = '';
             }
         } catch (e) {
-            console.warn('[GoldenTicket] Failed to anchor to Aztec Testnet block:', e);
+            console.warn('[GoldenTicket] Failed to anchor to Aztec Mainnet block:', e);
         }
 
         // Pack on-chain mint details into signatureData JSON

@@ -72,7 +72,7 @@ export async function GET(req: Request) {
       raw: rawBaseUnits.toString(),
       rawScale: '1e8',
       symbol: 'QDs',
-      network: 'aztec-testnet',
+      network: 'aztec-mainnet',
       address: aztecAddress,
     });
 

@@ -5,7 +5,7 @@ nvm use 20 --silent
 echo "=== Checking node RPC methods from v5 ==="
 node -e "
 async function call(method, params=[]) {
-  const r = await fetch('https://v5.testnet.rpc.aztec-labs.com', {
+  const r = await fetch('https://node.aztec.network', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({jsonrpc:'2.0', method, params, id:1})

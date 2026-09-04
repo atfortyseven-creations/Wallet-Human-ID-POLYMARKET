@@ -2,7 +2,7 @@
 /**
  * scripts/deploy_aztec_token.ts
  *
- * Deploys the Ledger Network QDs TokenContract to Aztec Testnet v5 (rc.2).
+ * Deploys the Ledger Network QDs TokenContract to Aztec Mainnet v5 (rc.2).
  *
  * Architecture: Aztec SDK v5.0.0
  * Run this as a separate standalone node process (e.g. via Railway "Run Command")l PXE process (requires Linux/WSL for @aztec/native binaries)
@@ -19,7 +19,7 @@
  *
  * Required env vars:
  *   AZTEC_RELAYER_SECRET_KEY  — 0x-prefixed 32-byte hex scalar (Fr field element)
- *   AZTEC_PXE_URL             — optional, defaults to https://v5.testnet.rpc.aztec-labs.com
+ *   AZTEC_PXE_URL             — optional, defaults to https://node.aztec.network
  *   SPONSORED_FPC_ADDRESS     — optional, defaults to canonical testnet FPC
  */
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -39,7 +39,7 @@ const TOKEN_DECIMALS = 18n;
 async function main() {
     console.log('══════════════════════════════════════════════════════');
     console.log('  Ledger Network — QDs Token Deployment                ');
-    console.log('  Aztec Testnet v5 (rc.2) | SDK v5.0.0                ');
+    console.log('  Aztec Mainnet v5 (rc.2) | SDK v5.0.0                ');
     console.log('======================================================');
     // ── Validate env ─────────────────────────────────────────────────────────
     const relayerSecretHex = process.env.AZTEC_RELAYER_SECRET_KEY;
@@ -48,7 +48,7 @@ async function main() {
     }
     const pxeUrl = process.env.AZTEC_PXE_URL ||
         process.env.AZTEC_NODE_URL ||
-        'https://v5.testnet.rpc.aztec-labs.com';
+        'https://node.aztec.network';
     // ── Step 1: Initialize EmbeddedWallet ────────────────────────────────────
     console.log(`\n[1/4] Initializing EmbeddedWallet...`);
     console.log(`      Node/PXE URL: ${pxeUrl}`);
@@ -77,7 +77,7 @@ async function main() {
     const fpcAddress = aztec_address_1.AztecAddress.fromString(SPONSORED_FPC);
     const feePaymentMethod = new fee_1.SponsoredFeePaymentMethod(fpcAddress);
     // ── Step 4: Deploy TokenContract ─────────────────────────────────────────
-    console.log('\n[4/4] Deploying TokenContract to Aztec Testnet v5...');
+    console.log('\n[4/4] Deploying TokenContract to Aztec Mainnet v5...');
     console.log(`      Token: ${TOKEN_NAME} (${TOKEN_SYMBOL}), ${TOKEN_DECIMALS} decimals`);
     console.log('      ⏳ Simulating and dispatching deployment transaction...');
     //
@@ -114,7 +114,7 @@ async function main() {
     console.log('══════════════════════════════════════════════════════');
     console.log(`  Token Contract Address : ${contractAddress}`);
     console.log(`  Transaction Hash       : ${txHash}`);
-    console.log(`  Explorer               : https://testnet.aztecscan.xyz/tx/${txHash}`);
+    console.log(`  Explorer               : https://aztecscan.xyz/tx/${txHash}`);
     console.log('\n📝 ACTION REQUIRED:');
     console.log('  Copy the line below and add it to your .env file (Railway Variables):');
     console.log(`\n  AZTEC_TOKEN_CONTRACT_ADDRESS="${contractAddress}"\n`);

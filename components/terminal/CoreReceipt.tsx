@@ -83,7 +83,7 @@ export default function CoreReceipt({
 
                 <div className="pt-6 border-t border-dashed border-neutral-200">
                     <a 
-                        href={`https://testnet.aztecscan.xyz`} 
+                        href={`https://aztecscan.xyz`} 
                         target="_blank" 
                         rel="noreferrer"
                         className="w-full py-4 rounded-xl bg-neutral-100 text-neutral-900 font-bold text-sm flex items-center justify-center gap-2 hover:bg-neutral-200 transition-colors"

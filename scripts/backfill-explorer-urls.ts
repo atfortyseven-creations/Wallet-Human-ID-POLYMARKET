@@ -11,7 +11,7 @@
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-const AZTEC_EXPLORER = 'https://testnet.aztecscan.xyz';
+const AZTEC_EXPLORER = 'https://aztecscan.xyz';
 
 async function main() {
   console.log('[Backfill] Finding transactions with stale explorer URLs...');

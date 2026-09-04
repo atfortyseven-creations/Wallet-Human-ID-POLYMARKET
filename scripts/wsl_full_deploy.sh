@@ -29,7 +29,7 @@ npm install -g @aztec/aztec@4.3.1 2>&1 | tail -10
 
 echo ""
 echo "=== Starting PXE ==="
-AZTEC_NODE_URL=https://v5.testnet.rpc.aztec-labs.com PORT=8081 aztec start --pxe &
+AZTEC_NODE_URL=https://node.aztec.network PORT=8081 aztec start --pxe &
 PXE_PID=$!
 echo "PXE started (PID $PXE_PID), waiting 90s for it to be ready..."
 

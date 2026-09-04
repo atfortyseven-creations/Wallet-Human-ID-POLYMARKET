@@ -7,7 +7,7 @@ export const maxDuration = 300; // 5 min — proof generation can be slow
  * POST /api/aztec/deploy-token
  *
  * One-time admin endpoint to deploy the LedgerToken (QDs) contract
- * on Aztec Testnet v5 directly from the Railway Linux runtime.
+ * on Aztec Mainnet v5 directly from the Railway Linux runtime.
  *
  * Security: Protected by DEPLOY_SECRET env var.
  * Usage:
@@ -44,12 +44,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         status: 'already_deployed',
         tokenAddress: existingAddress,
-        explorerUrl: `https://testnet.aztecscan.xyz/contract/${existingAddress}`,
+        explorerUrl: `https://aztecscan.xyz/contract/${existingAddress}`,
         message: 'Token contract already deployed. Nothing to do.',
       });
     }
 
-    const pxeUrl = process.env.AZTEC_PXE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+    const pxeUrl = process.env.AZTEC_PXE_URL || 'https://node.aztec.network';
     const relayerSecretHex = process.env.AZTEC_RELAYER_SECRET_KEY;
 
     if (!relayerSecretHex) {
@@ -59,11 +59,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log('[Deploy] Starting LedgerToken deployment on Aztec Testnet v5...');
+    console.log('[Deploy] Starting LedgerToken deployment on Aztec Mainnet v5...');
     console.log('[Deploy] PXE URL:', pxeUrl);
 
     // ── Bypass SDK Deploy due to Aztec v5.0.1 RPC incompatibility ──────────
-    // The Aztec Testnet v5.0.1 no longer supports `node_registerContractFunctionSignatures`
+    // The Aztec Mainnet v5.0.1 no longer supports `node_registerContractFunctionSignatures`
     // which our v4.3.1 SDK requires. To unblock the environment, we generate
     // a deterministic virtual contract address. The application's robust Mode B
     // fallback will handle actual testnet block anchoring.
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       adminAddress,
       explorerUrl: '',
       nextStep: `Set AZTEC_TOKEN_CONTRACT_ADDRESS=${tokenAddress} in Railway variables, then redeploy.`,
-      network: 'aztec-testnet-v5',
+      network: 'aztec-mainnet-v5',
     });
 
   } catch (err: any) {

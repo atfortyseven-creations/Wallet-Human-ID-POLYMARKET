@@ -7,7 +7,7 @@ const data = JSON.stringify({
   params: []
 });
 
-const req = https.request('https://v5.testnet.rpc.aztec-labs.com/', {
+const req = https.request('https://node.aztec.network/', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',

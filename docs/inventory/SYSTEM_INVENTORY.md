@@ -290,7 +290,7 @@ The platform has **multiple parallel identity systems**:
 | Test File | Type | Coverage | Status |
 |---|---|---|---|
 | `test/AnalyticsService.test.ts` | Unit | Analytics | EXISTS |
-| `test/aztec-testnet.test.ts` | Integration | Aztec connection | EXISTS |
+| `test/aztec-mainnet.test.ts` | Integration | Aztec connection | EXISTS |
 | `test/HumanTimeLock.test.ts` | Contract | HumanTimeLock.sol | EXISTS |
 | `test/portfolio-onchain.test.ts` | Integration | Portfolio | EXISTS |
 | `test/qd-economy.security.test.ts` | Security | QD token economy | EXISTS |

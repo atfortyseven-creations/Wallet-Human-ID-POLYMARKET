@@ -10,7 +10,7 @@ export interface SequencerResult {
 }
 
 /**
- * Singleton Sequencer class for orchestrating off-chain quantum data (QDs) into the Aztec Testnet.
+ * Singleton Sequencer class for orchestrating off-chain quantum data (QDs) into the Aztec Mainnet.
  * Implements retries, client-side proving, and mempool submission.
  */
 class AztecQDSequencer {
@@ -20,7 +20,7 @@ class AztecQDSequencer {
   private contractAddress: string;
 
   constructor() {
-    this.pxeUrl = process.env.AZTEC_PXE_URL || 'https://v5.testnet.rpc.aztec-labs.com/';
+    this.pxeUrl = process.env.AZTEC_PXE_URL || 'https://node.aztec.network/';
     this.contractAddress = process.env.PROVENANCE_REGISTRY_ADDRESS || '';
   }
 
@@ -52,7 +52,7 @@ class AztecQDSequencer {
         console.log(`[Sequencer] Node Connection Established. Rollup Version: ${(info as any).protocolVersion || (info as any).nodeVersion}`);
         this.pxeClient = pxe;
       } catch (networkErr) {
-        console.error(`[Sequencer] FATAL: Node connection failed. Strict Aztec Testnet execution mode active. Mock fallbacks are strictly prohibited.`);
+        console.error(`[Sequencer] FATAL: Node connection failed. Strict Aztec Mainnet execution mode active. Mock fallbacks are strictly prohibited.`);
         throw new Error('Aztec PXE unreachable. Zero-Mock mode prohibits simulated fallbacks.');
       }
       
@@ -94,8 +94,8 @@ class AztecQDSequencer {
       const accountManager = await AccountManager.create(pxe, secretKey, new SchnorrAccountContract(signingKey), Fr.random());
       // const wallet = await accountManager.getWallet();
 
-      // 3. True Aztec Testnet interaction via SponsoredFPC
-      console.log(`[Sequencer] Initiating strict cryptographic proving via Aztec Testnet...`);
+      // 3. True Aztec Mainnet interaction via SponsoredFPC
+      console.log(`[Sequencer] Initiating strict cryptographic proving via Aztec Mainnet...`);
       
       // We anchor the provenance by interacting with the QDs token contract
       // or directly deploying a note. Here we enforce a real on-chain transaction.
@@ -116,7 +116,7 @@ class AztecQDSequencer {
       const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress);
       
       // 4. Submit to Mempool for real
-      console.log(`[Sequencer] Sending real transaction to Aztec Testnet Mempool...`);
+      console.log(`[Sequencer] Sending real transaction to Aztec Mainnet Mempool...`);
       
       // We use a safe public getter as an anchor transaction if we don't have minting rights,
       // or we just call check_balance to generate a real transaction on-chain.
@@ -124,7 +124,7 @@ class AztecQDSequencer {
       const tx = await (contract as any).methods.is_minter(wallet.getAddress()).send({ fee: { paymentMethod } }).wait();
       
       const realTxHash = tx.txHash.toString();
-      console.log(`[Sequencer] Real TX Confirmed on Aztec Testnet: ${realTxHash}`);
+      console.log(`[Sequencer] Real TX Confirmed on Aztec Mainnet: ${realTxHash}`);
 
       // 5. Synchronize State with real hash
       await this.updateStatus(passportId, 'CONFIRMED', realTxHash);

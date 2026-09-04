@@ -20,8 +20,8 @@ export const maxDuration = 60;
  */
 export async function GET() {
   const tokenContractAddress = process.env.AZTEC_TOKEN_CONTRACT_ADDRESS;
-  const pxeUrl = process.env.AZTEC_PXE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
-  const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+  const pxeUrl = process.env.AZTEC_PXE_URL || 'https://node.aztec.network';
+  const nodeUrl = process.env.AZTEC_NODE_URL || 'https://node.aztec.network';
 
   // Check if we can reach the Aztec testnet node
   let nodeStatus: 'reachable' | 'unreachable' = 'unreachable';
@@ -60,7 +60,7 @@ export async function GET() {
       step4: 'Set Railway env var: AZTEC_TOKEN_CONTRACT_ADDRESS=<address>',
       step5: 'Redeploy — Mode A (on-chain transfers) will activate automatically',
     },
-    network: 'aztec-testnet-v5',
-    explorer: 'https://testnet.aztecscan.xyz',
+    network: 'aztec-mainnet-v5',
+    explorer: 'https://aztecscan.xyz',
   });
 }

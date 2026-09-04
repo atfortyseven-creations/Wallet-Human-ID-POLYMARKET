@@ -10,7 +10,7 @@ PROJECT="/mnt/d/Projects/Wallet Human Polymarket ID"
 
 # ── Config ────────────────────────────────────────────────────
 SECRET_KEY="0x0b2cda0c07982cced5c5bbbc01dc76a5b2ef4e8111926bb4d8a14f15104d8e36"
-NODE_URL="https://v5.testnet.rpc.aztec-labs.com"
+NODE_URL="https://node.aztec.network"
 SPONSORED_FPC="0x261366b3c0a9b4c30864629556cf282be409e6822b1f3a065fcb7e34f36d7880"
 
 echo ""

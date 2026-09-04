@@ -27,7 +27,7 @@ export async function GET() {
 
   // 3. Aztec Node
   try {
-    const res = await fetch(process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com', {
+    const res = await fetch(process.env.AZTEC_NODE_URL || 'https://node.aztec.network', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getBlockNumber', params: [], id: 1 }),

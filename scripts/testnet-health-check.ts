@@ -1,7 +1,7 @@
 /**
  * testnet-health-check.ts
  *
- * Comprehensive Aztec Testnet health check that runs on ANY platform (Windows/Linux/Mac).
+ * Comprehensive Aztec Mainnet health check that runs on ANY platform (Windows/Linux/Mac).
  * Uses createAztecNodeClient (JSON-RPC only, no NAPI binaries needed) to probe the live
  * v5 testnet and verifies all critical integration points.
  *
@@ -21,10 +21,10 @@ import { createAztecNodeClient } from '@aztec/aztec.js/node';
 import { TokenContract } from '@aztec/noir-contracts.js/Token';
 
 // ── Constants from lib/aztec/client.ts ────────────────────────────────────────
-const EXPECTED_L1_CHAIN_ID  = 11155111;        // Sepolia
+const EXPECTED_L1_CHAIN_ID  = 2151908;        // Sepolia
 const EXPECTED_ROLLUP_ADDR  = '0xfe6061806cac748085904a010d2d9e33b8031741';
 const CANONICAL_FPC_ADDRESS = '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
-const NODE_URL              = (process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com').replace(/\/$/, '');
+const NODE_URL              = (process.env.AZTEC_NODE_URL || 'https://node.aztec.network').replace(/\/$/, '');
 
 // ── REQUIRED methods in routes ─────────────────────────────────────────────────
 // airdrop/route.ts:  mint_to_public(to, amount)
@@ -44,8 +44,8 @@ let failures = 0;
 // ── Main ───────────────────────────────────────────────────────────────────────
 async function runHealthCheck() {
   console.log('\n══════════════════════════════════════════════════════');
-  console.log('  Ledger Network ↔ Aztec Testnet V5 Gateway            ');
-  console.log('  SDK v5.0.0 | Node: v5.testnet.rpc.aztec-labs.com');
+  console.log('  Ledger Network ↔ Aztec Mainnet V5 Gateway            ');
+  console.log('  SDK v5.0.0 | Node: node.aztec.network');
   console.log('══════════════════════════════════════════════════════\n');
 
   // ── TEST 1: Node Connectivity ─────────────────────────────────────────────

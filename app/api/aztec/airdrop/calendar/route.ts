@@ -4,7 +4,7 @@ import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
-const AZTEC_EXPLORER = 'https://testnet.aztecscan.xyz';
+const AZTEC_EXPLORER = 'https://aztecscan.xyz';
 const AIRDROP_AMOUNT = 10;
 
 export async function POST(req: NextRequest) {
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
 
     // ── 5. Generate Native Aztec On-Chain Mint (or Fallback) ──
     const tokenAddressStr = process.env.AZTEC_TOKEN_CONTRACT_ADDRESS;
-    const pxeUrl          = process.env.AZTEC_PXE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+    const pxeUrl          = process.env.AZTEC_PXE_URL || 'https://node.aztec.network';
     const relayerSecret   = process.env.AZTEC_RELAYER_SECRET || '0x2a871d0798f97d79848a013d4936a73bf4cc922c825d33c1cf7073dff6d409c6';
 
     let aztecTxHash = '';
@@ -144,10 +144,10 @@ export async function POST(req: NextRequest) {
           tokenSymbol: 'QDs',
           type: 'AIRDROP',
           status: 'COMPLETED',
-          chainId: 89021716, // Aztec Testnet v5
+          chainId: 89021716, // Aztec Mainnet v5
           blockNumber: BigInt(0),
           metadata: {
-            network: 'aztec-testnet',
+            network: 'aztec-mainnet',
             aztecTxHash: aztecTxHash,
             explorerUrl: null,
             onChain: false,

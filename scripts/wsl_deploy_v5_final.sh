@@ -2,7 +2,7 @@
 # ═══════════════════════════════════════════════════════════════════════════
 # wsl_deploy_v5_final.sh
 #
-# Deploys QDs TokenContract to Aztec Testnet V5 from the isolated SDK dir.
+# Deploys QDs TokenContract to Aztec Mainnet V5 from the isolated SDK dir.
 # Uses SDK v5.0.0-nightly.20260714 with Linux-native node_modules.
 #
 # SECURITY GUARANTEES:

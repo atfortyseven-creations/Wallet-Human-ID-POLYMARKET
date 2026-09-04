@@ -1,7 +1,7 @@
 import { createAztecNodeClient } from '@aztec/aztec.js/node';
 import { AztecAddress } from '@aztec/stdlib/aztec-address';
 
-const NODE_URL = 'https://v5.testnet.rpc.aztec-labs.com/';
+const NODE_URL = 'https://node.aztec.network/';
 const SPONSORED_FPC = "0x1441491b59934ec64f8c98f17c91f23c01ca2a45dbb35caf123146ec76f9970c";
 
 async function main() {

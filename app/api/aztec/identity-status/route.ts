@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       ...status,
       supplyCapTotal: Number(process.env.IDENTITY_CAP ?? 200),
-      network: 'aztec-testnet',
+      network: 'aztec-mainnet',
       message: status.verified
         ? '✅ Verified Humanity Ledger Identity — Full domain access granted.'
         : status.capReached

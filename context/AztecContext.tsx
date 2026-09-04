@@ -96,7 +96,7 @@ export const AztecProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               '@aztec/aztec.js'
             )) as any;
 
-            const PXE_URL = process.env.NEXT_PUBLIC_AZTEC_PXE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+            const PXE_URL = process.env.NEXT_PUBLIC_AZTEC_PXE_URL || 'https://node.aztec.network';
             console.log(`🟡 [Aztec] Connecting to PXE at ${PXE_URL}...`);
 
             const pxeClient = createPXEClient(PXE_URL) as unknown as PXE;

@@ -5,4 +5,4 @@ export NVM_DIR="$HOME/.nvm"
 
 cd "/mnt/d/Projects/Wallet Human Polymarket ID/.aztec-v5-sdk"
 
-npx aztec-cli get-node-info --rpc-url https://v5.testnet.rpc.aztec-labs.com/
+npx aztec-cli get-node-info --rpc-url https://node.aztec.network/

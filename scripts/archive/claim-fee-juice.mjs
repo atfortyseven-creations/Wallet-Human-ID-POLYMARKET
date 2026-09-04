@@ -94,7 +94,7 @@ if (networkArg !== undefined && networkArg !== "testnet") {
 }
 
 const TESTNET_NODE_URL = "https://rpc.testnet.aztec-labs.com";
-const TESTNET_EXPLORER_TX_URL = "https://testnet.aztecscan.xyz/tx-effects";
+const TESTNET_EXPLORER_TX_URL = "https://aztecscan.xyz/tx-effects";
 
 const network = "testnet";
 const nodeUrl = getArg("node-url") || process.env.AZTEC_NODE_URL || TESTNET_NODE_URL;

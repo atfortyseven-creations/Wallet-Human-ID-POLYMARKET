@@ -527,7 +527,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
         toast.loading("Sign message in your wallet to generate Sovereign Identity...", { id: "az-connect" });
         try {
           signature = await activeSigner({
-            message: "Welcome to Aztec Testnet.\n\nSign this message to derive your zero-knowledge private key for the local PXE."
+            message: "Welcome to Aztec Mainnet.\n\nSign this message to derive your zero-knowledge private key for the local PXE."
           });
         } catch (sigErr: any) {
           const sigMsg = sigErr?.message?.toLowerCase() ?? '';

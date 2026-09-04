@@ -146,7 +146,7 @@ function ReceiptCard({ receipt, onClose }: { receipt: ReceiptData; onClose: () =
                         {parseFloat(formatEther(receipt.amount)).toLocaleString(undefined, { maximumFractionDigits: 4 })} QDs
                     </div>
                     <div className="text-white/40 text-xs font-mono uppercase tracking-widest mt-1">
-                        Transfer Finalised — Aztec Testnet
+                        Transfer Finalised — Aztec Mainnet
                     </div>
                 </div>
                 {receipt.memo && (
@@ -283,11 +283,11 @@ export default function CoreTransfer() {
 
             // Step 2: Sign with wallet (via SIWE session — already authenticated)
             setStep('signing');
-            toast.info('Signing transfer...', { description: 'Preparing ZK transfer for Aztec Testnet.' });
+            toast.info('Signing transfer...', { description: 'Preparing ZK transfer for Aztec Mainnet.' });
 
             // Step 3: Broadcast — call real API
             setStep('broadcasting');
-            toast.loading('Broadcasting to Aztec Testnet...', { id: 'tx-broadcast' });
+            toast.loading('Broadcasting to Aztec Mainnet...', { id: 'tx-broadcast' });
 
             const res = await fetch('/api/aztec/transfer', {
                 method: 'POST',
@@ -345,7 +345,7 @@ export default function CoreTransfer() {
             toast.success(isLedger ? 'Transfer complete (Ledger Verified)' : 'Transfer complete — receipt issued.', {
                 description: isLedger
                     ? `Anchored to Aztec Block #${realBlock} (Internal Ledger)`
-                    : `Block #${realBlock} · Aztec Testnet (On-Chain)`,
+                    : `Block #${realBlock} · Aztec Mainnet (On-Chain)`,
             });
         } catch (err: any) {
             const msg = err?.shortMessage || err?.message || 'Unknown error';
@@ -383,7 +383,7 @@ export default function CoreTransfer() {
                             <div className="flex items-start justify-between mb-5">
                                 <div>
                                     <div className="text-[9px] font-mono font-black uppercase tracking-[0.3em] text-white/40 mb-1 flex items-center gap-2">
-                                        Aztec Testnet <span className="bg-white/10 px-1.5 py-0.5 rounded text-white/60">LEDGER MODE</span>
+                                        Aztec Mainnet <span className="bg-white/10 px-1.5 py-0.5 rounded text-white/60">LEDGER MODE</span>
                                     </div>
                                     <h2 className="text-2xl font-black tracking-tighter text-white uppercase">
                                         Transfer QDs

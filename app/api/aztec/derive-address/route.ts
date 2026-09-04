@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       success: true,
       aztecAddress,
       derivationMethod: 'SHA-256 + Keccak256 (aztec-schnorr domain separation)',
-      network: 'aztec-testnet',
+      network: 'aztec-mainnet',
     });
 
   } catch (err: any) {

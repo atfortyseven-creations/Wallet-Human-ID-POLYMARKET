@@ -4,7 +4,7 @@ nvm use 20 --silent
 
 echo "=== Testing node_getBlocks on V5 ==="
 node -e "
-fetch('https://v5.testnet.rpc.aztec-labs.com', {
+fetch('https://node.aztec.network', {
   method: 'POST',
   headers: {'Content-Type': 'application/json'},
   body: JSON.stringify({jsonrpc:'2.0', method:'node_getBlocks', params:[9490, 2], id:1})

@@ -2321,7 +2321,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                         if (airdropData.success) {
                             // Only show the welcome toast on the very first successful claim
                             console.log('⚡ Sovereign Identity Active: 10 QDs received!', { 
-                                description: 'Transaction confirmed on Aztec Testnet.',
+                                description: 'Transaction confirmed on Aztec Mainnet.',
                                 explorerUrl: airdropData.explorerUrl
                             });
                         }

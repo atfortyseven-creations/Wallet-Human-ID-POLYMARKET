@@ -18,8 +18,8 @@ const AirdropSchema = z.object({
     address: z.string().regex(/^0x[0-9a-fA-F]{40,64}$/, "Invalid Aztec address format")
 });
 
-const AZTEC_EXPLORER        = 'https://testnet.aztecscan.xyz';
-const AZTEC_TX_URL          = (hash: string) => `https://testnet.aztecscan.xyz`;
+const AZTEC_EXPLORER        = 'https://aztecscan.xyz';
+const AZTEC_TX_URL          = (hash: string) => `https://aztecscan.xyz`;
 const AIRDROP_AMOUNT        = 1000;  // 1000 QDs per airdrop (Genesis Airdrop — matches UI)
 
 /**
@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
 
     const tokenAddressStr  = process.env.AZTEC_TOKEN_CONTRACT_ADDRESS;
     const relayerSecretHex = process.env.AZTEC_RELAYER_SECRET_KEY;
-    const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+    const nodeUrl = process.env.AZTEC_NODE_URL || 'https://node.aztec.network';
     const pxeUrl  = process.env.AZTEC_PXE_URL  || nodeUrl;
 
     if (!tokenAddressStr || tokenAddressStr === 'PENDING_DEPLOY' || !relayerSecretHex) {
@@ -182,7 +182,7 @@ export async function POST(req: NextRequest) {
         let liveBlockNum = 0; // only set from real node response, NOT from timestamp
         
         try {
-          const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+          const nodeUrl = process.env.AZTEC_NODE_URL || 'https://node.aztec.network';
           const nodeInfoRes = await fetch(`${nodeUrl}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -202,7 +202,7 @@ export async function POST(req: NextRequest) {
         explorerUrl = `${AZTEC_EXPLORER}/tx-effect/${aztecTxHash.replace('0x', '')}`;
         onChain      = false;
         blockNum     = liveBlockNum;
-        nodeInfo     = liveBlockHash ? { blockHash: liveBlockHash, blockNumber: liveBlockNum, network: 'aztec-testnet' } : null;
+        nodeInfo     = liveBlockHash ? { blockHash: liveBlockHash, blockNumber: liveBlockNum, network: 'aztec-mainnet' } : null;
         
         // Skip to DB write below
     } else {
@@ -349,7 +349,7 @@ export async function POST(req: NextRequest) {
             chainId:     89021716,
             blockNumber: BigInt(blockNum ?? Math.floor(Date.now() / 12_000)),
             metadata:    {
-              network:          'aztec-testnet',
+              network:          'aztec-mainnet',
               aztecTxHash:      aztecTxHash,
               explorerUrl:      explorerUrl,
               onChain:          onChain,
@@ -387,11 +387,11 @@ export async function POST(req: NextRequest) {
       explorerUrl: explorerUrl,
       onChain:     onChain,
       amount:      AIRDROP_AMOUNT,
-      network:     'aztec-testnet',
+      network:     'aztec-mainnet',
       nodeInfo:    nodeInfo,
       message:     onChain
-        ? '1000 QDs minted on Aztec Testnet ⚡ - view on AztecScan!'
-        : `1000 QDs airdropped. Aztec Testnet verified at block #${blockNum}.`,
+        ? '1000 QDs minted on Aztec Mainnet ⚡ - view on AztecScan!'
+        : `1000 QDs airdropped. Aztec Mainnet verified at block #${blockNum}.`,
     });
 
   } catch (error: any) {

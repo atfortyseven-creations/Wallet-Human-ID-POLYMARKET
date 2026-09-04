@@ -1,5 +1,5 @@
 /**
- * QDs TokenContract — Aztec Testnet V5
+ * QDs TokenContract — Aztec Mainnet V5
  * SDK: 5.0.0 (stable)
  * Corrección Error 14: Usando node.getContract() para obtener la instancia real
  * del FPC de la testnet y registrarla en el PXE con el artifact local.
@@ -14,7 +14,7 @@ import { AztecAddress } from '@aztec/stdlib/aztec-address';
 import { TokenContract } from '@aztec/noir-contracts.js/Token';
 import { SponsoredFPCContractArtifact } from '@aztec/noir-contracts.js/SponsoredFPC';
 
-const NODE_URL   = 'https://v5.testnet.rpc.aztec-labs.com/';
+const NODE_URL   = 'https://node.aztec.network/';
 const SECRET_HEX = process.env.AZTEC_RELAYER_SECRET_KEY?.trim();
 const SPONSORED_FPC = '0x1441491b59934ec64f8c98f17c91f23c01ca2a45dbb35caf123146ec76f9970c';
 
@@ -101,7 +101,7 @@ async function main() {
   console.log(`  ${bold('AZTEC_RELAYER_SECRET_KEY')}=${SECRET_HEX}`);
   console.log(`  ${bold('TX_HASH')}=${receipt.txHash?.toString() ?? 'n/a'}`);
   console.log('');
-  console.log(`  ${dim('AztecScan')} → https://testnet.aztecscan.xyz/address/${contractAddr}`);
+  console.log(`  ${dim('AztecScan')} → https://aztecscan.xyz/address/${contractAddr}`);
   console.log(`  ${dim('Tiempo')}    → ${elapsed}s`);
   console.log('');
 

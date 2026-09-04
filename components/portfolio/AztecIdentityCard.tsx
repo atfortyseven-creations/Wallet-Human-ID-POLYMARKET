@@ -31,7 +31,7 @@ import { AztecAirdropCalendar } from './AztecAirdropCalendar';
 
 // ─── On-Chain Verified Network Constants ─────────────────────────────────────
 // Addresses verified via node_getNodeInfo / node_getBlock RPC.
-const AZTEC_EXPLORER    = 'https://testnet.aztecscan.xyz';
+const AZTEC_EXPLORER    = 'https://aztecscan.xyz';
 const CLAIM_TX_HASH     = '0x085abad7f0a1bc596e570079d209e6f5251efa5988f01d57bb165c4fa3691e8a';
 const CLAIM_TX_BLOCK    = 103861;
 const CLAIM_AMOUNT      = '1000 QDs';
@@ -304,7 +304,7 @@ function SendQDsPanel() {
 
       setTxHash(data.txHash);
       setBlockNum(data.blockNumber || 'Sequencing...');
-      setExplorerUrl(data.explorerUrl || `https://testnet.aztecscan.xyz/tx-effect/${(data.txHash || '').replace('0x', '')}`);
+      setExplorerUrl(data.explorerUrl || `https://aztecscan.xyz/tx-effect/${(data.txHash || '').replace('0x', '')}`);
       setStep('done');
       toast.success(`${amount} QDs sent!`, { description: `Block #${data.blockNumber}` });
 
@@ -468,7 +468,7 @@ function ReceiveQDsPanel() {
 
       <div className="space-y-2">
         {[
-          { label: 'Network',  value: 'Aztec Testnet' },
+          { label: 'Network',  value: 'Aztec Mainnet' },
           { label: 'Token',    value: 'QDs (Quantum Dots)' },
           { label: 'Balance',  value: `${balance.toFixed(2)} QDs` },
           { label: 'Standard', value: 'Aztec Token (ZK Native)' },
@@ -933,7 +933,7 @@ export function AztecIdentityCard() {
                 {[
                   { label: 'Account Type', value: 'Schnorr Account' },
                   { label: 'Derivation',   value: 'SHA-256 · Server-side' },
-                  { label: 'Network',      value: 'Aztec Testnet' },
+                  { label: 'Network',      value: 'Aztec Mainnet' },
                   { label: 'Status',       value: '✅ Deployed + Funded' },
                 ].map(({ label, value }) => (
                   <div key={label} className="border border-zinc-900/8 p-3 bg-zinc-900/[0.01]">
@@ -958,7 +958,7 @@ export function AztecIdentityCard() {
                     ) : (
                       <div className="text-2xl font-black font-mono text-emerald-700">{balance.toFixed(2)}</div>
                     )}
-                    <div className="text-[8px] text-emerald-600/60 uppercase tracking-widest">Quantum Dots · Aztec Testnet</div>
+                    <div className="text-[8px] text-emerald-600/60 uppercase tracking-widest">Quantum Dots · Aztec Mainnet</div>
                   </div>
                   <div className="flex gap-2">
                   <button onClick={() => setActiveTab('SEND')}
@@ -999,12 +999,12 @@ export function AztecIdentityCard() {
             <div className="space-y-5">
               <div className="space-y-2">
                 {[
-                  { label: 'RPC Endpoint', value: 'https://v5.testnet.rpc.aztec-labs.com', link: false },
+                  { label: 'RPC Endpoint', value: 'https://node.aztec.network', link: false },
                   { label: 'Explorer',     value: AZTEC_EXPLORER,                                                               link: true  },
                   { label: 'Faucet',       value: 'aztec-faucet.nethermind.io',                                                 link: true  },
                   { label: 'Node Version', value: nodeVersion ? `Aztec ${nodeVersion}` : 'v5.testnet',                          link: false },
                   { label: 'Block Height', value: blockHeight ? `#${blockHeight.toLocaleString()}` : (nodeStatus === 'checking' ? 'Fetching...' : 'Unavailable'), link: false },
-                  { label: 'L1 Chain',     value: 'Ethereum Sepolia (11155111)',                                                 link: false },
+                  { label: 'L1 Chain',     value: 'Ethereum Sepolia (2151908)',                                                 link: false },
 
                 ].map(({ label, value, link }) => (
                   <div key={label} className="flex items-start justify-between py-2.5 border-b border-zinc-900/5 last:border-0 gap-3">
@@ -1037,7 +1037,7 @@ export function AztecIdentityCard() {
                   <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900/60">
                     Node {nodeStatus === 'online' ? 'Online' : nodeStatus === 'degraded' ? 'Degraded' : nodeStatus === 'offline' ? 'Offline' : 'Checking...'}
                   </div>
-                  <div className="text-[8px] text-zinc-900/30 mt-0.5">https://v5.testnet.rpc.aztec-labs.com</div>
+                  <div className="text-[8px] text-zinc-900/30 mt-0.5">https://node.aztec.network</div>
                 </div>
 
                 <button
@@ -1077,7 +1077,7 @@ export function AztecIdentityCard() {
 
       {/* Footer — AUDIT FIX: removed hardcoded date and "Modo B" label */}
       <div className="px-6 py-3 border-t border-zinc-900/8 bg-zinc-900/[0.01] flex items-center justify-between">
-        <span className="text-[7px] text-zinc-900/20 uppercase tracking-widest">Aztec Testnet</span>
+        <span className="text-[7px] text-zinc-900/20 uppercase tracking-widest">Aztec Mainnet</span>
         <span className="text-[7px] text-zinc-900/20 uppercase tracking-widest font-mono">
           {nodeStatus === 'online' && blockHeight ? `Block #${blockHeight.toLocaleString()}` : `Node ${nodeStatus}`}
         </span>

@@ -7,7 +7,7 @@ node --input-type=module << 'EOF'
 import { createAztecNodeClient } from '@aztec/aztec.js/node';
 import { makeFetch } from '@aztec/foundation/json-rpc/client';
 
-const NODE_URL = 'https://v5.testnet.rpc.aztec-labs.com';
+const NODE_URL = 'https://node.aztec.network';
 
 // V5 compat fetch shim
 function createV5CompatFetch(nodeUrl) {

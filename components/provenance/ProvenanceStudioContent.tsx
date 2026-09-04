@@ -52,7 +52,7 @@ const SubscriptionDashboard = dynamic(
    CONSTANTS
 ───────────────────────────────────────────── */
 // AztecScan uses /tx-effect/:hash — the /tx/ path does not exist and shows "Page does not exist"
-const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx-effect/';
+const EXPLORER_BASE = 'https://aztecscan.xyz/tx-effect/';
 
 /* ─────────────────────────────────────────────
    TYPES
@@ -981,7 +981,7 @@ function RegistryTab({ isMobile: _isMobile, refreshKey, userTier = 'FREE', isOwn
                         </p>
                       </div>
                       <a
-                        href={`https://testnet.aztecscan.xyz`}
+                        href={`https://aztecscan.xyz`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm font-mono text-blue-600 hover:text-blue-800 font-bold transition-colors flex items-center gap-1.5 break-all"
@@ -1585,7 +1585,7 @@ export function ProvenanceStudioContent({
           {initPhase === 0 ? 'Initializing Quantum Sequencer' : 'Sequencer Certified'}
         </h2>
         <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-black/40">
-          {initPhase === 0 ? 'Syncing with Aztec Testnet v5' : 'Connection Established'}
+          {initPhase === 0 ? 'Syncing with Aztec Mainnet v5' : 'Connection Established'}
         </p>
       </div>
     );

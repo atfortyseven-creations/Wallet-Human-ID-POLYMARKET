@@ -8,12 +8,12 @@ import { deriveAztecAddress, isOwner } from '@/lib/aztec/zk-identity';
 
 export const dynamic = 'force-dynamic';
 
-const AZTEC_EXPLORER = 'https://testnet.aztecscan.xyz';
+const AZTEC_EXPLORER = 'https://aztecscan.xyz';
 
 /**
  * POST /api/aztec/transfer
  *
- * Transfers QDs on the Aztec Testnet v5 (rc.2).
+ * Transfers QDs on the Aztec Mainnet v5 (rc.2).
  *
  * Architecture (SDK v5.0.0 — verified from source):
  *
@@ -185,8 +185,8 @@ export async function POST(req: NextRequest) {
     let nodeInfo    : any     = null;
 
     const tokenAddressStr = process.env.AZTEC_TOKEN_CONTRACT_ADDRESS;
-    const pxeUrl          = process.env.AZTEC_PXE_URL   || 'https://v5.testnet.rpc.aztec-labs.com';
-    const nodeUrl         = process.env.AZTEC_NODE_URL  || 'https://v5.testnet.rpc.aztec-labs.com';
+    const pxeUrl          = process.env.AZTEC_PXE_URL   || 'https://node.aztec.network';
+    const nodeUrl         = process.env.AZTEC_NODE_URL  || 'https://node.aztec.network';
 
     if (!tokenAddressStr || tokenAddressStr === 'PENDING_DEPLOY') {
       // ── MODE B: Token contract not yet deployed — DB-only ledger anchored to real Aztec block ──
@@ -381,7 +381,7 @@ export async function POST(req: NextRequest) {
             chainId    : 89021716,
             blockNumber: BigInt(blockNumber ?? Math.floor(Date.now() / 12_000)),
             metadata   : {
-              network         : 'aztec-testnet',
+              network         : 'aztec-mainnet',
               aztecTxHash,
               explorerUrl,
               onChain: true,
@@ -484,11 +484,11 @@ export async function POST(req: NextRequest) {
       amount          : roundedAmount,
       onChain,
       explorerUrl,
-      network         : 'aztec-testnet',
+      network         : 'aztec-mainnet',
       nodeInfo,
       tokenContractSet: !!tokenAddressStr,
       message: explorerUrl
-        ? `${roundedAmount} QDs transferred on Aztec Testnet ✅ — View on AztecScan`
+        ? `${roundedAmount} QDs transferred on Aztec Mainnet ✅ — View on AztecScan`
         : `${roundedAmount} QDs transferred. Network verified at block #${blockNumber} via Ledger.`,
     });
 

@@ -1,6 +1,6 @@
 import { createAztecNodeClient } from '@aztec/aztec.js/node';
 
-const url = 'https://v5.testnet.rpc.aztec-labs.com';
+const url = 'https://node.aztec.network';
 console.log('Testing connection to ' + url);
 
 async function test() {

@@ -23,7 +23,7 @@ function generateAztecTxHash(
 }
 
 async function main() {
-  console.log('🚀 Starting legacy transaction upgrade for Aztec Testnet...');
+  console.log('🚀 Starting legacy transaction upgrade for Aztec Mainnet...');
 
   // Find all transactions that do NOT have a valid BN254 Aztec hash format in their metadata
   const txs = await prisma.transaction.findMany({
@@ -68,7 +68,7 @@ async function main() {
             metadata: {
               ...meta,
               aztecTxHash: newHash,
-              explorerUrl: `https://testnet.aztecscan.xyz/tx-effect/${newHash}`,
+              explorerUrl: `https://aztecscan.xyz/tx-effect/${newHash}`,
               upgradedFromLegacy: true,
               originalLegacyHash: tx.txHash
             }

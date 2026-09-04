@@ -14,7 +14,7 @@ By integrating with the Ledger Network SDK, developers can interact with our 18 
 Ledger Network operates entirely client-side. We use **Barretenberg** to compile Noir circuits to WebAssembly (WASM), ensuring that witness generation and proof construction never leave the user's browser.
 
 ### 1. Installation
-The SDK requires an active Aztec Node. By default, it connects to the Aztec Alpha Testnet (`v5.testnet.rpc.aztec-labs.com`).
+The SDK requires an active Aztec Node. By default, it connects to the Aztec Mainnet (`node.aztec.network`).
 
 ```bash
 npm install @ledgernetwork/sdk

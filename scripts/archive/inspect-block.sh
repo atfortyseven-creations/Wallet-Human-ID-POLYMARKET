@@ -4,9 +4,9 @@ nvm use 20 --silent
 
 # Inspect what getBlock returns vs what node API expects
 node -e "
-import('https://v5.testnet.rpc.aztec-labs.com').catch(()=>{});
+import('https://node.aztec.network').catch(()=>{});
 
-const res = fetch('https://v5.testnet.rpc.aztec-labs.com', {
+const res = fetch('https://node.aztec.network', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getBlock', params: [1], id: 1 })

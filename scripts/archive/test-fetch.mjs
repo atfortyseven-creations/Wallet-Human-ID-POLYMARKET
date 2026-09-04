@@ -12,7 +12,7 @@ async function checkMethod(url, method) {
   }
 }
 
-const u = 'https://v5.testnet.rpc.aztec-labs.com';
+const u = 'https://node.aztec.network';
 checkMethod(u, 'node_getBlockNumber');
 checkMethod(u, 'node_getBlockHeader');
 checkMethod(u, 'node_getBlock');

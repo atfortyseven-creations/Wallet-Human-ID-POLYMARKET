@@ -1,6 +1,6 @@
 // Check what JSON-RPC methods are available on the public testnet node
 const URLS = [
-  'https://v5.testnet.rpc.aztec-labs.com',
+  'https://node.aztec.network',
 ];
 
 const methods = [

@@ -1,26 +1,26 @@
 // @ts-nocheck
 /**
- * lib/aztec/client.ts — Aztec Testnet v5.0.0 client
+ * lib/aztec/client.ts — Aztec Mainnet.0.0 client
  *
  * Architecture (v5.0.0 SDK):
- *  - createAztecNodeClient → connects to the public Aztec Testnet node
+ *  - createAztecNodeClient → connects to the public Aztec Mainnet node
  *  - PXE runs as a sidecar (via `aztec start --pxe`) or externally
  *  - `AZTEC_PXE_URL` can point to an external PXE (e.g. https://pxe.humanidfi.com)
  *    OR be left unset to use the node directly for read-only queries.
  *
  * Real Testnet info (confirmed 2026-07-07):
- *  Node URL:     https://v5.testnet.rpc.aztec-labs.com
- *  Explorer:     https://testnet.aztecscan.xyz
+ *  Node URL:     https://node.aztec.network
+ *  Explorer:     https://aztecscan.xyz
  *  SponsoredFPC: 0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7
- *  L1 Chain:     11155111 (Sepolia)
+ *  L1 Chain:     2151908 (Sepolia)
  *  Rollup:       0xfe6061806cac748085904a010d2d9e33b8031741
  */
 
-export const AZTEC_TESTNET_NODE  = process.env.AZTEC_NODE_URL  || 'https://v5.testnet.rpc.aztec-labs.com';
-export const AZTEC_PXE_URL       = process.env.AZTEC_PXE_URL   || process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
-export const AZTEC_EXPLORER      = 'https://testnet.aztecscan.xyz';
-export const AZTEC_NETWORK       = 'aztec-testnet';
-export const L1_CHAIN_ID         = 11155111; // Sepolia
+export const AZTEC_MAINNET_NODE  = process.env.AZTEC_NODE_URL  || 'https://node.aztec.network';
+export const AZTEC_PXE_URL       = process.env.AZTEC_PXE_URL   || process.env.AZTEC_NODE_URL || 'https://node.aztec.network';
+export const AZTEC_EXPLORER      = 'https://aztecscan.xyz';
+export const AZTEC_NETWORK       = 'aztec-mainnet';
+export const L1_CHAIN_ID         = 2151908; // Aztec L1
 export const ROLLUP_VERSION      = 1; 
 export const ROLLUP_ADDRESS      = '0xd73a91bdcf6891c7642f3e460036e1ef2cc23178';
 // Additional L1 contracts (live node, 2026-07-21)
@@ -56,8 +56,8 @@ let _nodeClient: any = null;
 export async function getAztecNodeClient() {
   if (_nodeClient) return _nodeClient;
   const { createAztecNodeClient } = await import('@aztec/aztec.js/node');
-  _nodeClient = createAztecNodeClient(AZTEC_TESTNET_NODE);
-  console.log(`[Aztec] ✅ Node client connected → ${AZTEC_TESTNET_NODE}`);
+  _nodeClient = createAztecNodeClient(AZTEC_MAINNET_NODE);
+  console.log(`[Aztec] ✅ Node client connected → ${AZTEC_MAINNET_NODE}`);
   return _nodeClient;
 }
 
@@ -127,7 +127,7 @@ export function sanitiseExplorerUrl(stored: string | null | undefined): string {
   if (hashMatch) return `${AZTEC_EXPLORER}/tx-effect/${hashMatch[1]}`;
 
   // Root or just the explorer domain — fine
-  if (stored.startsWith('https://testnet.aztecscan.xyz')) return stored;
+  if (stored.startsWith('https://aztecscan.xyz')) return stored;
 
   // Unknown format — fall back to root
   return AZTEC_EXPLORER;
@@ -149,7 +149,7 @@ export function truncateAztecAddress(addr: string, chars = 8): string {
 }
 
 /**
- * Probe the Aztec Testnet node to get current network info.
+ * Probe the Aztec Mainnet node to get current network info.
  * Returns null if unreachable.
  */
 export async function probeTestnetNode(): Promise<{

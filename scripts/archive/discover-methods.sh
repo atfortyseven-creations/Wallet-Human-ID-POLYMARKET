@@ -6,7 +6,7 @@ echo "=== Discovering V5 node methods ==="
 node -e "
 async function call(method, params=[]) {
   try {
-    const r = await fetch('https://v5.testnet.rpc.aztec-labs.com', {
+    const r = await fetch('https://node.aztec.network', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({jsonrpc:'2.0', method, params, id:1})

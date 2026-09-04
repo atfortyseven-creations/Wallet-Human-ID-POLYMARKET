@@ -47,7 +47,7 @@ export default function RealDashboard() {
                     )}
                     <p className="text-center text-xs text-gray-500 mt-3">Saldo: {safeToFixed(balance, 2)} AUTH</p>
                 </div>
-                {txHash && <a href={`https://testnet.aztecscan.xyz`} target="_blank" className="block text-center text-xs text-blue-400 mt-4 underline">Ver en Aztecscan</a>}
+                {txHash && <a href={`https://aztecscan.xyz`} target="_blank" className="block text-center text-xs text-blue-400 mt-4 underline">Ver en Aztecscan</a>}
             </div>
 
             {/* TARJETA DE GOBERNANZA */}

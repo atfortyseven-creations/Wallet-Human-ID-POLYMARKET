@@ -3,7 +3,7 @@ import { createPXE } from '@aztec/pxe/client/lazy';
 
 async function main() {
   console.log('Creating node client...');
-  const node = createAztecNodeClient('https://v5.testnet.rpc.aztec-labs.com');
+  const node = createAztecNodeClient('https://node.aztec.network');
   console.log('Node info:', await node.getNodeInfo());
 
   console.log('Creating in-memory PXE...');

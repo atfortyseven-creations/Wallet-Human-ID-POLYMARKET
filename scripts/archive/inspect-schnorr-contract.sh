@@ -1,6 +1,6 @@
 #!/bin/bash
 # ══════════════════════════════════════════════════════════════
-#  QDs Token Deploy — Aztec Testnet V5 — DEFINITIVO
+#  QDs Token Deploy — Aztec Mainnet V5 — DEFINITIVO
 #  humanidfi.com | SDK 5.0.0-nightly.20260625
 # ══════════════════════════════════════════════════════════════
 set -e
@@ -11,7 +11,7 @@ SDK_DIR="/mnt/d/Projects/Wallet Human Polymarket ID/.aztec-v5-sdk"
 
 echo ""
 echo "╔═══════════════════════════════════════════════════════╗"
-echo "║   🚀  QDs Token Deploy — Aztec Testnet V5 DEFINITIVO  ║"
+echo "║   🚀  QDs Token Deploy — Aztec Mainnet V5 DEFINITIVO  ║"
 echo "║   humanidfi.com                                       ║"
 echo "╚═══════════════════════════════════════════════════════╝"
 echo ""

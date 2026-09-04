@@ -15,7 +15,7 @@ Below are the detailed architecture and current capabilities of the Ledger Chat 
 *   **Mobile Heuristics:** Advanced fallback patterns for strict `getUserMedia` constraints on iOS Safari and Android WebViews to guarantee camera/mic connection.
 
 ## 4. AZTEC INTEGRATION
-*   **Alpha V5 Ready:** The protocol actively leverages client-side proving on the Aztec Alpha V5 Testnet.
+*   **Alpha V5 Ready:** The protocol actively leverages client-side proving on the Aztec Mainnet Testnet.
 *   **Noir Smart Contracts:** Core identity attestations are codified in Noir circuits.
 
 ## 5. REFINED UX/UI AND IMMERSION

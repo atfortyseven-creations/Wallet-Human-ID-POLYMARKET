@@ -5,7 +5,7 @@ async function runTests() {
   console.log('🧪 Starting Real-World Integration Tests for Studio Provenance...\n');
 
   // 1. Test Aztec Sequencer Submission
-  console.log('--- TEST 1: Aztec Testnet Integration ---');
+  console.log('--- TEST 1: Aztec Mainnet Integration ---');
   try {
     const fakePassportId = `test-aztec-${Date.now()}`;
     const payload = {
@@ -41,7 +41,7 @@ async function runTests() {
     });
     
     if (verifiedDb && verifiedDb.txHash) {
-      console.log(`✅ SUCCESS: Aztec Testnet simulation completed. TX Hash: ${verifiedDb.txHash}`);
+      console.log(`✅ SUCCESS: Aztec Mainnet simulation completed. TX Hash: ${verifiedDb.txHash}`);
     } else {
       console.log(`❌ FAILED: Aztec txHash not saved to DB.`);
     }

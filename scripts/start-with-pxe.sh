@@ -13,7 +13,7 @@
 set -e
 
 echo "══════════════════════════════════════════════════"
-echo " LEDGER INTELLIGENCE — Aztec Testnet PXE Startup"
+echo " LEDGER INTELLIGENCE — Aztec Mainnet PXE Startup"
 echo "══════════════════════════════════════════════════"
 
 AZTEC_NODE="${AZTEC_NODE_URL:-https://rpc.testnet.aztec-labs.com}"
@@ -27,7 +27,7 @@ if command -v aztec &> /dev/null; then
   echo "✅ Aztec CLI found: $(aztec --version)"
 
   # Start the PXE in background, pointing to the public testnet node
-  echo "🚀 Starting PXE connected to Aztec Testnet..."
+  echo "🚀 Starting PXE connected to Aztec Mainnet..."
   aztec start --pxe \
     --pxe.nodeUrl "$AZTEC_NODE" \
     --pxe.port "$PXE_PORT" \

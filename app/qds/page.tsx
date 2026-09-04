@@ -66,7 +66,7 @@ const SECTIONS: Section[] = [
     title: 'How to get QDs — Step by step',
     tag: 'Getting Started',
     paragraphs: [
-      'Currently (Aztec Testnet phase, July 2026), QDs are distributed exclusively through the network\'s Proof of Contribution airdrop mechanism. There is no purchase, no presale, and no ICO. Acquiring QDs requires participation.',
+      'Currently (Aztec Mainnet phase, July 2026), QDs are distributed exclusively through the network\'s Proof of Contribution airdrop mechanism. There is no purchase, no presale, and no ICO. Acquiring QDs requires participation.',
       'Step 1 — Authenticate: Connect to the Humanity Ledger at humanidfi.com/connect using your Web3 wallet (MetaMask, Coinbase Wallet, WalletConnect) or via Turing Shield (email + 6-digit PIN for mobile users).',
       'Step 2 — Open the Terminal: Once authenticated, press Cmd+K (Mac) or Ctrl+K (Windows) to open the Ledger Terminal from anywhere on the platform.',
       'Step 3 — Navigate to Identity: In the terminal sidebar, find the "Identity / Airdrop" tab. This section shows your current ZK identity status, your Aztec account address, and your current QD balance.',
@@ -199,15 +199,15 @@ const SECTIONS: Section[] = [
   },
   {
     num: '10',
-    title: 'Current Status — Aztec Testnet (July 2026)',
+    title: 'Current Status — Aztec Mainnet (July 2026)',
     tag: 'Status',
     paragraphs: [
-      'QDs are currently live on the Aztec V5 testnet (endpoint: v5.testnet.rpc.aztec-labs.com). All functionality described in this document is operational on testnet: airdrops, Ledger Chat payments, governance votes, and Studio Provenance records.',
+      'QDs are currently live on the Aztec V5 testnet (endpoint: node.aztec.network). All functionality described in this document is operational on testnet: airdrops, Ledger Chat payments, governance votes, and Studio Provenance records.',
       'Testnet tokens have zero monetary value. They exist for the purpose of protocol validation, security testing, and infrastructure preparation before mainnet deployment. Do not purchase, sell, or treat testnet QDs as financial instruments. Any marketplace offering to sell testnet QDs is operating outside the canonical protocol.',
       'The transition from testnet to mainnet will happen only when: (1) a Tier-1 ZK security audit of the Noir circuit is complete and all findings are publicly disclosed, (2) the Barretenberg proving system reaches the performance benchmarks required for mainnet throughput, and (3) Aztec Network\'s L1 settlement contracts are formally verified and deployed.',
     ],
     bullets: [
-      'Testnet endpoint: v5.testnet.rpc.aztec-labs.com',
+      'Testnet endpoint: node.aztec.network',
       'All QD operations are functional on testnet today.',
       'No monetary value. No purchase events. No ICO.',
       'Mainnet deployment is conditional on ZK audit completion + Aztec L1 contract verification.',

@@ -113,7 +113,7 @@ export async function GET() {
 
   const results = await Promise.all([
     // Aztec ZK & Privacy Enclave (Real Testnet Connectivity)
-    rpcProbe('Aztec v5 Live Testnet RPC', 'ZK & Privacy Layer', 'https://v5.testnet.rpc.aztec-labs.com'),
+    rpcProbe('Aztec v5 Live Testnet RPC', 'ZK & Privacy Layer', 'https://node.aztec.network'),
     probe('Aztec PLONK Prover', 'ZK & Privacy Layer', `${baseUrl}/api/zk/prove`),
     probe('ZK Shielded Pool', 'ZK & Privacy Layer', `${baseUrl}/api/aztec/account`),
     probe('Humanity Identity Registry', 'ZK & Privacy Layer', `${baseUrl}/registry`),

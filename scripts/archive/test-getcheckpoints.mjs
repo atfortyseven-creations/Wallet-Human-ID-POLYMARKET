@@ -1,7 +1,7 @@
 import { createAztecNodeClient } from '@aztec/aztec.js/node';
 
 async function main() {
-  const resp = await fetch('https://v5.testnet.rpc.aztec-labs.com', {
+  const resp = await fetch('https://node.aztec.network', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

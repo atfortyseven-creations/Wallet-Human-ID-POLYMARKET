@@ -35,7 +35,7 @@ echo "aztec binary: $(which aztec)"
 # 3. Start PXE in background
 echo ""
 echo "Starting Aztec PXE connected to V5 Testnet..."
-AZTEC_NODE_URL=https://v5.testnet.rpc.aztec-labs.com \
+AZTEC_NODE_URL=https://node.aztec.network \
   aztec start --pxe --port 8081 &
 PXE_PID=$!
 echo "PXE PID: $PXE_PID"

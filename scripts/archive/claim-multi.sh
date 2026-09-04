@@ -10,8 +10,8 @@ LEAF_INDEX="102637568"
 
 ENDPOINTS=(
   "https://rpc.testnet.aztec-labs.com"
-  "https://aztec-testnet.drpc.org"
-  "https://api.aztec.network/aztec-testnet/v1"
+  "https://aztec-mainnet.drpc.org"
+  "https://api.aztec.network/aztec-mainnet/v1"
 )
 
 MAX_RETRIES=20

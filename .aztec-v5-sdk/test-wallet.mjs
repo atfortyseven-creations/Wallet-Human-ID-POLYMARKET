@@ -2,7 +2,7 @@ import { createAztecNodeClient } from '@aztec/aztec.js/node';
 import { EmbeddedWallet } from '@aztec/wallets/embedded';
 import { Fr } from '@aztec/foundation/curves/bn254';
 
-const NODE_URL = 'https://v5.testnet.rpc.aztec-labs.com';
+const NODE_URL = 'https://node.aztec.network';
 const SECRET_HEX = '0x1234567890123456789012345678901234567890123456789012345678901234';
 
 async function main() {

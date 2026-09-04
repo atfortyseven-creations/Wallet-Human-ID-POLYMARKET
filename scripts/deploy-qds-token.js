@@ -2,7 +2,7 @@
 /**
  * scripts/deploy-qds-token.ts
  *
- * One-time deployment script for the QDs TokenContract on Aztec Testnet.
+ * One-time deployment script for the QDs TokenContract on Aztec Mainnet.
  *
  * Requirements:
  *   - AZTEC_PXE_URL pointing to a running PXE connected to Aztec V5 Testnet
@@ -23,7 +23,7 @@ const fee_1 = require("@aztec/aztec.js/fee");
 const schnorr_1 = require("@aztec/accounts/schnorr");
 const Token_1 = require("@aztec/noir-contracts.js/Token");
 const embedded_1 = require("@aztec/wallets/embedded");
-const NODE_URL = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+const NODE_URL = process.env.AZTEC_NODE_URL || 'https://node.aztec.network';
 const SECRET = process.env.AZTEC_RELAYER_SECRET_KEY;
 // V5 Testnet SponsoredFPC — CANONICAL rc.2 address from docs.aztec.network/networks
 // Confirmed by @joshc [AZTC] 2026-07-07. Old 0x2613... is NOT deployed on rc.2.
@@ -78,7 +78,7 @@ async function main() {
     console.log('👉 Copy both values above into Railway → Variables');
     console.log('👉 Also set AZTEC_RELAYER_SECRET_KEY in Railway if not already set');
     console.log('');
-    console.log(`🔍 View on AztecScan: https://testnet.aztecscan.xyz/address/${contractAddress}`);
+    console.log(`🔍 View on AztecScan: https://aztecscan.xyz/address/${contractAddress}`);
 }
 main().catch(err => {
     console.error('\n💥 Deployment failed:', err?.message || err);

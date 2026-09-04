@@ -257,7 +257,7 @@ export function LegendaryTransactionModal({
   const handleExecute = async () => {
       // --- 🔴 MiCA REGULATORY LOCK (EU Compliance) ---
       // Disable public EVM transactions (Send, Swap, Bridge, Buy) until VASP / MiCA license is acquired.
-      // Note: Aztec Testnet QDS transactions are routed via ZK Stealth UI, this blocks public EVM.
+      // Note: Aztec Mainnet QDS transactions are routed via ZK Stealth UI, this blocks public EVM.
       toast.error("Regulatory Lock (MiCA)", { 
           description: "This action is disabled pending EU MiCA non-custodial authorization. Only ZK-native Testnet transfers are currently permitted." 
       });

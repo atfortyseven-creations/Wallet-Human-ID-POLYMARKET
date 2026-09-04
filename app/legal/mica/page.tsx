@@ -47,7 +47,7 @@ export default function MicaPage() {
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
               <p className="text-amber-900 font-semibold text-[13px] mb-1">⚠️ Alpha Testnet Only</p>
               <p className="text-amber-800 text-[13px]">
-                Currently deployed exclusively on Aztec Alpha Testnet. No real economic
+                Currently deployed exclusively on Aztec Mainnet. No real economic
                 value is transacted. This compliance statement will be updated prior to
                 any mainnet deployment.
               </p>

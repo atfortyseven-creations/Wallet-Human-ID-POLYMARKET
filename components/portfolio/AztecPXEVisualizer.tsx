@@ -343,7 +343,7 @@ export function AztecPXEVisualizer() {
         status:      "COMMITTED",
         blockNumber: "live",
         txHash:      syntheticHash,
-        explorerUrl: `https://testnet.aztecscan.xyz/address/${aztecAddress}`,
+        explorerUrl: `https://aztecscan.xyz/address/${aztecAddress}`,
       };
       resultNotes.push(balanceNote);
     }
@@ -532,7 +532,7 @@ export function AztecPXEVisualizer() {
               { label: "Address Derivation",       value: "SHA-256 · 2-round (server-side)"          },
               { label: "Fee Mechanism",            value: "Fee Juice (gas abstraction)"              },
               { label: "L1 Bridge",                value: "Portal Contracts (Sepolia)"               },
-              { label: "Sequencer",                value: "v5.testnet.rpc.aztec-labs.com"               },
+              { label: "Sequencer",                value: "node.aztec.network"               },
               { label: "Attestation Circuit",       value: "mint_private_license · Schnorr-gated"     },
               { label: "Node Version",             value: "4.3.1"                                    },
             ].map(({ label, value }) => (

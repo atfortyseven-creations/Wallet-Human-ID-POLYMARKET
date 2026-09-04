@@ -3,7 +3,7 @@ import { EmbeddedWallet } from '@aztec/wallets/embedded';
 import { Fr } from '@aztec/foundation/curves/bn254';
 import { TokenContract } from '@aztec/noir-contracts.js/Token';
 
-const NODE_URL = 'https://v5.testnet.rpc.aztec-labs.com/';
+const NODE_URL = 'https://node.aztec.network/';
 const SECRET_HEX = process.env.AZTEC_RELAYER_SECRET_KEY;
 
 async function main() {

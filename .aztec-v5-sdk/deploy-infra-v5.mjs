@@ -1,7 +1,7 @@
 /**
  * deploy-infra-v5.mjs
  *
- * Deploys Whale Network infrastructure contracts to Aztec Testnet V5.
+ * Deploys Whale Network infrastructure contracts to Aztec Mainnet V5.
  * Uses SDK v5.0.0-nightly.20260714 from the isolated .aztec-v5-sdk directory.
  *
  * Contracts deployed:
@@ -26,9 +26,9 @@ import { SponsoredFeePaymentMethod } from '@aztec/aztec.js/fee';
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
-const NODE_URL = 'https://v5.testnet.rpc.aztec-labs.com/';
+const NODE_URL = 'https://node.aztec.network/';
 
-// Canonical Sponsored FPC address on Aztec Testnet V5 (rc.2 / nightly.20260714)
+// Canonical Sponsored FPC address on Aztec Mainnet V5 (rc.2 / nightly.20260714)
 // Source: docs.aztec.network/networks — confirmed by @joshc [AZTC] 2026-07-07
 const SPONSORED_FPC = '0x0628377e98bca5913dc86765ad0758f7b7aa83eac49079c6fba125807b393fe1';
 
@@ -63,7 +63,7 @@ async function main() {
 
   console.log('');
   console.log('╔══════════════════════════════════════════════════════════════╗');
-  console.log('║   WHALE NETWORK — Aztec Testnet V5 Contract Deployment       ║');
+  console.log('║   WHALE NETWORK — Aztec Mainnet V5 Contract Deployment       ║');
   console.log('║   SDK: 5.0.0-nightly.20260714  |  Pure ESM, no esbuild       ║');
   console.log('╚══════════════════════════════════════════════════════════════╝');
   console.log('');
@@ -134,15 +134,15 @@ async function main() {
 
   console.log('');
   console.log('╔══════════════════════════════════════════════════════════════╗');
-  console.log('║   ✅  DEPLOYMENT SUCCESSFUL — Aztec Testnet V5               ║');
+  console.log('║   ✅  DEPLOYMENT SUCCESSFUL — Aztec Mainnet V5               ║');
   console.log('╚══════════════════════════════════════════════════════════════╝');
   console.log('');
   console.log(`  ${bold('AZTEC_TOKEN_CONTRACT_ADDRESS')}=${contractAddr}`);
   console.log(`  ${bold('AZTEC_RELAYER_ADDRESS')}=${adminAddr.toString()}`);
   console.log(`  ${bold('TX_HASH')}=${txHash}`);
   console.log('');
-  console.log(info(`AztecScan : https://testnet.aztecscan.xyz/address/${contractAddr}`));
-  console.log(info(`TX        : https://testnet.aztecscan.xyz/tx/${txHash}`));
+  console.log(info(`AztecScan : https://aztecscan.xyz/address/${contractAddr}`));
+  console.log(info(`TX        : https://aztecscan.xyz/tx/${txHash}`));
   console.log(info(`Elapsed   : ${elapsed}s`));
   console.log('');
   console.log('  👉 Copy AZTEC_TOKEN_CONTRACT_ADDRESS and AZTEC_RELAYER_ADDRESS to Railway Variables');

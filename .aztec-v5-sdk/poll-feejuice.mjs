@@ -4,7 +4,7 @@ import { EmbeddedWallet } from '@aztec/wallets/embedded';
 import { Fr } from '@aztec/foundation/curves/bn254';
 import { FeeJuicePaymentMethodWithClaim } from '@aztec/aztec.js/fee';
 
-const NODE_URL        = process.env.NODE_URL   || 'https://v5.testnet.rpc.aztec-labs.com/';
+const NODE_URL        = process.env.NODE_URL   || 'https://node.aztec.network/';
 const SECRET_HEX      = (process.env.SECRET    || '').trim();
 const CLAIM_AMOUNT_STR= process.env.CLAIM_AMOUNT || '100000000000000000000';
 const CLAIM_SECRET_HEX= process.env.CLAIM_SECRET || '';

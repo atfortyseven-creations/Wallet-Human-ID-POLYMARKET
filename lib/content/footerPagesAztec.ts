@@ -113,7 +113,7 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
     title: '9. Development Status',
     paragraphs: [
       'The protocol development focuses on verified foundations built directly on the Aztec Network.',
-      'Current status (26 July 2026): The frontend platform (humanidfi.com) is live and connected to the Aztec testnet (v5.testnet.rpc.aztec-labs.com). The Noir smart contracts, specifically QDsToken.nr as a native Aztec token and the mint_private_license KYC circuit, are fully specified and in active development. The legal and regulatory framework (25-document MiCA suite) is fully drafted and in the formal process of being executed.',
+      'Current status (26 July 2026): The frontend platform (humanidfi.com) is live and connected to the Aztec testnet (node.aztec.network). The Noir smart contracts, specifically QDsToken.nr as a native Aztec token and the mint_private_license KYC circuit, are fully specified and in active development. The legal and regulatory framework (25-document MiCA suite) is fully drafted and in the formal process of being executed.',
     ],
   },
   {
@@ -355,7 +355,7 @@ export const ROADMAP_SECTIONS: AztecDocSection[] = [
   {
     title: 'Current State: Protocol Genesis & Mainnet Readiness',
     paragraphs: [
-      'The Humanity Ledger architecture has reached full operational maturity on the active Aztec Testnet (Node v5.0.0-rc.2, Rollup v4239416255) anchoring to Ethereum Sepolia. The system successfully validates 600+ end to end cryptographic integration tests natively against the decentralised network infrastructure. The foundation is now resilient, mathematically verified, and fully scaled to support the impending Beta Genesis rollout.',
+      'The Humanity Ledger architecture has reached full operational maturity on the active Aztec Mainnet (Node v5.0.0-rc.2, Rollup v4239416255) anchoring to Ethereum Sepolia. The system successfully validates 600+ end to end cryptographic integration tests natively against the decentralised network infrastructure. The foundation is now resilient, mathematically verified, and fully scaled to support the impending Beta Genesis rollout.',
     ],
   },
   {
