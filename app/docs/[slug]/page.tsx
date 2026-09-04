@@ -212,6 +212,151 @@ As a non-custodial, zero-knowledge platform, we do not possess plaintext user da
 
 To date, Humanity Ledger has received **0** requests for user data.
 `,
+
+  "overview": `
+# Humanity Ledger — Platform Overview
+*Version 1.0 | Production | January 2027*
+
+---
+
+## What is Humanity Ledger?
+
+Humanity Ledger is the world's first **sovereign identity and private communication ecosystem** built on the Aztec Mainnet (Zero-Knowledge Layer 2). It combines cryptographic messaging, private asset management, and decentralized identity into a single, seamless application — with zero surveillance, zero data harvesting, and zero dependency on traditional servers.
+
+---
+
+## Core Pillars
+
+### 1. Sovereign Identity
+Your identity is your Ethereum wallet address, extended with an Aztec Schnorr key pair. No username, no email, no phone number.
+
+### 2. Ledger Chat
+End-to-end encrypted messaging via XMTP v5.3.0, with WebRTC peer-to-peer audio and video calls, Quantum Dot micropayments, polls, and self-destructing messages.
+
+### 3. Private Finance
+All financial interactions run on the **Aztec Mainnet** using zk-SNARKs. Transaction amounts, senders, and receivers are never exposed to the public blockchain.
+
+### 4. App Hub
+A curated dashboard of decentralized applications that natively support the Humanity Ledger ZK identity standard.
+
+---
+
+## Technology Stack
+
+| Layer | Technology |
+|---|---|
+| L2 Blockchain | Aztec Mainnet (zk-Rollup) |
+| Messaging | XMTP v5.3.0 (MLS) |
+| Authentication | SIWE (EIP-4361) |
+| Encryption | AES-256-GCM + Double Ratchet |
+| Frontend | Next.js 15 / React 19 |
+| Database | PostgreSQL + Prisma ORM |
+| Hosting | Railway (Production) |
+
+---
+
+## Mainnet Status
+
+Humanity Ledger is **live on Aztec Mainnet** as of January 2027. All transactions, identities, and messages are real and permanent.
+`,
+  "quantum-dots": `
+# Quantum Dots (QD) — The Native Token
+
+*Mainnet | Aztec Network | January 2027*
+
+---
+
+## What are Quantum Dots?
+
+**Quantum Dots (QD)** are the native utility token of the Humanity Ledger ecosystem. They are issued, transferred, and burned entirely on the **Aztec Mainnet** using Zero-Knowledge proofs — meaning all balances and transfers are private by default.
+
+---
+
+## Utility
+
+| Function | Cost |
+|---|---|
+| Send a Ledger Chat message | 0.0001 QD |
+| Create a poll | Free |
+| Send QD to a peer | Variable |
+| Sovereign Node staking | 100–10,000 QD |
+| Airdrop eligibility | ≥ 1 QD |
+
+---
+
+## Distribution
+
+- **Monthly Airdrop**: Every wallet with an active Sovereign Identity receives **10 QD** on the 1st of every month, from January 2027 to December 2100.
+- **Community Quests**: Earn QD by completing social verification tasks.
+- **Sovereign Node Yield**: Stake QD to earn additional yield.
+
+---
+
+## Privacy Architecture
+
+All QD balances and transfers use Aztec's **Fully Homomorphic Encryption (FHE)**-compatible zk-SNARK circuits. Your balance is never readable by any third party — including Humanity Ledger.
+
+---
+
+## Anti-Sybil Mechanism
+
+Each wallet is limited to one airdrop per month. The system uses:
+- **ZK Identity Hashing** (not raw addresses)
+- **IP-based deduplication** (SHA-256 hashed, non-reversible)
+- **On-chain nullifiers** to prevent replay attacks
+
+---
+
+## Contract Information
+
+The QD token logic is embedded in the Aztec L2 contract suite. There is no ERC-20 equivalent — QD exists purely in the ZK state tree. Public Aztec contract addresses are published in the Transparency Report.
+`,
+  "changelog": `
+# Changelog
+
+All notable changes to Humanity Ledger are documented here.
+
+---
+
+## v1.0.0 — January 2027 (Production Launch)
+
+### Added
+- **Ledger Chat**: Full XMTP v5.3.0 end-to-end encrypted messaging
+- **WebRTC Calls**: Peer-to-peer audio and video via PeerJS with deterministic peer IDs
+- **Quantum Dots**: Native token on Aztec Mainnet with monthly airdrop system
+- **Sovereign Identity**: Aztec Schnorr key pair derived from EVM address
+- **Poll System**: Create and respond to in-chat polls with XMTP signal protocol
+- **QD Pay**: Send Quantum Dots directly inside Ledger Chat
+- **Presence System**: Network-backed online/offline/last seen status
+- **App Hub**: Unified dashboard for all Humanity Ledger applications
+- **TuringShield Gate**: Anti-bot gate for Ledger Chat access
+- **Onion Router**: Experimental multi-hop message routing for metadata privacy
+- **Self-Destructing Messages**: Burn-on-read with configurable timers
+- **GIF Support**: Tenor-powered GIF search and sharing
+- **Voice Notes**: In-chat audio recording and playback
+- **Reactions**: Emoji reactions on any message
+- **Message Quoting**: Reply to specific messages
+- **Message Scheduling**: Send messages at a future time
+- **Read Receipts**: Optional delivery and read confirmation
+- **Contact Book**: Local encrypted address book
+- **Message Search**: Full-text search across conversation history
+- **ZK Governance**: On-chain proposal voting system
+- **Product Passport**: GS1-compatible provenance system
+
+### Security
+- All session management uses asymmetric SIWE signatures
+- AES-256-GCM local vault with PBKDF2 key derivation (600,000 iterations)
+- Zero raw IP storage — all identity hashing is non-reversible SHA-256
+
+---
+
+## Upcoming
+
+- Formal external security audit publication
+- Bug Bounty Program launch (see [Bug Bounty](/docs/bug-bounty))
+- Aztec Mainnet contract verification
+- iOS and Android native applications
+`,
 };
 
 export default async function DocPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -221,7 +366,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
     notFound();
   }
   return (
-    <DocsShell activeSlug={slug}>
+    <DocsShell currentSlug={slug}>
       <article className="prose prose-zinc max-w-none prose-headings:font-black prose-h1:text-3xl prose-h2:text-xl prose-p:text-zinc-600 prose-p:leading-relaxed prose-li:text-zinc-600">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
       </article>
