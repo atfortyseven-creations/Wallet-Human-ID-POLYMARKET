@@ -30,7 +30,6 @@ export const DOC_SECTIONS = [
     group: "Security & Audits",
     items: [
       { slug: "audits", label: "Security Audits" },
-      { slug: "bug-bounty", label: "Bug Bounty Program" },
       { slug: "transparency", label: "Transparency Report" },
     ]
   }

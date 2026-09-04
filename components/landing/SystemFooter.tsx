@@ -56,10 +56,7 @@ export function SystemFooter() {
             <Link href="/docs/architecture" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">Architecture</Link>
             <Link href="/developers/api-docs" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">API Reference</Link>
             <Link href="/docs/audits" className="text-[14px] font-medium text-black/70 hover:text-black transition-colors">Security Audits</Link>
-            <span className="flex items-center gap-2 text-[14px] font-medium text-black/30 cursor-default">
-              Bug Bounty
-              <span className="text-[9px] font-bold uppercase tracking-widest bg-black/5 text-black/30 px-2 py-0.5 rounded-full">Soon</span>
-            </span>
+            
           </div>
 
         </div>

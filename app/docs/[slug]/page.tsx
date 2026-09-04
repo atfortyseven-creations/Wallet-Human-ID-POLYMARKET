@@ -91,6 +91,127 @@ The software is provided AS IS without warranty. Humanity Ledger is not liable f
 ## 4. Governing Law
 These terms are governed by the laws of the European Union.
 `,
+  "cookies": `
+# Cookie Policy
+*Last Updated: January 1, 2027*
+
+Humanity Ledger is committed to preserving your privacy. Unlike Web2 platforms, we do not use third-party tracking cookies, pixels, or cross-site fingerprinting.
+
+## 1. Essential Cookies Only
+We only use strictly necessary cookies to maintain your active session (e.g., SIWE JWT tokens) and remember your UI preferences (dark/light mode, language). 
+
+## 2. No Analytics
+We do not use Google Analytics, Mixpanel, or any behavior-tracking software. Your interactions with the Aztec Mainnet are your business alone.
+
+## 3. Local Storage
+Your cryptographic keys and portfolio state are stored entirely in your browser's local storage and encrypted with AES-256-GCM. We have zero access to this data.
+`,
+  "aml-kyc": `
+# AML & KYC Framework
+*Last Updated: January 1, 2027*
+
+Humanity Ledger operates as a non-custodial software infrastructure provider on the Aztec Mainnet. 
+
+## 1. Non-Custodial Nature
+We do not hold, manage, or control user funds. Users interact directly with the decentralized Aztec protocol using their self-custodied keys.
+
+## 2. Regulatory Compliance
+While our infrastructure is permissionless, users accessing fiat on-ramps (e.g., via MoonPay) are subject to the KYC/AML procedures of those third-party providers.
+
+## 3. Protocol Level
+The Aztec network itself enforces strict privacy guarantees while allowing users to voluntarily generate compliance proofs (e.g., proving a transaction does not originate from a sanctioned address) using zero-knowledge technology without revealing the exact source of funds.
+`,
+  "disclaimer": `
+# Risk Disclaimer
+*Last Updated: January 1, 2027*
+
+Interacting with experimental cryptographic systems involves inherent risks.
+
+## 1. Software Risks
+Humanity Ledger and the Aztec Mainnet rely on complex mathematics (Zero-Knowledge Proofs, Elliptic Curve Cryptography). While heavily audited, unforeseen bugs could result in the loss of funds.
+
+## 2. No Financial Advice
+Nothing on this platform constitutes financial advice. The value of cryptographic assets can be highly volatile.
+
+## 3. Total Loss of Keys
+Because the system is non-custodial and decentralized, if you lose your private keys or seed phrase, Humanity Ledger cannot recover your funds. There is no "forgot password" feature in Web3.
+`,
+  "cryptography": `
+# Encryption Systems
+
+Humanity Ledger employs a multi-layered cryptographic architecture to ensure absolute privacy and data integrity.
+
+## 1. Network Layer (Aztec)
+We utilize the **Aztec Mainnet** for all financial interactions. This leverages **zk-SNARKs** (Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge) compiled via the **Noir** language to obfuscate transaction amounts, senders, and receivers.
+
+## 2. Messaging Layer (XMTP)
+All communications via Ledger Chat are secured using **XMTP**, which employs the **Double Ratchet Algorithm** (similar to Signal) for Perfect Forward Secrecy. Messages are encrypted locally before being transmitted to the decentralized relay network.
+
+## 3. Local Vault
+Sensitive data stored on your device is encrypted using **AES-256-GCM** with keys derived via **PBKDF2** (600,000 iterations), ensuring brute-force resistance even against state-level adversaries.
+`,
+  "zero-knowledge": `
+# Privacy Systems (Zero-Knowledge)
+
+The core tenet of Humanity Ledger is privacy by default, achieved through Zero-Knowledge (ZK) proofs.
+
+## How it Works
+ZK proofs allow one party (the prover) to prove to another party (the verifier) that a statement is true without revealing any information beyond the validity of the statement itself.
+
+## Application in Humanity Ledger
+When you send Quantum Dots (QDs) on the Aztec Mainnet, your device generates a ZK proof locally. This proof mathematically guarantees that you have sufficient balance and that the transaction is valid, without ever revealing your balance or the transaction amount to the network nodes.
+`,
+  "p2p-routing": `
+# Secure P2P Routing
+
+To prevent metadata analysis and IP tracking, Humanity Ledger implements advanced routing techniques.
+
+## 1. Onion Routing
+Similar to the Tor network, messages in Ledger Chat can be routed through multiple relay nodes. Each node only knows the immediate predecessor and successor, completely obfuscating the path from sender to receiver.
+
+## 2. WebRTC for Video
+Video and audio calls are established via **WebRTC**. Signaling is handled securely over XMTP, and the media streams are peer-to-peer, encrypted end-to-end via DTLS-SRTP, bypassing centralized servers entirely.
+`,
+  "app-hub": `
+# App Hub
+
+The App Hub is your gateway to the decentralized ecosystem within Humanity Ledger.
+
+It provides a curated, secure environment to interact with verified mini-apps (like Ledger Chat and the Sovereign Portfolio) that natively support our ZK identity and privacy standards. Future expansions will include third-party integrations, all operating under our strict Zero-Trust security model.
+`,
+  "identity": `
+# Digital Identity (DID)
+
+Your identity on Humanity Ledger is entirely self-sovereign and cryptographic.
+
+## Sign-In With Ethereum (SIWE)
+We use SIWE (EIP-4361) for authentication. Your public wallet address is your identity. By signing a specific message with your private key, you prove ownership without ever transmitting a password or exposing your private key to our servers.
+
+## Aztec Identity
+Behind the scenes, your EVM address deterministically generates an Aztec Schnorr identity, enabling you to transact privately on the L2 network while maintaining a single, unified point of access.
+`,
+  "audits": `
+# Security Audits
+
+Transparency and rigorous security testing are paramount.
+
+## Architecture
+Our entire infrastructure is built on the **Aztec Mainnet**, which has undergone extensive peer review and professional audits by leading blockchain security firms.
+
+## Internal Audits
+Humanity Ledger conducts continuous internal security audits, automated CI/CD security scanning, and strict dependency management to ensure the integrity of the application layer.
+
+*(Formal external audit reports for the Humanity Ledger application layer will be published here upon completion).*
+`,
+  "transparency": `
+# Transparency Report
+
+We believe in absolute transparency regarding our operations, infrastructure, and any governmental requests.
+
+As a non-custodial, zero-knowledge platform, we do not possess plaintext user data, transaction histories, or private keys. Therefore, we are technically incapable of complying with data requests seeking this information, regardless of jurisdiction.
+
+To date, Humanity Ledger has received **0** requests for user data.
+`,
 };
 
 export default async function DocPage({ params }: { params: Promise<{ slug: string }> }) {
