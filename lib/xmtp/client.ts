@@ -452,13 +452,23 @@ export async function listConversations(client: Client): Promise<any[]> {
  */
 export async function extractPeerAddress(dm: any, selfInboxId: string): Promise<string | null> {
   try {
-    const rawMembers = (dm as any).members;
-    const members: any[] = typeof rawMembers === 'function' ? await rawMembers() : (rawMembers ?? []);
+    const members: any[] = typeof dm.members === 'function' ? await dm.members() : (dm.members ?? []);
+
+    const extractAddrs = (m: any): string[] => {
+      if (m.accountAddresses) return m.accountAddresses;
+      if (m.addresses) return m.addresses;
+      if (m.accountIdentifiers) {
+        return m.accountIdentifiers
+          .filter((id: any) => id?.identifierKind === 'Ethereum' && id?.identifier)
+          .map((id: any) => id.identifier);
+      }
+      return [];
+    };
 
     // Populate cache while we're here
     for (const m of members) {
       const inboxId: string = m.inboxId ?? '';
-      const addrs: string[] = m.accountAddresses ?? m.addresses ?? [];
+      const addrs = extractAddrs(m);
       if (inboxId && addrs.length > 0) {
         inboxIdToAddressCache.set(inboxId.toLowerCase(), addrs[0].toLowerCase());
       }
@@ -467,17 +477,18 @@ export async function extractPeerAddress(dm: any, selfInboxId: string): Promise<
     // Find the peer (not self)
     for (const m of members) {
       if (m.inboxId?.toLowerCase() === selfInboxId?.toLowerCase()) continue;
-      const addrs: string[] = m.accountAddresses ?? m.addresses ?? [];
+      const addrs = extractAddrs(m);
       if (addrs.length > 0) return addrs[0].toLowerCase();
     }
-  } catch {}
+  } catch (e) {
+    console.warn('[XMTP] Error extracting peer address from members:', e);
+  }
 
   // Fallback: peerInboxId → cache lookup
   try {
-    const rawPeerInboxId = (dm as any).peerInboxId;
-    const peerInboxId: string = typeof rawPeerInboxId === 'function'
-      ? await rawPeerInboxId()
-      : (rawPeerInboxId ?? '');
+    const peerInboxId: string = typeof dm.peerInboxId === 'function'
+      ? await dm.peerInboxId()
+      : (dm.peerInboxId ?? '');
     if (peerInboxId) {
       const cached = inboxIdToAddressCache.get(peerInboxId.toLowerCase());
       if (cached) return cached;
@@ -485,7 +496,9 @@ export async function extractPeerAddress(dm: any, selfInboxId: string): Promise<
       const resolved = await resolveInboxIdToAddress(peerInboxId);
       if (resolved) return resolved;
     }
-  } catch {}
+  } catch (e) {
+    console.warn('[XMTP] Error extracting peer address from peerInboxId:', e);
+  }
 
   return null;
 }
