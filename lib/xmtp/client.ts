@@ -75,14 +75,10 @@ export async function resolveInboxIdToAddress(inboxId: string, client?: Client):
 
   try {
     let states: any = null;
-    if (client) {
-      states = await (client as any).inboxStateFromInboxIds?.([inboxId], XMTP_ENV);
-      if (!states) {
-        const state = await (client as any).getLatestInboxState?.(inboxId);
-        if (state) states = [state];
-      }
-    } else {
+    try {
       states = await (Client as any).inboxStateFromInboxIds?.([inboxId], XMTP_ENV);
+    } catch (e) {
+      console.warn('[XMTP] Static inboxStateFromInboxIds failed', e);
     }
 
     if (states && states[0]) {

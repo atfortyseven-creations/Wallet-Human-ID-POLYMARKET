@@ -358,14 +358,14 @@ Los QDs ganados en una mini-app pueden gastarse en otra.
 del ecosistema. 
 66. Escalable: Nuevas mini-apps pueden añadirse al ecosistema sin romper las existentes. 
 5.2 Mini-Apps Actuales y Futuras 
-Primera Mini-App — Ledger Chat (TESTING / BETA ACADÉMICA): 
+Primera Mini-App — Ledger Chat (PRODUCCIÓN / DEPLOY ACADÉMICO): 
 Nuestra primera app insignia destinada a publicarse en App Store y Google Play. Aplicación de 
 mensajería, videollamadas y transferencias P2P completamente descentralizada. 
 Estado Operativo Actual: Ledger Chat y el panel de Portfolio son las aplicaciones 
 habilitadas en la red de pruebas. Permiten el flujo completo de comunicación (mensajería 
 XMTP, llamadas P2P WebRTC) y la transferencia nativa de QDs entre identidades Aztec. 
 Todo el sistema ha superado las primeras fases de auditoría técnica y de seguridad 
-estricta, operando bajo un entorno de testeo controlado. 
+estricta, operando de forma inmutable y descentralizada. 
 Segunda Mini-App — Sovereign Portfolio (EN DESARROLLO): 
 Panel de control de identidad Aztec, gestión de QDs, historial de transacciones, reclamación de 
 airdrops y acceso a los módulos ZK avanzados (PXE Visualizer, Noir Circuits, Aztec Shielding 
@@ -1771,7 +1771,7 @@ export function deriveSecretKeyFromEvm(evmAddress: string): string {
  
 `EmbeddedWallet`: En modo on-chain (cuando AZTEC_TOKEN_CONTRACT_ADDRESS está 
 configurado), se usa EmbeddedWallet.create() para crear una wallet Aztec efímera que 
-puede ejecutar transacciones reales en la testnet. 
+puede ejecutar transacciones reales en Aztec Mainnet. 
 34.2 La SponsoredFPC (Fee Payment Contract) 
 Las transacciones en Aztec requieren el pago de fees. Para mejorar la UX, Humanity Ledger usa 
 un SponsoredFeePaymentMethod con la dirección del FPC (Fee Payment Contract) 
@@ -2182,7 +2182,7 @@ DATABASE_URL="postgresql://user:password@localhost:5432/humanityledger"
 JWT_SECRET="un-secreto-largo-y-aleatorio-de-al-menos-32-caracteres" 
 NEXT_PUBLIC_APP_URL="http://localhost:3000" 
   
-# Variables de Aztec (pueden ser de testnet) 
+# Variables de Aztec 
 AZTEC_PXE_URL="https://node.aztec.network" 
 # AZTEC_TOKEN_CONTRACT_ADDRESS= (dejar vacío para Modo B) 
   
@@ -2301,7 +2301,7 @@ Estado
 Notas 
 Ledger Chat 
 (Mensajes/Llamadas) 
-🔧🔧 Beta / Testing 
+🔧🔧 Producción 
 Funcional para testeo 
 académico. Mensajes E2E y 
 llamadas P2P activas. 
@@ -2355,7 +2355,7 @@ Capacitor configurado
 54. Roadmap Q4 2026 — Q2 2027 
 Q4 2026 — Solidificación 
 Prioridad 1 — QDs On-Chain (Modo A): 
-Desplegar el contrato TokenContract de Aztec en la testnet V5, activando las transferencias 
+Desplegar el contrato TokenContract de Aztec en la Mainnet V5, activando las transferencias 
 nativas on-chain. Esto requiere completar la migración de los circuitos Noir de V4 a V5. 
 Prioridad 2 — Sovereign Node Staking: 
 Activar el sistema de staking de QDs para usuarios que quieran comprometerse a largo plazo 
