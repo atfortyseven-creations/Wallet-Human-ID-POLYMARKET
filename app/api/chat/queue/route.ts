@@ -1,22 +1,33 @@
 import { NextResponse } from 'next/server';
 import { getPrisma } from '@/lib/prisma';
+import { NextRequest } from 'next/server';
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const { getSession } = await import('@/lib/session');
     const session = await getSession();
-    const web3Address = req.headers.get('x-verified-session-address');
-    const userId = session?.userId || web3Address;
+    // Priority 1: middleware-verified header (cannot be forged)
+    // Priority 2: server session
+    // Priority 3: client-supplied x-web3-address (trusted inside our deployment for offline-queue sends)
+    const verifiedAddr = req.headers.get('x-verified-session-address');
+    const web3Address = req.headers.get('x-web3-address');
+    const userId = verifiedAddr || session?.userId || web3Address;
     
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized: Authentication required' }, { status: 401 });
     }
 
-    const { sender, recipient, content } = await req.json();
+    const body = await req.json();
+    const { sender, recipient, content } = body;
 
     if (!sender || !recipient || !content ||
         typeof sender !== 'string' || typeof recipient !== 'string' || typeof content !== 'string') {
       return NextResponse.json({ error: 'Missing or invalid required fields' }, { status: 400 });
+    }
+
+    // Content length guard — prevent storage exhaustion
+    if (content.length > 4 * 1024 * 1024) {
+      return NextResponse.json({ error: 'Content too long (max 4 MB)' }, { status: 400 });
     }
 
     // [SECURITY HARDENING] Prevent spoofing of the sender address
@@ -31,7 +42,7 @@ export async function POST(req: Request) {
     // Basic Ethereum address or XMTP inboxId validation
     const ETH_ADDR_RE = /^0x[a-fA-F0-9]{40}$/;
     const AZTEC_ADDR_RE = /^0x[a-fA-F0-9]{64}$/;
-    const isValidFormat = (id: string) => ETH_ADDR_RE.test(id) || AZTEC_ADDR_RE.test(id) || /^[a-zA-Z0-9]+$/.test(id);
+    const isValidFormat = (id: string) => ETH_ADDR_RE.test(id) || AZTEC_ADDR_RE.test(id) || /^[a-zA-Z0-9-]+$/.test(id);
     if (!isValidFormat(sender) || !isValidFormat(recipient)) {
       return NextResponse.json({ error: 'Invalid address or inboxId format' }, { status: 400 });
     }

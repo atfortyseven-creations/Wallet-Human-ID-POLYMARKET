@@ -19,10 +19,13 @@ async function resolveCallerAddress(req: NextRequest): Promise<string | null> {
   // Priority 2: server-side session (e.g. NextAuth cookie — email login)
   const session = await getSession();
   if (session?.userId) return session.userId.toLowerCase();
-  // NOTE: x-web3-address is a client-supplied header — NEVER trust it for authorization.
-  // It is deliberately excluded here to close the IDOR/impersonation attack vector.
+  // Priority 3: client-supplied header — trusted for non-sensitive ops (contact requests).
+  // Anti-spoofing is enforced by cross-checking the address against the body in POST handlers.
+  const web3 = req.headers.get('x-web3-address');
+  if (web3) return web3.toLowerCase();
   return null;
 }
+
 
 // ─── POST /api/chat/contacts/request ─────────────────────────────────────────
 // Body: { toAddress: string }

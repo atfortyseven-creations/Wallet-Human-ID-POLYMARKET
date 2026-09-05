@@ -136,6 +136,7 @@ model User {
   stealthMode           Boolean @default(false)
   requireSignForExports Boolean @default(true)
   allowAnalytics        Boolean @default(true)
+  extendedSettings      Json?   @default("{}")
 
   //  Sonar Alerts 
   emailAlerts         Boolean @default(false)

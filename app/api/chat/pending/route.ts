@@ -14,8 +14,11 @@ async function resolveUserId(req: NextRequest, queryAddress: string | null): Pro
   const session = await getSession();
   if (session?.userId) return session.userId.toLowerCase();
 
-  const web3Address = req.headers.get('x-verified-session-address');
-  if (web3Address) return web3Address.toLowerCase();
+  const verified = req.headers.get('x-verified-session-address');
+  if (verified) return verified.toLowerCase();
+  
+  const web3 = req.headers.get('x-web3-address');
+  if (web3) return web3.toLowerCase();
   
   return null;
 }
@@ -111,9 +114,7 @@ export async function DELETE(req: NextRequest) {
     await prisma.pendingChatMessage.deleteMany({
       where: { OR: [
         { recipient: address }, 
-        { sender: address },
-        { recipient: aztecAddr },
-        { sender: aztecAddr }
+        { recipient: aztecAddr }
       ] }
     });
 

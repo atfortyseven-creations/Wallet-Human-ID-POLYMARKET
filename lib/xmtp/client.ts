@@ -363,53 +363,61 @@ export async function sendMessage(
   senderEthAddress?: string,
 ): Promise<void> {
   // CRITICAL: normalize to EIP-55 checksum format before any XMTP call
-  const normalizedTo = await checksumAddress(toAddress);
-  const identifier: XmtpIdentifier = {
-    identifier: normalizedTo,
-    identifierKind: 'Ethereum',
-  };
-
+  // Only attempt XMTP checksum and routing if it's an Ethereum address (42 chars).
+  // Aztec Schnorr addresses (66 chars) are not natively routable via XMTP.
+  const isAztecAddress = toAddress.length === 66 && toAddress.startsWith('0x');
+  
   let lastErr: any;
 
-  for (let i = 0; i < 3; i++) {
-    try {
-      // Always try direct XMTP send first (newDmWithIdentifier handles
-      // both "already exists" and "create new" cases atomically)
-      const dm = await client.conversations.newDmWithIdentifier(identifier);
-      await dm.send(content);
-      // Sync after send to confirm delivery — ignore sync errors, message is already sent
-      try { await dm.sync(); } catch {}
-      return; // SUCCESS — do not fall through to offline queue
-    } catch (sendErr: any) {
-      const errMsg = (sendErr?.message || '').toLowerCase();
+  if (!isAztecAddress) {
+    const normalizedTo = await checksumAddress(toAddress);
+    const identifier: XmtpIdentifier = {
+      identifier: normalizedTo,
+      identifierKind: 'Ethereum',
+    };
 
-      // These are fatal errors meaning the recipient definitely cannot receive on XMTP
-      // Fall through to offline queue
-      const isRecipientOffline =
-        errMsg.includes('not on xmtp') ||
-        errMsg.includes('no inbox') ||
-        errMsg.includes('identity not found') ||
-        errMsg.includes('recipient not found');
+    for (let i = 0; i < 3; i++) {
+      try {
+        // Always try direct XMTP send first (newDmWithIdentifier handles
+        // both "already exists" and "create new" cases atomically)
+        const dm = await client.conversations.newDmWithIdentifier(identifier);
+        await dm.send(content);
+        // Sync after send to confirm delivery — ignore sync errors, message is already sent
+        try { await dm.sync(); } catch {}
+        return; // SUCCESS — do not fall through to offline queue
+      } catch (sendErr: any) {
+        const errMsg = (sendErr?.message || '').toLowerCase();
 
-      if (isRecipientOffline) {
-        console.warn('[XMTP] Recipient confirmed offline, queuing:', toAddress);
-        break; // Stop retries, fall through to offline queue
-      }
+        // These are fatal errors meaning the recipient definitely cannot receive on XMTP
+        // Fall through to offline queue
+        const isRecipientOffline =
+          errMsg.includes('not on xmtp') ||
+          errMsg.includes('no inbox') ||
+          errMsg.includes('identity not found') ||
+          errMsg.includes('recipient not found');
 
-      // Non-fatal send error (network blip, timeout, relay issue)
-      // Store the error and retry with backoff
-      lastErr = sendErr;
+        if (isRecipientOffline) {
+          console.warn('[XMTP] Recipient confirmed offline, queuing:', toAddress);
+          break; // Stop retries, fall through to offline queue
+        }
 
-      if (i < 2) {
-        await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i))); // 1s, 2s backoff
+        // Non-fatal send error (network blip, timeout, relay issue)
+        // Store the error and retry with backoff
+        lastErr = sendErr;
+
+        if (i < 2) {
+          await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i))); // 1s, 2s backoff
+        }
       }
     }
-  }
 
-  // If we exhausted retries on a non-fatal error, re-throw so the caller
-  // can show the user a retry option instead of silently queuing.
-  if (lastErr) {
-    throw lastErr;
+    // If we exhausted retries on a non-fatal error, re-throw so the caller
+    // can show the user a retry option instead of silently queuing.
+    if (lastErr) {
+      throw lastErr;
+    }
+  } else {
+    console.log('[XMTP] Aztec address detected. Bypassing native XMTP and using Offline Queue.');
   }
 
   // === OFFLINE QUEUE FALLBACK ===

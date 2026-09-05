@@ -2843,11 +2843,9 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                // CONSUME pending messages where we are the RECIPIENT:
                // This clears them from the server queue so they are marked as delivered.
                // Only delete messages addressed TO us — we must not delete messages we sent.
-               const incomingIds = pData.pending
-                 .filter((p: any) => p.recipient.toLowerCase() === address?.toLowerCase())
-                 .map((p: any) => p.id);
+               const hasIncoming = pData.pending.some((p: any) => p.sender.toLowerCase() !== address?.toLowerCase());
                
-               if (incomingIds.length > 0) {
+               if (hasIncoming) {
                  fetch(`/api/chat/pending?address=${address}`, {
                    method: 'DELETE',
                    headers: { 'x-web3-address': address || '' }
@@ -3851,7 +3849,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
             conversations.filter(conv => showArchived ? archivedPeers.has(conv.peerAddress.toLowerCase()) : !archivedPeers.has(conv.peerAddress.toLowerCase())).map((conv, i) => {
               const isActive = activePeer?.toLowerCase() === conv.peerAddress.toLowerCase();
               const contactName = resolveContactName(effectiveAddress, conv.peerAddress);
-              const displayLabel = contactName || ledgerSettings?.displayName || shortAddr(conv.peerAddress);
+              const displayLabel = contactName || shortAddr(conv.peerAddress);
               return (
                 <div key={i} className="relative w-full overflow-hidden border-b border-black/[0.04]">
                   <div className="absolute inset-y-0 right-0 flex items-center justify-center w-20 bg-[#FF3B30] text-white text-[11px] font-semibold cursor-pointer" onClick={() => toggleArchive(conv.peerAddress)}>
@@ -4558,19 +4556,27 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
 
                     <AnimatePresence>
                       {showEmojiPicker && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          className="absolute bottom-[60px] left-2 z-[100] shadow-2xl rounded-[20px] overflow-hidden border border-black/10"
-                        >
-                          <EmojiPicker 
-                            onEmojiClick={(emojiData) => { 
-                              setInputText(prev => prev + emojiData.emoji);
-                            }}
-                            
+                        <>
+                          <div 
+                            className="fixed inset-0 z-[90]" 
+                            onClick={() => setShowEmojiPicker(false)} 
                           />
-                        </motion.div>
+                          <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            className="absolute bottom-[60px] left-2 z-[100] shadow-2xl rounded-[20px] overflow-hidden border border-black/10"
+                          >
+                            <EmojiPicker 
+                              theme="light"
+                              emojiStyle="apple"
+                              lazyLoadEmojis={true}
+                              onEmojiClick={(emojiData: any) => { 
+                                setInputText(prev => prev + emojiData.emoji);
+                              }}
+                            />
+                          </motion.div>
+                        </>
                       )}
                     </AnimatePresence>
 
