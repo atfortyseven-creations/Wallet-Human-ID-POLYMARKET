@@ -2843,7 +2843,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                // CONSUME pending messages where we are the RECIPIENT:
                // This clears them from the server queue so they are marked as delivered.
                // Only delete messages addressed TO us — we must not delete messages we sent.
-               const hasIncoming = pData.pending.some((p: any) => p.sender.toLowerCase() !== address?.toLowerCase());
+               const hasIncoming = pData.pending.some((p: any) => p.sender?.toLowerCase() !== address?.toLowerCase());
                
                if (hasIncoming) {
                  fetch(`/api/chat/pending?address=${address}`, {
@@ -4568,9 +4568,6 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                             className="absolute bottom-[60px] left-2 z-[100] shadow-2xl rounded-[20px] overflow-hidden border border-black/10"
                           >
                             <EmojiPicker 
-                              theme="light"
-                              emojiStyle="apple"
-                              lazyLoadEmojis={true}
                               onEmojiClick={(emojiData: any) => { 
                                 setInputText(prev => prev + emojiData.emoji);
                               }}
