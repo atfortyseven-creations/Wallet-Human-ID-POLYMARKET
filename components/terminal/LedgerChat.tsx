@@ -257,6 +257,8 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
 
   const [client, setClient] = useState<Client | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
+  const [isInitTimeout, setIsInitTimeout] = useState(false); // shows retry UI after 15s
+  const initTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [initError, setInitError] = useState('');
   
   const [isMounted, setIsMounted] = useState(false);
@@ -2233,10 +2235,14 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     if (initInFlight.current) return;
     initInFlight.current = true;
     setIsInitializing(true);
+    setIsInitTimeout(false);
     setInitError('');
+    // Safety: show 'Retry' UI after 15s if still waiting (MetaMask popup dismissed/ignored)
+    if (initTimeoutRef.current) clearTimeout(initTimeoutRef.current);
+    initTimeoutRef.current = setTimeout(() => setIsInitTimeout(true), 15000);
 
     let attempts = 0;
-    const maxAttempts = 4; // Extra attempt for post-revocation retry
+    const maxAttempts = 2; // Reduced from 4 — fewer retries means faster failure feedback
 
     // [XMTP-FIX] Define wagmiSigner OUTSIDE the try-block so the catch handler
     // can access it when triggering automatic installation revocation.
@@ -2345,6 +2351,8 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         }
 
         setIsInitializing(false);
+        setIsInitTimeout(false);
+        if (initTimeoutRef.current) { clearTimeout(initTimeoutRef.current); initTimeoutRef.current = null; }
         initInFlight.current = false;
         return; // Success
       } catch (err: any) {
@@ -3563,9 +3571,45 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
             Zero Knowledge <br /> <span className="text-black/30">Transport.</span>
           </h2>
           
-          <p className="text-[14px] font-medium text-[#555] text-center leading-[1.6] mb-10 max-w-[280px]">
+          <p className="text-[14px] font-medium text-[#555] text-center leading-[1.6] mb-6 max-w-[280px]">
             {isInitializing ? "Deriving session keys and verifying hardware enclave..." : "Activate your cryptographic identity to access the sovereign network."}
           </p>
+
+          {/* Shown after 15s if still loading — prevents permanent freeze */}
+          {isInitTimeout && isInitializing && (
+            <div className="flex flex-col gap-3 w-full mb-6 animate-in fade-in duration-500">
+              <p className="text-[11px] text-center text-[#999] font-mono uppercase tracking-widest">Taking longer than expected...</p>
+              <button
+                onClick={() => {
+                  if (initTimeoutRef.current) { clearTimeout(initTimeoutRef.current); initTimeoutRef.current = null; }
+                  initInFlight.current = false;
+                  setIsInitializing(false);
+                  setIsInitTimeout(false);
+                  setTimeout(() => initClient(), 300);
+                }}
+                className="w-full h-[44px] bg-black text-white rounded-xl font-bold text-[13px] tracking-wide active:scale-[0.98] transition-all"
+              >
+                Retry Connection
+              </button>
+              <button
+                onClick={() => {
+                  try {
+                    const keys = Object.keys(localStorage).filter(k => k.startsWith('xmtp') || k.startsWith('ledger_xmtp'));
+                    keys.forEach(k => localStorage.removeItem(k));
+                    if (typeof indexedDB !== 'undefined') ['xmtp','xmtp-v2','xmtp-prod','xmtp-dev'].forEach(n => { try { indexedDB.deleteDatabase(n); } catch(e) {} });
+                  } catch(e) {}
+                  if (initTimeoutRef.current) { clearTimeout(initTimeoutRef.current); initTimeoutRef.current = null; }
+                  initInFlight.current = false;
+                  setIsInitializing(false);
+                  setIsInitTimeout(false);
+                  setTimeout(() => initClient(), 400);
+                }}
+                className="w-full h-[44px] bg-white border border-[#EBEBEB] text-black rounded-xl font-bold text-[13px] tracking-wide active:scale-[0.98] transition-all"
+              >
+                Clear Cache &amp; Retry
+              </button>
+            </div>
+          )}
 
           {initError ? (
             <div className="flex flex-col items-center gap-4 w-full">
