@@ -1,6 +1,8 @@
 ﻿import { Client } from '@xmtp/browser-sdk';
 import { chatDB, LocalMessage } from '@/lib/sync/chatDatabase';
 import { streamMessages, sendMessage as xmtpSend } from '@/lib/xmtp/client';
+import { CallMetadataEngine } from './CallMetadataEngine';
+
 
 export class ChatSyncEngine {
   private client: Client | null = null;
@@ -28,6 +30,12 @@ export class ChatSyncEngine {
 
         const isMine = msg.senderInboxId === this.client.inboxId || msg.senderAddress === this.myAddress;
         const content = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
+        
+        // INTERCEPT SYSTEM MESSAGES
+        if (!isMine && CallMetadataEngine.interceptIncomingCall(content)) {
+          continue; // Do not save system messages to UI database
+        }
+
 
         const localMsg: LocalMessage = {
           id: msg.id,

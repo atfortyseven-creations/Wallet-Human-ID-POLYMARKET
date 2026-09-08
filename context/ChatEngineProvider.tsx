@@ -112,6 +112,11 @@ export function ChatEngineProvider({ children }: { children: React.ReactNode }) 
   };
 
   const startCall = async (peer: string, isVideo: boolean) => {
+    if (client && address) {
+      import('@/lib/engine/CallMetadataEngine').then(m => {
+        m.CallMetadataEngine.sendCallOffer(client, peer, isVideo, address).catch(console.error);
+      });
+    }
     await rtcEngineRef.current?.startCall(peer, isVideo);
   };
 

@@ -3686,6 +3686,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           children (the two-panel layout) can resolve their height against the viewport.
           Without this, TuringShieldGate's Fragment return gives no height context. */}
       <div className="flex flex-col h-full w-full min-h-0 overflow-hidden">
+      <IncomingCallOverlay />
       {/* FULL SCREEN MODALS */}
       <AnimatePresence>
         {showSettings && (
