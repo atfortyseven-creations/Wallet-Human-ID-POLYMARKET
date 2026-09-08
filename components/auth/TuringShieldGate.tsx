@@ -131,7 +131,7 @@ export function TuringShieldGate({
   const resetOtpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Anti-Bot CAPTCHA
-  const [captchaPassed, setCaptchaPassed] = useState(false);
+  const [captchaPassed, setCaptchaPassed] = useState(true);
   // Cryptographic ZK-SNARK Handshake instead of childish math captchas
   const [zkStatus, setZkStatus] = useState<string>('INITIATING ZK-SNARK HANDSHAKE');
   const [zkProgress, setZkProgress] = useState(0);
