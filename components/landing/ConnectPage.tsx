@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
+
+import { PasskeyOnboarding } from '@/components/auth/PasskeyOnboarding';
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import Link from "next/link";

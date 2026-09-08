@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
 
-export async function PUT(req: Request) {
+export async function PUT(req: Request, { params }: { params: Promise<{ address: string }> }) {
     const session = await getSession();
     if (!session?.userId) {
         return new Response(JSON.stringify({ error: 'Unauthorized: Authentication required.' }), { status: 401, headers: { 'Content-Type': 'application/json' } });

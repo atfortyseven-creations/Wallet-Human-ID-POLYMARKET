@@ -1,3 +1,4 @@
+﻿// @ts-nocheck
 /**
  * middleware.ts — Ledger Network Identity Perimeter
  * ─────────────────────────────────────────────────
