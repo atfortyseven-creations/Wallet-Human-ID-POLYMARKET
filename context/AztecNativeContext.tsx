@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 /**
  * AztecNativeContext.tsx
  * ─────────────────────────────────────────────────────────────────────────────
@@ -167,13 +167,12 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   // evmAddress is populated even when wagmi has no connector (QR-linked PC sessions).
   // Priority ladder: wagmi direct → QR cookie → local system wallet.
   const { address: evmAddress } = useSystemAccount();
-
   // [iOS FIX] Tracks which tx IDs have already fired a toast.
   // Persisted in localStorage so iOS tab suspension/resume and completely new 
   // sessions do NOT trigger duplicate notifications for all historical transactions.
-  const NOTIFIED_KEY = `aztec_notified_${evmAddress || 'anon'}`;
+  const NOTIFIED_KEY = React.useMemo(() => `aztec_notified_${evmAddress || 'anon'}`, [evmAddress]);
   const notifiedRef = useRef<Set<string>>(new Set<string>());
-  if (!notifiedRef.current) {
+  if (!notifiedRef.current || notifiedRef.current.size === 0) {
     try {
       const stored = localStorage.getItem(NOTIFIED_KEY);
       notifiedRef.current = stored ? new Set(JSON.parse(stored)) : new Set<string>();
@@ -220,7 +219,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
           
           for (const tx of transactions) {
             if (notifiedRef.current.has(tx.id)) continue;
-            markNotified(tx.id); // persist immediately — survives iOS remount
+            markNotifiedRef.current(tx.id); // persist immediately — survives iOS remount
             
             // Only toast if it's not the initial sync
             if (

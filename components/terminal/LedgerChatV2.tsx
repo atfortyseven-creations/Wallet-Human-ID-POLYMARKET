@@ -1,9 +1,7 @@
-// @ts-nocheck
+﻿// @ts-nocheck
 "use client";
-import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings, Clock, Lock, PieChart, Bell, BrainCircuit, Droplet, ShieldCheck, ArrowRightLeft, Radio, LayoutGrid } from 'lucide-react';
+import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings, Clock, Lock, PieChart, Bell } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-
-import { useChatEngine } from '@/context/ChatEngineProvider';
 import { createPortal } from 'react-dom';
 import { Video, VideoOff, Phone, PhoneOff, Mic, MicOff, Volume2, Smile, Paperclip, BarChart2, Wallet, Flame } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -29,9 +27,6 @@ import { getLocalContacts, saveLocalContact, resolveContactName, LocalContact } 
 import { getCallHistory, saveCallRecord, CallRecord } from '@/lib/wallet/callHistory';
 import { LedgerChatProfile } from '@/components/chat/LedgerChatProfile';
 import { LedgerChatVaultManager } from '@/components/chat/LedgerChatVaultManager';
-
-import { IncomingCallOverlay } from '@/components/chat/IncomingCallOverlay';
-import { SyndicateModal } from '@/components/chat/SyndicateModal';
 import { LedgerChatOnboarding } from '@/components/chat/LedgerChatOnboarding';
 import { LedgerChatUserSearch } from '@/components/chat/LedgerChatUserSearch';
 import { ContactRequestsPanel } from '@/components/chat/ContactRequestsPanel';
@@ -347,23 +342,22 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     return c ? c.name : shortAddr(peerAddr);
   }, [localContacts]);
 
-  const [showSyndicateModal, setShowSyndicateModal] = useState(false);
-  const [showSyndicateModal2, _] = useState(false); // alias
   const [reactionMenu, setReactionMenu] = useState<string | null>(null); // Phase 2: Emoji Reactions
   const [pinnedMessageId, setPinnedMessageId] = useState<string | null>(null); // Phase 3: Pinned
   const [burnTimer, setBurnTimer] = useState<number | null>(null); // Phase 3: Self-Destruct TTL
-  
-    const { messages, sendMessage: engineSendMessage, startCall: engineStartCall, endCall: engineEndCall, setActivePeer: engineSetActivePeer } = useChatEngine();
-    // Dummy setMessages to prevent old effects (like burnTimer) from crashing the syntax or runtime
-    const setMessages = (updater: any) => { console.log('setMessages bypassed by Quantum Engine'); };
+  const [messages, setMessages] = useState<any[]>([]);
 
-    // [AEGIS AUDIT FIX] Sync local activePeer with Quantum Engine
-    useEffect(() => {
-        if (activePeer) engineSetActivePeer(activePeer);
-    }, [activePeer, engineSetActivePeer]);
-    
-
-
+  // Phase 3: Self-Destruct Timer
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      setMessages(prev => {
+        const next = prev.filter(m => !m.burnAtNs || m.burnAtNs > now);
+        return next.length !== prev.length ? next : prev;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
   
   const [inputText, setInputText] = useState('');
   const [peerInput, setPeerInput] = useState('');
@@ -2100,7 +2094,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
               conversationId: `dm-${activePeer.toLowerCase()}`
             }]);
             try { 
-                await engineSendMessage(activePeer, audioMsg); 
+                await sendMessage(client, activePeer, audioMsg, address); 
                 // Voice: P2P Audio transmission successful.
             } catch (sendErr: any) {
                 console.error('[Voice] P2P Send Failed:', sendErr?.message);
@@ -2510,7 +2504,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
       while (!cancelled) {
         try {
         const abortController = new AbortController();
-          const gen = [] as any; // streamMessages(client, abortController.signal);
+          const gen = streamMessages(client, abortController.signal);
         for await (const msg of gen as any) {
           if (cancelled) { abortController.abort(); break; }
           
@@ -2711,7 +2705,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                   if (ledgerSettings?.notification_sound !== false) { playReceiveSound(); };
                   triggerHaptic(ledgerSettings?.haptics_intensity ?? 0);
                   if (ledgerSettings?.show_read_receipts !== false) {
-                    engineSendMessage(msgConvPeer, `__READ__${realId}`).catch(e => console.warn('Failed to send read receipt', e));
+                    sendMessage(client, msgConvPeer, `__READ__${realId}`, address).catch(e => console.warn('Failed to send read receipt', e));
                   }
                 } else {
                   // Phase 5: Advanced Push Notifications when app is hidden
@@ -2726,7 +2720,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                 if (ledgerSettings?.ghost_auto_reply && ledgerSettings?.ghost_auto_reply_text) {
                   const replyText = ledgerSettings.ghost_auto_reply_text;
                   setTimeout(() => {
-                     engineSendMessage(msgConvPeer, replyText).catch(e => console.warn('Ghost auto-reply failed', e));
+                     sendMessage(client, msgConvPeer, replyText, address).catch(e => console.warn('Ghost auto-reply failed', e));
                   }, 1500);
                 }
               }
@@ -2819,7 +2813,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
       if (isFetching || cancelled) return;
       isFetching = true;
       try {
-        let raw = [] as any; // await getMessages(client, activePeer);
+        let raw = await getMessages(client, activePeer);
         if (cancelled) return;
         
         const clearTsMs = parseInt(localStorage.getItem(`ledger_cleared_${address}_${activePeer.toLowerCase()}`) || '0', 10);
@@ -2971,7 +2965,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           const receiptKey = `ledger_receipt_${address.toLowerCase()}_${activePeer.toLowerCase()}`;
           if (localStorage.getItem(receiptKey) !== lastPeerMsgId) {
             localStorage.setItem(receiptKey, lastPeerMsgId);
-            engineSendMessage(activePeer, `__READ__${lastPeerMsgId}`).catch(e => console.warn('Failed to send read receipt', e));
+            sendMessage(client, activePeer, `__READ__${lastPeerMsgId}`, address).catch(e => console.warn('Failed to send read receipt', e));
           }
         }
 
@@ -3259,7 +3253,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         toast.info("You are offline. Message queued to outbox.");
       } else {
         try {
-          await engineSendMessage(activePeer, finalContent);
+          await sendMessage(client, activePeer, finalContent, address);
         } catch (err) { console.error('[Ledger Chat] Message send failed:', err); throw err; }
       }
 
@@ -3500,8 +3494,6 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         )}
       </AnimatePresence>
   
-    <IncomingCallOverlay />
-      <SyndicateModal isOpen={showSyndicateModal} onClose={() => setShowSyndicateModal(false)} client={client} onGroupCreated={() => setShowSyndicateModal(false)} />
     </TuringShieldGate>
     );
   }
@@ -3633,9 +3625,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           )}
         </div>
       </div>
-      <IncomingCallOverlay />
-      <SyndicateModal isOpen={showSyndicateModal} onClose={() => setShowSyndicateModal(false)} client={client} onGroupCreated={() => setShowSyndicateModal(false)} />
-    </TuringShieldGate>
+      </TuringShieldGate>
     );
   }
   if (!hasAcceptedEula) {
@@ -3676,7 +3666,6 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           children (the two-panel layout) can resolve their height against the viewport.
           Without this, TuringShieldGate's Fragment return gives no height context. */}
       <div className="flex flex-col h-full w-full min-h-0 overflow-hidden">
-      <IncomingCallOverlay />
       {/* FULL SCREEN MODALS */}
       <AnimatePresence>
         {showSettings && (
@@ -4510,12 +4499,6 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                           setShowAppDrawer(false); 
                         } },
                         { id: 'secret', icon: <Lock size={18} />, label: isSecretChat ? 'Exit Secret Mode' : 'Secret Mode', color: 'text-white', bg: isSecretChat ? 'bg-[#FF3B30]' : 'bg-[#30D158]', onClick: () => { setIsSecretChat((s: boolean) => !s); setShowAppDrawer(false); } },
-                          { id: 'ai', icon: <BrainCircuit size={18} />, label: 'Aegis AI Core', color: 'text-white', bg: 'bg-[#FF2D55]', onClick: () => { executeSendRef.current?.('[AEGIS_AI] Analyze sentiment and facts'); setShowAppDrawer(false); toast.success('Aegis AI Agent invoked'); } },
-                          { id: 'superfluid', icon: <Droplet size={18} />, label: 'Superfluid Stream', color: 'text-white', bg: 'bg-[#32ADE6]', onClick: () => { executeSendRef.current?.('[SUPERFLUID] Stream 100 USDC/month'); setShowAppDrawer(false); toast.success('Superfluid Stream Initialized'); } },
-                          { id: 'escrow', icon: <ShieldCheck size={18} />, label: 'HTLC Escrow', color: 'text-white', bg: 'bg-[#FF9500]', onClick: () => { executeSendRef.current?.('[HTLC_ESCROW] Lock funds in smart contract'); setShowAppDrawer(false); toast.success('HTLC Escrow contract deployed'); } },
-                          { id: 'crosschain', icon: <ArrowRightLeft size={18} />, label: 'Cross-Chain', color: 'text-white', bg: 'bg-[#AF52DE]', onClick: () => { executeSendRef.current?.('[CROSS_CHAIN] Bridge asset via CCIP'); setShowAppDrawer(false); toast.success('Cross-Chain Intent signed'); } },
-                          { id: 'livepeer', icon: <Radio size={18} />, label: 'Live Broadcast', color: 'text-white', bg: 'bg-[#FF3B30]', onClick: () => { executeSendRef.current?.('[LIVEPEER] Start decentralized broadcast'); setShowAppDrawer(false); toast.success('Livepeer RTMP Node starting'); } },
-                          { id: 'miniapp', icon: <LayoutGrid size={18} />, label: 'Mini App', color: 'text-white', bg: 'bg-[#5856D6]', onClick: () => { executeSendRef.current?.('[MINI_APP] Launch syndicate game'); setShowAppDrawer(false); toast.success('Mini-App execution loaded'); } },
                         { id: 'schedule', icon: <Clock size={18} />, label: 'Schedule Send', color: 'text-white', bg: 'bg-[#AF52DE]', onClick: () => {
                             setShowAppDrawer(false);
                             // Open a native datetime-local picker via a temporary hidden input
@@ -5514,8 +5497,6 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         document.body
       )}
       </div>{/* end h-full flex-col layout wrapper */}
-    <IncomingCallOverlay />
-      <SyndicateModal isOpen={showSyndicateModal} onClose={() => setShowSyndicateModal(false)} client={client} onGroupCreated={() => setShowSyndicateModal(false)} />
     </TuringShieldGate>
   );
 }
