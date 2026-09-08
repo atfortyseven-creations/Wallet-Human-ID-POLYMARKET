@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Cpu, CheckCircle2, Key, Shield, AlertTriangle, Loader2, Lock, RefreshCw, Mail } from 'lucide-react';
+import { Cpu, CheckCircle2, Key, AlertTriangle, Loader2, Lock, RefreshCw, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
@@ -10,11 +10,60 @@ import { toast } from 'sonner';
 // It resets on tab close — requiring re-verification each new session.
 // NOTE: This token is issued by the server after real PIN verification.
 const CLEARANCE_KEY = '__enclave_clearance_v2__';
-const CLEARANCE_TOKEN_KEY = '__enclave_token__';
-const CLEARANCE_TS_KEY = '__enclave_ts__';
+const CLEARANCE_TOKEN_KEY = 'ledger_enclave_clearance';
+const CLEARANCE_TS_KEY = 'ledger_enclave_ts';
 // [SECURITY FIX] Add token fingerprint to detect manual sessionStorage injection
 const CLEARANCE_FINGERPRINT_KEY = '__enclave_fp__';
 const CLEARANCE_TTL_MS = 8 * 60 * 60 * 1000; // 8 hours
+
+function PinInput({ value, onChange, onComplete, disabled, error }: { value: string, onChange: (v: string) => void, onComplete?: (v: string) => void, disabled?: boolean, error?: boolean }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  
+  return (
+    <div className="relative w-full flex justify-center mb-4 cursor-text" onClick={() => inputRef.current?.focus()}>
+      <input
+        ref={inputRef}
+        type="tel"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        autoComplete="one-time-code"
+        maxLength={6}
+        value={value}
+        disabled={disabled}
+        onChange={e => {
+          const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+          onChange(val);
+          if (val.length === 6 && onComplete) onComplete(val);
+        }}
+        className="absolute inset-0 w-full h-full opacity-0 cursor-text z-20"
+      />
+      <div className="flex gap-2 justify-center w-full relative z-10 pointer-events-none">
+        {Array.from({ length: 6 }).map((_, i) => {
+          const digit = value[i];
+          const isActive = value.length === i || (value.length === 6 && i === 5);
+          return (
+            <div
+              key={i}
+              className={`w-11 h-13 sm:w-12 sm:h-14 flex items-center justify-center text-[18px] font-black rounded-xl border-2 transition-all duration-200
+                ${error
+                  ? 'bg-red-50 border-red-400 text-red-600'
+                  : digit
+                  ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
+                  : isActive
+                  ? 'bg-white border-indigo-500 ring-2 ring-indigo-500/20'
+                  : 'bg-black/[0.04] border-black/10 text-black'
+                }
+              `}
+              style={{ height: '56px' }}
+            >
+              {digit || ''}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 // Derive a simple client-side fingerprint from the token to detect tampering.
 // This is NOT cryptographic security — it's a client-side sanity check.
@@ -81,7 +130,7 @@ export function TuringShieldGate({
 }) {
   const [mounted, setMounted] = useState(false);
   const [cleared, setCleared] = useState(false);
-  const [pin, setPin] = useState(['', '', '', '', '', '']);
+  const [pin, setPin] = useState('');
   const [pinError, setPinError] = useState<string | null>(null);
   const [verifying, setVerifying] = useState(false);
   const [shake, setShake] = useState(false);
@@ -102,7 +151,7 @@ export function TuringShieldGate({
         setLockoutExpiresAt(null);
         setAttemptsRemaining(null);
         setPinError(null);
-        setPin(['', '', '', '', '', '']);
+        setPin('');
       }
     }, 1000);
     return () => clearInterval(interval);
@@ -111,8 +160,8 @@ export function TuringShieldGate({
   // Set new PIN flow
   const [isFirstTime, setIsFirstTime] = useState(false);
   const [settingPin, setSettingPin] = useState(false);
-  const [newPin, setNewPin] = useState(['', '', '', '', '', '']);
-  const [confirmPin, setConfirmPin] = useState(['', '', '', '', '', '']);
+  const [newPin, setNewPin] = useState('');
+  const [confirmPin, setConfirmPin] = useState('');
   const [pinSetStep, setPinSetStep] = useState<'new' | 'confirm'>('new');
   const [pinSetError, setPinSetError] = useState<string | null>(null);
   const [pinSetSuccess, setPinSetSuccess] = useState(false);
@@ -123,22 +172,17 @@ export function TuringShieldGate({
 
   const [resetFlowState, setResetFlowState] = useState<'idle' | 'requesting' | 'awaiting_otp' | 'verifying_otp'>('idle');
   const [resetEmail, setResetEmail] = useState<string | null>(null);
-  const [resetOtp, setResetOtp] = useState(['', '', '', '', '', '']);
+  const [resetOtp, setResetOtp] = useState('');
   const [resetOtpError, setResetOtpError] = useState<string | null>(null);
   const [resetAttemptsLeft, setResetAttemptsLeft] = useState<number | null>(null);
   const [tempClearanceToken, setTempClearanceToken] = useState<string | null>(null);
   const [tempClearanceTs, setTempClearanceTs] = useState<number | null>(null);
-  const resetOtpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Anti-Bot CAPTCHA
   const [captchaPassed, setCaptchaPassed] = useState(true);
   // Cryptographic ZK-SNARK Handshake instead of childish math captchas
   const [zkStatus, setZkStatus] = useState<string>('INITIATING ZK-SNARK HANDSHAKE');
   const [zkProgress, setZkProgress] = useState(0);
-
-  const pinRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const newPinRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const confirmPinRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     setMounted(true);
@@ -224,8 +268,7 @@ export function TuringShieldGate({
       }
       setResetEmail(data.maskedEmail);
       setResetFlowState('awaiting_otp');
-      setResetOtp(['', '', '', '', '', '']);
-      setTimeout(() => resetOtpRefs.current[0]?.focus(), 100);
+      setResetOtp('');
     } catch (err: any) {
       setResetFlowState('idle');
       setPinError(err.message);
@@ -233,8 +276,7 @@ export function TuringShieldGate({
     }
   };
 
-  const handleVerifyOtp = async (digits: string[]) => {
-    const code = digits.join('');
+  const handleVerifyOtp = async (code: string) => {
     if (code.length !== 6) return;
     setResetFlowState('verifying_otp');
     setResetOtpError(null);
@@ -253,8 +295,7 @@ export function TuringShieldGate({
         } else {
           setResetFlowState('awaiting_otp');
           setResetOtpError(data.error || 'Invalid code');
-          setResetOtp(['', '', '', '', '', '']);
-          resetOtpRefs.current[0]?.focus();
+          setResetOtp('');
         }
         triggerShake();
         return;
@@ -268,9 +309,8 @@ export function TuringShieldGate({
       setSettingPin(true);
       setIsFirstTime(false); // we're resetting, not first time setup
       setPinSetStep('new');
-      setNewPin(['', '', '', '', '', '']);
-      setConfirmPin(['', '', '', '', '', '']);
-      setTimeout(() => newPinRefs.current[0]?.focus(), 100);
+      setNewPin('');
+      setConfirmPin('');
       toast.success('Identity verified. Please set a new PIN.');
     } catch (err: any) {
       setResetFlowState('awaiting_otp');
@@ -280,8 +320,7 @@ export function TuringShieldGate({
   };
 
   // ─── Verify PIN against server ─────────────────────────────────────────────
-  const handleSubmit = useCallback(async (digits: string[]) => {
-    const code = digits.join('');
+  const handleSubmit = useCallback(async (code: string) => {
     if (code.length !== 6) return;
     if (verifying || locked) return;
 
@@ -299,14 +338,11 @@ export function TuringShieldGate({
       const data = await res.json();
 
       if (res.status === 429) {
-        // [SECURITY FIX] Record server-side lockout expiry — client CANNOT reset this
         setLocked(true);
         setPinError(data.error || 'Too many attempts. Please wait 15 minutes.');
-        setPin(['', '', '', '', '', '']);
+        setPin('');
         triggerShake();
         setVerifying(false);
-        // Set lockout for 15 minutes from now — countdown is cosmetic only
-        // Server will continue to block all requests regardless of client state
         setLockoutExpiresAt(Date.now() + 15 * 60 * 1000);
         setLockoutCountdown(15 * 60);
         return;
@@ -325,9 +361,8 @@ export function TuringShieldGate({
           }
           setPinError(data.error || `Incorrect PIN. ${remaining !== null ? `${remaining} attempts remaining.` : ''}`);
         }
-        setPin(['', '', '', '', '', '']);
+        setPin('');
         triggerShake();
-        setTimeout(() => pinRefs.current[0]?.focus(), 100);
         setVerifying(false);
         return;
       }
@@ -338,8 +373,6 @@ export function TuringShieldGate({
       setCleared(true);
       if (onVerified) onVerified(data.clearanceToken);
 
-      // If first-time user, prompt them to set their own PIN
-      // Also store the clearance token so handleSetPin can send it to the PUT endpoint
       if (data.isFirstTimeUser) {
         setIsFirstTime(true);
         setSettingPin(true);
@@ -355,84 +388,16 @@ export function TuringShieldGate({
     }
   }, [verifying, locked, onVerified, triggerShake]);
 
-  const handlePinChange = useCallback((
-    index: number,
-    value: string,
-    pinState: string[],
-    setPinState: React.Dispatch<React.SetStateAction<string[]>>,
-    refs: React.MutableRefObject<(HTMLInputElement | null)[]>,
-    onComplete?: (digits: string[]) => void,
-  ) => {
-    const val = value.replace(/\D/g, '');
-    if (!val && !pinState[index]) return;
-    setPinError(null);
-    setPinSetError(null);
-
-    // Handle paste
-    if (val.length > 1) {
-      const chars = val.split('').slice(0, 6);
-      const newPinState = [...pinState];
-      chars.forEach((char, idx) => {
-        if (index + idx < 6) newPinState[index + idx] = char;
-      });
-      setPinState(newPinState);
-      const nextFocus = Math.min(index + chars.length, 5);
-      setTimeout(() => refs.current[nextFocus]?.focus(), 0);
-      
-      if (newPinState.every(d => d !== '') && onComplete) {
-        onComplete(newPinState);
-      }
-      return;
-    }
-
-    const newPinState = [...pinState];
-    newPinState[index] = val.slice(-1);
-    setPinState(newPinState);
-
-    if (val && index < 5) {
-      setTimeout(() => refs.current[index + 1]?.focus(), 0);
-    }
-
-    if (index === 5 && val) {
-      const full = [...newPinState];
-      full[5] = val.slice(-1);
-      if (full.every(d => d !== '') && onComplete) {
-        onComplete(full);
-      }
-    }
-  }, []);
-
-  const handleKeyDown = useCallback((
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>,
-    pinState: string[],
-    setPinState: React.Dispatch<React.SetStateAction<string[]>>,
-    refs: React.MutableRefObject<(HTMLInputElement | null)[]>,
-    onComplete?: () => void,
-  ) => {
-    if (e.key === 'Backspace') {
-      if (!pinState[index] && index > 0) {
-        const newPinState = [...pinState];
-        newPinState[index - 1] = '';
-        setPinState(newPinState);
-        setTimeout(() => refs.current[index - 1]?.focus(), 0);
-      }
-    } else if (e.key === 'Enter') {
-      if (pinState.every(d => d !== '') && onComplete) onComplete();
-    }
-  }, []);
-
   // ─── Set new PIN flow ─────────────────────────────────────────────────────
   const handleSetPin = useCallback(async () => {
-    const code = newPin.join('');
-    const conf = confirmPin.join('');
+    const code = newPin;
+    const conf = confirmPin;
 
     if (code.length !== 6) { setPinSetError('Enter a 6-digit PIN.'); return; }
 
     if (pinSetStep === 'new') {
       setPinSetStep('confirm');
-      setConfirmPin(['', '', '', '', '', '']);
-      setTimeout(() => confirmPinRefs.current[0]?.focus(), 100);
+      setConfirmPin('');
       return;
     }
 
@@ -440,9 +405,8 @@ export function TuringShieldGate({
     if (code !== conf) {
       setPinSetError('PINs do not match. Please start over.');
       setPinSetStep('new');
-      setNewPin(['', '', '', '', '', '']);
-      setConfirmPin(['', '', '', '', '', '']);
-      setTimeout(() => newPinRefs.current[0]?.focus(), 100);
+      setNewPin('');
+      setConfirmPin('');
       return;
     }
 
@@ -481,14 +445,14 @@ export function TuringShieldGate({
         setPinSetError(data.error || 'Failed to update PIN.');
         // Stay on the confirm step so user can retry
         setPinSetStep('new');
-        setNewPin(['', '', '', '', '', '']);
-        setConfirmPin(['', '', '', '', '', '']);
+        setNewPin('');
+        setConfirmPin('');
       }
     } catch (err) {
       setPinSetError('Network error while saving PIN. Please try again.');
       // Stay on confirm step, do NOT close overlay
     }
-  }, [newPin, confirmPin, pinSetStep]);
+  }, [newPin, confirmPin, pinSetStep, onVerified, tempClearanceToken, tempClearanceTs]);
 
   // Prevent Hydration Mismatch
   if (!mounted) return null;
@@ -536,37 +500,17 @@ export function TuringShieldGate({
                     <AlertTriangle size={11} /> {pinSetError}
                   </p>
                 )}
-                <div className="flex gap-2 mb-5 justify-center">
-                  {(pinSetStep === 'new' ? newPin : confirmPin).map((digit, i) => (
-                    <input
-                      key={i}
-                      ref={el => { (pinSetStep === 'new' ? newPinRefs : confirmPinRefs).current[i] = el; }}
-                      type="tel"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      maxLength={1}
-                      value={digit}
-                      onChange={e => handlePinChange(
-                        i, e.target.value,
-                        pinSetStep === 'new' ? newPin : confirmPin,
-                        pinSetStep === 'new' ? setNewPin : setConfirmPin,
-                        pinSetStep === 'new' ? newPinRefs : confirmPinRefs,
-                      )}
-                      onKeyDown={e => handleKeyDown(
-                        i, e,
-                        pinSetStep === 'new' ? newPin : confirmPin,
-                        pinSetStep === 'new' ? setNewPin : setConfirmPin,
-                        pinSetStep === 'new' ? newPinRefs : confirmPinRefs,
-                        handleSetPin,
-                      )}
-                      className="w-11 h-14 text-center text-[18px] font-black rounded-xl outline-none border-2 border-indigo-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 bg-indigo-50 text-indigo-700 transition-all"
-                      style={{ height: '56px' }}
-                    />
-                  ))}
-                </div>
+                <PinInput
+                  value={pinSetStep === 'new' ? newPin : confirmPin}
+                  onChange={pinSetStep === 'new' ? setNewPin : setConfirmPin}
+                  onComplete={v => {
+                    if (v.length === 6) handleSetPin();
+                  }}
+                  error={!!pinSetError}
+                />
                 <button
                   onClick={handleSetPin}
-                  disabled={(pinSetStep === 'new' ? newPin : confirmPin).some(d => d === '')}
+                  disabled={(pinSetStep === 'new' ? newPin : confirmPin).length < 6}
                   className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-[13px] uppercase tracking-[0.1em] transition-all disabled:opacity-40 disabled:cursor-not-allowed mb-2"
                 >
                   {pinSetStep === 'new' ? 'Next: Confirm PIN →' : 'Save PIN'}
@@ -668,29 +612,13 @@ export function TuringShieldGate({
                     transition={{ duration: 0.4 }}
                     className="flex gap-2 mb-4 w-full justify-center"
                   >
-                    {pin.map((digit, i) => (
-                      <input
-                        key={i}
-                        ref={el => { pinRefs.current[i] = el; }}
-                        type="tel"
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                        autoComplete="one-time-code"
-                        maxLength={1}
-                        value={digit}
-                        onChange={e => handlePinChange(i, e.target.value, pin, setPin, pinRefs, handleSubmit)}
-                        onKeyDown={e => handleKeyDown(i, e, pin, setPin, pinRefs, () => handleSubmit(pin))}
-                        disabled={verifying}
-                        className={`w-11 h-13 sm:w-12 sm:h-14 text-center text-[18px] font-black rounded-xl outline-none transition-all duration-200 disabled:opacity-50
-                          ${pinError
-                            ? 'bg-red-50 border-2 border-red-400 text-red-600'
-                            : digit
-                            ? 'bg-indigo-50 border-2 border-indigo-500 text-indigo-700'
-                            : 'bg-black/[0.04] border border-black/10 text-black focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20'
-                          }`}
-                        style={{ height: '56px' }}
-                      />
-                    ))}
+                    <PinInput
+                      value={pin}
+                      onChange={setPin}
+                      onComplete={handleSubmit}
+                      disabled={verifying}
+                      error={!!pinError}
+                    />
                   </motion.div>
 
                   {/* Error */}
@@ -718,7 +646,7 @@ export function TuringShieldGate({
                   {/* Submit button */}
                   <button
                     onClick={() => handleSubmit(pin)}
-                    disabled={pin.some(d => d === '') || verifying}
+                    disabled={pin.length < 6 || verifying}
                     className="w-full h-[52px] bg-[#0A0A0A] hover:bg-black/80 text-white rounded-2xl font-black text-[13px] uppercase tracking-[0.15em] transition-all duration-200 active:scale-[0.97] shadow-lg shadow-black/15 flex items-center justify-center gap-3 disabled:opacity-40 disabled:cursor-not-allowed mb-6"
                   >
                     {verifying ? (
@@ -754,7 +682,7 @@ export function TuringShieldGate({
                    independently. Attempting again while locked will receive a 429 from the server. */}
               {lockoutCountdown === 0 && (
                 <button
-                  onClick={() => { setPinError(null); setPin(['', '', '', '', '', '']); }}
+                  onClick={() => { setPinError(null); setPin(''); }}
                   className="w-full py-3 border border-black/10 rounded-2xl text-[12px] font-bold text-[#666] hover:bg-black/[0.03] transition-all"
                 >
                   Try Again
@@ -803,63 +731,13 @@ export function TuringShieldGate({
                   </p>
 
                   {/* OTP Input */}
-                  <div className="flex gap-2 justify-center mb-4">
-                    {resetOtp.map((digit, i) => (
-                      <input
-                        key={i}
-                        ref={el => { resetOtpRefs.current[i] = el; }}
-                        type="text"
-                        inputMode="numeric"
-                        pattern="\d*"
-                        autoComplete="one-time-code"
-                        maxLength={1}
-                        value={digit}
-                        disabled={resetFlowState === 'verifying_otp'}
-                        onChange={e => {
-                          const val = e.target.value.replace(/\D/g, '');
-                          if (!val && !digit) return;
-                          
-                          // Handle paste
-                          if (val.length > 1) {
-                            const chars = val.split('').slice(0, 6);
-                            const next = [...resetOtp];
-                            chars.forEach((char, idx) => {
-                              if (i + idx < 6) next[i + idx] = char;
-                            });
-                            setResetOtp(next);
-                            setResetOtpError(null);
-                            const nextFocus = Math.min(i + chars.length, 5);
-                            resetOtpRefs.current[nextFocus]?.focus();
-                            if (next.every(d => d !== '')) handleVerifyOtp(next);
-                            return;
-                          }
-
-                          const next = [...resetOtp];
-                          next[i] = val.slice(-1);
-                          setResetOtp(next);
-                          setResetOtpError(null);
-                          if (val && i < 5) resetOtpRefs.current[i + 1]?.focus();
-                          if (next.every(d => d !== '')) handleVerifyOtp(next);
-                        }}
-                        onKeyDown={e => {
-                          if (e.key === 'Backspace' && !digit && i > 0) {
-                            resetOtpRefs.current[i - 1]?.focus();
-                          }
-                          if (e.key === 'Enter' && resetOtp.every(d => d !== '')) {
-                            handleVerifyOtp(resetOtp);
-                          }
-                        }}
-                        className={`w-10 h-12 text-center text-[18px] font-black rounded-xl outline-none transition-all duration-200 disabled:opacity-50
-                          ${resetOtpError
-                            ? 'bg-red-50 border-2 border-red-400 text-red-600'
-                            : digit
-                            ? 'bg-indigo-100 border-2 border-indigo-500 text-indigo-800'
-                            : 'bg-white border border-indigo-200 text-black focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20'
-                          }`}
-                        style={{ height: '48px' }}
-                      />
-                    ))}
-                  </div>
+                  <PinInput
+                    value={resetOtp}
+                    onChange={setResetOtp}
+                    onComplete={handleVerifyOtp}
+                    disabled={resetFlowState === 'verifying_otp'}
+                    error={!!resetOtpError}
+                  />
 
                   {/* Error */}
                   {resetOtpError && (
@@ -885,7 +763,7 @@ export function TuringShieldGate({
                     <button
                       onClick={() => {
                         setResetFlowState('idle');
-                        setResetOtp(['', '', '', '', '', '']);
+                        setResetOtp('');
                         setResetOtpError(null);
                         setResetAttemptsLeft(null);
                       }}
@@ -896,7 +774,7 @@ export function TuringShieldGate({
                     </button>
                     <button
                       onClick={() => handleVerifyOtp(resetOtp)}
-                      disabled={resetOtp.some(d => d === '') || resetFlowState === 'verifying_otp'}
+                      disabled={resetOtp.length < 6 || resetFlowState === 'verifying_otp'}
                       className="flex-1 py-2 rounded-xl bg-indigo-600 text-white text-[11px] font-bold uppercase tracking-widest hover:bg-indigo-700 transition-colors disabled:opacity-40"
                     >
                       {resetFlowState === 'verifying_otp' ? 'Verifying...' : 'Verify Code →'}

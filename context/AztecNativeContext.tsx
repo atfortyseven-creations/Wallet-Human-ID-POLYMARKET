@@ -219,7 +219,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
           
           for (const tx of transactions) {
             if (notifiedRef.current.has(tx.id)) continue;
-            markNotifiedRef.current(tx.id); // persist immediately — survives iOS remount
+            markNotified(tx.id); // persist immediately — survives iOS remount
             
             // Only toast if it's not the initial sync
             if (
