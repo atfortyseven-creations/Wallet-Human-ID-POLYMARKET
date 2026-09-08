@@ -29,6 +29,9 @@ import { getLocalContacts, saveLocalContact, resolveContactName, LocalContact } 
 import { getCallHistory, saveCallRecord, CallRecord } from '@/lib/wallet/callHistory';
 import { LedgerChatProfile } from '@/components/chat/LedgerChatProfile';
 import { LedgerChatVaultManager } from '@/components/chat/LedgerChatVaultManager';
+
+import { IncomingCallOverlay } from '@/components/chat/IncomingCallOverlay';
+import { SyndicateModal } from '@/components/chat/SyndicateModal';
 import { LedgerChatOnboarding } from '@/components/chat/LedgerChatOnboarding';
 import { LedgerChatUserSearch } from '@/components/chat/LedgerChatUserSearch';
 import { ContactRequestsPanel } from '@/components/chat/ContactRequestsPanel';
@@ -344,6 +347,8 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     return c ? c.name : shortAddr(peerAddr);
   }, [localContacts]);
 
+  const [showSyndicateModal, setShowSyndicateModal] = useState(false);
+  const [showSyndicateModal2, _] = useState(false); // alias
   const [reactionMenu, setReactionMenu] = useState<string | null>(null); // Phase 2: Emoji Reactions
   const [pinnedMessageId, setPinnedMessageId] = useState<string | null>(null); // Phase 3: Pinned
   const [burnTimer, setBurnTimer] = useState<number | null>(null); // Phase 3: Self-Destruct TTL
@@ -3505,6 +3510,8 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         )}
       </AnimatePresence>
   
+    <IncomingCallOverlay />
+      <SyndicateModal isOpen={showSyndicateModal} onClose={() => setShowSyndicateModal(false)} client={client} onGroupCreated={() => setShowSyndicateModal(false)} />
     </TuringShieldGate>
     );
   }
@@ -3636,7 +3643,9 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           )}
         </div>
       </div>
-      </TuringShieldGate>
+      <IncomingCallOverlay />
+      <SyndicateModal isOpen={showSyndicateModal} onClose={() => setShowSyndicateModal(false)} client={client} onGroupCreated={() => setShowSyndicateModal(false)} />
+    </TuringShieldGate>
     );
   }
   if (!hasAcceptedEula) {
@@ -5508,6 +5517,8 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
         document.body
       )}
       </div>{/* end h-full flex-col layout wrapper */}
+    <IncomingCallOverlay />
+      <SyndicateModal isOpen={showSyndicateModal} onClose={() => setShowSyndicateModal(false)} client={client} onGroupCreated={() => setShowSyndicateModal(false)} />
     </TuringShieldGate>
   );
 }

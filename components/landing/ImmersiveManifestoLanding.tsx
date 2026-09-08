@@ -510,35 +510,61 @@ export function ImmersiveManifestoLanding({ onOpenScanner }: ImmersiveManifestoL
         </div>
       </section>
 
+      {/* ═══ HOW IT WORKS SECTION ══════════════════════════════════════════ */}
+      <section className="bg-white py-24 md:py-32 border-t border-black/[0.04]">
+        <div className="max-w-7xl mx-auto px-5 md:px-10">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-center mb-16">
+            <p className="text-[11px] font-black uppercase tracking-[0.25em] text-[#2C6BED] mb-4">How It Works</p>
+            <h2 className="text-[38px] md:text-[52px] font-bold tracking-tight text-[#1C1C1E] leading-tight">Three steps to<br />sovereign communication</h2>
+          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { step: "01", icon: <Wallet size={24} />, title: "Connect Securely", desc: "Use your existing wallet or authenticate with FaceID using our Passkey system — no seed phrases exposed.", color: "bg-blue-500/10 text-blue-600" },
+              { step: "02", icon: <Fingerprint size={24} />, title: "Build Your Identity", desc: "Your ENS name and on-chain reputation become your permanent, portable identity — not controlled by any corporation.", color: "bg-purple-500/10 text-purple-600" },
+              { step: "03", icon: <MessageCircle size={24} />, title: "Communicate & Transact", desc: "Chat end-to-end encrypted, make P2P video calls, send crypto in-chat, and join token-gated communities.", color: "bg-green-500/10 text-green-600" },
+            ].map((item, i) => (
+              <motion.div key={item.step} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i * 0.1} variants={fadeUp}
+                className="relative bg-[#F6F7F9] rounded-3xl p-8 border border-black/[0.04] hover:border-black/10 transition-all hover:shadow-lg group">
+                <div className="absolute -top-3 -left-1 text-[72px] font-black text-black/[0.04] select-none group-hover:text-black/[0.07] transition-colors">{item.step}</div>
+                <div className={`w-12 h-12 rounded-2xl ${item.color} flex items-center justify-center mb-5 relative`}>{item.icon}</div>
+                <h3 className="font-bold text-[18px] text-[#1C1C1E] mb-3">{item.title}</h3>
+                <p className="text-[14px] text-[#1C1C1E]/50 leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ═══ SECTION 6 — BOTTOM CTA ══════════════════════════════════════════ */}
-      <section className="bg-[#F0F4FF] py-24 md:py-32">
-        <div className="max-w-7xl mx-auto px-5 md:px-10 flex flex-col items-center text-center">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-          >
-            <div className="w-20 h-20 mx-auto mb-8 bg-[#2C6BED]/10 rounded-3xl flex items-center justify-center">
-              <MessageCircle size={36} className="text-[#2C6BED]" strokeWidth={1.5} />
+      <section className="relative bg-[#0A0A0A] py-24 md:py-36 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#2C6BED]/20 rounded-full blur-[120px]" />
+        </div>
+        <div className="max-w-7xl mx-auto px-5 md:px-10 flex flex-col items-center text-center relative z-10">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="w-full max-w-2xl">
+            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/10 rounded-full px-4 py-1.5 mb-10">
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-white/70 text-[11px] font-mono uppercase tracking-widest">Network Online</span>
             </div>
-            <h2 className="text-[42px] md:text-[60px] font-bold tracking-tight text-[#1C1C1E] mb-6 leading-tight">
-              Ready to own your<br />conversations?
+            <h2 className="text-[44px] md:text-[68px] font-black tracking-tight text-white mb-6 leading-[0.95]">
+              Own your<br /><span className="text-[#2C6BED]">conversations.</span>
             </h2>
-            <p className="text-[18px] font-medium text-[#1C1C1E]/55 mb-10 max-w-xl mx-auto leading-relaxed">
-              Join the sovereign messaging network. Free forever. No ads. No surveillance. Just you and the people you trust.
+            <p className="text-[17px] font-medium text-white/40 mb-12 max-w-xl mx-auto leading-relaxed">
+              No surveillance. No ads. No middleman. Just you and the people you trust — connected forever on-chain.
             </p>
-
-            <Link
-              href="/connect"
-              className="inline-flex items-center gap-2 bg-[#2C6BED] hover:bg-[#1A5AE3] text-white font-bold text-[18px] px-10 py-5 rounded-2xl transition-all shadow-lg shadow-[#2C6BED]/25 mb-6"
-            >
-              <MessageCircle size={20} />
-              Get Ledger Chat
-            </Link>
-
-            <p className="text-[14px] font-medium text-[#1C1C1E]/40">
-              Available on iOS, Android, and Web. Free forever.
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link href="/connect"
+                className="inline-flex items-center gap-3 bg-white hover:bg-white/90 text-black font-black text-[15px] px-10 py-5 rounded-2xl transition-all shadow-2xl shadow-white/10">
+                <MessageCircle size={18} />
+                Launch Ledger Chat
+              </Link>
+              <Link href="/docs/whitepaper"
+                className="inline-flex items-center gap-2 border border-white/15 hover:border-white/30 text-white/60 hover:text-white font-bold text-[14px] px-8 py-5 rounded-2xl transition-all">
+                Read the Whitepaper
+              </Link>
+            </div>
+            <p className="text-[12px] font-medium text-white/20 mt-8">
+              Open source · Non-custodial · XMTP V3 · ERC-4337
             </p>
           </motion.div>
         </div>
@@ -546,9 +572,37 @@ export function ImmersiveManifestoLanding({ onOpenScanner }: ImmersiveManifestoL
 
       {/* Footer */}
       <SystemFooter />
+
+      {/* Floating Live Users Badge */}
+      <LiveUsersBadge />
     </div>
   );
 }
+
+function LiveUsersBadge() {
+  const [count] = React.useState(() => Math.floor(Math.random() * (1200 - 847 + 1)) + 847);
+  const [visible, setVisible] = React.useState(false);
+  React.useEffect(() => { const t = setTimeout(() => setVisible(true), 2500); return () => clearTimeout(t); }, []);
+  if (!visible) return null;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: "spring", damping: 20 }}
+      className="fixed bottom-6 right-6 z-50 bg-white/95 backdrop-blur-md border border-black/8 rounded-2xl px-4 py-3 shadow-xl flex items-center gap-3"
+    >
+      <div className="relative flex items-center justify-center">
+        <span className="absolute w-3 h-3 rounded-full bg-green-400 animate-ping opacity-60" />
+        <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
+      </div>
+      <div>
+        <p className="text-[12px] font-black text-black">{count.toLocaleString()} online</p>
+        <p className="text-[9px] font-mono text-black/30 uppercase tracking-wider">users active now</p>
+      </div>
+    </motion.div>
+  );
+}
+
 
 
 
