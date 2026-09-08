@@ -7,7 +7,7 @@ import { verifyMessage } from 'viem';
 import crypto from 'crypto';
 
 // ISR: Revalidate every 30 seconds for GET (topic listing)
-export const revalidate = 30;
+export const dynamic = 'force-dynamic';
 
 /**
  * Module-level one-time test-topic cleanup.

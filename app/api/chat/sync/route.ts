@@ -4,7 +4,7 @@ import { getSession } from '@/lib/session';
 import { randomBytes } from 'crypto';
 
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const dynamic = 'force-dynamic';
 
 const REDIS_KEY = 'global:gossip:messages';
 // Maximum messages retained in the gossip buffer per channel

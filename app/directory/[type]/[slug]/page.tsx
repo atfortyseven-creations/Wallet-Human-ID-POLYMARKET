@@ -1,9 +1,9 @@
-﻿import React from 'react';
+import React from 'react';
 import { runQuery } from '@/lib/neo4j';
 import { Activity, Landmark, Wallet, Network } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
-export const revalidate = 60; // 1-minute caching for directory updates
+export const dynamic = 'force-dynamic';
 
 export default async function KnowledgeGraphEntityPage({
   params

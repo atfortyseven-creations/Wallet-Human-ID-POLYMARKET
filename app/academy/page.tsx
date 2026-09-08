@@ -7,7 +7,7 @@ import { SystemFooter } from "@/components/landing/SystemFooter";
 import { LedgerChatLink } from "@/components/shared/LedgerChatLink";
 import { TuringAcademicShield } from "@/components/academy/TuringAcademicShield";
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function AcademyPage() {
     let dbCourses: any[] = [];

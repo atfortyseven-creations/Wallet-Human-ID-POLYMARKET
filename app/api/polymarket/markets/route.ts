@@ -6,7 +6,7 @@
 import { NextResponse } from 'next/server';
 
 export const runtime = 'edge';
-export const revalidate = 30; // ISR - revalidate every 30 seconds
+export const dynamic = 'force-dynamic';
 
 const CLOB_API = 'https://clob.polymarket.com';
 const GAMMA_API = 'https://gamma-api.polymarket.com';

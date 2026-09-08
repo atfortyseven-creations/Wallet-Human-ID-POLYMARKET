@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export const revalidate = 0; // always fresh
+export const dynamic = 'force-dynamic';
 
 // Map ISO2 from cf-ipcountry to natural-earth country name used in the map
 const ISO2_TO_NAME: Record<string, string> = {
