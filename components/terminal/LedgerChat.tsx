@@ -309,7 +309,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
 
   // ── v2: Telegram-Parity state ──────────────────────────────────────────
   const [callHistoryList, setCallHistoryList] = useState<CallRecord[]>([]);
-  const [sidebarTab, setSidebarTab] = useState<'chats' | 'calls' | 'contacts'>('chats');
+  const [sidebarTab, setSidebarTab] = useState<'chats' | 'calls' | 'contacts' | 'groups'>('chats');
   const [showSaveContactModal, setShowSaveContactModal] = useState(false);
   const [saveContactName, setSaveContactName] = useState('');
 
@@ -3850,10 +3850,10 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
 
         {/* ── Tab Bar ── */}
         <div className="flex border-b border-black/[0.06] bg-white shrink-0">
-          {(['chats', 'calls', 'contacts'] as const).map(tab => (
+          {(['chats', 'calls', 'contacts', 'groups'] as const).map(tab => (
             <button
               key={tab}
-              onClick={() => setSidebarTab(tab)}
+              onClick={() => { setSidebarTab(tab); if (tab === 'groups') setShowSyndicateModal(true); }}
               className={`flex-1 py-3 flex flex-col items-center gap-0.5 transition-all ${
                 sidebarTab === tab
                   ? 'text-[#007AFF]'
@@ -3864,11 +3864,14 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                 <svg width="20" height="20" viewBox="0 0 24 24" fill={sidebarTab === 'chats' ? '#007AFF' : 'none'} stroke={sidebarTab === 'chats' ? '#007AFF' : '#8E8E93'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
               ) : tab === 'calls' ? (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill={sidebarTab === 'calls' ? '#007AFF' : 'none'} stroke={sidebarTab === 'calls' ? '#007AFF' : '#8E8E93'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.6 4.35 2 2 0 0 1 3.57 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.1 6.1l.9-.9a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              ) : (
+              ) : tab === 'contacts' ? (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill={sidebarTab === 'contacts' ? '#007AFF' : 'none'} stroke={sidebarTab === 'contacts' ? '#007AFF' : '#8E8E93'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              ) : (
+                /* Groups icon */
+                <svg width="20" height="20" viewBox="0 0 24 24" fill={sidebarTab === 'groups' ? '#007AFF' : 'none'} stroke={sidebarTab === 'groups' ? '#007AFF' : '#8E8E93'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               )}
               <span className={`text-[10px] font-semibold tracking-wide ${sidebarTab === tab ? 'text-[#007AFF]' : 'text-[#8E8E93]'}`}>
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                {tab === 'groups' ? 'Groups' : tab.charAt(0).toUpperCase() + tab.slice(1)}
               </span>
             </button>
           ))}
