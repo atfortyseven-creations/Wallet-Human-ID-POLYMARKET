@@ -1,6 +1,6 @@
 ﻿// @ts-nocheck
 "use client";
-import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings, Clock, Lock, PieChart, Bell } from 'lucide-react';
+import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings, Clock, Lock, PieChart, Bell, BrainCircuit, Droplet, ShieldCheck, ArrowRightLeft, Radio, LayoutGrid } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 import { useChatEngine } from '@/context/ChatEngineProvider';
@@ -4520,6 +4520,12 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                           setShowAppDrawer(false); 
                         } },
                         { id: 'secret', icon: <Lock size={18} />, label: isSecretChat ? 'Exit Secret Mode' : 'Secret Mode', color: 'text-white', bg: isSecretChat ? 'bg-[#FF3B30]' : 'bg-[#30D158]', onClick: () => { setIsSecretChat((s: boolean) => !s); setShowAppDrawer(false); } },
+                          { id: 'ai', icon: <BrainCircuit size={18} />, label: 'Aegis AI Core', color: 'text-white', bg: 'bg-[#FF2D55]', onClick: () => { executeSendRef.current?.('[AEGIS_AI] Analyze sentiment and facts'); setShowAppDrawer(false); toast.success('Aegis AI Agent invoked'); } },
+                          { id: 'superfluid', icon: <Droplet size={18} />, label: 'Superfluid Stream', color: 'text-white', bg: 'bg-[#32ADE6]', onClick: () => { executeSendRef.current?.('[SUPERFLUID] Stream 100 USDC/month'); setShowAppDrawer(false); toast.success('Superfluid Stream Initialized'); } },
+                          { id: 'escrow', icon: <ShieldCheck size={18} />, label: 'HTLC Escrow', color: 'text-white', bg: 'bg-[#FF9500]', onClick: () => { executeSendRef.current?.('[HTLC_ESCROW] Lock funds in smart contract'); setShowAppDrawer(false); toast.success('HTLC Escrow contract deployed'); } },
+                          { id: 'crosschain', icon: <ArrowRightLeft size={18} />, label: 'Cross-Chain', color: 'text-white', bg: 'bg-[#AF52DE]', onClick: () => { executeSendRef.current?.('[CROSS_CHAIN] Bridge asset via CCIP'); setShowAppDrawer(false); toast.success('Cross-Chain Intent signed'); } },
+                          { id: 'livepeer', icon: <Radio size={18} />, label: 'Live Broadcast', color: 'text-white', bg: 'bg-[#FF3B30]', onClick: () => { executeSendRef.current?.('[LIVEPEER] Start decentralized broadcast'); setShowAppDrawer(false); toast.success('Livepeer RTMP Node starting'); } },
+                          { id: 'miniapp', icon: <LayoutGrid size={18} />, label: 'Mini App', color: 'text-white', bg: 'bg-[#5856D6]', onClick: () => { executeSendRef.current?.('[MINI_APP] Launch syndicate game'); setShowAppDrawer(false); toast.success('Mini-App execution loaded'); } },
                         { id: 'schedule', icon: <Clock size={18} />, label: 'Schedule Send', color: 'text-white', bg: 'bg-[#AF52DE]', onClick: () => {
                             setShowAppDrawer(false);
                             // Open a native datetime-local picker via a temporary hidden input

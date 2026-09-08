@@ -1,156 +1,159 @@
-﻿// @ts-nocheck
-"use client";
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Phone, Video, PhoneOff, PhoneCall } from "lucide-react";
-
-interface CallPayload {
-  type: "VIDEO_CALL" | "VOICE_CALL";
-  caller: {
-    address: string;
-    name: string;
-    avatarUrl: string;
-  };
-  timestamp: number;
+export interface CallDetails {
+  callerAddress: string;
+  callerName?: string;
+  callType: 'audio' | 'video';
+  signalId?: string;
+  [key: string]: any;
 }
 
 export function IncomingCallOverlay() {
-  const [callPayload, setCallPayload] = useState<CallPayload | null>(null);
-  const [secondsLeft, setSecondsLeft] = useState(30);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const [incomingCall, setIncomingCall] = useState<CallDetails | null>(null);
 
   useEffect(() => {
-    const handler = (e: any) => {
-      const payload = e.detail as CallPayload;
-      setCallPayload(payload);
-      setSecondsLeft(30);
+    const handleIncomingCall = (e: Event) => {
+      const customEvent = e as CustomEvent<CallDetails>;
+      setIncomingCall(customEvent.detail);
     };
-    window.addEventListener("ledger_incoming_call_ui", handler);
-    return () => window.removeEventListener("ledger_incoming_call_ui", handler);
+
+    const handleClearCall = () => {
+      setIncomingCall(null);
+    };
+
+    window.addEventListener('ledger_incoming_call_ui', handleIncomingCall);
+    window.addEventListener('ledger_clear_call_ui', handleClearCall);
+
+    return () => {
+      window.removeEventListener('ledger_incoming_call_ui', handleIncomingCall);
+      window.removeEventListener('ledger_clear_call_ui', handleClearCall);
+    };
   }, []);
 
   useEffect(() => {
-    if (!callPayload) return;
-    timerRef.current = setInterval(() => {
-      setSecondsLeft((s) => {
-        if (s <= 1) {
-          handleDecline();
-          return 0;
-        }
-        return s - 1;
-      });
-    }, 1000);
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [callPayload]);
+    if (incomingCall) {
+      const timer = setTimeout(() => {
+        handleDecline();
+      }, 30000); // 30 seconds auto-dismiss
+      return () => clearTimeout(timer);
+    }
+  }, [incomingCall]);
 
   const handleAnswer = () => {
-    window.dispatchEvent(new CustomEvent("ledger_call_answered", { detail: callPayload }));
-    setCallPayload(null);
-    if (timerRef.current) clearInterval(timerRef.current);
+    if (incomingCall) {
+      const event = new CustomEvent('ledger_call_answered', { detail: incomingCall });
+      window.dispatchEvent(event);
+      setIncomingCall(null);
+    }
   };
 
   const handleDecline = () => {
-    window.dispatchEvent(new CustomEvent("ledger_call_declined", { detail: callPayload }));
-    setCallPayload(null);
-    if (timerRef.current) clearInterval(timerRef.current);
+    if (incomingCall) {
+      const event = new CustomEvent('ledger_call_declined', { detail: incomingCall });
+      window.dispatchEvent(event);
+      setIncomingCall(null);
+    }
   };
 
-  const initials = callPayload
-    ? callPayload.caller.name.slice(0, 2).toUpperCase()
-    : "??";
+  if (!incomingCall) return null;
+
+  const getDisplayName = () => {
+    if (incomingCall.callerName) return incomingCall.callerName;
+    const addr = incomingCall.callerAddress;
+    return addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : 'Unknown Caller';
+  };
+
+  const getInitials = () => {
+    if (incomingCall.callerName) return incomingCall.callerName.slice(0, 2).toUpperCase();
+    const addr = incomingCall.callerAddress;
+    return addr ? addr.slice(2, 4).toUpperCase() : '??';
+  };
+
+  const getHue = () => {
+    const addr = incomingCall.callerAddress || '0x000000';
+    return parseInt(addr.slice(2, 8), 16) % 360;
+  };
 
   return (
     <AnimatePresence>
-      {callPayload && (
+      {incomingCall && (
         <motion.div
-          key="incoming-call-overlay"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center px-6"
-          style={{ backgroundColor: "rgba(0,0,0,0.75)", backdropFilter: "blur(12px)" }}
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md"
         >
           <motion.div
-            initial={{ scale: 0.85, y: 40, opacity: 0 }}
-            animate={{ scale: 1, y: 0, opacity: 1 }}
-            exit={{ scale: 0.85, y: 40, opacity: 0 }}
-            transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="w-full max-w-[340px] bg-white rounded-[2.5rem] shadow-2xl overflow-hidden"
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            className="bg-white rounded-3xl shadow-2xl p-8 flex flex-col items-center w-[320px] text-center"
           >
-            {/* Header */}
-            <div className="bg-black pt-10 pb-8 px-6 flex flex-col items-center gap-3">
-              {/* Avatar */}
-              <div className="relative">
-                <motion.div
-                  animate={{ scale: [1, 1.08, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute inset-0 rounded-full bg-white/20 blur-sm"
-                />
-                {callPayload.caller.avatarUrl ? (
-                  <img
-                    src={callPayload.caller.avatarUrl}
-                    alt={callPayload.caller.name}
-                    className="relative w-20 h-20 rounded-full object-cover border-2 border-white/20"
-                  />
-                ) : (
-                  <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-white/30 to-white/10 border border-white/20 flex items-center justify-center">
-                    <span className="text-white text-2xl font-black">{initials}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Name */}
-              <div className="text-center">
-                <p className="text-white/50 text-[10px] font-mono uppercase tracking-widest mb-1">
-                  {callPayload.type === "VIDEO_CALL" ? "Incoming Video Call" : "Incoming Voice Call"}
-                </p>
-                <p className="text-white font-black text-[22px] tracking-tight leading-tight">
-                  {callPayload.caller.name}
-                </p>
-                <p className="text-white/40 font-mono text-[9px] mt-1">
-                  {callPayload.caller.address.slice(0, 6)}...{callPayload.caller.address.slice(-4)}
-                </p>
-              </div>
-
-              {/* Timer ring */}
-              <div className="flex items-center gap-1.5 mt-1">
-                <motion.div
-                  animate={{ opacity: [1, 0.3, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                  className="w-1.5 h-1.5 rounded-full bg-green-400"
-                />
-                <span className="text-white/40 text-[9px] font-mono">Auto-decline in {secondsLeft}s</span>
-              </div>
+            {/* Avatar with haptic-style animation */}
+            <div className="relative mb-6">
+              <motion.div
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.5, 0, 0.5]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="absolute inset-0 rounded-full bg-blue-500/20"
+                style={{ zIndex: -1 }}
+              />
+              <motion.div
+                animate={{
+                  scale: [1, 1.1, 1],
+                }}
+                transition={{
+                  duration: 0.5,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                }}
+                className="w-24 h-24 rounded-full flex items-center justify-center text-3xl font-black text-white shadow-xl"
+                style={{ background: `hsl(${getHue()}, 70%, 45%)` }}
+              >
+                {getInitials()}
+              </motion.div>
             </div>
 
-            {/* Buttons */}
-            <div className="bg-white px-6 py-6 flex gap-4">
-              <button
-                onClick={handleDecline}
-                className="flex-1 flex flex-col items-center gap-2 py-4 rounded-2xl bg-red-50 hover:bg-red-100 transition-colors"
-              >
-                <div className="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center">
-                  <PhoneOff size={20} className="text-white" />
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-red-600">Decline</span>
-              </button>
+            <h2 className="text-2xl font-black text-black mb-1 truncate w-full">
+              {getDisplayName()}
+            </h2>
+            <div className="bg-black/5 px-4 py-1.5 rounded-full mb-8">
+              <span className="text-sm font-bold text-black/70">
+                {incomingCall.callType === 'video' ? '📹 Video Call' : '🎙️ Voice Call'}
+              </span>
+            </div>
 
-              <button
-                onClick={handleAnswer}
-                className="flex-1 flex flex-col items-center gap-2 py-4 rounded-2xl bg-green-50 hover:bg-green-100 transition-colors"
+            <div className="flex items-center gap-6 w-full justify-center">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleDecline}
+                className="w-16 h-16 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
               >
-                <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center">
-                  {callPayload.type === "VIDEO_CALL" ? (
-                    <Video size={20} className="text-white" />
-                  ) : (
-                    <Phone size={20} className="text-white" />
-                  )}
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-green-600">Answer</span>
-              </button>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.33-2.67m-2.67-3.34a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"></path>
+                  <line x1="23" y1="1" x2="1" y2="23"></line>
+                </svg>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleAnswer}
+                className="w-16 h-16 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg hover:bg-green-600 transition-colors"
+                style={{ animation: 'pulse 2s infinite' }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+              </motion.button>
             </div>
           </motion.div>
         </motion.div>
