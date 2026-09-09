@@ -3449,7 +3449,6 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
 
   if (!isConnected) {
     return (
-      <TuringShieldGate>
       <div className="flex-1 flex flex-col items-center justify-start h-full bg-white p-6 pt-12 gap-6 relative overflow-hidden">
         {/* Subtle background glow */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-black/5 blur-[100px] rounded-full pointer-events-none" />
@@ -3465,36 +3464,6 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           Connect Identity
         </button>
       </div>
-      
-      <AnimatePresence>
-        {showSearch && activePeer && (
-          <LedgerChatSearchModal
-            messages={messages}
-            onClose={() => setShowSearch(false)}
-            onJumpTo={(id) => {
-               const el = document.getElementById(`msg-${id}`);
-               if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }}
-            getDisplayName={(addr: string) => resolveContactName(address || '', addr) || addr}
-            clientInboxId={address || ''}
-          />
-        )}
-        {showCallHistory && address && (
-          <LedgerChatCallHistory
-            callHistory={getCallHistory(address)}
-            address={address}
-            onCallBack={(peer, type) => {
-               setActivePeer(peer.toLowerCase());
-               if (type === 'audio') startCall('audio');
-               else startCall('video');
-            }}
-            onClose={() => setShowCallHistory(false)}
-            getDisplayName={(addr: string) => resolveContactName(address || '', addr) || addr}
-          />
-        )}
-      </AnimatePresence>
-  
-    </TuringShieldGate>
     );
   }
 
