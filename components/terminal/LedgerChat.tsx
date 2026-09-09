@@ -257,9 +257,11 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
 
   const [client, setClient] = useState<Client | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
-  const [isInitTimeout, setIsInitTimeout] = useState(false); // shows retry UI after 15s
+  const [isWaitingForSignature, setIsWaitingForSignature] = useState(false);
+  const [isInitTimeout, setIsInitTimeout] = useState(false);
   const initTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [initError, setInitError] = useState('');
+  const initInFlight = useRef<boolean>(false);
+  const [initError, setInitError] = useState<string>('');
   
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
@@ -2237,9 +2239,9 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
     setIsInitializing(true);
     setIsInitTimeout(false);
     setInitError('');
-    // Safety: show 'Retry' UI after 15s if still waiting (MetaMask popup dismissed/ignored)
+    // Safety: show 'Retry' UI after 8s if still waiting (MetaMask popup dismissed/ignored)
     if (initTimeoutRef.current) clearTimeout(initTimeoutRef.current);
-    initTimeoutRef.current = setTimeout(() => setIsInitTimeout(true), 15000);
+    initTimeoutRef.current = setTimeout(() => setIsInitTimeout(true), 8000);
 
     let attempts = 0;
     const maxAttempts = 2; // Reduced from 4 — fewer retries means faster failure feedback
@@ -2255,14 +2257,18 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
                 return await wallet.signMessage(msg);
             }
         }
+        setIsWaitingForSignature(true);
         try {
           let finalMsg = msg;
           if (typeof msg !== 'string') {
               const hex = Array.from(msg as Uint8Array).map((b: number) => b.toString(16).padStart(2, '0')).join('');
               finalMsg = ('0x' + hex) as any;
           }
-          return await signMessageAsync({ message: finalMsg as any });
+          const res = await signMessageAsync({ message: finalMsg as any });
+          setIsWaitingForSignature(false);
+          return res;
         } catch (sigErr: any) {
+          setIsWaitingForSignature(false);
           const msg = sigErr?.message || '';
           if (msg.includes('connector') || msg.includes('not connected') || msg.includes('No connector') || msg.includes('signMessage')) {
               const hasVault = typeof window !== 'undefined' && !!localStorage.getItem('system_vault');
@@ -3572,7 +3578,11 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           </h2>
           
           <p className="text-[14px] font-medium text-[#555] text-center leading-[1.6] mb-6 max-w-[280px]">
-            {isInitializing ? "Deriving session keys and verifying hardware enclave..." : "Activate your cryptographic identity to access the sovereign network."}
+            {isWaitingForSignature 
+              ? <span className="text-blue-600 font-bold">Please check your wallet or extension and sign the request...</span> 
+              : isInitializing 
+                ? "Deriving session keys and verifying hardware enclave..." 
+                : "Activate your cryptographic identity to access the sovereign network."}
           </p>
 
           {/* Shown after 15s if still loading — prevents permanent freeze */}

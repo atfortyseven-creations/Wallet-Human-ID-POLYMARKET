@@ -1,4 +1,4 @@
-﻿// @ts-nocheck
+// @ts-nocheck
 "use client";
 import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings, Clock, Lock, PieChart, Bell } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
@@ -251,7 +251,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   }, [isConnected, connector, isSystemHandshake, reconnect]);
 
   const [client, setClient] = useState<Client | null>(null);
-  const [isInitializing, setIsInitializing] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(false);`n  const [isWaitingForSignature, setIsWaitingForSignature] = useState(false);
   const [initError, setInitError] = useState('');
   
   const [isMounted, setIsMounted] = useState(false);
@@ -2249,8 +2249,8 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
               const hex = Array.from(msg as Uint8Array).map((b: number) => b.toString(16).padStart(2, '0')).join('');
               finalMsg = ('0x' + hex) as any;
           }
-          return await signMessageAsync({ message: finalMsg as any });
-        } catch (sigErr: any) {
+          setIsWaitingForSignature(true); const res = await signMessageAsync({ message: finalMsg as any }); setIsWaitingForSignature(false); return res;
+        } catch (sigErr: any) { setIsWaitingForSignature(false);
           const msg = sigErr?.message || '';
           if (msg.includes('connector') || msg.includes('not connected') || msg.includes('No connector') || msg.includes('signMessage')) {
               const hasVault = typeof window !== 'undefined' && !!localStorage.getItem('system_vault');
@@ -3556,7 +3556,7 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           </h2>
           
           <p className="text-[14px] font-medium text-[#555] text-center leading-[1.6] mb-10 max-w-[280px]">
-            {isInitializing ? "Deriving session keys and verifying hardware enclave..." : "Activate your cryptographic identity to access the sovereign network."}
+            {isWaitingForSignature ? <span className="text-blue-600 font-bold">Please check your wallet or extension and sign the request...</span> : isInitializing ? "Deriving session keys and verifying hardware enclave..." : "Activate your cryptographic identity to access the sovereign network."}
           </p>
 
           {initError ? (
