@@ -689,14 +689,14 @@ function LiveUsersBadge() {
   React.useEffect(() => {
     fetch('/api/metrics/online')
       .then(res => res.json())
-      .then(data => setCount(data.count))
+      .then(data => setCount(typeof data.count === 'number' ? data.count : 847))
       .catch(() => setCount(847));
       
     const t = setTimeout(() => setVisible(true), 1500);
     return () => clearTimeout(t);
   }, []);
 
-  if (!visible || count === null) return null;
+  if (!visible || typeof count !== 'number') return null;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.9 }}
