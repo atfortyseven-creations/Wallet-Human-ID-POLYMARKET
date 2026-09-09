@@ -1,4 +1,4 @@
-import Peer, { MediaConnection } from 'peerjs';
+ï»¿import Peer, { MediaConnection } from 'peerjs';
 
 export type CallState = 'idle' | 'calling' | 'ringing' | 'connecting' | 'active';
 
@@ -47,7 +47,7 @@ export class WebRTCEngine {
     this.peer.on('call', (call) => {
       const incomingAddress = this.peerIdToAddress(call.peer);
       if (this.localStream && this.activeCalls.size > 0) {
-        // Already in a group call — answer automatically
+        // Already in a group call ï¿½ answer automatically
         call.answer(this.localStream);
         this._trackCall(call, incomingAddress);
         this.activeCalls.set(incomingAddress, call);
