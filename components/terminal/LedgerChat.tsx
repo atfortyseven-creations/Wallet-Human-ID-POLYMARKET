@@ -260,7 +260,6 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
   const [isWaitingForSignature, setIsWaitingForSignature] = useState(false);
   const [isInitTimeout, setIsInitTimeout] = useState(false);
   const initTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const initInFlight = useRef<boolean>(false);
   const [initError, setInitError] = useState<string>('');
   
   const [isMounted, setIsMounted] = useState(false);
