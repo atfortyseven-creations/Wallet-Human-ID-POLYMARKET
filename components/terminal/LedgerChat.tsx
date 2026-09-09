@@ -3643,9 +3643,6 @@ export function LedgerChat({ forceAutoInit = false }: LedgerChatProps) {
           )}
         </div>
       </div>
-      <IncomingCallOverlay />
-      <SyndicateModal isOpen={showSyndicateModal} onClose={() => setShowSyndicateModal(false)} client={client} onGroupCreated={() => setShowSyndicateModal(false)} />
-    </div>
     );
   }
   if (!hasAcceptedEula) {
