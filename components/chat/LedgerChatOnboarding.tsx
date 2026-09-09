@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, ChevronRight, Check, MapPin, AtSign, User } from 'lucide-react';
+import { Camera, ChevronRight, Check, MapPin, AtSign, User, Shield, Bell, Lock } from 'lucide-react';
 import { useLedgerSettings } from '@/components/terminal/LedgerChatSettings';
 
 interface OnboardingProps {
@@ -28,7 +28,10 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
   const [username, setUsername] = useState('');
   const [avatar, setAvatar] = useState('');
   const [country, setCountry] = useState('Global (Earth)');
+  const [bio, setBio] = useState('');
   const [pin, setPin] = useState('');
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [privacyLastSeen, setPrivacyLastSeen] = useState('everybody');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -46,34 +49,35 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
   };
 
   const handleNext = () => {
-    if (step === 1 && username.trim().length >= 3) {
-      // Ensure nickname starts with @
+    if (step === 1) {
+      setStep(2);
+    } else if (step === 2 && username.trim().length >= 3) {
       let finalUsername = username.trim();
       if (!finalUsername.startsWith('@')) {
         finalUsername = '@' + finalUsername;
       }
       setUsername(finalUsername);
-      setStep(2);
-    } else if (step === 2 && pin.length >= 4) {
       setStep(3);
+    } else if (step === 3) {
+      setStep(4);
+    } else if (step === 4 && pin.length === 6) {
+      setStep(5);
     }
   };
 
   const handleFinish = async () => {
     setIsSubmitting(true);
-    // Enforce nickname format one last time
     let finalUsername = username.trim();
     if (!finalUsername.startsWith('@')) finalUsername = '@' + finalUsername;
 
     await updateBatch({
       displayName: displayName.trim() || finalUsername,
       avatar_url: avatar,
-      bio: `From ${country}`,
-      privacy_last_seen: 'everybody',
+      bio: bio.trim() || `From ${country}`,
+      privacy_last_seen: privacyLastSeen,
+      notification_sound: notificationsEnabled,
     });
     
-    // [SECURITY FIX] Send PIN to the real server-side enclave endpoint
-    // so TuringShieldGate can verify it on next login — do NOT store PIN in localStorage
     if (pin.length === 6) {
       try {
         await fetch('/api/auth/enclave-pin', {
@@ -82,12 +86,9 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
           body: JSON.stringify({ newPin: pin }),
           credentials: 'include',
         });
-      } catch {
-        // Non-fatal: user can still set PIN from TuringShieldGate on first login
-      }
+      } catch {}
     }
 
-    // [DB SYNC] Ensure the user is searchable in the central database by nametag/username
     try {
       await fetch('/api/user/profile', {
         method: 'PUT',
@@ -95,15 +96,12 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
         body: JSON.stringify({
           walletAddress: address,
           displayName: displayName.trim(),
-          chatName: finalUsername.replace('@', ''), // Remove @ for storage
-          bio: `From ${country}`,
+          chatName: finalUsername.replace('@', ''),
+          bio: bio.trim() || `From ${country}`,
         }),
       });
-    } catch {
-      // Non-fatal
-    }
+    } catch {}
 
-    // Mark as onboarded for this address
     if (typeof window !== 'undefined') {
        localStorage.setItem(`ledger_onboarded_${address}`, 'true');
     }
@@ -112,27 +110,55 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
     onComplete();
   };
 
+  const renderProgressBar = () => (
+    <div className="absolute top-0 left-0 w-full h-2 bg-[#f5f5f7]">
+      <motion.div 
+        className="h-full bg-[#1c7aff]"
+        initial={{ width: 0 }}
+        animate={{ width: `${(step / 5) * 100}%` }}
+        transition={{ duration: 0.4 }}
+      />
+    </div>
+  );
+
   return (
     <div className="fixed inset-0 z-[999999] bg-[#050505] overflow-y-auto font-sans">
       <div className="min-h-full flex flex-col items-center justify-center py-8 px-4 sm:px-6">
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-lg bg-white rounded-[32px] p-8 sm:p-10 shadow-2xl relative"
+        className="w-full max-w-lg bg-white rounded-[32px] p-8 sm:p-10 shadow-2xl relative overflow-hidden"
       >
-        <div className="absolute top-0 left-0 w-full h-2 bg-[#f5f5f7]">
-          <motion.div 
-            className="h-full bg-[#1c7aff]"
-            initial={{ width: 0 }}
-            animate={{ width: `${(step / 3) * 100}%` }}
-            transition={{ duration: 0.4 }}
-          />
-        </div>
+        {renderProgressBar()}
 
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div 
               key="step1"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="flex flex-col items-center text-center"
+            >
+              <div className="w-20 h-20 bg-black text-white rounded-3xl flex items-center justify-center mb-6 shadow-xl">
+                <Shield size={40} />
+              </div>
+              <h2 className="text-3xl font-black text-[#050505] mb-4 tracking-tight">Welcome to Ledger Chat</h2>
+              <p className="text-[#050505]/70 text-[16px] leading-relaxed mb-8">
+                The native Web3 social network. End-to-end encrypted, multi-party calls, and fully sovereign identity.
+              </p>
+              <button 
+                onClick={handleNext}
+                className="w-full py-4 bg-[#1c7aff] hover:bg-blue-600 rounded-2xl text-white font-black text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+              >
+                Get Started <ChevronRight size={20} />
+              </button>
+            </motion.div>
+          )}
+
+          {step === 2 && (
+            <motion.div 
+              key="step2"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
@@ -143,7 +169,6 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
                 Set up your profile to connect with others.
               </p>
 
-              {/* Avatar Upload */}
               <div 
                 className="w-24 h-24 rounded-full bg-[#f5f5f7] border-[3px] border-dashed border-black/10 flex items-center justify-center relative cursor-pointer hover:border-[#1c7aff] transition-colors mb-6 overflow-hidden shadow-sm"
                 onClick={() => fileRef.current?.click()}
@@ -153,14 +178,13 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
                 ) : (
                   <div className="flex flex-col items-center text-[#1c7aff]">
                     <Camera size={32} />
-                    <span className="text-[12px] font-bold mt-2">Upload Photo</span>
+                    <span className="text-[12px] font-bold mt-2">Upload</span>
                   </div>
                 )}
                 <input type="file" ref={fileRef} accept="image/*" className="hidden" onChange={handleFileChange} />
               </div>
 
-              {/* Display Name Input */}
-              <div className="w-full mb-6">
+              <div className="w-full mb-4">
                 <label className="block text-[13px] font-bold text-[#050505] mb-2">Full Name</label>
                 <div className="relative">
                   <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-black/30" />
@@ -174,7 +198,6 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
                 </div>
               </div>
 
-              {/* Nickname Input */}
               <div className="w-full mb-6">
                 <label className="block text-[13px] font-bold text-[#050505] mb-2">Nickname (e.g. @ledger)</label>
                 <div className="relative">
@@ -189,8 +212,30 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
                 </div>
               </div>
 
-              {/* Country Selection */}
-              <div className="w-full mb-7">
+              <button 
+                onClick={handleNext}
+                disabled={username.trim().length < 3}
+                className="w-full py-4 bg-[#1c7aff] hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-[#1c7aff] rounded-2xl text-white font-black text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+              >
+                Continue <ChevronRight size={20} />
+              </button>
+            </motion.div>
+          )}
+
+          {step === 3 && (
+            <motion.div 
+              key="step3"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="flex flex-col items-center"
+            >
+              <h2 className="text-2xl font-black text-[#050505] mb-1 text-center tracking-tight">Location & Bio</h2>
+              <p className="text-[#050505]/50 text-[14px] font-medium text-center mb-6">
+                Let others know a bit more about you.
+              </p>
+
+              <div className="w-full mb-5">
                 <label className="block text-[13px] font-bold text-[#050505] mb-2">Country / Region</label>
                 <div className="relative">
                   <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-black/30" />
@@ -204,56 +249,82 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
                 </div>
               </div>
 
-              <button 
-                onClick={handleNext}
-                disabled={username.trim().length < 3}
-                className="w-full py-4 bg-[#1c7aff] hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-[#1c7aff] rounded-2xl text-white font-black text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
-              >
-                Continue <ChevronRight size={20} />
-              </button>
-            </motion.div>
-          )}
-
-          {step === 2 && (
-            <motion.div 
-              key="step2"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="flex flex-col items-center"
-            >
-              <h2 className="text-3xl font-black text-[#050505] mb-2 text-center tracking-tight">Secure your Vault</h2>
-              <p className="text-[#050505]/50 text-[15px] font-medium text-center mb-8">
-                Create a PIN to lock your private messages and encrypted files.
-              </p>
-
-              <div className="w-full mb-10">
-                <input
-                  type="password"
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))}
-                  placeholder="Enter 6-digit PIN"
-                  maxLength={6}
-                  className="w-full bg-[#f5f5f7] border-2 border-transparent focus:border-[#1c7aff] focus:bg-white rounded-2xl p-6 text-center text-3xl tracking-[0.5em] font-black text-black outline-none transition-all shadow-inner"
+              <div className="w-full mb-8">
+                <label className="block text-[13px] font-bold text-[#050505] mb-2">Short Bio</label>
+                <textarea
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  placeholder="Exploring Web3..."
+                  rows={3}
+                  className="w-full bg-[#f5f5f7] border-2 border-transparent focus:border-[#1c7aff] focus:bg-white rounded-2xl p-4 text-[16px] font-medium text-black outline-none transition-all shadow-inner resize-none"
                 />
               </div>
 
               <button 
                 onClick={handleNext}
-                disabled={pin.length !== 6}
-                className="w-full py-4 bg-[#1c7aff] hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-[#1c7aff] rounded-2xl text-white font-black text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+                className="w-full py-4 bg-[#1c7aff] hover:bg-blue-600 rounded-2xl text-white font-black text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
               >
                 Continue <ChevronRight size={20} />
               </button>
             </motion.div>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
+             <motion.div 
+               key="step4"
+               initial={{ opacity: 0, x: 20 }}
+               animate={{ opacity: 1, x: 0 }}
+               exit={{ opacity: 0, x: -20 }}
+               className="flex flex-col items-center"
+             >
+               <h2 className="text-2xl font-black text-[#050505] mb-2 text-center tracking-tight">Privacy & Security</h2>
+               <p className="text-[#050505]/50 text-[14px] font-medium text-center mb-8">
+                 Secure your vault and control who can see your activity.
+               </p>
+ 
+               <div className="w-full mb-6">
+                 <label className="block text-[13px] font-bold text-[#050505] mb-2 flex items-center gap-2">
+                   <Lock size={14} /> Vault PIN (6 digits)
+                 </label>
+                 <input
+                   type="password"
+                   value={pin}
+                   onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))}
+                   placeholder="------"
+                   maxLength={6}
+                   className="w-full bg-[#f5f5f7] border-2 border-transparent focus:border-[#1c7aff] focus:bg-white rounded-2xl py-4 text-center text-3xl tracking-[0.5em] font-black text-black outline-none transition-all shadow-inner"
+                 />
+               </div>
+
+               <div className="w-full mb-8">
+                 <label className="block text-[13px] font-bold text-[#050505] mb-2">Who can see my online status?</label>
+                 <select 
+                   value={privacyLastSeen}
+                   onChange={(e) => setPrivacyLastSeen(e.target.value)}
+                   className="w-full bg-[#f5f5f7] border-2 border-transparent focus:border-[#1c7aff] focus:bg-white rounded-2xl py-4 px-4 text-[15px] font-semibold text-black outline-none transition-all appearance-none cursor-pointer"
+                 >
+                   <option value="everybody">Everybody</option>
+                   <option value="contacts">My Contacts</option>
+                   <option value="nobody">Nobody</option>
+                 </select>
+               </div>
+ 
+               <button 
+                 onClick={handleNext}
+                 disabled={pin.length !== 6}
+                 className="w-full py-4 bg-[#1c7aff] hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-[#1c7aff] rounded-2xl text-white font-black text-[16px] flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+               >
+                 Continue <ChevronRight size={20} />
+               </button>
+             </motion.div>
+          )}
+
+          {step === 5 && (
             <motion.div 
-              key="step3"
+              key="step5"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="flex flex-col items-center text-center py-6"
+              className="flex flex-col items-center text-center py-4"
             >
               <div className="w-24 h-24 rounded-full bg-[#30d158]/10 flex items-center justify-center mb-6">
                 <div className="w-16 h-16 rounded-full bg-[#30d158] flex items-center justify-center shadow-[0_0_20px_#30d158]">
@@ -261,10 +332,28 @@ export function LedgerChatOnboarding({ address, onComplete }: OnboardingProps) {
                 </div>
               </div>
               
-              <h2 className="text-3xl font-black text-[#050505] mb-3 tracking-tight">All Set!</h2>
-              <p className="text-[#050505]/60 text-[16px] font-medium mb-10 leading-relaxed">
-                Your identity is secured. Welcome to the native Web3 social network, <strong className="text-[#050505]">{username.startsWith('@') ? username : `@${username}`}</strong> from {country}.
+              <h2 className="text-3xl font-black text-[#050505] mb-2 tracking-tight">All Set!</h2>
+              <p className="text-[#050505]/60 text-[15px] mb-8 leading-relaxed">
+                Your identity is secured. Welcome to the native Web3 social network.
               </p>
+
+              <div className="w-full bg-[#f5f5f7] rounded-2xl p-4 flex items-center justify-between mb-8 text-left">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+                    <Bell size={18} className="text-[#050505]" />
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-bold text-black">Enable Notifications</p>
+                    <p className="text-[12px] text-black/50">Get alerts for messages & calls</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setNotificationsEnabled(!notificationsEnabled)}
+                  className={`w-12 h-6 rounded-full relative transition-colors ${notificationsEnabled ? 'bg-[#30d158]' : 'bg-black/20'}`}
+                >
+                  <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform ${notificationsEnabled ? 'translate-x-6' : 'translate-x-0.5'}`} />
+                </button>
+              </div>
 
               <button 
                 onClick={handleFinish}
